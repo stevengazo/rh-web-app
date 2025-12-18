@@ -1,18 +1,14 @@
-import { useState } from 'react'
-
+import { useState } from "react";
+import  AppRouter  from "./router/AppRouter";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-    <div className=''>
-      <h4 className=' text-2xl'>
-        Hello
-      </h4>
-    </div>
+      <AppRouter />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
