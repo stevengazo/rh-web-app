@@ -9,7 +9,10 @@ import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import RegisterPage from "../pages/RegisterPage";
 import UILibraryPage from "../pages/UILibraryPage";
-import EmployeesPage from '../pages/EmployeesPage';
+import EmployeesPage from "../pages/EmployeesPage";
+import ManagerPage from "../pages/ManagerPage";
+import PayrollPage from "../pages/PayrollPage";
+import ActionsPage from "../pages/ActionsPage";
 
 const AppRouter = () => {
   return (
@@ -24,11 +27,12 @@ const AppRouter = () => {
           <Route path="/my-profile" element={<MyProfilePage />} />
         </Route>
         {/* Rutas de Administrador y RH */}
-   
+
         <Route element={<ManagerLayout />}>
-          <Route path="/manager/*" element={<div>Manager Area</div>} />
+          <Route path="/manager" element={<ManagerPage />} />
           <Route path="/manager/employees" element={<EmployeesPage />} />
-      
+          <Route path="/manager/payroll" element={<PayrollPage />} />
+          <Route path="/manager/actions" element={<ActionsPage />} />
         </Route>
 
         {/* 404 */}

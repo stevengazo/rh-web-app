@@ -54,7 +54,7 @@ const ManagerSideBar = () => {
               Planilla
             </NavLink>
 
-            <NavLink to="/manager/hr-actions" className={navItemClass}>
+            <NavLink to="/manager/actions" className={navItemClass}>
               <Briefcase size={18} />
               Acciones de Personal
             </NavLink>

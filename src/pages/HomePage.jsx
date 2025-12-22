@@ -2,6 +2,8 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Users, LogIn, UserPlus } from "lucide-react";
 
+import PageTitle from "../components/PageTitle";
+
 const HomePage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white px-4">
@@ -24,9 +26,7 @@ const HomePage = () => {
         </motion.div>
 
         {/* Título */}
-        <h1 className="text-2xl font-bold mb-2">
-          Sistema de Recursos Humanos
-        </h1>
+        <PageTitle title={'Sistema de Recursos Humanos'} />
 
         <p className="text-slate-300 mb-8">
           Gestión moderna de empleados, planillas y vacaciones
