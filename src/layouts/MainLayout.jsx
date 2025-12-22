@@ -6,7 +6,7 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 text-gray-800">
       {/* Header */}
-      <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+      <header className="shadow-sm px-6 py-4">
         <NavBar />
       </header>
 
