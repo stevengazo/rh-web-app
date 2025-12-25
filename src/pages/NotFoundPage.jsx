@@ -1,13 +1,12 @@
-import { motion } from "framer-motion"
-import { Ghost, ArrowLeft } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion";
+import { Ghost, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NotFoundPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -24,9 +23,7 @@ const NotFoundPage = () => {
         </motion.div>
 
         <h1 className="text-5xl font-bold text-gray-800 mb-2">404</h1>
-        <h3 className="text-lg text-gray-500 mb-6">
-          Página no encontrada
-        </h3>
+        <h3 className="text-lg text-gray-500 mb-6">Página no encontrada</h3>
 
         <button
           onClick={() => navigate("/")}
@@ -36,9 +33,8 @@ const NotFoundPage = () => {
           Volver al inicio
         </button>
       </motion.div>
-
     </div>
-  )
-}
+  );
+};
 
-export default NotFoundPage
+export default NotFoundPage;

@@ -9,7 +9,12 @@ const EmployeesPage = () => {
   const employees = [
     { id: 1, firstName: "Juan", lastName: "Pérez", email: "juan@empresa.com" },
     { id: 2, firstName: "Ana", lastName: "Gómez", email: "ana@empresa.com" },
-    { id: 3, firstName: "Carlos", lastName: "Rodríguez", email: "carlos@empresa.com" },
+    {
+      id: 3,
+      firstName: "Carlos",
+      lastName: "Rodríguez",
+      email: "carlos@empresa.com",
+    },
   ];
 
   // Filtrado
@@ -27,12 +32,9 @@ const EmployeesPage = () => {
 
   return (
     <div className="space-y-6">
-
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-semibold text-slate-800">
-          Empleados
-        </h2>
+        <h2 className="text-2xl font-semibold text-slate-800">Empleados</h2>
         <p className="text-sm text-slate-500">
           Gestión y administración del personal
         </p>
@@ -47,7 +49,6 @@ const EmployeesPage = () => {
 
       {/* Table */}
       <EmployeesTable employees={filteredEmployees} />
-
     </div>
   );
 };

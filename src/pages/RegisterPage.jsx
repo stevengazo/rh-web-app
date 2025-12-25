@@ -5,14 +5,12 @@ import { NavLink } from "react-router-dom";
 const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 px-4">
-
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md bg-slate-800 text-white rounded-2xl shadow-xl p-8"
       >
-
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
@@ -26,14 +24,16 @@ const RegisterPage = () => {
 
         {/* Form */}
         <form className="space-y-4">
-
           {/* Nombre */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">
               Nombre completo
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <User
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="text"
                 placeholder="Juan Pérez"
@@ -48,7 +48,10 @@ const RegisterPage = () => {
               Correo electrónico
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Mail
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="email"
                 placeholder="correo@empresa.com"
@@ -63,7 +66,10 @@ const RegisterPage = () => {
               Contraseña
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Lock
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -78,7 +84,10 @@ const RegisterPage = () => {
               Confirmar contraseña
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Lock
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -97,20 +106,15 @@ const RegisterPage = () => {
             <UserPlus size={18} />
             Registrarse
           </motion.button>
-
         </form>
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-slate-400">
           ¿Ya tienes cuenta?{" "}
-          <NavLink
-            to="/login"
-            className="text-sky-400 hover:underline"
-          >
+          <NavLink to="/login" className="text-sky-400 hover:underline">
             Inicia sesión
           </NavLink>
         </p>
-
       </motion.div>
     </div>
   );

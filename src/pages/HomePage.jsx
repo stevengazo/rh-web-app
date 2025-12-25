@@ -7,14 +7,12 @@ import PageTitle from "../components/PageTitle";
 const HomePage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white px-4">
-      
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="bg-slate-800 rounded-2xl shadow-xl p-10 max-w-md w-full text-center"
       >
-        
         {/* Icono */}
         <motion.div
           initial={{ scale: 0.8 }}
@@ -26,7 +24,7 @@ const HomePage = () => {
         </motion.div>
 
         {/* Título */}
-        <PageTitle title={'Sistema de Recursos Humanos'} />
+        <PageTitle title={"Sistema de Recursos Humanos"} />
 
         <p className="text-slate-300 mb-8">
           Gestión moderna de empleados, planillas y vacaciones
@@ -34,7 +32,6 @@ const HomePage = () => {
 
         {/* Acciones */}
         <div className="flex flex-col gap-3">
-          
           <NavLink to="/login">
             <motion.button
               whileHover={{ scale: 1.03 }}
@@ -56,7 +53,6 @@ const HomePage = () => {
               Crear Cuenta
             </motion.button>
           </NavLink>
-
         </div>
       </motion.div>
     </div>

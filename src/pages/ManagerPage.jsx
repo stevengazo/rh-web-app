@@ -1,10 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  Users,
-  UserPlus,
-  CalendarCheck,
-  BarChart3,
-} from "lucide-react";
+import { Users, UserPlus, CalendarCheck, BarChart3 } from "lucide-react";
 
 import {
   LineChart,
@@ -66,9 +61,7 @@ const ManagerPage = () => {
     >
       {/* Titles */}
       <div>
-        <SectionTitle>
-          Resumen general del sistema
-        </SectionTitle>
+        <SectionTitle>Resumen general del sistema</SectionTitle>
       </div>
 
       {/* Cards */}
@@ -84,9 +77,7 @@ const ManagerPage = () => {
               className="bg-white rounded-xl shadow-sm p-5 flex items-center justify-between"
             >
               <div>
-                <p className="text-sm text-slate-500">
-                  {card.title}
-                </p>
+                <p className="text-sm text-slate-500">{card.title}</p>
                 <h3 className="text-2xl font-bold text-slate-800">
                   {card.value}
                 </h3>

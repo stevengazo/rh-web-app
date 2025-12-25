@@ -1,48 +1,45 @@
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn } from "lucide-react";
-import { NavLink , useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Aquí iría la lógica de autenticación
     navigate("/my-profile"); // Redirige al perfil del usuario tras el login
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 px-4">
-
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md bg-slate-800 text-white rounded-2xl shadow-xl p-8"
       >
-
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
             <LogIn size={40} className="text-sky-400" />
           </div>
           <h3 className="text-2xl font-bold">Iniciar sesión</h3>
-          <p className="text-slate-400 text-sm">
-            Accede a tu cuenta
-          </p>
+          <p className="text-slate-400 text-sm">Accede a tu cuenta</p>
         </div>
 
         {/* Form */}
-        <form className="space-y-4" onSubmit={handleSubmit} >
-
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Usuario / Email */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">
               Usuario o correo
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Mail
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="text"
                 placeholder="usuario@empresa.com"
@@ -57,7 +54,10 @@ const LoginPage = () => {
               Contraseña
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Lock
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="password"
                 placeholder="••••••••"
@@ -76,7 +76,6 @@ const LoginPage = () => {
             <LogIn size={18} />
             Entrar
           </motion.button>
-
         </form>
 
         {/* Footer */}
@@ -89,7 +88,6 @@ const LoginPage = () => {
           </p>
           <p className="text-xs">© 2025 — Sistema de Recursos Humanos</p>
         </div>
-
       </motion.div>
     </div>
   );

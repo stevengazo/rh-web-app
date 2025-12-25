@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { Eye, Edit, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const EmployeesTable = () => {
+  const navigate = useNavigate();
   // Mock data (luego lo reemplazas por API)
   const employees = [
     { id: 1, firstName: "Juan", lastName: "Pérez", email: "juan@empresa.com" },
@@ -44,7 +46,7 @@ const EmployeesTable = () => {
                 <td className="px-6 py-3 text-slate-600">{emp.email}</td>
                 <td className="px-6 py-3">
                   <div className="flex justify-center gap-2">
-                    <button className="p-1.5 rounded hover:bg-slate-200">
+                    <button className="p-1.5 rounded hover:bg-slate-200" onClick={()=> navigate(`/manager/employees/1`)}>
                       <Eye size={16} />
                     </button>
                     <button className="p-1.5 rounded hover:bg-slate-200">
