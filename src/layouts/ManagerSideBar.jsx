@@ -3,15 +3,20 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard,
   Users,
+  Cog,
   FileText,
   Briefcase,
   User,
-  LogOut
+  LogOut,
 } from "lucide-react";
 
 const navItemClass = ({ isActive }) =>
   `flex items-center gap-3 px-3 py-2 rounded-lg transition
-   ${isActive ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"}`;
+   ${
+     isActive
+       ? "bg-slate-700 text-white"
+       : "text-slate-300 hover:bg-slate-800 hover:text-white"
+   }`;
 
 const ManagerSideBar = () => {
   const navigate = useNavigate();
@@ -23,7 +28,6 @@ const ManagerSideBar = () => {
 
   return (
     <aside className="w-64 bg-slate-900 text-white flex flex-col">
-
       {/* Logo */}
       <div className="h-16 flex items-center justify-center text-lg font-semibold border-b border-slate-700">
         RH Manager
@@ -31,7 +35,6 @@ const ManagerSideBar = () => {
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-4 text-sm">
-
         {/* ===== MANAGER ===== */}
         <div>
           <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
@@ -58,7 +61,34 @@ const ManagerSideBar = () => {
               <Briefcase size={18} />
               Acciones de Personal
             </NavLink>
+
           </div>
+        </div>
+        {/* ===== Retenciones ===== */}
+        <div>
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+            Retenciones
+          </p>
+
+          <NavLink to="/" className={navItemClass}>
+            <User size={18} />
+            Préstamos y Anticipos
+          </NavLink>
+          <NavLink to="/" className={navItemClass}>
+            <User size={18} />
+            Retenciones
+          </NavLink>
+        </div>
+
+                {/* ===== Otros ===== */}
+        <div>
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+            Otros
+          </p>
+         <NavLink to="/settings" className={navItemClass}>
+              <Cog size={18} />
+              Configuración
+            </NavLink>
         </div>
 
         {/* ===== EMPLOYEE ===== */}
@@ -66,13 +96,11 @@ const ManagerSideBar = () => {
           <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
             Usuario
           </p>
-
           <NavLink to="/my-profile" className={navItemClass}>
             <User size={18} />
             Mi Perfil
           </NavLink>
         </div>
-
       </nav>
 
       {/* Logout */}
@@ -91,7 +119,6 @@ const ManagerSideBar = () => {
       <div className="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
         © 2025 RH System
       </div>
-
     </aside>
   );
 };

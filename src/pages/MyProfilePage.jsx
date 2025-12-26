@@ -1,9 +1,98 @@
+import { motion } from "framer-motion"
+
+import SectionTitle from "../components/SectionTitle"
+import PageTitle from "../components/PageTitle"
+import Divider from "../components/Divider"
+import PrimaryButton from "../components/PrimaryButton"
+
+const pageVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12 }
+  }
+}
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" }
+  }
+}
+
 const MyProfilePage = () => {
   return (
-    <div>
-      <h1>My Profile</h1>
-    </div>
-  );
-};
+    <motion.div
+      className="space-y-6"
+      variants={pageVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Page Title */}
+      <motion.div variants={sectionVariants}>
+        <PageTitle>Mi Perfil</PageTitle>
+      </motion.div>
 
-export default MyProfilePage;
+      {/* Cursos */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Cursos</SectionTitle>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <PrimaryButton>Agregar</PrimaryButton>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Certificaciones */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Certificaciones</SectionTitle>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <PrimaryButton>Agregar</PrimaryButton>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Histórico de Salarios */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Histórico de Salarios</SectionTitle>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <PrimaryButton>Agregar</PrimaryButton>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Acciones de Personal */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Acciones de Personal</SectionTitle>
+        </div>
+      </motion.div>
+
+      {/* Vacaciones */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Vacaciones</SectionTitle>
+        </div>
+      </motion.div>
+
+      {/* Comprobantes de Pago */}
+      <motion.div variants={sectionVariants}>
+        <Divider />
+        <div className="flex flex-row justify-between items-center">
+          <SectionTitle>Comprobantes de Pago</SectionTitle>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+export default MyProfilePage

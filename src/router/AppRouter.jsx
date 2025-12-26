@@ -14,6 +14,8 @@ import ManagerPage from "../pages/ManagerPage";
 import PayrollPage from "../pages/PayrollPage";
 import ActionsPage from "../pages/ActionsPage";
 import ViewEmployeePage from "../pages/ViewEmployeePage";
+import SettingsPage from "../pages/SettingsPage";
+import NewPayrollPage from "../pages/NewPayrollPage";
 
 const AppRouter = () => {
   return (
@@ -35,6 +37,8 @@ const AppRouter = () => {
           <Route path="/manager/payroll" element={<PayrollPage />} />
           <Route path="/manager/actions" element={<ActionsPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/payroll/new" element={<NewPayrollPage />} />
         </Route>
 
         {/* 404 */}
