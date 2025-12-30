@@ -1,14 +1,19 @@
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { useAppContext } from "../context/AppContext";
 
 const LoginPage = () => {
+  const { setUser, setIsAuthenticated, setToken } = useAppContext();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Aquí iría la lógica de autenticación
     navigate("/my-profile"); // Redirige al perfil del usuario tras el login
+    setIsAuthenticated(true); // Marcar como autenticado
+    setUser({ name: "Usuario de Ejemplo" }); // Establecer usuario de ejemplo
   };
 
   return (

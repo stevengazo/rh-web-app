@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Users, UserPlus, CalendarCheck, BarChart3 } from "lucide-react";
-
+import { useAppContext } from "../context/AppContext";
 import {
   LineChart,
   Line,
@@ -52,6 +52,11 @@ const chartData = [
 ];
 
 const ManagerPage = () => {
+  const { user } = useAppContext(); 
+
+  console.log("Usuario en ManagerPage:", user);
+
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
