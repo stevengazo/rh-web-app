@@ -61,7 +61,6 @@ const ManagerSideBar = () => {
               <Briefcase size={18} />
               Acciones de Personal
             </NavLink>
-
           </div>
         </div>
         {/* ===== Retenciones ===== */}
@@ -80,15 +79,30 @@ const ManagerSideBar = () => {
           </NavLink>
         </div>
 
-                {/* ===== Otros ===== */}
+        {/* ===== Otros ===== */}
+        <div>
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+            Indicadores
+          </p>
+          <NavLink to="/manager" className={navItemClass}>
+            <Cog size={18} />
+            KPIs
+          </NavLink>
+                    <NavLink to="/manager" className={navItemClass}>
+            <Cog size={18} />
+            Objetivos
+          </NavLink>
+        </div>
+
+        {/* ===== Otros ===== */}
         <div>
           <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
             Otros
           </p>
-         <NavLink to="/settings" className={navItemClass}>
-              <Cog size={18} />
-              Configuración
-            </NavLink>
+          <NavLink to="/settings" className={navItemClass}>
+            <Cog size={18} />
+            Configuración
+          </NavLink>
         </div>
 
         {/* ===== EMPLOYEE ===== */}
