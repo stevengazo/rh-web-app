@@ -1,39 +1,40 @@
-import { useState, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-import SearchEmployee from "../Components/molecules/SearchEmployee"
-import EmployeesTable from "../Components/organisms/EmployeesTable"
-import OffCanvas from "../components/OffCanvas"
-import PrimaryButton from "../components/PrimaryButton"
+import SearchEmployee from "../Components/molecules/SearchEmployee";
+import EmployeesTable from "../Components/organisms/EmployeesTable";
+import OffCanvas from "../components/OffCanvas";
+import PrimaryButton from "../components/PrimaryButton";
+import EmployeesAdd from "../Components/organisms/EmployeesAdd";
 
 const pageVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-}
+    transition: { staggerChildren: 0.1 },
+  },
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" }
-  }
-}
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 const EmployeesPage = () => {
-  const [search, setSearch] = useState("")
-  const [open, setOpen] = useState(false)
-  const [canvasTitle, setCanvasTitle] = useState("")
-  const [canvasContent, setCanvasContent] = useState(null)
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [canvasTitle, setCanvasTitle] = useState("");
+  const [canvasContent, setCanvasContent] = useState(null);
 
   const openCanvas = (title, content) => {
-    setCanvasTitle(title)
-    setCanvasContent(content)
-    setOpen(true)
-  }
+    setCanvasTitle(title);
+    setCanvasContent(<EmployeesAdd />);
+    setOpen(true);
+  };
 
   // Mock data (luego viene de la API)
   const employees = [
@@ -45,20 +46,20 @@ const EmployeesPage = () => {
       lastName: "Rodríguez",
       email: "carlos@empresa.com",
     },
-  ]
+  ];
 
   // Filtrado
   const filteredEmployees = useMemo(() => {
-    if (!search) return employees
+    if (!search) return employees;
 
-    const term = search.toLowerCase()
+    const term = search.toLowerCase();
     return employees.filter(
       (e) =>
         e.firstName.toLowerCase().includes(term) ||
         e.lastName.toLowerCase().includes(term) ||
         e.email.toLowerCase().includes(term)
-    )
-  }, [search, employees])
+    );
+  }, [search, employees]);
 
   return (
     <>
@@ -101,9 +102,7 @@ const EmployeesPage = () => {
           className="flex flex-row justify-between items-center"
         >
           <div>
-            <h2 className="text-2xl font-semibold text-slate-800">
-              Empleados
-            </h2>
+            <h2 className="text-2xl font-semibold text-slate-800">Empleados</h2>
             <p className="text-sm text-slate-500">
               Gestión y administración del personal
             </p>
@@ -138,7 +137,7 @@ const EmployeesPage = () => {
         </motion.div>
       </motion.div>
     </>
-  )
-}
+  );
+};
 
-export default EmployeesPage
+export default EmployeesPage;
