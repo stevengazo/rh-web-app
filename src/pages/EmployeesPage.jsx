@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import SearchEmployee from "../Components/molecules/SearchEmployee";
@@ -6,6 +6,8 @@ import EmployeesTable from "../Components/organisms/EmployeesTable";
 import OffCanvas from "../components/OffCanvas";
 import PrimaryButton from "../components/PrimaryButton";
 import EmployeesAdd from "../Components/organisms/EmployeesAdd";
+
+import EmployeeApi from "../api/employeesApi";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -30,23 +32,13 @@ const EmployeesPage = () => {
   const [canvasTitle, setCanvasTitle] = useState("");
   const [canvasContent, setCanvasContent] = useState(null);
 
+  const [employees, setEmployees] = useState([]);
+
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
     setCanvasContent(<EmployeesAdd />);
     setOpen(true);
   };
-
-  // Mock data (luego viene de la API)
-  const employees = [
-    { id: 1, firstName: "Juan", lastName: "Pérez", email: "juan@empresa.com" },
-    { id: 2, firstName: "Ana", lastName: "Gómez", email: "ana@empresa.com" },
-    {
-      id: 3,
-      firstName: "Carlos",
-      lastName: "Rodríguez",
-      email: "carlos@empresa.com",
-    },
-  ];
 
   // Filtrado
   const filteredEmployees = useMemo(() => {
@@ -60,6 +52,20 @@ const EmployeesPage = () => {
         e.email.toLowerCase().includes(term)
     );
   }, [search, employees]);
+
+  useEffect(() => {
+    const FechData = async () => {
+      try {
+        const response = await EmployeeApi.getAllEmployees();
+        setEmployees(response.data);
+        console.log(response);
+        console.table(employees);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    FechData();
+  }, []);
 
   return (
     <>
