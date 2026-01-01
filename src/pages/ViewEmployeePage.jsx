@@ -1,39 +1,58 @@
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* COMPONENTS */
-import PageTitle from "../components/PageTitle"
-import SectionTitle from "../components/SectionTitle"
-import PrimaryButton from "../components/PrimaryButton"
-import OffCanvas from "../components/OffCanvas"
+import PageTitle from "../components/PageTitle";
+import SectionTitle from "../components/SectionTitle";
+import PrimaryButton from "../components/PrimaryButton";
+import OffCanvas from "../components/OffCanvas";
+import { useParams } from "react-router-dom";
+
+import EmployeeApi from "../api/employeesApi";
+import { Theater } from "lucide-react";
 
 const pageVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12 }
-  }
-}
+    transition: { staggerChildren: 0.12 },
+  },
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" }
-  }
-}
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 const ViewEmployeePage = () => {
-  const [open, setOpen] = useState(false)
-  const [canvasTitle, setCanvasTitle] = useState("")
-  const [canvasContent, setCanvasContent] = useState(null)
+  const { id } = useParams();
+  const [employee, setEmployee] = useState({});
+  const [open, setOpen] = useState(false);
+  const [canvasTitle, setCanvasTitle] = useState("");
+  const [canvasContent, setCanvasContent] = useState(null);
 
   const openCanvas = (title, content) => {
-    setCanvasTitle(title)
-    setCanvasContent(content)
-    setOpen(true)
-  }
+    setCanvasTitle(title);
+    setCanvasContent(content);
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    const FechData = async () => {
+      try {
+        const response = await EmployeeApi.getEmployeeById(id);
+        setEmployee(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    FechData();
+  }, []);
 
   return (
     <>
@@ -82,6 +101,7 @@ const ViewEmployeePage = () => {
         >
           <div className="flex justify-between items-center">
             <SectionTitle>Detalles del Empleado</SectionTitle>
+
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <PrimaryButton
                 onClick={() =>
@@ -95,6 +115,61 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
+          <motion.div>
+            <table className="w-full border border-slate-200">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="text-left px-3 py-2">Campo</th>
+                  <th className="text-left px-3 py-2">Valor</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td className="px-3 py-2 font-medium">Nombre</td>
+                  <td className="px-3 py-2">
+                    {employee.firstName} {employee.middleName}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Apellidos</td>
+                  <td className="px-3 py-2">
+                    {employee.lastName} {employee.secondLastName}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Correo</td>
+                  <td className="px-3 py-2">{employee.email}</td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Cédula</td>
+                  <td className="px-3 py-2">{employee.dni || "—"}</td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Departamento</td>
+                  <td className="px-3 py-2">{employee.departament?.name}</td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Fecha Contratación</td>
+                  <td className="px-3 py-2">
+                    {new Date(employee.hiredDate).toLocaleDateString()}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td className="px-3 py-2 font-medium">Estado</td>
+                  <td className="px-3 py-2">
+                    {employee.isActive ? "Activo" : "Inactivo"}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </motion.div>
         </motion.div>
 
         {/* Cursos */}
@@ -107,7 +182,10 @@ const ViewEmployeePage = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <PrimaryButton
                 onClick={() =>
-                  openCanvas("Agregar Curso", <p>Formulario para agregar curso</p>)
+                  openCanvas(
+                    "Agregar Curso",
+                    <p>Formulario para agregar curso</p>
+                  )
                 }
               >
                 Agregar
@@ -202,7 +280,7 @@ const ViewEmployeePage = () => {
         </motion.div>
       </motion.div>
     </>
-  )
-}
+  );
+};
 
-export default ViewEmployeePage
+export default ViewEmployeePage;

@@ -31,13 +31,13 @@ const EmployeesTable = ({ employees }) => {
                 <td className="px-6 py-3 font-medium">{emp.firstName}</td>
                 <td className="px-6 py-3">{emp.lastName}</td>
                 <td className="px-6 py-3 text-slate-600">{emp.email}</td>
-                       <td className="px-6 py-3 text-slate-600">{emp.departament.description}</td>
+                       <td className="px-6 py-3 text-slate-600">{emp.departament.name}</td>
       
                 <td className="px-6 py-3">
                   <div className="flex justify-center gap-2">
                     <button
                       className="p-1.5 rounded hover:bg-slate-200"
-                      onClick={() => navigate(`/manager/employees/1`)}
+                      onClick={() => navigate(`/manager/employees/${emp.id}`)}
                     >
                       <Eye size={16} />
                     </button>
