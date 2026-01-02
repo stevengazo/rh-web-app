@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import CourseAdd from "../Components/organisms/CourseAdd";
 import CertificationAdd from "../Components/organisms/CertificationAdd";
 import SalaryAdd from "../Components/organisms/SalaryAdd";
+import ActionAdd from "../Components/organisms/ActionAdd";
 
 import EmployeeApi from "../api/employeesApi";
 
@@ -260,7 +261,7 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Agregar Acción de Personal",
-                    <p>Formulario de acción</p>
+                    <ActionAdd userId={id} author={user} />
                   )
                 }
               >
