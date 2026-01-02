@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppContext } from "../context/AppContext";
+import { Theater } from "lucide-react";
+
 
 /* COMPONENTS */
 import PageTitle from "../components/PageTitle";
@@ -9,10 +12,9 @@ import OffCanvas from "../components/OffCanvas";
 import { useParams } from "react-router-dom";
 import CourseAdd from "../Components/organisms/CourseAdd";
 import CertificationAdd from "../Components/organisms/CertificationAdd";
-import { useAppContext } from "../context/AppContext";
+import SalaryAdd from "../Components/organisms/SalaryAdd";
 
 import EmployeeApi from "../api/employeesApi";
-import { Theater } from "lucide-react";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -190,8 +192,7 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Agregar Curso",
-                  <CourseAdd userId={id} author={user} />
-               
+                    <CourseAdd userId={id} author={user} />
                   )
                 }
               >
@@ -215,7 +216,7 @@ const ViewEmployeePage = () => {
                     "Agregar Certificación",
                     <div>
                       <p>Formulario para agregar certificación</p>
-                      <CertificationAdd />
+                      <CertificationAdd userId={id} author={user} />
                     </div>
                   )
                 }
@@ -236,7 +237,9 @@ const ViewEmployeePage = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <PrimaryButton
                 onClick={() =>
-                  openCanvas("Registrar Salario", <p>Formulario de salario</p>)
+                  openCanvas("Registrar Salario", 
+                    <SalaryAdd userId={id} author={user} />
+                  )
                 }
               >
                 Agregar

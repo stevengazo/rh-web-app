@@ -13,6 +13,7 @@ const DateInput = ({
       className={`
         w-full rounded-lg px-4 py-2
         border text-sm
+        text-gray-600
         focus:outline-none focus:ring-2 transition
         ${error
           ? "border-red-500 focus:ring-red-500"
