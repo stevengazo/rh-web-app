@@ -7,6 +7,8 @@ import SectionTitle from "../components/SectionTitle";
 import PrimaryButton from "../components/PrimaryButton";
 import OffCanvas from "../components/OffCanvas";
 import { useParams } from "react-router-dom";
+import CourseAdd from "../Components/organisms/CourseAdd";
+import CertificationAdd from "../Components/organisms/CertificationAdd";
 
 import EmployeeApi from "../api/employeesApi";
 import { Theater } from "lucide-react";
@@ -184,7 +186,10 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Agregar Curso",
-                    <p>Formulario para agregar curso</p>
+                    <div>
+                      <p>Formulario para agregar curso</p>
+                      <CourseAdd />
+                    </div>
                   )
                 }
               >
@@ -206,7 +211,10 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Agregar Certificación",
-                    <p>Formulario para agregar certificación</p>
+                    <div>
+                      <p>Formulario para agregar certificación</p>
+                      <CertificationAdd />
+                    </div>
                   )
                 }
               >

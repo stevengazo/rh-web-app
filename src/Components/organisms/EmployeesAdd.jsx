@@ -8,6 +8,65 @@ import PrimaryButton from "../PrimaryButton";
 
 const EmployeesAdd = () => {
   const [departaments, setDepartaments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const [newUser, setNewUser] = useState({
+    userName: "",
+    email: "",
+    password: "Sjfjvi4$%",
+    phoneNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    secondLastName: "",
+    birthDate: today,
+    dni: "",
+    address: "",
+    hiredDate: today,
+    jorney: "",
+    departamentId: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await EmployeeApi.createEmployee(newUser);
+      alert("Empleado creado correctamente");
+      setNewUser({
+        userName: "",
+        email: "",
+        password: "",
+        phoneNumber: 0,
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        secondLastName: "",
+        birthDate: "",
+        dni: "",
+        address: "",
+        hiredDate: "",
+        jorney: "",
+        departamentId: 0,
+      });
+    } catch (error) {
+      console.error("Error creando empleado:", error);
+      alert("Error al crear el empleado");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDepartaments = async () => {
@@ -22,7 +81,7 @@ const EmployeesAdd = () => {
   }, []);
 
   return (
-    <form className="space-y-8">
+    <form className="space-y-8" onSubmit={handleSubmit}>
       {/* ================= IDENTIFICACIÓN ================= */}
       <section className="space-y-4">
         <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
@@ -30,16 +89,23 @@ const EmployeesAdd = () => {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* DNI */}
           <div className="flex flex-col gap-1">
             <Label>Cédula</Label>
-            <TextInput placeholder="1-520-151" />
+            <TextInput
+              name="dni"
+              value={newUser.dni}
+              onChange={handleChange}
+              placeholder="1-520-151"
+            />
           </div>
 
-          {/* Fecha Nacimiento */}
           <div className="flex flex-col gap-1">
             <Label>Fecha de Nacimiento</Label>
-            <DateInput />
+            <DateInput
+              name="birthDate"
+              value={newUser.birthDate}
+              onChange={handleChange}
+            />
           </div>
         </div>
       </section>
@@ -53,22 +119,42 @@ const EmployeesAdd = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <Label>Nombre</Label>
-            <TextInput placeholder="Juan" />
+            <TextInput
+              name="firstName"
+              value={newUser.firstName}
+              onChange={handleChange}
+              placeholder="Juan"
+            />
           </div>
 
           <div className="flex flex-col gap-1">
             <Label>Segundo Nombre</Label>
-            <TextInput placeholder="Carlos" />
+            <TextInput
+              name="middleName"
+              value={newUser.middleName}
+              onChange={handleChange}
+              placeholder="Carlos"
+            />
           </div>
 
           <div className="flex flex-col gap-1">
             <Label>Apellido</Label>
-            <TextInput placeholder="Pérez" />
+            <TextInput
+              name="lastName"
+              value={newUser.lastName}
+              onChange={handleChange}
+              placeholder="Pérez"
+            />
           </div>
 
           <div className="flex flex-col gap-1">
             <Label>Segundo Apellido</Label>
-            <TextInput placeholder="Gómez" />
+            <TextInput
+              name="secondLastName"
+              value={newUser.secondLastName}
+              onChange={handleChange}
+              placeholder="Gómez"
+            />
           </div>
         </div>
       </section>
@@ -82,17 +168,44 @@ const EmployeesAdd = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <Label>Correo electrónico</Label>
-            <TextInput type="email" placeholder="demo@mail.com" />
+            <TextInput
+              type="email"
+              name="email"
+              value={newUser.email}
+              onChange={handleChange}
+              placeholder="demo@mail.com"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label>Nombre de Usuario</Label>
+            <TextInput
+              type="text"
+              name="userName"
+              value={newUser.userName}
+              onChange={handleChange}
+              placeholder="nombre.apellido"
+            />
           </div>
 
           <div className="flex flex-col gap-1">
             <Label>Teléfono</Label>
-            <TextInput type="tel" placeholder="8888-8888" />
+            <TextInput
+              type="tel"
+              name="phoneNumber"
+              value={newUser.phoneNumber}
+              onChange={handleChange}
+              placeholder="8888-8888"
+            />
           </div>
 
           <div className="flex flex-col gap-1 md:col-span-2">
             <Label>Dirección</Label>
-            <TextInput placeholder="San José, Costa Rica" />
+            <TextInput
+              name="address"
+              value={newUser.address}
+              onChange={handleChange}
+              placeholder="San José, Costa Rica"
+            />
           </div>
         </div>
       </section>
@@ -104,30 +217,45 @@ const EmployeesAdd = () => {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Fecha contratación */}
           <div className="flex flex-col gap-1">
             <Label>Fecha de contratación</Label>
-            <DateInput />
+            <DateInput
+              name="hiredDate"
+              value={newUser.hiredDate}
+              onChange={handleChange}
+            />
           </div>
 
-          {/* Jornada */}
           <div className="flex flex-col gap-1">
             <Label>Jornada</Label>
-            <select className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400">
+            <select
+              name="journey"
+              value={newUser.jorney}
+              onChange={handleChange}
+              className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+            >
               <option value="">Seleccione una jornada</option>
-              <option className="text-black">Diurna</option>
-              <option className="text-black">Mixta</option>
-              <option className="text-black">Nocturna</option>
+              <option value="Diurna">Diurna</option>
+              <option value="Mixta">Mixta</option>
+              <option value="Nocturna">Nocturna</option>
             </select>
           </div>
 
-          {/* Departamento */}
           <div className="flex flex-col gap-1 md:col-span-2">
             <Label>Departamento</Label>
-            <select className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400">
+            <select
+              name="departamentId"
+              value={newUser.departamentId}
+              onChange={handleChange}
+              className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+            >
               <option value="">Seleccione un departamento</option>
               {departaments.map((dept) => (
-                <option key={dept.id} value={dept.id} className="text-black">
+                <option
+                  key={dept.departamentId}
+                  value={dept.departamentId}
+                  className="text-black"
+                >
                   {dept.name}
                 </option>
               ))}
@@ -138,8 +266,8 @@ const EmployeesAdd = () => {
 
       {/* ================= ACTIONS ================= */}
       <div className="flex justify-end pt-4 border-t border-slate-200">
-        <PrimaryButton>
-          Agregar Empleado
+        <PrimaryButton onClick={handleSubmit} disabled={loading}>
+          {loading ? "Guardando..." : "Agregar Empleado"}
         </PrimaryButton>
       </div>
     </form>
