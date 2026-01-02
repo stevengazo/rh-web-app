@@ -9,6 +9,7 @@ import OffCanvas from "../components/OffCanvas";
 import { useParams } from "react-router-dom";
 import CourseAdd from "../Components/organisms/CourseAdd";
 import CertificationAdd from "../Components/organisms/CertificationAdd";
+import { useAppContext } from "../context/AppContext";
 
 import EmployeeApi from "../api/employeesApi";
 import { Theater } from "lucide-react";
@@ -36,6 +37,9 @@ const ViewEmployeePage = () => {
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState("");
   const [canvasContent, setCanvasContent] = useState(null);
+
+  const { user } = useAppContext();
+  console.log(user);
 
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
@@ -186,10 +190,8 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Agregar Curso",
-                    <div>
-                      <p>Formulario para agregar curso</p>
-                      <CourseAdd />
-                    </div>
+                  <CourseAdd userId={id} author={user} />
+               
                   )
                 }
               >

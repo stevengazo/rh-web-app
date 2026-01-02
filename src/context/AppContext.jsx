@@ -1,14 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 /**
  * =====================================================
  * AppContext
  * =====================================================
- * Contexto global de la aplicación.
- * Se utiliza para manejar:
- *  - Autenticación del usuario
- *  - Token JWT
- *  - Estado de sesión
  */
 const AppContext = createContext();
 
@@ -16,45 +11,54 @@ const AppContext = createContext();
  * =====================================================
  * AppProvider
  * =====================================================
- * Componente Provider que envuelve la aplicación
- * y expone el estado global a todos los componentes hijos.
- *
- * @param {Object} props
- * @param {React.ReactNode} props.children - Componentes hijos
  */
 export const AppProvider = ({ children }) => {
   /**
-   * Usuario autenticado
-   * @type {[Object|null, Function]}
+   * Inicialización segura desde localStorage
    */
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => !!localStorage.getItem("token")
+  );
 
   /**
-   * Indica si el usuario está autenticado
-   * @type {[boolean, Function]}
+   * =====================================================
+   * Sincroniza cambios con localStorage
+   * =====================================================
    */
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
 
-  /**
-   * Token JWT del usuario
-   * @type {[string|null, Function]}
-   */
-  const [token, setToken] = useState(null);
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   /**
    * =====================================================
    * login
    * =====================================================
-   * Guarda el token JWT, actualiza el estado de autenticación
-   * y persiste el token en localStorage.
-   *
-   * @param {string} token - Token JWT retornado por la API
+   * @param {string} token
+   * @param {Object} user
    */
-  const login = async (token) => {
+  const login = async (token, user) => {
     try {
       setToken(token);
+      setUser(user);
       setIsAuthenticated(true);
-      localStorage.setItem("token", token);
     } catch (error) {
       console.error("Error durante el login:", error);
     }
@@ -64,14 +68,13 @@ export const AppProvider = ({ children }) => {
    * =====================================================
    * logout
    * =====================================================
-   * Limpia la sesión del usuario, elimina el token
-   * y restablece el estado global.
    */
   const logout = () => {
+    setToken(null);
     setUser(null);
     setIsAuthenticated(false);
-    setToken(null);
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   return (
@@ -79,10 +82,10 @@ export const AppProvider = ({ children }) => {
       value={{
         user,
         setUser,
-        isAuthenticated,
-        setIsAuthenticated,
         token,
         setToken,
+        isAuthenticated,
+        setIsAuthenticated,
         login,
         logout,
       }}
@@ -96,11 +99,6 @@ export const AppProvider = ({ children }) => {
  * =====================================================
  * useAppContext
  * =====================================================
- * Hook personalizado para consumir el AppContext.
- * Debe usarse exclusivamente dentro de AppProvider.
- *
- * @returns {Object} Contexto global de la aplicación
- * @throws {Error} Si se usa fuera del AppProvider
  */
 export const useAppContext = () => {
   const context = useContext(AppContext);
