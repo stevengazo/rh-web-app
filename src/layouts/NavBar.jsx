@@ -44,7 +44,7 @@ const NavBar = () => {
           <User size={18} />
           Comisiones
         </NavLink>
-        <NavLink to="/my-comprobants" className={linkClass}>
+        <NavLink to="/my-payrolls" className={linkClass}>
           <User size={18} />
           Comprobantes
         </NavLink>

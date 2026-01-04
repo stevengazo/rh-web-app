@@ -18,6 +18,8 @@ import SettingsPage from "../pages/SettingsPage";
 import NewPayrollPage from "../pages/NewPayrollPage";
 import KPIPage from "../pages/KPIPage";
 import MyKPIs from "../pages/MyKPIs";
+import MyCommissionsPage from "../pages/MyComissionsPage";
+import MyPayrollsPage from "../pages/MyPayrollsPage";
 
 const AppRouter = () => {
   return (
@@ -31,7 +33,8 @@ const AppRouter = () => {
         <Route element={<MainLayout />}>
           <Route path="/my-profile" element={<MyProfilePage />} />
           <Route path="/my-kpis" element={<MyKPIs />} />
-    
+          <Route path="/my-comissions" element={<MyCommissionsPage />} />
+          <Route path="/my-payrolls" element={<MyPayrollsPage />} />
         </Route>
         {/* Rutas de Administrador y RH */}
 
