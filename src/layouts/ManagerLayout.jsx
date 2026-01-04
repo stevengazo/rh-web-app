@@ -4,13 +4,13 @@ import { LayoutDashboard } from "lucide-react";
 
 const ManagerLayout = () => {
   return (
-    <div className="flex min-h-screen bg-slate-100 overflow-hidden">
+    <div className="flex h-screen bg-slate-100">
 
       {/* Sidebar */}
       <ManagerSideBar />
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex flex-col flex-1 min-w-0">
 
         {/* Header */}
         <header className="h-16 bg-white border-b border-slate-200
@@ -29,7 +29,7 @@ const ManagerLayout = () => {
         </header>
 
         {/* Content */}
-        <main className="flex-1 min-w-0 overflow-auto p-6 ">
+        <main className="flex-1 min-h-0 overflow-y-auto p-6">
           <Outlet />
         </main>
 

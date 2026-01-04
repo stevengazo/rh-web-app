@@ -15,9 +15,14 @@ import SalaryAdd from "../Components/organisms/SalaryAdd";
 import ActionAdd from "../Components/organisms/ActionAdd";
 import EmployeeEdit from "../Components/organisms/EmployeeEdit";
 import CourseTable from "../Components/organisms/CourseTable";
+import CertificationTable from "../Components/organisms/CertificationTable";
+import SalaryTable from "../Components/organisms/SalaryTable";
+import EmployeeTableInfo from "../Components/organisms/EmployeeTableInfo";
+import ExtrasTable from "../Components/organisms/ExtrasTable";
 
 import EmployeeApi from "../api/employeesApi";
 import courseApi from "../api/courseApi";
+import ActionTable from "../Components/organisms/ActionTable";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -133,61 +138,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
-          <motion.div>
-            <table className="w-full border border-slate-200">
-              <thead className="bg-slate-100">
-                <tr>
-                  <th className="text-left px-3 py-2">Campo</th>
-                  <th className="text-left px-3 py-2">Valor</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td className="px-3 py-2 font-medium">Nombre</td>
-                  <td className="px-3 py-2">
-                    {employee.firstName} {employee.middleName}
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Apellidos</td>
-                  <td className="px-3 py-2">
-                    {employee.lastName} {employee.secondLastName}
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Correo</td>
-                  <td className="px-3 py-2">{employee.email}</td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Cédula</td>
-                  <td className="px-3 py-2">{employee.dni || "—"}</td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Departamento</td>
-                  <td className="px-3 py-2">{employee.departament?.name}</td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Fecha Contratación</td>
-                  <td className="px-3 py-2">
-                    {new Date(employee.hiredDate).toLocaleDateString()}
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="px-3 py-2 font-medium">Estado</td>
-                  <td className="px-3 py-2">
-                    {employee.isActive ? "Activo" : "Inactivo"}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </motion.div>
+          <EmployeeTableInfo employee={employee} />
         </motion.div>
 
         {/* Cursos */}
@@ -236,6 +187,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
+          <CertificationTable />
         </motion.div>
 
         {/* Salarios */}
@@ -258,6 +210,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
+          <SalaryTable />
         </motion.div>
 
         {/* Acciones */}
@@ -280,6 +233,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
+          <ActionTable />
         </motion.div>
 
         {/* Horas Extras */}
@@ -301,7 +255,9 @@ const ViewEmployeePage = () => {
                 Agregar
               </PrimaryButton>
             </motion.div>
+
           </div>
+            <ExtrasTable />
         </motion.div>
       </motion.div>
     </>

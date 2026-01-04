@@ -20,17 +20,13 @@ const NavBar = () => {
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-white shadow-sm px-6 py-3 flex  items-center justify-between"
+      className="bg-white px-6 py-3 flex  items-center justify-between"
     >
       {/* Logo */}
       <h2 className="text-lg font-semibold text-indigo-600">R.Humanos</h2>
 
       {/* Links */}
       <div className="flex items-center gap-2">
-        <NavLink to="/home" className={linkClass}>
-          <Home size={18} />
-          Home
-        </NavLink>
         <NavLink to="/manager" className={linkClass}>
           <PanelsTopLeft size={18} />
           Recursos Humanos
@@ -38,7 +34,19 @@ const NavBar = () => {
 
         <NavLink to="/my-profile" className={linkClass}>
           <User size={18} />
-          Perfil
+          Mi Perfil
+        </NavLink>
+        <NavLink to="/my-kpis" className={linkClass}>
+          <User size={18} />
+          KPI
+        </NavLink>
+        <NavLink to="/my-comissions" className={linkClass}>
+          <User size={18} />
+          Comisiones
+        </NavLink>
+        <NavLink to="/my-comprobants" className={linkClass}>
+          <User size={18} />
+          Comprobantes
         </NavLink>
 
         <button

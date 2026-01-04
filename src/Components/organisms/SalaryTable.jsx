@@ -1,29 +1,39 @@
 import { motion } from "framer-motion";
+import { DollarSign, Calendar, Coins, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
-const formatDate = (date) => {
-  if (!date) return "";
-  return format(new Date(date), "dd/MM/yyyy");
+const formatDate = (dateString) => {
+  if (!dateString) return "—";
+  return format(new Date(dateString), "dd/MM/yyyy");
 };
 
+const formatAmount = (amount, currency) => {
+  if (!amount) return "—";
+  const value = Number(amount);
+  if (isNaN(value)) return amount;
 
-import { BookOpen, Clock, School, MoreVertical, Pencil, Trash2 } from "lucide-react";
+  return new Intl.NumberFormat("es-CR", {
+    style: "currency",
+    currency: currency || "CRC",
+    minimumFractionDigits: 2,
+  }).format(value);
+};
 
 const tableVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { staggerChildren: 0.02 }
-  }
+    transition: { staggerChildren: 0.05 },
+  },
 };
 
 const rowVariants = {
   hidden: { opacity: 0, y: 5 },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
 };
 
-const CourseTable = ({ courses = [], onEdit, onDelete }) => {
+const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <motion.table
@@ -32,19 +42,21 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
         animate="visible"
         className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
       >
-        <thead className="bg-slate-800 ">
+        <thead className="bg-slate-800">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white flex items-center gap-2">
-              <BookOpen size={16} /> Curso
-            </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-white">
               <div className="flex items-center gap-2">
-                <School size={16} /> Plataforma
+                <Calendar size={16} /> Fecha
               </div>
             </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-white">
               <div className="flex items-center gap-2">
-                <Clock size={16} /> Duración
+                <DollarSign size={16} /> Monto
+              </div>
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+              <div className="flex items-center gap-2">
+                <Coins size={16} /> Moneda
               </div>
             </th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-white">
@@ -54,29 +66,32 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
         </thead>
 
         <motion.tbody className="divide-y">
-          {courses.length === 0 && (
+          {salaries.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-sm text-gray-500">
-                No hay cursos registrados
+              <td
+                colSpan={4}
+                className="px-4 py-6 text-center text-sm text-gray-500"
+              >
+                No hay salarios registrados
               </td>
             </tr>
           )}
 
-          {courses.map((item) => (
+          {salaries.map((item) => (
             <motion.tr
-              key={item.id}
+              key={item.salaryId}
               variants={rowVariants}
               whileHover={{ backgroundColor: "#f9fafb" }}
               className="text-sm"
             >
+              <td className="px-4 py-3 text-gray-600">
+                {formatDate(item.effectiveDate)}
+              </td>
               <td className="px-4 py-3 font-medium text-gray-800">
-                {item.name}
+                {formatAmount(item.salaryAmount, item.currency)}
               </td>
               <td className="px-4 py-3 text-gray-600">
-                {item.institution}
-              </td>
-              <td className="px-4 py-3 text-gray-600">
-                {formatDate(item.start)} – {formatDate(item.end)}
+                {item.currency || "—"}
               </td>
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
@@ -104,4 +119,4 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
   );
 };
 
-export default CourseTable;
+export default SalaryTable;

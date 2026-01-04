@@ -5,6 +5,17 @@ import PageTitle from "../components/PageTitle"
 import Divider from "../components/Divider"
 import PrimaryButton from "../components/PrimaryButton"
 
+import ActionTable from '../Components/organisms/ActionTable'
+import CertificationTable from   '../Components/organisms/CertificationTable'
+import CourseTable from  '../Components/organisms/CertificationTable'
+import SalaryTable from  '../Components/organisms/SalaryTable'
+import EmployeeTableInfo from "../Components/organisms/EmployeeTableInfo"
+
+import { useAppContext } from "../context/AppContext"
+
+import EmployeeApi from "../api/employeesApi";
+import { useEffect, useState } from "react"
+
 const pageVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -23,6 +34,28 @@ const sectionVariants = {
 }
 
 const MyProfilePage = () => {
+  
+  const [myProfile, setMyProfile] = useState()
+
+    const { user } = useAppContext();
+
+    
+  useEffect(()=>{
+    const getProfile = async()=>{
+      try {
+        const respData = await EmployeeApi.getEmployeeById(user.id)
+        setMyProfile(respData.data)
+      } catch (error) {
+        console.error(error)
+        setMyProfile(undefined)
+      }
+    }
+
+    getProfile();
+  },[])
+
+
+
   return (
     <motion.div
       className="space-y-6"
@@ -33,6 +66,7 @@ const MyProfilePage = () => {
       {/* Page Title */}
       <motion.div variants={sectionVariants}>
         <PageTitle>Mi Perfil</PageTitle>
+        <EmployeeTableInfo employee={myProfile} />
       </motion.div>
 
       {/* Cursos */}
@@ -44,6 +78,7 @@ const MyProfilePage = () => {
             <PrimaryButton>Agregar</PrimaryButton>
           </motion.div>
         </div>
+        <CourseTable />
       </motion.div>
 
       {/* Certificaciones */}
@@ -55,6 +90,7 @@ const MyProfilePage = () => {
             <PrimaryButton>Agregar</PrimaryButton>
           </motion.div>
         </div>
+        <CertificationTable />
       </motion.div>
 
       {/* Histórico de Salarios */}
@@ -74,6 +110,7 @@ const MyProfilePage = () => {
         <div className="flex flex-row justify-between items-center">
           <SectionTitle>Acciones de Personal</SectionTitle>
         </div>
+        <ActionTable />
       </motion.div>
 
       {/* Vacaciones */}

@@ -1,29 +1,27 @@
 import { motion } from "framer-motion";
+import { Award, Calendar, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
-const formatDate = (date) => {
-  if (!date) return "";
-  return format(new Date(date), "dd/MM/yyyy");
+const formatDate = (dateString) => {
+  if (!dateString) return "—";
+  return format(new Date(dateString), "dd/MM/yyyy");
 };
-
-
-import { BookOpen, Clock, School, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 const tableVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { staggerChildren: 0.02 }
-  }
+    transition: { staggerChildren: 0.05 },
+  },
 };
 
 const rowVariants = {
   hidden: { opacity: 0, y: 5 },
-  visible: { opacity: 1, y: 0 }
+  visible: { opacity: 1, y: 0 },
 };
 
-const CourseTable = ({ courses = [], onEdit, onDelete }) => {
+const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <motion.table
@@ -32,19 +30,17 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
         animate="visible"
         className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
       >
-        <thead className="bg-slate-800 ">
+        <thead className="bg-slate-800">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-white flex items-center gap-2">
-              <BookOpen size={16} /> Curso
+              <Award size={16} /> Certificación
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+              Título
             </th>
             <th className="px-4 py-3 text-left text-sm font-semibold text-white">
               <div className="flex items-center gap-2">
-                <School size={16} /> Plataforma
-              </div>
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
-              <div className="flex items-center gap-2">
-                <Clock size={16} /> Duración
+                <Calendar size={16} /> Expira
               </div>
             </th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-white">
@@ -54,15 +50,18 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
         </thead>
 
         <motion.tbody className="divide-y">
-          {courses.length === 0 && (
+          {certifications.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-sm text-gray-500">
-                No hay cursos registrados
+              <td
+                colSpan={4}
+                className="px-4 py-6 text-center text-sm text-gray-500"
+              >
+                No hay certificaciones registradas
               </td>
             </tr>
           )}
 
-          {courses.map((item) => (
+          {certifications.map((item) => (
             <motion.tr
               key={item.id}
               variants={rowVariants}
@@ -73,10 +72,10 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
                 {item.name}
               </td>
               <td className="px-4 py-3 text-gray-600">
-                {item.institution}
+                {item.title}
               </td>
               <td className="px-4 py-3 text-gray-600">
-                {formatDate(item.start)} – {formatDate(item.end)}
+                {formatDate(item.expirationDate)}
               </td>
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
@@ -104,4 +103,4 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
   );
 };
 
-export default CourseTable;
+export default CertificationTable;

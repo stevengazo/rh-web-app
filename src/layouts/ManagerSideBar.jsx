@@ -84,7 +84,7 @@ const ManagerSideBar = () => {
           <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
             Indicadores
           </p>
-          <NavLink to="/manager" className={navItemClass}>
+          <NavLink to="/manager/kpis" className={navItemClass}>
             <Cog size={18} />
             KPIs
           </NavLink>

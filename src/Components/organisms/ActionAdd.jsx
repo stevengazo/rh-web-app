@@ -47,6 +47,7 @@ const ActionAdd = ({ userId, author }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(newAction)
       await actionApi.createAction(newAction);
       console.log("Acción creada:", newAction);
     } catch (error) {

@@ -16,6 +16,8 @@ import ActionsPage from "../pages/ActionsPage";
 import ViewEmployeePage from "../pages/ViewEmployeePage";
 import SettingsPage from "../pages/SettingsPage";
 import NewPayrollPage from "../pages/NewPayrollPage";
+import KPIPage from "../pages/KPIPage";
+import MyKPIs from "../pages/MyKPIs";
 
 const AppRouter = () => {
   return (
@@ -28,6 +30,8 @@ const AppRouter = () => {
         {/* Rutas privadas con layout - Empleados */}
         <Route element={<MainLayout />}>
           <Route path="/my-profile" element={<MyProfilePage />} />
+          <Route path="/my-kpis" element={<MyKPIs />} />
+    
         </Route>
         {/* Rutas de Administrador y RH */}
 
@@ -36,6 +40,8 @@ const AppRouter = () => {
           <Route path="/manager/employees" element={<EmployeesPage />} />
           <Route path="/manager/payroll" element={<PayrollPage />} />
           <Route path="/manager/actions" element={<ActionsPage />} />
+          <Route path="/manager/kpis" element={<KPIPage />} />
+
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new" element={<NewPayrollPage />} />
