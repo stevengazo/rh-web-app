@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAppContext } from "../context/AppContext";
 import { Theater } from "lucide-react";
 
-
 /* COMPONENTS */
 import PageTitle from "../components/PageTitle";
 import SectionTitle from "../components/SectionTitle";
@@ -14,8 +13,11 @@ import CourseAdd from "../Components/organisms/CourseAdd";
 import CertificationAdd from "../Components/organisms/CertificationAdd";
 import SalaryAdd from "../Components/organisms/SalaryAdd";
 import ActionAdd from "../Components/organisms/ActionAdd";
+import EmployeeEdit from "../Components/organisms/EmployeeEdit";
+import CourseTable from "../Components/organisms/CourseTable";
 
 import EmployeeApi from "../api/employeesApi";
+import courseApi from "../api/courseApi";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -40,6 +42,7 @@ const ViewEmployeePage = () => {
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState("");
   const [canvasContent, setCanvasContent] = useState(null);
+  const [courses, setCourses] = useState([]);
 
   const { user } = useAppContext();
   console.log(user);
@@ -55,11 +58,14 @@ const ViewEmployeePage = () => {
       try {
         const response = await EmployeeApi.getEmployeeById(id);
         setEmployee(response.data);
-        console.log(response);
+
+        const RespCourses = await courseApi.getCoursesByUser(id);
+        setCourses(RespCourses.data);
       } catch (error) {
         console.error(error);
       }
     };
+
     FechData();
   }, []);
 
@@ -116,7 +122,10 @@ const ViewEmployeePage = () => {
                 onClick={() =>
                   openCanvas(
                     "Editar Información del Empleado",
-                    <p>Formulario de edición del empleado</p>
+                    <EmployeeEdit
+                      employee={employee}
+                      setEmployee={setEmployee}
+                    />
                   )
                 }
               >
@@ -201,6 +210,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
+          <CourseTable courses={courses} />
         </motion.div>
 
         {/* Certificaciones */}
@@ -238,7 +248,8 @@ const ViewEmployeePage = () => {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <PrimaryButton
                 onClick={() =>
-                  openCanvas("Registrar Salario", 
+                  openCanvas(
+                    "Registrar Salario",
                     <SalaryAdd userId={id} author={user} />
                   )
                 }

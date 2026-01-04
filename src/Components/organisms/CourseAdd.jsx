@@ -2,6 +2,7 @@ import { useState } from "react";
 import TextInput from "../TextInput";
 import DateInput from "../DateInput";
 import PrimaryButton from "../PrimaryButton";
+import courseApi from "../../api/courseApi";
 
 const CourseAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split("T")[0];
@@ -16,17 +17,30 @@ const CourseAdd = ({ userId, author }) => {
     state: "",
     description: "",
     author: author?.email ?? "",
-    userId,
+    UpdatedBy: author?.email ?? "",
+    userId : userId,
+//    user: {},
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewCourse((prev) => ({ ...prev, [name]: value }));
+
+    setNewCourse((prev) => ({
+      ...prev,
+      [name]: name === "durationInHours" ? Number(value) : value,
+    }));
+
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newCourse);
+    console.log("Enviando...");
+    await courseApi
+      .createCourse(newCourse)
+      .then((e) => {
+        alert("curso creado");
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -36,12 +50,8 @@ const CourseAdd = ({ userId, author }) => {
     >
       {/* Header */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-800">
-          Agregar curso
-        </h2>
-        <p className="text-sm text-gray-500">
-          Información básica del curso
-        </p>
+        <h2 className="text-xl font-semibold text-gray-800">Agregar curso</h2>
+        <p className="text-sm text-gray-500">Información básica del curso</p>
       </div>
 
       {/* Contenido */}
