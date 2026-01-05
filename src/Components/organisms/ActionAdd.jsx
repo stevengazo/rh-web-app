@@ -21,7 +21,7 @@ const ActionAdd = ({ userId, author }) => {
     approvedBy: "",
     approvedDate: today,
     userId: userId,
-    user: {},
+    user: null,
     actionTypeId: "",
     actionType: {},
   });

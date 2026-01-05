@@ -16,11 +16,6 @@ const tableVariants = {
   },
 };
 
-const rowVariants = {
-  hidden: { opacity: 0, y: 5 },
-  visible: { opacity: 1, y: 0 },
-};
-
 const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
@@ -62,10 +57,9 @@ const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
           )}
 
           {certifications.map((item) => (
-            <motion.tr
+            <tr
               key={item.id}
-              variants={rowVariants}
-              whileHover={{ backgroundColor: "#f9fafb" }}
+             
               className="text-sm"
             >
               <td className="px-4 py-3 font-medium text-gray-800">
@@ -95,7 +89,7 @@ const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
                   </button>
                 </div>
               </td>
-            </motion.tr>
+            </tr>
           ))}
         </motion.tbody>
       </motion.table>

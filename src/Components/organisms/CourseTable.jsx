@@ -18,10 +18,6 @@ const tableVariants = {
   }
 };
 
-const rowVariants = {
-  hidden: { opacity: 0, y: 5 },
-  visible: { opacity: 1, y: 0 }
-};
 
 const CourseTable = ({ courses = [], onEdit, onDelete }) => {
   return (
@@ -63,10 +59,8 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
           )}
 
           {courses.map((item) => (
-            <motion.tr
+            <tr
               key={item.id}
-              variants={rowVariants}
-              whileHover={{ backgroundColor: "#f9fafb" }}
               className="text-sm"
             >
               <td className="px-4 py-3 font-medium text-gray-800">
@@ -96,7 +90,7 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
                   </button>
                 </div>
               </td>
-            </motion.tr>
+            </tr>
           ))}
         </motion.tbody>
       </motion.table>

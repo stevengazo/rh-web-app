@@ -25,6 +25,7 @@ import courseApi from "../api/courseApi";
 import certificationApi from "../api/certificationApi";
 import ActionTable from "../Components/organisms/ActionTable";
 import salaryApi from "../api/salaryApi";
+import actionApi from "../api/actionApi";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -52,6 +53,7 @@ const ViewEmployeePage = () => {
   const [certifications, setCertifications] = useState([]);
   const [courses, setCourses] = useState([]);
   const [salaries, setSalaries] = useState([])
+  const [actions, setActions] = useState([])
   const { user } = useAppContext();
   console.log(user);
 
@@ -75,7 +77,9 @@ const ViewEmployeePage = () => {
         const respCertifications =await certificationApi.getCertificationsByUser(id);
         setCertifications(respCertifications.data);
         // Salary 
-        setSalaries((await salaryApi.getSalariesByUser(id)).data)
+        setSalaries((await salaryApi.getSalariesByUser(id)).data);
+        // Actions
+        setActions( (await actionApi.getActionsByUser(id)).data );
       } catch (error) {
         console.error(error);
       }
@@ -243,7 +247,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
-          <ActionTable />
+          <ActionTable actions={actions} />
         </motion.div>
 
         {/* Horas Extras */}

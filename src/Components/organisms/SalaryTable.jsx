@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { DollarSign, Calendar, Coins, Pencil, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -19,29 +18,10 @@ const formatAmount = (amount, currency) => {
   }).format(value);
 };
 
-const tableVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { staggerChildren: 0.05 },
-  },
-};
-
-const rowVariants = {
-  hidden: { opacity: 0, y: 5 },
-  visible: { opacity: 1, y: 0 },
-};
-
 const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
-      <motion.table
-        variants={tableVariants}
-        initial="hidden"
-        animate="visible"
-        className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
-      >
+      <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
         <thead className="bg-slate-800">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-white">
@@ -65,7 +45,7 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
           </tr>
         </thead>
 
-        <motion.tbody className="divide-y">
+        <tbody className="divide-y">
           {salaries.length === 0 && (
             <tr>
               <td
@@ -78,11 +58,9 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
           )}
 
           {salaries.map((item) => (
-            <motion.tr
+            <tr
               key={item.salaryId}
-              variants={rowVariants}
-              whileHover={{ backgroundColor: "#f9fafb" }}
-              className="text-sm"
+              className="text-sm hover:bg-gray-50"
             >
               <td className="px-4 py-3 text-gray-600">
                 {formatDate(item.effectiveDate)}
@@ -111,10 +89,10 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
                   </button>
                 </div>
               </td>
-            </motion.tr>
+            </tr>
           ))}
-        </motion.tbody>
-      </motion.table>
+        </tbody>
+      </table>
     </div>
   );
 };
