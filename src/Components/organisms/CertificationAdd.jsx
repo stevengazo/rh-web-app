@@ -1,6 +1,8 @@
 import { useState } from "react";
 import TextInput from "../TextInput";
 import PrimaryButton from "../PrimaryButton";
+import CertificationApi from "../../api/certificationApi";
+import certificationApi from "../../api/certificationApi";
 
 const CertificationAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split("T")[0];
@@ -20,8 +22,8 @@ const CertificationAdd = ({ userId, author }) => {
     updatedBy: author?.userName ?? "",
     updatedAt: today,
     isDeleted: false,
-    userId,
-    appUser: {},
+    userId: userId,
+    appUser: null,
   });
 
   const handleChange = (e) => {
@@ -31,7 +33,12 @@ const CertificationAdd = ({ userId, author }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.clear();
     console.log("Certificación a enviar:", newCertification);
+    certificationApi
+      .createCertification(newCertification)
+      .then((e) => alert("Certificaciòn Agregada"))
+      .catch((e) => console.error("Error: " + e));
   };
 
   return (
@@ -105,9 +112,15 @@ const CertificationAdd = ({ userId, author }) => {
           onChange={handleChange}
           className="w-full mt-1 text-sm"
         >
-          <option className="text-gray-600" value="">Seleccionar</option>
-          <option className="text-gray-600" value="Vigente">Vigente</option>
-          <option className="text-gray-600" value="Expirada">Expirada</option>
+          <option className="text-gray-600" value="">
+            Seleccionar
+          </option>
+          <option className="text-gray-600" value="Vigente">
+            Vigente
+          </option>
+          <option className="text-gray-600" value="Expirada">
+            Expirada
+          </option>
         </select>
       </div>
 

@@ -22,7 +22,9 @@ import ExtrasTable from "../Components/organisms/ExtrasTable";
 
 import EmployeeApi from "../api/employeesApi";
 import courseApi from "../api/courseApi";
+import certificationApi from "../api/certificationApi";
 import ActionTable from "../Components/organisms/ActionTable";
+import salaryApi from "../api/salaryApi";
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -47,8 +49,9 @@ const ViewEmployeePage = () => {
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState("");
   const [canvasContent, setCanvasContent] = useState(null);
+  const [certifications, setCertifications] = useState([]);
   const [courses, setCourses] = useState([]);
-
+  const [salaries, setSalaries] = useState([])
   const { user } = useAppContext();
   console.log(user);
 
@@ -61,11 +64,18 @@ const ViewEmployeePage = () => {
   useEffect(() => {
     const FechData = async () => {
       try {
+        // Get Employee
         const response = await EmployeeApi.getEmployeeById(id);
         setEmployee(response.data);
-
+        // Get Courses
         const RespCourses = await courseApi.getCoursesByUser(id);
         setCourses(RespCourses.data);
+        console.log(RespCourses.data);
+        // Certifications
+        const respCertifications =await certificationApi.getCertificationsByUser(id);
+        setCertifications(respCertifications.data);
+        // Salary 
+        setSalaries((await salaryApi.getSalariesByUser(id)).data)
       } catch (error) {
         console.error(error);
       }
@@ -187,7 +197,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
-          <CertificationTable />
+          <CertificationTable certifications={certifications} />
         </motion.div>
 
         {/* Salarios */}
@@ -210,7 +220,7 @@ const ViewEmployeePage = () => {
               </PrimaryButton>
             </motion.div>
           </div>
-          <SalaryTable />
+          <SalaryTable salaries={salaries} />
         </motion.div>
 
         {/* Acciones */}
@@ -255,9 +265,8 @@ const ViewEmployeePage = () => {
                 Agregar
               </PrimaryButton>
             </motion.div>
-
           </div>
-            <ExtrasTable />
+          <ExtrasTable />
         </motion.div>
       </motion.div>
     </>

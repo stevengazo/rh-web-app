@@ -4,6 +4,8 @@ import DateInput from "../DateInput";
 import Label from "../Label";
 import PrimaryButton from "../PrimaryButton";
 
+import salaryApi from "../../api/salaryApi";
+
 const SalaryAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split("T")[0];
 
@@ -17,8 +19,8 @@ const SalaryAdd = ({ userId, author }) => {
     createdAt: today,
     updatedBy: author?.userName ?? "",
     updatedAt: today,
-    userId,
-    user: {},
+    userId: userId,
+    user: null,
   });
 
   const handleChange = (e) => {
@@ -28,16 +30,17 @@ const SalaryAdd = ({ userId, author }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Salario a enviar:", newSalary);
+    salaryApi
+      .createSalary(newSalary)
+      .then((e) => alert("Salario Registrado"))
+      .catch((e) => console.error(e));
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800">
-          Agregar salario
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-800">Agregar salario</h2>
         <p className="text-sm text-gray-500">
           Información salarial del empleado
         </p>
@@ -74,10 +77,18 @@ const SalaryAdd = ({ userId, author }) => {
           onChange={handleChange}
           className="w-full text-sm"
         >
-          <option className="text-gray-600" value="">Seleccionar</option>
-          <option className="text-gray-600" value="Base">Base</option>
-          <option className="text-gray-600" value="Hora">Por hora</option>
-          <option className="text-gray-600" value="Contrato">Contrato</option>
+          <option className="text-gray-600" value="">
+            Seleccionar
+          </option>
+          <option className="text-gray-600" value="Base">
+            Base
+          </option>
+          <option className="text-gray-600" value="Hora">
+            Por hora
+          </option>
+          <option className="text-gray-600" value="Contrato">
+            Contrato
+          </option>
         </select>
       </div>
 
@@ -90,10 +101,18 @@ const SalaryAdd = ({ userId, author }) => {
           onChange={handleChange}
           className="w-full text-sm"
         >
-          <option className="text-gray-600" value="">Seleccionar</option>
-          <option className="text-gray-600" value="CRC">CRC</option>
-          <option className="text-gray-600" value="USD">USD</option>
-          <option className="text-gray-600" value="EUR">EUR</option>
+          <option className="text-gray-600" value="">
+            Seleccionar
+          </option>
+          <option className="text-gray-600" value="CRC">
+            CRC
+          </option>
+          <option className="text-gray-600" value="USD">
+            USD
+          </option>
+          <option className="text-gray-600" value="EUR">
+            EUR
+          </option>
         </select>
       </div>
 
