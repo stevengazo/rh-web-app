@@ -55,8 +55,7 @@ const ViewEmployeePage = () => {
   const [salaries, setSalaries] = useState([])
   const [actions, setActions] = useState([])
   const { user } = useAppContext();
-  console.log(user);
-
+  
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
     setCanvasContent(content);
@@ -70,12 +69,9 @@ const ViewEmployeePage = () => {
         const response = await EmployeeApi.getEmployeeById(id);
         setEmployee(response.data);
         // Get Courses
-        const RespCourses = await courseApi.getCoursesByUser(id);
-        setCourses(RespCourses.data);
-        console.log(RespCourses.data);
+        setCourses(await courseApi.getCoursesByUser(id).data);
         // Certifications
-        const respCertifications =await certificationApi.getCertificationsByUser(id);
-        setCertifications(respCertifications.data);
+        setCertifications(await certificationApi.getCertificationsByUser(id).data);
         // Salary 
         setSalaries((await salaryApi.getSalariesByUser(id)).data);
         // Actions
