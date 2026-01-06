@@ -1,8 +1,30 @@
 import { motion } from "framer-motion";
 import { User, Mail, Lock, UserPlus } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {  registerRequest} from "../api/authApi";
+import { useState } from "react";
 
 const RegisterPage = () => {
+  const [newUser, setNewUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async( event)=>{
+    event.preventDefault();
+    try {
+      await registerRequest(newUser)
+                .then(e=> alert('Usuario Creado'))
+                .catch(err=> console.error(err))
+    } catch (error) {
+      console.error(error);      
+    }
+  }
+
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 px-4">
       <motion.div
@@ -23,7 +45,7 @@ const RegisterPage = () => {
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Nombre */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">
