@@ -1,21 +1,21 @@
 import apiClient from "./apiClient";
 
 const user_questionApi = {
-     getAllUser_Questions: () => {
-        return apiClient.get(``);
-      },
-      getUser_QuestionById: () => {
-        return apiClient.get(``);
-      },
-      createUser_Question: () => {
-        return apiClient.post(``);
-      },
-      updateUser_Question: () => {
-        return apiClient.put(``);
-      },
-      deleteUser_Question: () => {
-        return apiClient.delete(``);
-      },
-}
+  getAllUser_Questions: () => {
+    return apiClient.get(`/user_question`);
+  },
+  getUser_QuestionById: (id) => {
+    return apiClient.get(`/user_question/${id}`);
+  },
+  createUser_Question: () => {
+    return apiClient.post(`/user_question`);
+  },
+  updateUser_Question: (id, user_question) => {
+    return apiClient.put(`/user_question/${id}`, user_question);
+  },
+  deleteUser_Question: (id) => {
+    return apiClient.delete(`/user_question/${id}`);
+  },
+};
 
 export default user_questionApi;

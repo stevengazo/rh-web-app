@@ -2,22 +2,22 @@ import apiClient from "./apiClient";
 
 const awardApi = {
   getAllAwards: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/awards`);
   },
-  getAwardById: () => {
-    return apiClient.get(``);
+  getAwardById: (id) => {
+    return apiClient.get(`/awards/${id}`);
   },
-  getAwardsByUser: () => {
-    return apiClient.get(``);
+  getAwardsByUser: (id) => {
+    return apiClient.get(`/awards/user/${id}`);
   },
-  createAward: () => {
-    return apiClient.post(``);
+  createAward: (award) => {
+    return apiClient.post(`/awards`,award);
   },
-  updateAward: () => {
-    return apiClient.put(``);
+  updateAward: (id, award) => {
+    return apiClient.put(`/awards/${id}`, award);
   },
-  deleteAward: () => {
-    return apiClient.delete(``);
+  deleteAward: (id) => {
+    return apiClient.delete(`/awards/${id}`);
   },
 };
 

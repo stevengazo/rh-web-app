@@ -2,19 +2,19 @@ import apiClient from "./apiClient";
 
 const questionApi = {
   getAllQuestions: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/Questions`);
   },
-  getQuestionById: () => {
-    return apiClient.get(``);
+  getQuestionById: (id) => {
+    return apiClient.get(`/Questions/${id}`);
   },
-  createQuestion: () => {
-    return apiClient.post(``);
+  createQuestion: (question) => {
+    return apiClient.post(`/Questions`, question);
   },
-  updateQuestion: () => {
-    return apiClient.put(``);
+  updateQuestion: (id, question) => {
+    return apiClient.put(`/Questions/${id}`, question);
   },
-  deleteQuestion: () => {
-    return apiClient.delete(``);
+  deleteQuestion: (id) => {
+    return apiClient.delete(`/Questions/${id}`);
   },
 };
 

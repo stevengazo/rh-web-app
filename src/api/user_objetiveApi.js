@@ -2,19 +2,19 @@ import apiClient from "./apiClient";
 
 const user_objetiveApi = {
   getAllUser_Objetives: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/User_Objetive`);
   },
-  getUser_ObjetiveById: () => {
-    return apiClient.get(``);
+  getUser_ObjetiveById: (id) => {
+    return apiClient.get(`/User_Objetive/${id}`);
   },
-  createUser_Objetive: () => {
-    return apiClient.post(``);
+  createUser_Objetive: (user_objetive) => {
+    return apiClient.post(`/User_Objetive`, user_objetive);
   },
-  updateUser_Objetive: () => {
-    return apiClient.put(``);
+  updateUser_Objetive: (id, user_objetive) => {
+    return apiClient.put(`/User_Objetive/${id}`, user_objetive);
   },
-  deleteUser_Objetive: () => {
-    return apiClient.delete(``);
+  deleteUser_Objetive: (id) => {
+    return apiClient.delete(`/User_Objetive/${id}`);
   },
 };
 

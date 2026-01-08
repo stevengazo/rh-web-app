@@ -2,19 +2,19 @@ import apiClient from "./apiClient";
 
 const extraType = {
   getallExtraTypes: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/ExtraTypes`);
   },
-  getExtraTypeById: () => {
-    return apiClient.get(``);
+  getExtraTypeById: (id) => {
+    return apiClient.get(`/ExtraTypes/${id}`);
   },
-  createExtraType: () => {
-    return apiClient.post(``);
+  createExtraType: (extraType) => {
+    return apiClient.post(`/ExtraTypes`, extraType);
   },
-  updateExtraType: () => {
-    return apiClient.put(``);
+  updateExtraType: (id, extraType) => {
+    return apiClient.put(`/ExtraTypes/${id}`, extraType);
   },
-  deleteExtraType: () => {
-    return apiClient.delete(``);
+  deleteExtraType: (id) => {
+    return apiClient.delete(`/ExtraTypes/${id}`);
   },
 };
 

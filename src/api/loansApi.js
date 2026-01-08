@@ -2,22 +2,22 @@ import apiClient from "./apiClient";
 
 const loansApi = {
   getAllsLoans: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/Loans`);
   },
-  getLoansById: () => {
-    return apiClient.get(``);
+  getLoansById: (id) => {
+    return apiClient.get(`/Loans/${id}`);
   },
-  getLoansByUser: () => {
-    return apiClient.get(``);
+  getLoansByUser: (id) => {
+    return apiClient.get(`/Loans/user/${id}`);
   },
-  createLoan: () => {
-    return apiClient.post(``);
+  createLoan: (loan) => {
+    return apiClient.post(`/Loans`, loan);
   },
-  updateLoan: () => {
-    return apiClient.put(``);
+  updateLoan: (id, loan) => {
+    return apiClient.put(`/Loans/${id}`, loan);
   },
-  deleteLoan: () => {
-    return apiClient.delete(``);
+  deleteLoan: (id) => {
+    return apiClient.delete(`/Loans/${id}`);
   },
 };
 

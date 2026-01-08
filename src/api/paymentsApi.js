@@ -2,20 +2,20 @@ import apiClient from "./apiClient";
 
 const paymentApi = {
   getAllPayments: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/payments`);
   },
-  getPaymentById: () => {
-    return apiClient.get(``);
+  getPaymentById: (id) => {
+    return apiClient.get(`/payments/${id}`);
   },
-  createPayment: () => {
-    return apiClient.post(``);
+  createPayment: (payment) => {
+    return apiClient.post(`/payments`, payment);
   },
-  updatePayment : ()=>{
-    return apiClient.put(``);
+  updatePayment: (id, payment) => {
+    return apiClient.put(`/payments/${id}`, payment);
   },
-  deletePayment: ()=>{
-    return apiClient.delete(``);
-  }
+  deletePayment: (id) => {
+    return apiClient.delete(`/payments/${id}`);
+  },
 };
 
 export default paymentApi;

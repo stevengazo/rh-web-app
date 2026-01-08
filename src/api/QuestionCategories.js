@@ -2,19 +2,19 @@ import apiClient from "./apiClient";
 
 const questionCategoryApi = {
   getAllQuestionCategories: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/QuestionCategories`);
   },
-  getQuestionCategoryById: () => {
-    return apiClient.get(``);
+  getQuestionCategoryById: (id) => {
+    return apiClient.get(`/QuestionCategories/${id}`);
   },
-  createQuestionCategory: () => {
-    return apiClient.post();
+  createQuestionCategory: (questionCat) => {
+    return apiClient.post(`/QuestionCategories`, questionCat);
   },
-  updateQuestionCategory: () => {
-    return apiClient.put();
+  updateQuestionCategory: (id, questionCategory) => {
+    return apiClient.put(`/QuestionCategories/${id}`, questionCategory);
   },
-  deleteQuestionCategory: () => {
-    return apiClient.delete();
+  deleteQuestionCategory: (id) => {
+    return apiClient.delete(`/QuestionCategories/${id}`);
   },
 };
 

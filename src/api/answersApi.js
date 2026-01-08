@@ -2,19 +2,19 @@ import apiClient from "./apiClient";
 
 const answersApi = {
   getAllAnswers: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/answers`);
   },
-  getAllByUser: () => {
-    return apiClient.get(``);
+  getAllByUser: (id) => {
+    return apiClient.get(`/answers/user/${id}`);
   },
-  createAnswer: () => {
-    return apiClient.post(``);
+  createAnswer: (answer) => {
+    return apiClient.post(`/answers`, answer);
   },
-  updateAnswer: () => {
-    return apiClient.put(``);
+  updateAnswer: (id, answer) => {
+    return apiClient.put(`/answers/${id}`, answer);
   },
   deleteAnswer: () => {
-    return apiClient.delete(``);
+    return apiClient.delete(`/answers/${id}`);
   },
 };
 

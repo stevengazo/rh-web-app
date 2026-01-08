@@ -2,21 +2,23 @@ import apiClient from "./apiClient";
 
 const comissionsApi = {
   getAllComisions: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/comissions`);
   },
-  getComissionById: () => {
-    return apiClient.get(``);
+  getComissionById: (id) => {
+    return apiClient.get(`/comissions/${id}`);
   },
-  getComissionsByUser: () => {
-    return apiClient.get(``);
+  getComissionsByUser: (id) => {
+    return apiClient.get(`/comissions/user/${id}`);
   },
-  createComission: () => {
-    return apiClient.post(``);
+  createComission: (comission) => {
+    return apiClient.post(`/comissions`, comission);
   },
-  updateComission: () => {
-    return apiClient.put(``);
+  updateComission: (id, comission) => {
+    return apiClient.put(`/comissions/${id}`, comission);
   },
-  deleteComission: () => {
-    return apiClient.delete(``);
+  deleteComission: (id) => {
+    return apiClient.delete(`/comissions/${id}`);
   },
 };
+
+export default comissionsApi;

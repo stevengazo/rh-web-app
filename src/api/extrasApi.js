@@ -2,22 +2,22 @@ import apiClient from "./apiClient";
 
 const extrasApi = {
   getAllExtras: () => {
-    return apiClient.get(``);
+    return apiClient.get(`/Extras`);
   },
-  getExtraById: () => {
-    return apiClient.get(``);
+  getExtraById: (id) => {
+    return apiClient.get(`/Extras/${id}`);
   },
-  getExtrasByUser: () => {
-    return apiClient.get(``);
+  getExtrasByUser: (id) => {
+    return apiClient.get(`/Extras/user/${id}`);
   },
-  createExtra: () => {
-    return apiClient.post(``);
+  createExtra: (extra) => {
+    return apiClient.post(`/Extras`, extra);
   },
-  updateExtra: () => {
-    return apiClient.put(``);
+  updateExtra: (id, extra) => {
+    return apiClient.put(`/Extras/${id}`, extra );
   },
-  deleteExtra: () => {
-    return apiClient.delete(``);
+  deleteExtra: (id) => {
+    return apiClient.delete(`/Extras/${id}`);
   },
 };
 
