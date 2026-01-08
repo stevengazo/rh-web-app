@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import { useAppContext } from "../context/AppContext";
-import authApi from "../api/authApi";
+import {loginRequest} from "../api/authApi";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const LoginPage = () => {
 
     try {
       // Llamada real al API
-      const response = await authApi({
+      const response = await loginRequest({
         username,
         password,
       });
