@@ -1,9 +1,11 @@
 import PageTitle from '../components/PageTitle';
 import SectionTitle from '../components/SectionTitle';
 import ObjetivesTable from '../Components/organisms/ObjetivesTable';
+import AddObjetive from '../Components/organisms/AddObjetive';
 
 import kpiApi from '../api/kpiApi';
 import { useEffect, useState } from 'react';
+import AddObjetiveCategory from '../Components/organisms/AddObjetiveCategory';
 
 const KPIPage = () => {
   const [kpis, setKpis] = useState([]);
@@ -28,7 +30,13 @@ const KPIPage = () => {
         de los empleados
       </p>
 
-      <ObjetivesTable objetives={kpis} />
+      <div className=" flex flex-col gap-2 w-full border border-red-400 rounded p-2">
+        <AddObjetiveCategory />
+        <hr/>
+        <AddObjetive />
+        <hr />
+        <ObjetivesTable objetives={kpis} />
+      </div>
     </div>
   );
 };
