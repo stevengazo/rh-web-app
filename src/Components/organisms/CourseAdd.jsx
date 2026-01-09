@@ -1,25 +1,25 @@
-import { useState } from "react";
-import TextInput from "../TextInput";
-import DateInput from "../DateInput";
-import PrimaryButton from "../PrimaryButton";
-import courseApi from "../../api/courseApi";
+import { useState } from 'react';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
+import PrimaryButton from '../PrimaryButton';
+import courseApi from '../../api/courseApi';
 
 const CourseAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newCourse, setNewCourse] = useState({
-    name: "",
-    institution: "",
+    name: '',
+    institution: '',
     start: today,
     end: today,
     durationInHours: 0,
-    modality: "",
-    state: "",
-    description: "",
-    author: author?.email ?? "",
-    UpdatedBy: author?.email ?? "",
-    userId : userId,
-//    user: {},
+    modality: '',
+    state: '',
+    description: '',
+    author: author?.email ?? '',
+    UpdatedBy: author?.email ?? '',
+    userId: userId,
+    //    user: {},
   });
 
   const handleChange = (e) => {
@@ -27,18 +27,17 @@ const CourseAdd = ({ userId, author }) => {
 
     setNewCourse((prev) => ({
       ...prev,
-      [name]: name === "durationInHours" ? Number(value) : value,
+      [name]: name === 'durationInHours' ? Number(value) : value,
     }));
-
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Enviando...");
+    console.log('Enviando...');
     await courseApi
       .createCourse(newCourse)
       .then((e) => {
-        alert("curso creado");
+        alert('curso creado');
       })
       .catch((err) => console.error(err));
   };

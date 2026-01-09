@@ -1,5 +1,5 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { NavLink, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
   Users,
@@ -8,14 +8,14 @@ import {
   Briefcase,
   User,
   LogOut,
-} from "lucide-react";
+} from 'lucide-react';
 
 const navItemClass = ({ isActive }) =>
   `flex items-center gap-3 px-3 py-2 rounded-lg transition
    ${
      isActive
-       ? "bg-slate-700 text-white"
-       : "text-slate-300 hover:bg-slate-800 hover:text-white"
+       ? 'bg-slate-700 text-white'
+       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
    }`;
 
 const ManagerSideBar = () => {
@@ -23,7 +23,7 @@ const ManagerSideBar = () => {
 
   const handleLogout = () => {
     // TODO: limpiar token / auth state
-    navigate("/");
+    navigate('/');
   };
 
   return (
@@ -88,7 +88,7 @@ const ManagerSideBar = () => {
             <Cog size={18} />
             KPIs
           </NavLink>
-                    <NavLink to="/manager" className={navItemClass}>
+          <NavLink to="/manager" className={navItemClass}>
             <Cog size={18} />
             Objetivos
           </NavLink>

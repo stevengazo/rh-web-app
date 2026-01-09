@@ -1,6 +1,4 @@
-
-
-const SecondaryButton = ({ onClick, children, type = "button" }) => {
+const SecondaryButton = ({ onClick, children, type = 'button' }) => {
   return (
     <button
       type={type}
@@ -17,7 +15,7 @@ const SecondaryButton = ({ onClick, children, type = "button" }) => {
     >
       {children}
     </button>
-  )
-}
+  );
+};
 
-export default SecondaryButton
+export default SecondaryButton;

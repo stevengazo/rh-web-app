@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * API para la gestión de tipos de extras (ExtraTypes).

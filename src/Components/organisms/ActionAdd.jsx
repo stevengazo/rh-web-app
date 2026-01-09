@@ -1,28 +1,28 @@
-import actionTypeApi from "../../api/actionTypeApi";
-import actionApi from "../../api/actionApi";
-import { useEffect, useState } from "react";
-import PrimaryButton from "../PrimaryButton";
-import TextInput from "../TextInput";
-import DateInput from "../DateInput";
+import actionTypeApi from '../../api/actionTypeApi';
+import actionApi from '../../api/actionApi';
+import { useEffect, useState } from 'react';
+import PrimaryButton from '../PrimaryButton';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
 
 const ActionAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [typesOfActions, setTypesOfActions] = useState([]);
 
   const [newAction, setNewAction] = useState({
     actionId: 0,
     actionDate: today,
-    description: "",
-    createdBy: author?.userName ?? "",
+    description: '',
+    createdBy: author?.userName ?? '',
     createdDate: today,
-    lastUpdatedBy: author?.userName ?? "",
+    lastUpdatedBy: author?.userName ?? '',
     lastUpdatedDate: today,
-    approvedBy: "",
+    approvedBy: '',
     approvedDate: today,
     userId: userId,
     user: null,
-    actionTypeId: "",
+    actionTypeId: '',
     actionType: {},
   });
 
@@ -32,7 +32,7 @@ const ActionAdd = ({ userId, author }) => {
         const response = await actionTypeApi.getAllActionTypes();
         setTypesOfActions(response.data);
       } catch (error) {
-        console.error("Error cargando tipos de acción:", error);
+        console.error('Error cargando tipos de acción:', error);
       }
     };
 
@@ -47,11 +47,11 @@ const ActionAdd = ({ userId, author }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(newAction)
+      console.log(newAction);
       await actionApi.createAction(newAction);
-      console.log("Acción creada:", newAction);
+      console.log('Acción creada:', newAction);
     } catch (error) {
-      console.error("Error creando acción:", error);
+      console.error('Error creando acción:', error);
     }
   };
 
@@ -89,9 +89,7 @@ const ActionAdd = ({ userId, author }) => {
         </select>
       </div>
 
-      <PrimaryButton type="submit">
-        Agregar acción
-      </PrimaryButton>
+      <PrimaryButton type="submit">Agregar acción</PrimaryButton>
     </form>
   );
 };

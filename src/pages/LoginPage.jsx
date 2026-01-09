@@ -1,23 +1,23 @@
-import { motion } from "framer-motion";
-import { Mail, Lock, LogIn } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { motion } from 'framer-motion';
+import { Mail, Lock, LogIn } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
-import { useAppContext } from "../context/AppContext";
-import {loginRequest} from "../api/authApi";
+import { useAppContext } from '../context/AppContext';
+import { loginRequest } from '../api/authApi';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login, setUser } = useAppContext();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
@@ -40,10 +40,10 @@ const LoginPage = () => {
       await login(token);
       setUser(user);
 
-      navigate("/my-profile");
+      navigate('/my-profile');
     } catch (err) {
       console.error(err);
-      setError("Usuario o contraseña incorrectos");
+      setError('Usuario o contraseña incorrectos');
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,10 @@ const LoginPage = () => {
               Usuario o correo
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Mail
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="text"
                 value={username}
@@ -97,7 +100,10 @@ const LoginPage = () => {
               Contraseña
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={18} />
+              <Lock
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
               <input
                 type="password"
                 value={password}
@@ -118,14 +124,14 @@ const LoginPage = () => {
             className="w-full mt-2 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 disabled:opacity-60 text-white py-2 rounded-lg font-medium transition"
           >
             <LogIn size={18} />
-            {loading ? "Ingresando..." : "Entrar"}
+            {loading ? 'Ingresando...' : 'Entrar'}
           </motion.button>
         </form>
 
         {/* Footer */}
         <div className="mt-6 text-center text-sm text-slate-400 space-y-1">
           <p>
-            ¿No tienes cuenta?{" "}
+            ¿No tienes cuenta?{' '}
             <NavLink to="/register" className="text-sky-400 hover:underline">
               Regístrate
             </NavLink>

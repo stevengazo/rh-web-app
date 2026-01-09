@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { Users, UserPlus, CalendarCheck, BarChart3 } from "lucide-react";
-import { useAppContext } from "../context/AppContext";
+import { motion } from 'framer-motion';
+import { Users, UserPlus, CalendarCheck, BarChart3 } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import {
   LineChart,
   Line,
@@ -9,53 +9,52 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from "recharts";
+} from 'recharts';
 
-import PageTitle from "../components/PageTitle";
-import SectionTitle from "../components/SectionTitle";
+import PageTitle from '../components/PageTitle';
+import SectionTitle from '../components/SectionTitle';
 
 /* Cards data */
 const cards = [
   {
-    title: "Empleados",
-    value: "128",
+    title: 'Empleados',
+    value: '128',
     icon: Users,
-    color: "text-indigo-600",
+    color: 'text-indigo-600',
   },
   {
-    title: "Nuevos ingresos",
-    value: "5",
+    title: 'Nuevos ingresos',
+    value: '5',
     icon: UserPlus,
-    color: "text-emerald-600",
+    color: 'text-emerald-600',
   },
   {
-    title: "Asistencias",
-    value: "96%",
+    title: 'Asistencias',
+    value: '96%',
     icon: CalendarCheck,
-    color: "text-blue-600",
+    color: 'text-blue-600',
   },
   {
-    title: "Reportes",
-    value: "12",
+    title: 'Reportes',
+    value: '12',
     icon: BarChart3,
-    color: "text-purple-600",
+    color: 'text-purple-600',
   },
 ];
 
 /* Chart data */
 const chartData = [
-  { name: "Ene", empleados: 120, planilla: 240 },
-  { name: "Feb", empleados: 130, planilla: 260 },
-  { name: "Mar", empleados: 128, planilla: 250 },
-  { name: "Abr", empleados: 135, planilla: 270 },
-  { name: "May", empleados: 140, planilla: 290 },
+  { name: 'Ene', empleados: 120, planilla: 240 },
+  { name: 'Feb', empleados: 130, planilla: 260 },
+  { name: 'Mar', empleados: 128, planilla: 250 },
+  { name: 'Abr', empleados: 135, planilla: 270 },
+  { name: 'May', empleados: 140, planilla: 290 },
 ];
 
 const ManagerPage = () => {
-  const { user } = useAppContext(); 
+  const { user } = useAppContext();
 
-  console.log("Usuario en ManagerPage:", user);
-
+  console.log('Usuario en ManagerPage:', user);
 
   return (
     <motion.div

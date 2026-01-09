@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * ActionTypeApi
@@ -27,7 +27,7 @@ const actionTypeApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllActionTypes: () => {
-    return apiClient.get("/actiontypes");
+    return apiClient.get('/actiontypes');
   },
 
   /**
@@ -57,7 +57,7 @@ const actionTypeApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createActionType: (actionType) => {
-    return apiClient.post("/actiontypes", actionType);
+    return apiClient.post('/actiontypes', actionType);
   },
 
   /**

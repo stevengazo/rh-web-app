@@ -6,7 +6,7 @@ const Label = ({ children, htmlFor }) => {
     >
       {children}
     </label>
-  )
-}
+  );
+};
 
-export default Label
+export default Label;

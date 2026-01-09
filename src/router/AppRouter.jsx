@@ -1,25 +1,25 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import ManagerLayout from "../layouts/ManagerLayout";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from '../layouts/MainLayout';
+import ManagerLayout from '../layouts/ManagerLayout';
 
 // Pages
-import HomePage from "../pages/HomePage";
-import MyProfilePage from "../pages/MyProfilePage";
-import LoginPage from "../pages/LoginPage";
-import NotFoundPage from "../pages/NotFoundPage";
-import RegisterPage from "../pages/RegisterPage";
-import UILibraryPage from "../pages/UILibraryPage";
-import EmployeesPage from "../pages/EmployeesPage";
-import ManagerPage from "../pages/ManagerPage";
-import PayrollPage from "../pages/PayrollPage";
-import ActionsPage from "../pages/ActionsPage";
-import ViewEmployeePage from "../pages/ViewEmployeePage";
-import SettingsPage from "../pages/SettingsPage";
-import NewPayrollPage from "../pages/NewPayrollPage";
-import KPIPage from "../pages/KPIPage";
-import MyKPIs from "../pages/MyKPIs";
-import MyCommissionsPage from "../pages/MyComissionsPage";
-import MyPayrollsPage from "../pages/MyPayrollsPage";
+import HomePage from '../pages/HomePage';
+import MyProfilePage from '../pages/MyProfilePage';
+import LoginPage from '../pages/LoginPage';
+import NotFoundPage from '../pages/NotFoundPage';
+import RegisterPage from '../pages/RegisterPage';
+import UILibraryPage from '../pages/UILibraryPage';
+import EmployeesPage from '../pages/EmployeesPage';
+import ManagerPage from '../pages/ManagerPage';
+import PayrollPage from '../pages/PayrollPage';
+import ActionsPage from '../pages/ActionsPage';
+import ViewEmployeePage from '../pages/ViewEmployeePage';
+import SettingsPage from '../pages/SettingsPage';
+import NewPayrollPage from '../pages/NewPayrollPage';
+import KPIPage from '../pages/KPIPage';
+import MyKPIs from '../pages/MyKPIs';
+import MyCommissionsPage from '../pages/MyComissionsPage';
+import MyPayrollsPage from '../pages/MyPayrollsPage';
 
 const AppRouter = () => {
   return (

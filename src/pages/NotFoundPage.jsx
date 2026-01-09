@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { Ghost, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { motion } from 'framer-motion';
+import { Ghost, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const NotFoundPage = () => {
         <h3 className="text-lg text-gray-500 mb-6">Página no encontrada</h3>
 
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate('/')}
           className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
         >
           <ArrowLeft size={18} />

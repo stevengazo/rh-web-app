@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react"
+import { LogOut } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -8,7 +8,7 @@ const Header = () => {
         Salir
       </button>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

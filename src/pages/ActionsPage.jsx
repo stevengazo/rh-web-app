@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import SectionTitle from "../components/SectionTitle";
-import Divider from "../components/Divider";
-import PrimaryButton from "../components/PrimaryButton";
+import SectionTitle from '../components/SectionTitle';
+import Divider from '../components/Divider';
+import PrimaryButton from '../components/PrimaryButton';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -17,7 +17,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: 'easeOut' },
   },
 };
 

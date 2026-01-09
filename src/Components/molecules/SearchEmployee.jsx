@@ -1,5 +1,5 @@
-import { Search, X } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const SearchEmployee = ({ value, onChange, onClear }) => {
   return (
@@ -9,13 +9,9 @@ const SearchEmployee = ({ value, onChange, onClear }) => {
       transition={{ duration: 0.3 }}
       className="flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
     >
-
       {/* Input */}
       <div className="relative flex-1">
-        <Search
-          size={18}
-          className="absolute left-3 top-2.5 text-slate-400"
-        />
+        <Search size={18} className="absolute left-3 top-2.5 text-slate-400" />
         <input
           type="text"
           placeholder="Buscar por nombre, apellido o email..."

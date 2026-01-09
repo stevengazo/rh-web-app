@@ -1,7 +1,5 @@
-
-
 const RadioInput = ({ options, selectedValue, onChange }) => {
-    return (<></>)
-}
+  return <></>;
+};
 
 export default RadioInput;

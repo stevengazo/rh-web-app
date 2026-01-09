@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * salaryApi
@@ -26,7 +26,7 @@ const salaryApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllSalaries: () => {
-    return apiClient.get("/salaries");
+    return apiClient.get('/salaries');
   },
 
   /**
@@ -71,11 +71,11 @@ const salaryApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createSalary: (salary) => {
-    return apiClient.post("/salaries", salary);
+    return apiClient.post('/salaries', salary);
   },
 
   /**
-   * 
+   *
    * updateSalary
    * =====================================================
    * Actualiza un salario existente.

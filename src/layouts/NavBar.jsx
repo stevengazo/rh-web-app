@@ -1,19 +1,19 @@
-import { motion } from "framer-motion";
-import { Home, User, LogOut, PanelsTopLeft } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { motion } from 'framer-motion';
+import { Home, User, LogOut, PanelsTopLeft } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     // aquí luego limpias token / auth
-    navigate("/");
+    navigate('/');
   };
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-2 px-4 py-2 rounded-lg transition 
      ${
-       isActive ? "bg-indigo-600 text-white" : "text-gray-600 hover:bg-gray-100"
+       isActive ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-100'
      }`;
 
   return (

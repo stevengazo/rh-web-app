@@ -1,23 +1,23 @@
-import { useState } from "react";
-import TextInput from "../TextInput";
-import DateInput from "../DateInput";
-import Label from "../Label";
-import PrimaryButton from "../PrimaryButton";
+import { useState } from 'react';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
+import Label from '../Label';
+import PrimaryButton from '../PrimaryButton';
 
-import salaryApi from "../../api/salaryApi";
+import salaryApi from '../../api/salaryApi';
 
 const SalaryAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newSalary, setNewSalary] = useState({
     salaryId: 0,
-    salaryAmount: "",
+    salaryAmount: '',
     effectiveDate: today,
-    type: "",
-    currency: "",
-    createdBy: author?.userName ?? "",
+    type: '',
+    currency: '',
+    createdBy: author?.userName ?? '',
     createdAt: today,
-    updatedBy: author?.userName ?? "",
+    updatedBy: author?.userName ?? '',
     updatedAt: today,
     userId: userId,
     user: null,
@@ -32,7 +32,7 @@ const SalaryAdd = ({ userId, author }) => {
     e.preventDefault();
     salaryApi
       .createSalary(newSalary)
-      .then((e) => alert("Salario Registrado"))
+      .then((e) => alert('Salario Registrado'))
       .catch((e) => console.error(e));
   };
 

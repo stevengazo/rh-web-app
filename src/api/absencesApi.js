@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * API client para la gestión de ausencias del personal.
@@ -12,7 +12,7 @@ const absencesApi = {
    * Promesa con la respuesta del servidor que contiene las ausencias registradas.
    */
   getAllAbsences: () => {
-    return apiClient.get("/Absences");
+    return apiClient.get('/Absences');
   },
   /**
    * Obtiene una ausencia específica por su identificador.
@@ -32,7 +32,7 @@ const absencesApi = {
    * Promesa con la respuesta del servidor tras crear la ausencia.
    */
   createAbsence: (absence) => {
-    return apiClient.get("/Absences", absence);
+    return apiClient.get('/Absences', absence);
   },
   /**
    * Actualiza una ausencia existente.
@@ -43,7 +43,7 @@ const absencesApi = {
    * Promesa con la respuesta del servidor tras actualizar la ausencia.
    */
   updateAbsence: (id, absence) => {
-    return apiClient.get("/Absences", absence);
+    return apiClient.get('/Absences', absence);
   },
 
   /**

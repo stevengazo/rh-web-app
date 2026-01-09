@@ -1,19 +1,14 @@
-import { motion } from "framer-motion";
-import { UserX } from "lucide-react";
+import { motion } from 'framer-motion';
+import { UserX } from 'lucide-react';
 
 const row = (label, value) => (
   <tr className="border-t">
-    <td className="px-3 py-2 font-medium text-slate-600">
-      {label}
-    </td>
-    <td className="px-3 py-2 text-slate-800">
-      {value || "—"}
-    </td>
+    <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
+    <td className="px-3 py-2 text-slate-800">{value || '—'}</td>
   </tr>
 );
 
 const EmployeeTableInfo = ({ employee }) => {
-
   // 👉 Estado: sin datos
   if (!employee) {
     return (
@@ -48,30 +43,27 @@ const EmployeeTableInfo = ({ employee }) => {
 
         <tbody>
           {row(
-            "Nombre",
-            `${employee.firstName || ""} ${employee.middleName || ""}`.trim()
+            'Nombre',
+            `${employee.firstName || ''} ${employee.middleName || ''}`.trim()
           )}
 
           {row(
-            "Apellidos",
-            `${employee.lastName || ""} ${employee.secondLastName || ""}`.trim()
+            'Apellidos',
+            `${employee.lastName || ''} ${employee.secondLastName || ''}`.trim()
           )}
 
-          {row("Correo", employee.email)}
-          {row("Cédula", employee.dni)}
-          {row("Departamento", employee.departament?.name)}
+          {row('Correo', employee.email)}
+          {row('Cédula', employee.dni)}
+          {row('Departamento', employee.departament?.name)}
 
           {row(
-            "Fecha Contratación",
+            'Fecha Contratación',
             employee.hiredDate
               ? new Date(employee.hiredDate).toLocaleDateString()
               : null
           )}
 
-          {row(
-            "Estado",
-            employee.isActive ? "Activo" : "Inactivo"
-          )}
+          {row('Estado', employee.isActive ? 'Activo' : 'Inactivo')}
         </tbody>
       </table>
     </motion.div>

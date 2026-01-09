@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * Realiza una solicitud de autenticación (login).
@@ -13,7 +13,7 @@ import apiClient from "./apiClient";
  * - En caso de error devuelve el error correspondiente.
  */
 const loginRequest = (credentials) => {
-    return apiClient.post("/Authentication/login", credentials);
+  return apiClient.post('/Authentication/login', credentials);
 };
 
 /**
@@ -30,10 +30,7 @@ const loginRequest = (credentials) => {
  * - En caso de error devuelve el detalle del error.
  */
 const registerRequest = (registerUser) => {
-    return apiClient.post("/Authentication/register", registerUser);
+  return apiClient.post('/Authentication/register', registerUser);
 };
 
-export {
-    loginRequest,
-    registerRequest
-};
+export { loginRequest, registerRequest };

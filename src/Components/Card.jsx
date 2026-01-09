@@ -1,4 +1,4 @@
-const Card = ({ children, className = "" }) => {
+const Card = ({ children, className = '' }) => {
   return (
     <div
       className={`
@@ -10,7 +10,7 @@ const Card = ({ children, className = "" }) => {
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;

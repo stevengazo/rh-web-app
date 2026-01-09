@@ -1,13 +1,13 @@
-import { useState, useMemo, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-import SearchEmployee from "../Components/molecules/SearchEmployee";
-import EmployeesTable from "../Components/organisms/EmployeesTable";
-import OffCanvas from "../components/OffCanvas";
-import PrimaryButton from "../components/PrimaryButton";
-import EmployeesAdd from "../Components/organisms/EmployeesAdd";
+import SearchEmployee from '../Components/molecules/SearchEmployee';
+import EmployeesTable from '../Components/organisms/EmployeesTable';
+import OffCanvas from '../components/OffCanvas';
+import PrimaryButton from '../components/PrimaryButton';
+import EmployeesAdd from '../Components/organisms/EmployeesAdd';
 
-import EmployeeApi from "../api/employeesApi";
+import EmployeeApi from '../api/employeesApi';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -22,14 +22,14 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: 'easeOut' },
   },
 };
 
 const EmployeesPage = () => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
-  const [canvasTitle, setCanvasTitle] = useState("");
+  const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
 
   const [employees, setEmployees] = useState([]);
@@ -118,8 +118,8 @@ const EmployeesPage = () => {
             <PrimaryButton
               onClick={() =>
                 openCanvas(
-                  "Agregar Empleado",
-                  "Contenido del canvas para agregar empleado"
+                  'Agregar Empleado',
+                  'Contenido del canvas para agregar empleado'
                 )
               }
             >
@@ -133,7 +133,7 @@ const EmployeesPage = () => {
           <SearchEmployee
             value={search}
             onChange={setSearch}
-            onClear={() => setSearch("")}
+            onClear={() => setSearch('')}
           />
         </motion.div>
 

@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * ActionApi
@@ -28,7 +28,7 @@ const actionApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllActions: () => {
-    return apiClient.get("/actions");
+    return apiClient.get('/actions');
   },
 
   /**
@@ -72,7 +72,7 @@ const actionApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createAction: (action) => {
-    return apiClient.post("/actions", action);
+    return apiClient.post('/actions', action);
   },
 
   /**

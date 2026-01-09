@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * =====================================================
@@ -30,7 +30,7 @@ const certificationApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllCertifications: () => {
-    return apiClient.get("/certifications");
+    return apiClient.get('/certifications');
   },
 
   /**
@@ -78,7 +78,7 @@ const certificationApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createCertification: (certification) => {
-    return apiClient.post("/certifications", certification);
+    return apiClient.post('/certifications', certification);
   },
 
   /**

@@ -1,8 +1,8 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * CourseApi
- * 
+ *
  * Módulo de acceso a la API para la gestión de cursos.
  *
  * Permite:
@@ -19,7 +19,7 @@ import apiClient from "./apiClient";
 const courseApi = {
   /**
    * getAllCourses
-   * 
+   *
    * Obtiene todos los cursos registrados.
    *
    * Endpoint:
@@ -28,7 +28,7 @@ const courseApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllCourses: () => {
-    return apiClient.get("/courses");
+    return apiClient.get('/courses');
   },
 
   /**
@@ -73,7 +73,7 @@ const courseApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createCourse: (course) => {
-    return apiClient.post("/courses", course);
+    return apiClient.post('/courses', course);
   },
 
   /**

@@ -1,4 +1,3 @@
-
 const PayrollListTable = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -24,15 +23,9 @@ const PayrollListTable = () => {
         {/* Body */}
         <tbody className="divide-y divide-slate-100">
           <tr className="hover:bg-slate-50 transition">
-            <td className="px-4 py-3 text-sm text-slate-700">
-              #1
-            </td>
-            <td className="px-4 py-3 text-sm text-slate-600">
-              15/05/2023
-            </td>
-            <td className="px-4 py-3 text-sm text-slate-600">
-              Quincenal
-            </td>
+            <td className="px-4 py-3 text-sm text-slate-700">#1</td>
+            <td className="px-4 py-3 text-sm text-slate-600">15/05/2023</td>
+            <td className="px-4 py-3 text-sm text-slate-600">Quincenal</td>
             <td className="px-4 py-3 text-sm text-right font-semibold text-emerald-600">
               $1,500.00
             </td>
@@ -40,15 +33,9 @@ const PayrollListTable = () => {
 
           {/* Placeholder para más filas */}
           <tr className="hover:bg-slate-50 transition">
-            <td className="px-4 py-3 text-sm text-slate-700">
-              #2
-            </td>
-            <td className="px-4 py-3 text-sm text-slate-600">
-              31/05/2023
-            </td>
-            <td className="px-4 py-3 text-sm text-slate-600">
-              Mensual
-            </td>
+            <td className="px-4 py-3 text-sm text-slate-700">#2</td>
+            <td className="px-4 py-3 text-sm text-slate-600">31/05/2023</td>
+            <td className="px-4 py-3 text-sm text-slate-600">Mensual</td>
             <td className="px-4 py-3 text-sm text-right font-semibold text-emerald-600">
               $2,300.00
             </td>

@@ -1,6 +1,6 @@
-import Label from "../Label";
-import TextInput from "../TextInput";
-import PrimaryButton from "../PrimaryButton";
+import Label from '../Label';
+import TextInput from '../TextInput';
+import PrimaryButton from '../PrimaryButton';
 
 const EmployeeEdit = ({ employee, setEmployee }) => {
   const handleChange = (e) => {

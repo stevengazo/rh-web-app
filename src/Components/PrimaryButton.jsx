@@ -1,4 +1,4 @@
-const PrimaryButton = ({ onClick, children, type = "button" }) => {
+const PrimaryButton = ({ onClick, children, type = 'button' }) => {
   return (
     <button
       type={type}
@@ -14,7 +14,7 @@ const PrimaryButton = ({ onClick, children, type = "button" }) => {
     >
       {children}
     </button>
-  )
-}
+  );
+};
 
-export default PrimaryButton
+export default PrimaryButton;

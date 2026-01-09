@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
-import { Calendar, CheckCircle, XCircle, Pencil, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { motion } from 'framer-motion';
+import { Calendar, CheckCircle, XCircle, Pencil, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
 
 const formatDate = (dateString) => {
-  if (!dateString) return "—";
-  return format(new Date(dateString), "dd/MM/yyyy");
+  if (!dateString) return '—';
+  return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
 const ActionTable = ({ actions = [], onEdit, onDelete }) => {
@@ -37,7 +37,7 @@ const ActionTable = ({ actions = [], onEdit, onDelete }) => {
         {actions.map((item) => (
           <motion.tr
             key={item.actionId}
-            whileHover={{ backgroundColor: "#f8fafc" }}
+            whileHover={{ backgroundColor: '#f8fafc' }}
             className="border-b"
           >
             <td className="p-3 flex items-center gap-2">
@@ -45,9 +45,7 @@ const ActionTable = ({ actions = [], onEdit, onDelete }) => {
               {formatDate(item.actionDate)}
             </td>
 
-            <td className="p-3">
-              {item.actionType?.name || "—"}
-            </td>
+            <td className="p-3">{item.actionType?.name || '—'}</td>
 
             <td className="p-3 text-center">
               {item.approvedBy ? (
@@ -57,9 +55,7 @@ const ActionTable = ({ actions = [], onEdit, onDelete }) => {
               )}
             </td>
 
-            <td className="p-3">
-              {formatDate(item.createdDate)}
-            </td>
+            <td className="p-3">{formatDate(item.createdDate)}</td>
 
             <td className="p-3">
               <div className="flex justify-center gap-3">

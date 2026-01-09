@@ -1,31 +1,30 @@
-import { motion } from "framer-motion"
-import { useNavigate } from "react-router-dom"
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-import SectionTitle from "../components/SectionTitle"
-import Divider from "../components/Divider"
-import PrimaryButton from "../components/PrimaryButton"
-import PayrollListTable from "../Components/organisms/PayrollListTable"
+import SectionTitle from '../components/SectionTitle';
+import Divider from '../components/Divider';
+import PrimaryButton from '../components/PrimaryButton';
+import PayrollListTable from '../Components/organisms/PayrollListTable';
 
 const pageVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.12 }
-  }
-}
+    transition: { staggerChildren: 0.12 },
+  },
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" }
-  }
-}
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+};
 
 const PayrollPage = () => {
   const navigate = useNavigate();
-
 
   return (
     <motion.div
@@ -45,12 +44,11 @@ const PayrollPage = () => {
       </motion.div>
 
       {/* Action */}
-      <motion.div
-        variants={itemVariants}
-        className="flex justify-end"
-      >
+      <motion.div variants={itemVariants} className="flex justify-end">
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <PrimaryButton onClick={()=> navigate('/payroll/new')}>Generar Nueva Planilla</PrimaryButton>
+          <PrimaryButton onClick={() => navigate('/payroll/new')}>
+            Generar Nueva Planilla
+          </PrimaryButton>
         </motion.div>
       </motion.div>
 
@@ -59,7 +57,7 @@ const PayrollPage = () => {
         <PayrollListTable />
       </motion.div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default PayrollPage
+export default PayrollPage;

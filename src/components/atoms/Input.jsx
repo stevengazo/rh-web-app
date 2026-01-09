@@ -1,4 +1,4 @@
-const Input = ({ className = "", ...props }) => {
+const Input = ({ className = '', ...props }) => {
   return (
     <input
       className={`w-full border rounded-lg px-3 py-2 
@@ -6,7 +6,7 @@ const Input = ({ className = "", ...props }) => {
                   ${className}`}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default Input
+export default Input;

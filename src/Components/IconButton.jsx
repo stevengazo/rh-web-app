@@ -1,11 +1,11 @@
-import { motion } from "framer-motion"
+import { motion } from 'framer-motion';
 
-const IconButton = ({ icon: Icon, onClick, variant = "default" }) => {
+const IconButton = ({ icon: Icon, onClick, variant = 'default' }) => {
   const variants = {
-    default: "text-gray-600 hover:bg-gray-100",
-    primary: "text-indigo-600 hover:bg-indigo-50",
-    danger: "text-red-600 hover:bg-red-50",
-  }
+    default: 'text-gray-600 hover:bg-gray-100',
+    primary: 'text-indigo-600 hover:bg-indigo-50',
+    danger: 'text-red-600 hover:bg-red-50',
+  };
 
   return (
     <motion.button
@@ -15,7 +15,7 @@ const IconButton = ({ icon: Icon, onClick, variant = "default" }) => {
     >
       <Icon size={18} />
     </motion.button>
-  )
-}
+  );
+};
 
-export default IconButton
+export default IconButton;

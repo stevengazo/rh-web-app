@@ -1,6 +1,4 @@
-
-
 const CheckBoxInput = ({ label, checked, onChange }) => {
-    return <></>
-}
+  return <></>;
+};
 export default CheckBoxInput;

@@ -1,8 +1,8 @@
 const TextInput = ({
   value,
   onChange,
-  placeholder = "",
-  type = "text",
+  placeholder = '',
+  type = 'text',
   name,
   disabled = false,
   error = false,
@@ -20,13 +20,15 @@ const TextInput = ({
         border text-sm
         text-gray-700
         focus:outline-none focus:ring-2 transition
-        ${error
-          ? "border-red-500 focus:ring-red-500"
-          : "border-gray-300 focus:ring-indigo-500"}
-        ${disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white"}
+        ${
+          error
+            ? 'border-red-500 focus:ring-red-500'
+            : 'border-gray-300 focus:ring-indigo-500'
+        }
+        ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
       `}
     />
-  )
-}
+  );
+};
 
-export default TextInput
+export default TextInput;

@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * EmployeeApi
@@ -29,7 +29,7 @@ const EmployeeApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllEmployees: () => {
-    return apiClient.get("/employee");
+    return apiClient.get('/employee');
   },
 
   /**
@@ -60,7 +60,7 @@ const EmployeeApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   createEmployee: (employeeData) => {
-    return apiClient.post("/employee", employeeData);
+    return apiClient.post('/employee', employeeData);
   },
 
   /**

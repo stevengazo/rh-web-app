@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
-import { Award, Calendar, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { motion } from 'framer-motion';
+import { Award, Calendar, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
 
 const formatDate = (dateString) => {
-  if (!dateString) return "—";
-  return format(new Date(dateString), "dd/MM/yyyy");
+  if (!dateString) return '—';
+  return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
 const tableVariants = {
@@ -57,17 +57,11 @@ const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
           )}
 
           {certifications.map((item) => (
-            <tr
-              key={item.id}
-             
-              className="text-sm"
-            >
+            <tr key={item.id} className="text-sm">
               <td className="px-4 py-3 font-medium text-gray-800">
                 {item.name}
               </td>
-              <td className="px-4 py-3 text-gray-600">
-                {item.title}
-              </td>
+              <td className="px-4 py-3 text-gray-600">{item.title}</td>
               <td className="px-4 py-3 text-gray-600">
                 {formatDate(item.expirationDate)}
               </td>

@@ -1,31 +1,31 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useAppContext } from "../context/AppContext";
-import { Theater } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAppContext } from '../context/AppContext';
+import { Theater } from 'lucide-react';
 
 /* COMPONENTS */
-import PageTitle from "../components/PageTitle";
-import SectionTitle from "../components/SectionTitle";
-import PrimaryButton from "../components/PrimaryButton";
-import OffCanvas from "../components/OffCanvas";
-import { useParams } from "react-router-dom";
-import CourseAdd from "../Components/organisms/CourseAdd";
-import CertificationAdd from "../Components/organisms/CertificationAdd";
-import SalaryAdd from "../Components/organisms/SalaryAdd";
-import ActionAdd from "../Components/organisms/ActionAdd";
-import EmployeeEdit from "../Components/organisms/EmployeeEdit";
-import CourseTable from "../Components/organisms/CourseTable";
-import CertificationTable from "../Components/organisms/CertificationTable";
-import SalaryTable from "../Components/organisms/SalaryTable";
-import EmployeeTableInfo from "../Components/organisms/EmployeeTableInfo";
-import ExtrasTable from "../Components/organisms/ExtrasTable";
+import PageTitle from '../components/PageTitle';
+import SectionTitle from '../components/SectionTitle';
+import PrimaryButton from '../components/PrimaryButton';
+import OffCanvas from '../components/OffCanvas';
+import { useParams } from 'react-router-dom';
+import CourseAdd from '../Components/organisms/CourseAdd';
+import CertificationAdd from '../Components/organisms/CertificationAdd';
+import SalaryAdd from '../Components/organisms/SalaryAdd';
+import ActionAdd from '../Components/organisms/ActionAdd';
+import EmployeeEdit from '../Components/organisms/EmployeeEdit';
+import CourseTable from '../Components/organisms/CourseTable';
+import CertificationTable from '../Components/organisms/CertificationTable';
+import SalaryTable from '../Components/organisms/SalaryTable';
+import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
+import ExtrasTable from '../Components/organisms/ExtrasTable';
 
-import EmployeeApi from "../api/employeesApi";
-import courseApi from "../api/courseApi";
-import certificationApi from "../api/certificationApi";
-import ActionTable from "../Components/organisms/ActionTable";
-import salaryApi from "../api/salaryApi";
-import actionApi from "../api/actionApi";
+import EmployeeApi from '../api/employeesApi';
+import courseApi from '../api/courseApi';
+import certificationApi from '../api/certificationApi';
+import ActionTable from '../Components/organisms/ActionTable';
+import salaryApi from '../api/salaryApi';
+import actionApi from '../api/actionApi';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -40,7 +40,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: 'easeOut' },
   },
 };
 
@@ -48,14 +48,14 @@ const ViewEmployeePage = () => {
   const { id } = useParams();
   const [employee, setEmployee] = useState({});
   const [open, setOpen] = useState(false);
-  const [canvasTitle, setCanvasTitle] = useState("");
+  const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
   const [certifications, setCertifications] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [salaries, setSalaries] = useState([])
-  const [actions, setActions] = useState([])
+  const [salaries, setSalaries] = useState([]);
+  const [actions, setActions] = useState([]);
   const { user } = useAppContext();
-  
+
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
     setCanvasContent(content);
@@ -71,11 +71,13 @@ const ViewEmployeePage = () => {
         // Get Courses
         setCourses(await courseApi.getCoursesByUser(id).data);
         // Certifications
-        setCertifications(await certificationApi.getCertificationsByUser(id).data);
-        // Salary 
+        setCertifications(
+          await certificationApi.getCertificationsByUser(id).data
+        );
+        // Salary
         setSalaries((await salaryApi.getSalariesByUser(id)).data);
         // Actions
-        setActions( (await actionApi.getActionsByUser(id)).data );
+        setActions((await actionApi.getActionsByUser(id)).data);
       } catch (error) {
         console.error(error);
       }
@@ -136,7 +138,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Editar Información del Empleado",
+                    'Editar Información del Empleado',
                     <EmployeeEdit
                       employee={employee}
                       setEmployee={setEmployee}
@@ -162,7 +164,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Agregar Curso",
+                    'Agregar Curso',
                     <CourseAdd userId={id} author={user} />
                   )
                 }
@@ -185,7 +187,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Agregar Certificación",
+                    'Agregar Certificación',
                     <div>
                       <p>Formulario para agregar certificación</p>
                       <CertificationAdd userId={id} author={user} />
@@ -211,7 +213,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Registrar Salario",
+                    'Registrar Salario',
                     <SalaryAdd userId={id} author={user} />
                   )
                 }
@@ -234,7 +236,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Agregar Acción de Personal",
+                    'Agregar Acción de Personal',
                     <ActionAdd userId={id} author={user} />
                   )
                 }
@@ -257,7 +259,7 @@ const ViewEmployeePage = () => {
               <PrimaryButton
                 onClick={() =>
                   openCanvas(
-                    "Registrar Horas Extras",
+                    'Registrar Horas Extras',
                     <p>Formulario de horas extras</p>
                   )
                 }

@@ -1,11 +1,11 @@
-import SectionTitle from "../Components/SectionTitle";
+import SectionTitle from '../Components/SectionTitle';
 
-const MyPayrollsPage = ()=>{
-    return <>
-    <SectionTitle>
-        Mis Comprobantes
-    </SectionTitle>
+const MyPayrollsPage = () => {
+  return (
+    <>
+      <SectionTitle>Mis Comprobantes</SectionTitle>
     </>
-}
+  );
+};
 
 export default MyPayrollsPage;

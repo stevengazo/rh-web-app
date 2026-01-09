@@ -1,11 +1,11 @@
-import SectionTitle from "../components/SectionTitle";
+import SectionTitle from '../components/SectionTitle';
 
-const MyKPIs = ()=>{
-    return <>
-    <SectionTitle>
-        Mis Indicadores de Rendimiento
-    </SectionTitle>
+const MyKPIs = () => {
+  return (
+    <>
+      <SectionTitle>Mis Indicadores de Rendimiento</SectionTitle>
     </>
-}
+  );
+};
 
 export default MyKPIs;

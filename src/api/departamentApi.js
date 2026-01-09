@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * DepartamentApi
@@ -23,7 +23,7 @@ const DepartamentApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getAllDepartaments: async () => {
-    return apiClient.get("/departaments");
+    return apiClient.get('/departaments');
   },
 };
 

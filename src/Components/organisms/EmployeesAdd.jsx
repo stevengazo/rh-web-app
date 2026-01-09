@@ -1,32 +1,32 @@
-import EmployeeApi from "../../api/employeesApi";
-import DepartamentApi from "../../api/departamentApi";
-import { useEffect, useState } from "react";
-import TextInput from "../TextInput";
-import DateInput from "../DateInput";
-import Label from "../Label";
-import PrimaryButton from "../PrimaryButton";
+import EmployeeApi from '../../api/employeesApi';
+import DepartamentApi from '../../api/departamentApi';
+import { useEffect, useState } from 'react';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
+import Label from '../Label';
+import PrimaryButton from '../PrimaryButton';
 
 const EmployeesAdd = () => {
   const [departaments, setDepartaments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newUser, setNewUser] = useState({
-    userName: "",
-    email: "",
-    password: "Sjfjvi4$%",
-    phoneNumber: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    secondLastName: "",
+    userName: '',
+    email: '',
+    password: 'Sjfjvi4$%',
+    phoneNumber: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    secondLastName: '',
     birthDate: today,
-    dni: "",
-    address: "",
+    dni: '',
+    address: '',
     hiredDate: today,
-    jorney: "",
-    departamentId: "",
+    jorney: '',
+    departamentId: '',
   });
 
   const handleChange = (e) => {
@@ -43,26 +43,26 @@ const EmployeesAdd = () => {
 
     try {
       await EmployeeApi.createEmployee(newUser);
-      alert("Empleado creado correctamente");
+      alert('Empleado creado correctamente');
       setNewUser({
-        userName: "",
-        email: "",
-        password: "",
+        userName: '',
+        email: '',
+        password: '',
         phoneNumber: 0,
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        secondLastName: "",
-        birthDate: "",
-        dni: "",
-        address: "",
-        hiredDate: "",
-        jorney: "",
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        secondLastName: '',
+        birthDate: '',
+        dni: '',
+        address: '',
+        hiredDate: '',
+        jorney: '',
         departamentId: 0,
       });
     } catch (error) {
-      console.error("Error creando empleado:", error);
-      alert("Error al crear el empleado");
+      console.error('Error creando empleado:', error);
+      alert('Error al crear el empleado');
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ const EmployeesAdd = () => {
         const response = await DepartamentApi.getAllDepartaments();
         setDepartaments(response.data);
       } catch (error) {
-        console.error("Error fetching departaments:", error);
+        console.error('Error fetching departaments:', error);
       }
     };
     fetchDepartaments();
@@ -267,7 +267,7 @@ const EmployeesAdd = () => {
       {/* ================= ACTIONS ================= */}
       <div className="flex justify-end pt-4 border-t border-slate-200">
         <PrimaryButton onClick={handleSubmit} disabled={loading}>
-          {loading ? "Guardando..." : "Agregar Empleado"}
+          {loading ? 'Guardando...' : 'Agregar Empleado'}
         </PrimaryButton>
       </div>
     </form>

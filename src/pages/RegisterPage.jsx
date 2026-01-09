@@ -1,29 +1,27 @@
-import { motion } from "framer-motion";
-import { User, Mail, Lock, UserPlus } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import {  registerRequest} from "../api/authApi";
-import { useState } from "react";
+import { motion } from 'framer-motion';
+import { User, Mail, Lock, UserPlus } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { registerRequest } from '../api/authApi';
+import { useState } from 'react';
 
 const RegisterPage = () => {
   const [newUser, setNewUser] = useState({
-    username: "",
-    email: "",
-    password: "",
+    username: '',
+    email: '',
+    password: '',
   });
 
-  const handleSubmit = async( event)=>{
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       await registerRequest(newUser)
-                .then(e=> alert('Usuario Creado'))
-                .catch(err=> console.error(err))
+        .then((e) => alert('Usuario Creado'))
+        .catch((err) => console.error(err));
     } catch (error) {
-      console.error(error);      
+      console.error(error);
     }
-  }
-
-
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 px-4">
@@ -132,7 +130,7 @@ const RegisterPage = () => {
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-slate-400">
-          ¿Ya tienes cuenta?{" "}
+          ¿Ya tienes cuenta?{' '}
           <NavLink to="/login" className="text-sky-400 hover:underline">
             Inicia sesión
           </NavLink>

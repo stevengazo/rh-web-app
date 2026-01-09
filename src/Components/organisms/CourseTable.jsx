@@ -1,23 +1,28 @@
-import { motion } from "framer-motion";
-import { format } from "date-fns";
+import { motion } from 'framer-motion';
+import { format } from 'date-fns';
 
 const formatDate = (date) => {
-  if (!date) return "";
-  return format(new Date(date), "dd/MM/yyyy");
+  if (!date) return '';
+  return format(new Date(date), 'dd/MM/yyyy');
 };
 
-
-import { BookOpen, Clock, School, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  School,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 
 const tableVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { staggerChildren: 0.02 }
-  }
+    transition: { staggerChildren: 0.02 },
+  },
 };
-
 
 const CourseTable = ({ courses = [], onEdit, onDelete }) => {
   return (
@@ -52,23 +57,21 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
         <motion.tbody className="divide-y">
           {courses.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-sm text-gray-500">
+              <td
+                colSpan={4}
+                className="px-4 py-6 text-center text-sm text-gray-500"
+              >
                 No hay cursos registrados
               </td>
             </tr>
           )}
 
           {courses.map((item) => (
-            <tr
-              key={item.id}
-              className="text-sm"
-            >
+            <tr key={item.id} className="text-sm">
               <td className="px-4 py-3 font-medium text-gray-800">
                 {item.name}
               </td>
-              <td className="px-4 py-3 text-gray-600">
-                {item.institution}
-              </td>
+              <td className="px-4 py-3 text-gray-600">{item.institution}</td>
               <td className="px-4 py-3 text-gray-600">
                 {formatDate(item.start)} – {formatDate(item.end)}
               </td>

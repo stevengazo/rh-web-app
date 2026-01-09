@@ -1,9 +1,9 @@
-import PageTitle from "../components/PageTitle";
-import SectionTitle from "../components/SectionTitle";
-import ObjetivesTable from "../Components/organisms/ObjetivesTable";
+import PageTitle from '../components/PageTitle';
+import SectionTitle from '../components/SectionTitle';
+import ObjetivesTable from '../Components/organisms/ObjetivesTable';
 
-import kpiApi from "../api/kpiApi";
-import { useEffect, useState } from "react";
+import kpiApi from '../api/kpiApi';
+import { useEffect, useState } from 'react';
 
 const KPIPage = () => {
   const [kpis, setKpis] = useState([]);

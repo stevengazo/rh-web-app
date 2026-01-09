@@ -1,8 +1,8 @@
-import { NavLink } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Users, LogIn, UserPlus } from "lucide-react";
+import { NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Users, LogIn, UserPlus } from 'lucide-react';
 
-import PageTitle from "../components/PageTitle";
+import PageTitle from '../components/PageTitle';
 
 const HomePage = () => {
   return (
@@ -24,7 +24,7 @@ const HomePage = () => {
         </motion.div>
 
         {/* Título */}
-        <PageTitle title={"Sistema de Recursos Humanos"} />
+        <PageTitle title={'Sistema de Recursos Humanos'} />
 
         <p className="text-slate-300 mb-8">
           Gestión moderna de empleados, planillas y vacaciones

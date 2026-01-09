@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 const SidebarItem = ({ to, icon: Icon, label }) => {
   return (
@@ -10,7 +10,7 @@ const SidebarItem = ({ to, icon: Icon, label }) => {
       {Icon && <Icon size={18} />}
       <span>{label}</span>
     </Link>
-  )
-}
+  );
+};
 
-export default SidebarItem
+export default SidebarItem;

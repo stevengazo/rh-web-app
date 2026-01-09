@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 /**
  * API client para la gestión de KPIs (Objetivos).
@@ -12,7 +12,7 @@ const kpiApi = {
    * Promesa con la respuesta del servidor que contiene el listado de KPIs.
    */
   getAllKPIs: () => {
-    return apiClient.get("/Objetives");
+    return apiClient.get('/Objetives');
   },
 
   /**
@@ -58,7 +58,7 @@ const kpiApi = {
    */
   deleteKPI: (id) => {
     return apiClient.delete(`/Objetives/${id}`);
-  }
+  },
 };
 
 export default kpiApi;

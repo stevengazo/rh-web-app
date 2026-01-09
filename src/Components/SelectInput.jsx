@@ -1,5 +1,4 @@
 const SelectInput = ({ options, value, onChange, placeholder }) => {
-    return (<>
-    </>)
-}
+  return <></>;
+};
 export default SelectInput;

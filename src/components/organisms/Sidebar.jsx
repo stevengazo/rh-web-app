@@ -1,5 +1,5 @@
-import { LayoutDashboard, Users } from "lucide-react"
-import SidebarItem from "../molecules/SideBarItem"
+import { LayoutDashboard, Users } from 'lucide-react';
+import SidebarItem from '../molecules/SideBarItem';
 
 const Sidebar = () => {
   return (
@@ -7,19 +7,11 @@ const Sidebar = () => {
       <h2 className="text-xl font-bold mb-6">Sistema RH</h2>
 
       <nav className="space-y-2">
-        <SidebarItem
-          to="/dashboard"
-          icon={LayoutDashboard}
-          label="Dashboard"
-        />
-        <SidebarItem
-          to="/employees"
-          icon={Users}
-          label="Empleados"
-        />
+        <SidebarItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
+        <SidebarItem to="/employees" icon={Users} label="Empleados" />
       </nav>
     </aside>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

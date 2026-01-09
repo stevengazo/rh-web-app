@@ -1,19 +1,19 @@
-import { DollarSign, Calendar, Coins, Pencil, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { DollarSign, Calendar, Coins, Pencil, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
 
 const formatDate = (dateString) => {
-  if (!dateString) return "—";
-  return format(new Date(dateString), "dd/MM/yyyy");
+  if (!dateString) return '—';
+  return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
 const formatAmount = (amount, currency) => {
-  if (!amount) return "—";
+  if (!amount) return '—';
   const value = Number(amount);
   if (isNaN(value)) return amount;
 
-  return new Intl.NumberFormat("es-CR", {
-    style: "currency",
-    currency: currency || "CRC",
+  return new Intl.NumberFormat('es-CR', {
+    style: 'currency',
+    currency: currency || 'CRC',
     minimumFractionDigits: 2,
   }).format(value);
 };
@@ -58,10 +58,7 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
           )}
 
           {salaries.map((item) => (
-            <tr
-              key={item.salaryId}
-              className="text-sm hover:bg-gray-50"
-            >
+            <tr key={item.salaryId} className="text-sm hover:bg-gray-50">
               <td className="px-4 py-3 text-gray-600">
                 {formatDate(item.effectiveDate)}
               </td>
@@ -69,7 +66,7 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
                 {formatAmount(item.salaryAmount, item.currency)}
               </td>
               <td className="px-4 py-3 text-gray-600">
-                {item.currency || "—"}
+                {item.currency || '—'}
               </td>
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">

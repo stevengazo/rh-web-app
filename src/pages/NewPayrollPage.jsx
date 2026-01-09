@@ -1,21 +1,21 @@
-import { motion } from "framer-motion";
-import PageTitle from "../components/PageTitle";
-import SectionTitle from "../components/SectionTitle";
-import PrimaryButton from "../components/PrimaryButton";
-import SecondaryButton from "../components/SecondaryButton";
+import { motion } from 'framer-motion';
+import PageTitle from '../components/PageTitle';
+import SectionTitle from '../components/SectionTitle';
+import PrimaryButton from '../components/PrimaryButton';
+import SecondaryButton from '../components/SecondaryButton';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.35, ease: "easeOut" },
+    transition: { duration: 0.35, ease: 'easeOut' },
   },
 };
 
 const rowVariants = {
   hover: {
-    backgroundColor: "#f8fafc",
+    backgroundColor: '#f8fafc',
     transition: { duration: 0.15 },
   },
 };
@@ -77,12 +77,12 @@ const NewPayrollPage = () => {
                 </th>
 
                 {[
-                  "Sal. Mensual",
-                  "Sal. Quincenal",
-                  "Sal. Diario",
-                  "Hora Normal",
-                  "Hora Extra",
-                  "Hora Doble",
+                  'Sal. Mensual',
+                  'Sal. Quincenal',
+                  'Sal. Diario',
+                  'Hora Normal',
+                  'Hora Extra',
+                  'Hora Doble',
                 ].map((h) => (
                   <th
                     key={h}
@@ -96,13 +96,7 @@ const NewPayrollPage = () => {
                   Jornada
                 </th>
 
-                {[
-                  "Días",
-                  "Efect.",
-                  "Extras",
-                  "Dobles",
-                  "Feriados",
-                ].map((h) => (
+                {['Días', 'Efect.', 'Extras', 'Dobles', 'Feriados'].map((h) => (
                   <th
                     key={h}
                     className="bg-amber-50 px-4 py-3 text-center min-w-[90px]"
@@ -118,7 +112,7 @@ const NewPayrollPage = () => {
                   ₡ Dobles
                 </th>
 
-                {["Retroactivo", "Bono", "Comisión"].map((h) => (
+                {['Retroactivo', 'Bono', 'Comisión'].map((h) => (
                   <th
                     key={h}
                     className="bg-violet-50 px-4 py-3 text-right min-w-[140px]"
@@ -138,17 +132,15 @@ const NewPayrollPage = () => {
                 <td className="sticky left-0 z-10 bg-white px-4 py-3 border-b font-medium shadow-md">
                   Juan Pérez
                 </td>
-                <td className="px-4 py-3 border-b">
-                  Recursos Humanos
-                </td>
+                <td className="px-4 py-3 border-b">Recursos Humanos</td>
 
                 {[
-                  "₡800,000",
-                  "₡400,000",
-                  "₡26,667",
-                  "₡3,333",
-                  "₡5,000",
-                  "₡6,667",
+                  '₡800,000',
+                  '₡400,000',
+                  '₡26,667',
+                  '₡3,333',
+                  '₡5,000',
+                  '₡6,667',
                 ].map((v) => (
                   <td key={v} className="px-4 py-3 border-b text-right">
                     {v}

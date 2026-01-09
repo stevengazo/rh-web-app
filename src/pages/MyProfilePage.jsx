@@ -1,23 +1,23 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-import SectionTitle from "../components/SectionTitle";
-import PageTitle from "../components/PageTitle";
-import Divider from "../components/Divider";
-import PrimaryButton from "../components/PrimaryButton";
-import ActionTable from "../Components/organisms/ActionTable";
-import CertificationTable from "../Components/organisms/CertificationTable";
-import CourseTable from "../Components/organisms/CertificationTable";
-import SalaryTable from "../Components/organisms/SalaryTable";
-import EmployeeTableInfo from "../Components/organisms/EmployeeTableInfo";
+import SectionTitle from '../components/SectionTitle';
+import PageTitle from '../components/PageTitle';
+import Divider from '../components/Divider';
+import PrimaryButton from '../components/PrimaryButton';
+import ActionTable from '../Components/organisms/ActionTable';
+import CertificationTable from '../Components/organisms/CertificationTable';
+import CourseTable from '../Components/organisms/CertificationTable';
+import SalaryTable from '../Components/organisms/SalaryTable';
+import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
 
-import { useAppContext } from "../context/AppContext";
-import { useEffect, useState } from "react";
+import { useAppContext } from '../context/AppContext';
+import { useEffect, useState } from 'react';
 
-import EmployeeApi from "../api/employeesApi";
-import actionApi from "../api/actionApi";
-import courseApi from "../api/courseApi";
-import certificationApi from "../api/certificationApi";
-import salaryApi from "../api/salaryApi";
+import EmployeeApi from '../api/employeesApi';
+import actionApi from '../api/actionApi';
+import courseApi from '../api/courseApi';
+import certificationApi from '../api/certificationApi';
+import salaryApi from '../api/salaryApi';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -32,7 +32,7 @@ const sectionVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: 'easeOut' },
   },
 };
 
@@ -125,7 +125,7 @@ const MyProfilePage = () => {
         <div className="flex flex-row justify-between items-center">
           <SectionTitle>Acciones de Personal</SectionTitle>
         </div>
-        <ActionTable actions={actions} />{" "}
+        <ActionTable actions={actions} />{' '}
       </motion.div>
 
       {/* Vacaciones */}

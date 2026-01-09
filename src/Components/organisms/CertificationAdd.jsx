@@ -1,25 +1,25 @@
-import { useState } from "react";
-import TextInput from "../TextInput";
-import PrimaryButton from "../PrimaryButton";
-import CertificationApi from "../../api/certificationApi";
-import certificationApi from "../../api/certificationApi";
+import { useState } from 'react';
+import TextInput from '../TextInput';
+import PrimaryButton from '../PrimaryButton';
+import CertificationApi from '../../api/certificationApi';
+import certificationApi from '../../api/certificationApi';
 
 const CertificationAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newCertification, setNewCertification] = useState({
     certificationId: 0,
-    name: "",
-    institution: "",
+    name: '',
+    institution: '',
     emissionDate: today,
     expirationDate: today,
-    credentialId: "",
-    status: "",
-    fileUrl: "",
-    description: "",
-    createdBy: author?.userName ?? "",
+    credentialId: '',
+    status: '',
+    fileUrl: '',
+    description: '',
+    createdBy: author?.userName ?? '',
     createdAt: today,
-    updatedBy: author?.userName ?? "",
+    updatedBy: author?.userName ?? '',
     updatedAt: today,
     isDeleted: false,
     userId: userId,
@@ -34,11 +34,11 @@ const CertificationAdd = ({ userId, author }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.clear();
-    console.log("Certificación a enviar:", newCertification);
+    console.log('Certificación a enviar:', newCertification);
     certificationApi
       .createCertification(newCertification)
-      .then((e) => alert("Certificaciòn Agregada"))
-      .catch((e) => console.error("Error: " + e));
+      .then((e) => alert('Certificaciòn Agregada'))
+      .catch((e) => console.error('Error: ' + e));
   };
 
   return (
