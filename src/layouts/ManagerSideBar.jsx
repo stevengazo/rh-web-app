@@ -88,9 +88,9 @@ const ManagerSideBar = () => {
             <Cog size={18} />
             KPIs
           </NavLink>
-          <NavLink to="/manager" className={navItemClass}>
+          <NavLink to="/manager/questions" className={navItemClass}>
             <Cog size={18} />
-            Objetivos
+            Preguntas
           </NavLink>
         </div>
 

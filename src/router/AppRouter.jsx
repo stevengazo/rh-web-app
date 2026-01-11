@@ -20,7 +20,7 @@ import KPIPage from '../pages/KPIPage';
 import MyKPIs from '../pages/MyKPIs';
 import MyCommissionsPage from '../pages/MyComissionsPage';
 import MyPayrollsPage from '../pages/MyPayrollsPage';
-
+import QuestionPage from '../pages/QuestionPage';
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -44,7 +44,7 @@ const AppRouter = () => {
           <Route path="/manager/payroll" element={<PayrollPage />} />
           <Route path="/manager/actions" element={<ActionsPage />} />
           <Route path="/manager/kpis" element={<KPIPage />} />
-
+       <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new" element={<NewPayrollPage />} />
