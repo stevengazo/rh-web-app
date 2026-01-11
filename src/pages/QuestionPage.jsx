@@ -1,6 +1,7 @@
 import PageTitle from '../components/PageTitle';
 
 import questionApi from '../api/questionsApi';
+import AddQuestion from '../Components/organisms/AddQuestion';
 import AddQuestionCategory from '../Components/organisms/AddQuestionCategory';
 import { useState } from 'react';
 
@@ -55,7 +56,7 @@ const QuestionPage = () => {
         {/* TAB 1 */}
         {activeTab === TABS.QUESTIONS && (
           <div className="space-y-6">
-           
+           <AddQuestion />
           </div>
         )}
 
