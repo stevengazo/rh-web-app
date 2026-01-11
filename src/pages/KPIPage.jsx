@@ -5,6 +5,8 @@ import AddObjetive from '../Components/organisms/AddObjetive';
 import AddObjetiveCategory from '../Components/organisms/AddObjetiveCategory';
 import ObjetivesByUser from '../Components/organisms/ObjetivesByUser';
 import Add_User_Objetive from '../Components/organisms/Add_User_Objetive';
+import user_objetiveApi from '../api/user_objetiveApi';
+import EmployeeApi from '../api/employeesApi';
 
 import kpiApi from '../api/kpiApi';
 
@@ -18,12 +20,19 @@ const TABS = {
 const KPIPage = () => {
   const [activeTab, setActiveTab] = useState(TABS.OBJECTIVES);
   const [kpis, setKpis] = useState([]);
+  const [kpisByUser, setKpisByUser] = useState([]);
+  const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
     async function getDataAsync() {
       try {
         const response = await kpiApi.getAllKPIs();
         setKpis(response.data);
+        const re2 = await user_objetiveApi.getAllUser_Objetives();
+        setKpisByUser(re2.data);
+
+        const ResEmpl = await EmployeeApi.getAllEmployees();
+        setEmployees(ResEmpl.data);
       } catch (error) {
         console.error(error);
       }
@@ -95,7 +104,7 @@ const KPIPage = () => {
         {/* TAB 2 */}
         {activeTab === TABS.BY_USER && (
           <div className="space-y-4">
-            <ObjetivesByUser />
+            <ObjetivesByUser ObjetivesByUser={kpisByUser} Employees={employees} />
           </div>
         )}
 

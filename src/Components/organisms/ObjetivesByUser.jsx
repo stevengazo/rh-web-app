@@ -1,14 +1,56 @@
-import SectionTitle from '../SectionTitle'
+import SectionTitle from '../SectionTitle';
 
-const ObjetivesByUser = ({ ObjetivesByUser }) => {
+const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
+  // Agrupar objetivos por usuario
+  const groupedByUser = ObjetivesByUser.reduce((acc, item) => {
+    if (!acc[item.userId]) {
+      acc[item.userId] = [];
+    }
+    acc[item.userId].push(item);
+    return acc;
+  }, {});
+
+  const getEmployeeName = (userId) => {
+    const employee = Employees.find((e) => e.id === userId);
+    return employee ? employee.userName : 'Empleado no encontrado';
+  };
+
   return (
-    <>
-      <div>
-        <SectionTitle>Empleado</SectionTitle>
-        {/** Objetivos */}
-        <div></div>
-      </div>
-    </>
+    <div className="space-y-4">
+      <SectionTitle>Objetivos por Empleado</SectionTitle>
+
+      {Object.entries(groupedByUser).map(([userId, objectives]) => (
+        <div
+          key={userId}
+          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          {/* Usuario */}
+          <h4 className="mb-3 text-sm font-semibold text-gray-700">
+            {getEmployeeName(userId)}
+            <span className="ml-2 font-mono text-xs text-gray-400">
+              ({userId})
+            </span>
+          </h4>
+
+          {/* Objetivos */}
+          <ul className="space-y-2">
+            {objectives.map((o) => (
+              <li
+                key={o.user_ObjetiveId}
+                className="rounded-lg bg-gray-50 p-3 text-sm"
+              >
+                <p className="font-medium text-gray-800">
+                  {o.objetive?.title}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {o.objetive?.description}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
   );
 };
 
