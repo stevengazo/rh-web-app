@@ -1,60 +1,60 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { Theater } from 'lucide-react';
 
 /* COMPONENTS */
 import PageTitle from '../components/PageTitle';
 import SectionTitle from '../components/SectionTitle';
 import PrimaryButton from '../components/PrimaryButton';
 import OffCanvas from '../components/OffCanvas';
-import { useParams } from 'react-router-dom';
-import CourseAdd from '../Components/organisms/CourseAdd';
-import CertificationAdd from '../Components/organisms/CertificationAdd';
-import SalaryAdd from '../Components/organisms/SalaryAdd';
-import ActionAdd from '../Components/organisms/ActionAdd';
+
 import EmployeeEdit from '../Components/organisms/EmployeeEdit';
-import CourseTable from '../Components/organisms/CourseTable';
-import CertificationTable from '../Components/organisms/CertificationTable';
-import SalaryTable from '../Components/organisms/SalaryTable';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
+
+import CourseAdd from '../Components/organisms/CourseAdd';
+import CourseTable from '../Components/organisms/CourseTable';
+
+import CertificationAdd from '../Components/organisms/CertificationAdd';
+import CertificationTable from '../Components/organisms/CertificationTable';
+
+import SalaryAdd from '../Components/organisms/SalaryAdd';
+import SalaryTable from '../Components/organisms/SalaryTable';
+
+import ActionAdd from '../Components/organisms/ActionAdd';
+import ActionTable from '../Components/organisms/ActionTable';
+
 import ExtrasTable from '../Components/organisms/ExtrasTable';
 
+/* API */
 import EmployeeApi from '../api/employeesApi';
 import courseApi from '../api/courseApi';
 import certificationApi from '../api/certificationApi';
-import ActionTable from '../Components/organisms/ActionTable';
 import salaryApi from '../api/salaryApi';
 import actionApi from '../api/actionApi';
 
-const pageVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' },
-  },
+const TABS = {
+  INFO: 'info',
+  TRAINING: 'training',
+  SALARY: 'salary',
+  ACTIONS: 'actions',
+  EXTRAS: 'extras',
 };
 
 const ViewEmployeePage = () => {
   const { id } = useParams();
+  const { user } = useAppContext();
+
+  const [activeTab, setActiveTab] = useState(TABS.INFO);
   const [employee, setEmployee] = useState({});
+  const [courses, setCourses] = useState([]);
+  const [certifications, setCertifications] = useState([]);
+  const [salaries, setSalaries] = useState([]);
+  const [actions, setActions] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
-  const [certifications, setCertifications] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [salaries, setSalaries] = useState([]);
-  const [actions, setActions] = useState([]);
-  const { user } = useAppContext();
 
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
@@ -63,216 +63,181 @@ const ViewEmployeePage = () => {
   };
 
   useEffect(() => {
-    const FechData = async () => {
+    const fetchData = async () => {
       try {
-        // Get Employee
-        const response = await EmployeeApi.getEmployeeById(id);
-        setEmployee(response.data);
-        // Get Courses
-        setCourses(await courseApi.getCoursesByUser(id).data);
-        // Certifications
+        setEmployee((await EmployeeApi.getEmployeeById(id)).data);
+        setCourses((await courseApi.getCoursesByUser(id)).data);
         setCertifications(
-          await certificationApi.getCertificationsByUser(id).data
+          (await certificationApi.getCertificationsByUser(id)).data
         );
-        // Salary
         setSalaries((await salaryApi.getSalariesByUser(id)).data);
-        // Actions
         setActions((await actionApi.getActionsByUser(id)).data);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
       }
     };
 
-    FechData();
-  }, []);
+    fetchData();
+  }, [id]);
 
   return (
     <>
-      {/* OffCanvas animado */}
+      {/* OffCanvas */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <OffCanvas
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            title={canvasTitle}
           >
-            <OffCanvas
-              isOpen={open}
-              onClose={() => setOpen(false)}
-              title={canvasTitle}
+            <motion.div
+              initial={{ x: 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 40, opacity: 0 }}
             >
-              <motion.div
-                initial={{ x: 50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 50, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {canvasContent}
-              </motion.div>
-            </OffCanvas>
-          </motion.div>
+              {canvasContent}
+            </motion.div>
+          </OffCanvas>
         )}
       </AnimatePresence>
 
-      {/* Page */}
-      <motion.div
-        className="space-y-6"
-        variants={pageVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Title */}
-        <motion.div variants={itemVariants}>
-          <PageTitle>Información del Empleado</PageTitle>
-        </motion.div>
+      <div className="space-y-6">
+        <PageTitle>Información del Empleado</PageTitle>
 
-        {/* Detalles */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Detalles del Empleado</SectionTitle>
+        {/* Tabs */}
+        <div className="border-b border-gray-200">
+          <nav className="flex gap-6">
+            {Object.entries(TABS).map(([key, value]) => (
+              <TabButton
+                key={key}
+                active={activeTab === value}
+                onClick={() => setActiveTab(value)}
+              >
+                {key}
+              </TabButton>
+            ))}
+          </nav>
+        </div>
 
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
+        {/* Content */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          {/* INFO */}
+          {activeTab === TABS.INFO && (
+            <>
+              <Header
+                title="Detalles del Empleado"
+                action={() =>
                   openCanvas(
-                    'Editar Información del Empleado',
+                    'Editar Información',
                     <EmployeeEdit
                       employee={employee}
                       setEmployee={setEmployee}
                     />
                   )
                 }
-              >
-                Editar Información
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <EmployeeTableInfo employee={employee} />
-        </motion.div>
+              />
+              <EmployeeTableInfo employee={employee} />
+            </>
+          )}
 
-        {/* Cursos */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Cursos</SectionTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
+          {/* TRAINING */}
+          {activeTab === TABS.TRAINING && (
+            <>
+              <Header
+                title="Cursos"
+                action={() =>
                   openCanvas(
                     'Agregar Curso',
                     <CourseAdd userId={id} author={user} />
                   )
                 }
-              >
-                Agregar
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <CourseTable courses={courses} />
-        </motion.div>
+              />
+              <CourseTable courses={courses} />
 
-        {/* Certificaciones */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Certificaciones</SectionTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
+              <Divider />
+
+              <Header
+                title="Certificaciones"
+                action={() =>
                   openCanvas(
                     'Agregar Certificación',
-                    <div>
-                      <p>Formulario para agregar certificación</p>
-                      <CertificationAdd userId={id} author={user} />
-                    </div>
+                    <CertificationAdd userId={id} author={user} />
                   )
                 }
-              >
-                Agregar
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <CertificationTable certifications={certifications} />
-        </motion.div>
+              />
+              <CertificationTable certifications={certifications} />
+            </>
+          )}
 
-        {/* Salarios */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Salarios Registrados</SectionTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
+          {/* SALARY */}
+          {activeTab === TABS.SALARY && (
+            <>
+              <Header
+                title="Salarios"
+                action={() =>
                   openCanvas(
                     'Registrar Salario',
                     <SalaryAdd userId={id} author={user} />
                   )
                 }
-              >
-                Agregar
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <SalaryTable salaries={salaries} />
-        </motion.div>
+              />
+              <SalaryTable salaries={salaries} />
+            </>
+          )}
 
-        {/* Acciones */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Acciones de Personal</SectionTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
+          {/* ACTIONS */}
+          {activeTab === TABS.ACTIONS && (
+            <>
+              <Header
+                title="Acciones de Personal"
+                action={() =>
                   openCanvas(
-                    'Agregar Acción de Personal',
+                    'Agregar Acción',
                     <ActionAdd userId={id} author={user} />
                   )
                 }
-              >
-                Agregar
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <ActionTable actions={actions} />
-        </motion.div>
+              />
+              <ActionTable actions={actions} />
+            </>
+          )}
 
-        {/* Horas Extras */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-xl shadow-sm border border-slate-200 p-6"
-        >
-          <div className="flex justify-between items-center">
-            <SectionTitle>Horas Extras</SectionTitle>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
-                  openCanvas(
-                    'Registrar Horas Extras',
-                    <p>Formulario de horas extras</p>
-                  )
-                }
-              >
-                Agregar
-              </PrimaryButton>
-            </motion.div>
-          </div>
-          <ExtrasTable />
-        </motion.div>
-      </motion.div>
+          {/* EXTRAS */}
+          {activeTab === TABS.EXTRAS && (
+            <>
+              <Header title="Horas Extras" />
+              <ExtrasTable />
+            </>
+          )}
+        </div>
+      </div>
     </>
   );
 };
+
+const TabButton = ({ active, children, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`pb-3 text-sm font-medium border-b-2 transition
+      ${
+        active
+          ? 'border-blue-600 text-blue-600'
+          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+      }
+    `}
+  >
+    {children}
+  </button>
+);
+
+const Header = ({ title, action }) => (
+  <div className="flex justify-between items-center mb-4">
+    <SectionTitle>{title}</SectionTitle>
+    {action && <PrimaryButton onClick={action}>Agregar</PrimaryButton>}
+  </div>
+);
+
+const Divider = () => (
+  <hr className="my-6 border-gray-200" />
+);
 
 export default ViewEmployeePage;
