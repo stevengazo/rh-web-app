@@ -236,8 +236,6 @@ const Header = ({ title, action }) => (
   </div>
 );
 
-const Divider = () => (
-  <hr className="my-6 border-gray-200" />
-);
+const Divider = () => <hr className="my-6 border-gray-200" />;
 
 export default ViewEmployeePage;

@@ -14,8 +14,8 @@ const Add_User_Objetive = () => {
     user_ObjetiveId: 0,
     userId: '',
     appUser: null,
-    questionId: '',
-    question: null,
+    objetiveId: 0,
+    objetive: null,
     results: [],
   });
 
@@ -47,14 +47,14 @@ const Add_User_Objetive = () => {
 
     setNewUser_Objetive((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'objetiveId' ? Number(value) : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!newUser_Objetive.userId || !newUser_Objetive.questionId) {
+    if (!newUser_Objetive.userId || !newUser_Objetive.objetiveId) {
       setError('Debe seleccionar un empleado y un objetivo');
       return;
     }
@@ -63,14 +63,16 @@ const Add_User_Objetive = () => {
       setLoading(true);
       setError(null);
 
-      await user_objetiveApi.createUserObjetive(newUser_Objetive);
+      console.log(newUser_Objetive);
+
+      await user_objetiveApi.createUser_Objetive(newUser_Objetive);
 
       setNewUser_Objetive({
         user_ObjetiveId: 0,
         userId: '',
         appUser: null,
-        questionId: '',
-        question: null,
+        objetiveId: 0,
+        objetive: null,
         results: [],
       });
     } catch (err) {
@@ -124,16 +126,16 @@ const Add_User_Objetive = () => {
           Objetivo
         </label>
         <select
-          name="questionId"
-          value={newUser_Objetive.questionId}
+          name="objetiveId"
+          value={newUser_Objetive.objetiveId}
           onChange={handleChange}
           disabled={loading}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
                      focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
-          <option value="">Seleccione un objetivo</option>
+          <option value={0}>Seleccione un objetivo</option>
           {kpis.map((kpi) => (
-            <option key={kpi.id} value={kpi.id}>
+            <option key={kpi.objetiveId} value={kpi.objetiveId}>
               {kpi.title}
             </option>
           ))}
