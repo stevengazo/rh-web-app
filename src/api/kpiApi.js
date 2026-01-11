@@ -34,7 +34,7 @@ const kpiApi = {
    * Promesa con la respuesta del servidor tras crear el KPI.
    */
   createKPI: (KPI) => {
-    return apiClient.post(`/Objetives/${id}`, KPI);
+    return apiClient.post(`/Objetives`, KPI);
   },
 
   /**

@@ -17,9 +17,7 @@ const KPIPage = () => {
         .then((e) => setKpis(e.data))
         .catch((e) => console.error(e));
     }
-
     GetDataAsync();
-    console.log(kpis);
   }, []);
 
   return (
@@ -32,7 +30,7 @@ const KPIPage = () => {
 
       <div className=" flex flex-col gap-2 w-full border border-red-400 rounded p-2">
         <AddObjetiveCategory />
-        <hr/>
+        <hr />
         <AddObjetive />
         <hr />
         <ObjetivesTable objetives={kpis} />

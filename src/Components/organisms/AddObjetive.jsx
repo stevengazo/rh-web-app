@@ -28,7 +28,6 @@ const AddObjetive = () => {
   }, []);
 
   const handleChange = (e) => {
-    throw new Error("Not Implement");
     const { name, value, type, checked } = e.target;
 
     setNewObjetive((prev) => ({
