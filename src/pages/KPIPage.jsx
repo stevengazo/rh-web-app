@@ -104,7 +104,10 @@ const KPIPage = () => {
         {/* TAB 2 */}
         {activeTab === TABS.BY_USER && (
           <div className="space-y-4">
-            <ObjetivesByUser ObjetivesByUser={kpisByUser} Employees={employees} />
+            <ObjetivesByUser
+              ObjetivesByUser={kpisByUser}
+              Employees={employees}
+            />
           </div>
         )}
 

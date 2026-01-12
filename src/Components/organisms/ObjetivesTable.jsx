@@ -25,9 +25,7 @@ const ObjetivesTable = ({ objetives }) => {
               <td className="px-6 py-4 text-sm text-gray-800 font-medium">
                 {e.objetiveId}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-700">
-                {e.title}
-              </td>
+              <td className="px-6 py-4 text-sm text-gray-700">{e.title}</td>
               <td className="px-6 py-4 text-sm text-gray-600">
                 {e.description}
               </td>

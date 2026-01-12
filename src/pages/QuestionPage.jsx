@@ -34,7 +34,6 @@ const QuestionPage = () => {
       // Questions By User
       const RestQuesByUser = await user_questionApi.getAllUser_Questions();
       setQuestionsByUser(RestQuesByUser.data);
-   
     }
     GetData();
   }, []);

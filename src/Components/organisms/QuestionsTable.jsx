@@ -24,9 +24,7 @@ const QuestionsTable = ({ Questions }) => {
               key={q.questionId}
               className="hover:bg-blue-50 transition-colors"
             >
-              <td className="px-4 py-3 text-sm text-gray-700">
-                {q.text}
-              </td>
+              <td className="px-4 py-3 text-sm text-gray-700">{q.text}</td>
             </tr>
           ))}
         </tbody>

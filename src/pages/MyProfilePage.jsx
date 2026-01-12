@@ -72,7 +72,6 @@ const MyProfilePage = () => {
         setActions((await actionApi.getActionsByUser(user.id)).data);
       } catch (error) {
         console.error(error);
-      
       }
     };
 

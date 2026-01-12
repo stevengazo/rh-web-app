@@ -100,9 +100,7 @@ const Add_User_Objetive = () => {
 
       {/* Empleado */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">
-          Empleado
-        </label>
+        <label className="text-sm font-medium text-gray-700">Empleado</label>
         <select
           name="userId"
           value={newUser_Objetive.userId}
@@ -122,9 +120,7 @@ const Add_User_Objetive = () => {
 
       {/* Objetivo */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700">
-          Objetivo
-        </label>
+        <label className="text-sm font-medium text-gray-700">Objetivo</label>
         <select
           name="objetiveId"
           value={newUser_Objetive.objetiveId}

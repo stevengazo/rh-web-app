@@ -23,9 +23,7 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
   }, {});
 
   const getEmployeeName = (userId) => {
-    const employee = Employees.find(
-      (e) => String(e.userId) === String(userId)
-    );
+    const employee = Employees.find((e) => String(e.userId) === String(userId));
 
     if (!employee) return 'Empleado no encontrado';
 
