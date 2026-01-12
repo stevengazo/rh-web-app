@@ -56,7 +56,7 @@ const AddQuestion = () => {
           name="text"
           value={question.text}
           onChange={handleChange}
-          className="border rounded px-2 py-1 w-full"
+          className="border border-gray-300 rounded px-2 py-1 w-full"
           required
         />
       </div>
@@ -68,7 +68,7 @@ const AddQuestion = () => {
           name="questionCategoryId"
           value={question.questionCategoryId}
           onChange={handleChange}
-          className="border rounded px-2 py-1 w-full"
+          className="border border-gray-300 rounded px-2 py-1 w-full"
           required
         >
           <option value="">Seleccione una categoría</option>

@@ -30,8 +30,8 @@ const user_questionApi = {
    *
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
-  createUser_Question: () => {
-    return apiClient.post(`/user_question`);
+  createUser_Question: (user_question) => {
+    return apiClient.post(`/user_question`, user_question);
   },
 
   /**

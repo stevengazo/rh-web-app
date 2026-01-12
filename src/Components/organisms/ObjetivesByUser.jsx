@@ -1,6 +1,8 @@
 import SectionTitle from '../SectionTitle';
+import { useNavigate } from 'react-router-dom';
 
 const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
+  const navigate = useNavigate();
   // Agrupar objetivos por usuario
   const groupedByUser = ObjetivesByUser.reduce((acc, item) => {
     if (!acc[item.userId]) {
@@ -25,7 +27,10 @@ const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
           className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
         >
           {/* Usuario */}
-          <h4 className="mb-3 text-sm font-semibold text-gray-700">
+          <h4
+            className="mb-3 text-sm font-semibold hover:text-lg hover:text-blue-600 duration-200  text-gray-700"
+            onClick={() => navigate(`/manager/perfornance/${userId}`)}
+          >
             {getEmployeeName(userId)}
             <span className="ml-2 font-mono text-xs text-gray-400">
               ({userId})
@@ -39,9 +44,7 @@ const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
                 key={o.user_ObjetiveId}
                 className="rounded-lg bg-gray-50 p-3 text-sm"
               >
-                <p className="font-medium text-gray-800">
-                  {o.objetive?.title}
-                </p>
+                <p className="font-medium text-gray-800">{o.objetive?.title}</p>
                 <p className="text-xs text-gray-500">
                   {o.objetive?.description}
                 </p>

@@ -34,11 +34,13 @@ import salaryApi from '../api/salaryApi';
 import actionApi from '../api/actionApi';
 
 const TABS = {
-  INFO: 'info',
-  TRAINING: 'training',
-  SALARY: 'salary',
-  ACTIONS: 'actions',
-  EXTRAS: 'extras',
+  INFO: 'Información',
+  TRAINING: 'Certificaciones',
+  SALARY: 'Salarios',
+  ACTIONS: 'Acciones',
+  EXTRAS: 'Extras',
+  COMISSIONS: 'Comisiones',
+  AWARDS: 'Reconocimientos',
 };
 
 const ViewEmployeePage = () => {
@@ -113,7 +115,7 @@ const ViewEmployeePage = () => {
                 active={activeTab === value}
                 onClick={() => setActiveTab(value)}
               >
-                {key}
+                {value}
               </TabButton>
             ))}
           </nav>

@@ -1,9 +1,14 @@
 import PageTitle from '../components/PageTitle';
 
 import questionApi from '../api/questionsApi';
+import QuestionsTable from '../Components/organisms/QuestionsTable';
 import AddQuestion from '../Components/organisms/AddQuestion';
 import AddQuestionCategory from '../Components/organisms/AddQuestionCategory';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Add_User_Question from '../Components/organisms/Add_User_Question';
+import EmployeeApi from '../api/employeesApi';
+import QuestionsByUser from '../Components/organisms/QuestionsByUser';
+import user_questionApi from '../api/user_questionApi';
 
 const TABS = {
   QUESTIONS: 'questions',
@@ -14,12 +19,31 @@ const TABS = {
 
 const QuestionPage = () => {
   const [activeTab, setActiveTab] = useState(TABS.OBJECTIVES);
+  const [questions, setQuestions] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [questionsByUser, setQuestionsByUser] = useState([]);
+
+  useEffect(() => {
+    async function GetData() {
+      // Questions
+      const RespQuestions = await questionApi.getAllQuestions();
+      setQuestions(RespQuestions.data);
+      // Employees
+      const RespEmployees = await EmployeeApi.getAllEmployees();
+      setEmployees(RespEmployees.data);
+      // Questions By User
+      const RestQuesByUser = await user_questionApi.getAllUser_Questions();
+      setQuestionsByUser(RestQuesByUser.data);
+   
+    }
+    GetData();
+  }, []);
+
   return (
     <div className="space-y-1">
       <PageTitle>Preguntas</PageTitle>
 
-
-            {/* Tabs */}
+      {/* Tabs */}
       <div className="border-b border-gray-200">
         <nav className="flex gap-6">
           <TabButton
@@ -56,35 +80,39 @@ const QuestionPage = () => {
         {/* TAB 1 */}
         {activeTab === TABS.QUESTIONS && (
           <div className="space-y-6">
-           <AddQuestion />
+            <AddQuestion />
+            <hr />
+            <QuestionsTable Questions={questions} />
           </div>
         )}
 
         {/* TAB 2 */}
         {activeTab === TABS.BY_USER && (
           <div className="space-y-4">
-              </div>
+            <QuestionsByUser
+              QuestionsByUser={questionsByUser}
+              Employees={employees}
+            />
+          </div>
         )}
 
         {/* TAB 3 */}
         {activeTab === TABS.ASSIGN && (
           <div className="space-y-4">
-          
+            <Add_User_Question />
           </div>
         )}
 
         {/* TAB 4 */}
         {activeTab === TABS.SETTINGS && (
           <div className="space-y-4">
-          <AddQuestionCategory />
+            <AddQuestionCategory />
           </div>
         )}
       </div>
     </div>
-  
   );
 };
-
 
 const TabButton = ({ active, children, onClick }) => {
   return (

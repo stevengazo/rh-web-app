@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { UserX } from 'lucide-react';
 
+
 const row = (label, value) => (
   <tr className="border-t">
     <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
@@ -9,6 +10,7 @@ const row = (label, value) => (
 );
 
 const EmployeeTableInfo = ({ employee }) => {
+console.log("employee",employee)
   // 👉 Estado: sin datos
   if (!employee) {
     return (

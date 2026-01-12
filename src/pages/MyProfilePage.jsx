@@ -19,6 +19,13 @@ import courseApi from '../api/courseApi';
 import certificationApi from '../api/certificationApi';
 import salaryApi from '../api/salaryApi';
 
+const TABS = {
+  INFO: 'Informacion',
+  ACTIONS: 'Acciones',
+  VACATIONS: 'Vacaciones',
+  SETTINGS: 'settings',
+};
+
 const pageVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -37,7 +44,9 @@ const sectionVariants = {
 };
 
 const MyProfilePage = () => {
-  const [myProfile, setMyProfile] = useState();
+  const [myProfile, setMyProfile] = useState({});
+
+  const [activeTab, setActiveTab] = useState(TABS.INFO);
 
   const [certifications, setCertifications] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -63,7 +72,7 @@ const MyProfilePage = () => {
         setActions((await actionApi.getActionsByUser(user.id)).data);
       } catch (error) {
         console.error(error);
-        setMyProfile(undefined);
+      
       }
     };
 
@@ -83,67 +92,106 @@ const MyProfilePage = () => {
         <EmployeeTableInfo employee={myProfile} />
       </motion.div>
 
-      {/* Cursos */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Cursos</SectionTitle>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="flex gap-6">
+          <TabButton
+            active={activeTab === TABS.INFO}
+            onClick={() => setActiveTab(TABS.INFO)}
+          >
+            Perfil
+          </TabButton>
+          <TabButton
+            active={activeTab === TABS.ACTIONS}
+            onClick={() => setActiveTab(TABS.ACTIONS)}
+          >
+            Acciones
+          </TabButton>
+
+          <TabButton
+            active={activeTab === TABS.VACATIONS}
+            onClick={() => setActiveTab(TABS.VACATIONS)}
+          >
+            Vacaciones
+          </TabButton>
+
+          <TabButton
+            active={activeTab === TABS.SETTINGS}
+            onClick={() => setActiveTab(TABS.SETTINGS)}
+          >
+            Configuración
+          </TabButton>
+        </nav>
+      </div>
+
+      {/* Content */}
+      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        {/* TAB 1 */}
+        {activeTab === TABS.INFO && (
+          <div className="space-y-6">
+            {/* Cursos */}
+
+            <SectionTitle>Cursos</SectionTitle>
             <PrimaryButton>Agregar</PrimaryButton>
-          </motion.div>
-        </div>
-        <CourseTable courses={courses} />
-      </motion.div>
-
-      {/* Certificaciones */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Certificaciones</SectionTitle>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <CourseTable courses={courses} />
+            <Divider />
+            <SectionTitle>Certificaciones</SectionTitle>
             <PrimaryButton>Agregar</PrimaryButton>
-          </motion.div>
-        </div>
-        <CertificationTable certifications={certifications} />
-      </motion.div>
-
-      {/* Histórico de Salarios */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Histórico de Salarios</SectionTitle>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <CertificationTable certifications={certifications} />
+            <Divider />
+            <SectionTitle>Histórico de Salarios</SectionTitle>
             <PrimaryButton>Agregar</PrimaryButton>
-          </motion.div>
-        </div>
-        <SalaryTable salaries={salaries} />
-      </motion.div>
+            <SalaryTable salaries={salaries} />
+          </div>
+        )}
 
-      {/* Acciones de Personal */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Acciones de Personal</SectionTitle>
-        </div>
-        <ActionTable actions={actions} />{' '}
-      </motion.div>
+        {/* TAB 2 */}
+        {activeTab === TABS.ACTIONS && (
+          <div className="space-y-4">
+            {/* Acciones de Personal */}
+            <SectionTitle>Acciones de Personal</SectionTitle>
+            <ActionTable actions={actions} />{' '}
+          </div>
+        )}
 
-      {/* Vacaciones */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Vacaciones</SectionTitle>
-        </div>
-      </motion.div>
+        {/* TAB 3 */}
+        {activeTab === TABS.VACATIONS && (
+          <div className="space-y-4">
+            {/* Vacaciones */}
+
+            <div className="flex flex-row justify-between items-center">
+              <SectionTitle>Vacaciones</SectionTitle>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4 */}
+        {activeTab === TABS.SETTINGS && (
+          <div className="space-y-4">
+            <SectionTitle>Comprobantes de Pago</SectionTitle>
+          </div>
+        )}
+      </div>
 
       {/* Comprobantes de Pago */}
-      <motion.div variants={sectionVariants}>
-        <Divider />
-        <div className="flex flex-row justify-between items-center">
-          <SectionTitle>Comprobantes de Pago</SectionTitle>
-        </div>
-      </motion.div>
     </motion.div>
+  );
+};
+
+const TabButton = ({ active, children, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`pb-3 text-sm font-medium transition-colors border-b-2
+        ${
+          active
+            ? 'border-blue-600 text-blue-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+        }
+      `}
+    >
+      {children}
+    </button>
   );
 };
 
