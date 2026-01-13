@@ -26,12 +26,17 @@ import ActionTable from '../Components/organisms/ActionTable';
 
 import ExtrasTable from '../Components/organisms/ExtrasTable';
 
+import AddAward from '../Components/organisms/AddAward';
+import AwardTable from '../Components/organisms/AwardTable';
+
 /* API */
 import EmployeeApi from '../api/employeesApi';
 import courseApi from '../api/courseApi';
 import certificationApi from '../api/certificationApi';
 import salaryApi from '../api/salaryApi';
 import actionApi from '../api/actionApi';
+import awardApi from '../api/awardsApi';
+import extrasApi from '../api/extrasApi';
 
 const TABS = {
   INFO: 'Información',
@@ -53,6 +58,8 @@ const ViewEmployeePage = () => {
   const [certifications, setCertifications] = useState([]);
   const [salaries, setSalaries] = useState([]);
   const [actions, setActions] = useState([]);
+  const [awards, setAwards] = useState([]);
+  const [extras, setExtras] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -68,12 +75,16 @@ const ViewEmployeePage = () => {
     const fetchData = async () => {
       try {
         setEmployee((await EmployeeApi.getEmployeeById(id)).data);
-        setCourses((await courseApi.getCoursesByUser(id)).data);
-        setCertifications(
-          (await certificationApi.getCertificationsByUser(id)).data
-        );
+
         setSalaries((await salaryApi.getSalariesByUser(id)).data);
         setActions((await actionApi.getActionsByUser(id)).data);
+
+        setAwards((await awardApi.getAwardsByUser(id)).data);
+        setCertifications(
+          await certificationApi.getCertificationsByUser(id).data
+        );
+        setCourses((await courseApi.getCoursesByUser(id)).data);
+        setExtras((await extrasApi.getExtrasByUser(id)).data);
       } catch (err) {
         console.error(err);
       }
@@ -208,6 +219,19 @@ const ViewEmployeePage = () => {
             <>
               <Header title="Horas Extras" />
               <ExtrasTable />
+            </>
+          )}
+
+          {/* Awards */}
+          {activeTab === TABS.AWARDS && (
+            <>
+              <Header
+                title="Reconocimiento"
+                action={() =>
+                  openCanvas('Registrar ', <AddAward userId={id} />)
+                }
+              />
+              <AwardTable awards={awards} />
             </>
           )}
         </div>

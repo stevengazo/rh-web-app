@@ -9,7 +9,6 @@ const row = (label, value) => (
 );
 
 const EmployeeTableInfo = ({ employee }) => {
-  console.log('employee', employee);
   // 👉 Estado: sin datos
   if (!employee) {
     return (

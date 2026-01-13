@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
   const navigate = useNavigate();
 
+  console.log("questionsbyuser", QuestionsByUser)
   if (!QuestionsByUser.length) {
     return (
       <p className="text-center text-gray-500 py-6">
@@ -23,7 +24,7 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
   }, {});
 
   const getEmployeeName = (userId) => {
-    const employee = Employees.find((e) => String(e.userId) === String(userId));
+    const employee = Employees.find((e) => e.id == userId);
 
     if (!employee) return 'Empleado no encontrado';
 
@@ -44,7 +45,7 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
           {/* Usuario */}
           <h4
             className="mb-3 cursor-pointer text-sm font-semibold text-gray-700 transition hover:text-blue-600"
-            onClick={() => navigate(`/manager/performance/${userId}`)}
+            onClick={() => navigate(`/manager/perfornance/${userId}`)}
           >
             {getEmployeeName(userId)}
             <span className="ml-2 font-mono text-xs text-gray-400">
