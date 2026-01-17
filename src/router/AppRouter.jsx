@@ -23,6 +23,7 @@ import MyPayrollsPage from '../pages/MyPayrollsPage';
 import QuestionPage from '../pages/QuestionPage';
 import ViewPerformancePage from '../pages/ViewPerformancePage';
 import LoansPage from '../pages/LoansPage';
+import ViewLoanPage from '../pages/ViewLoanPage';
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -52,6 +53,11 @@ const AppRouter = () => {
           <Route
             path="/manager/perfornance/:id"
             element={<ViewPerformancePage />}
+          />
+
+            <Route
+            path="/manager/loan/:id"
+            element={<ViewLoanPage />}
           />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new" element={<NewPayrollPage />} />

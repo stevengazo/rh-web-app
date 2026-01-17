@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom';
+
 const LoansTable = ({ loans = [] }) => {
+  const navigate = useNavigate();
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg">
       <table className="min-w-full border border-gray-200">
@@ -25,25 +28,19 @@ const LoansTable = ({ loans = [] }) => {
         <tbody className="divide-y divide-gray-200">
           {loans.length === 0 ? (
             <tr>
-              <td
-                colSpan={5}
-                className="px-4 py-6 text-center text-gray-500"
-              >
+              <td colSpan={5} className="px-4 py-6 text-center text-gray-500">
                 No hay préstamos registrados
               </td>
             </tr>
           ) : (
             loans.map((e) => (
               <tr
+                onClick={() => navigate(`/manager/loan/${e.loanId}`)}
                 key={e.loanId}
-                className="hover:bg-gray-50 transition"
+                className="hover:bg-gray-50 transition  "
               >
-                <td className="px-4 py-3 text-sm text-gray-700">
-                  {e.loanId}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-700">
-                  {e.title}
-                </td>
+                <td className="px-4 py-3 text-sm text-gray-700">{e.loanId}</td>
+                <td className="px-4 py-3 text-sm text-gray-700">{e.title}</td>
                 <td className="px-4 py-3 text-sm">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium
@@ -51,8 +48,8 @@ const LoansTable = ({ loans = [] }) => {
                         e.state === 'Aprobado'
                           ? 'bg-green-100 text-green-700'
                           : e.state === 'Pendiente'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-red-100 text-red-700'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
                       }`}
                   >
                     {e.state}

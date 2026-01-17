@@ -62,10 +62,13 @@ const LoansPage = () => {
         </PrimaryButton>
       </div>
       <Divider />
-
       <div className="border p-2 rounded ">
         <LoansTable loans={loans} />
       </div>
+
+   
+
+    
     </>
   );
 };

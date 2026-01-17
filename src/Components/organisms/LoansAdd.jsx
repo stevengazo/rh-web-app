@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import loansApi from '../../api/loansApi';
 import EmployeeApi from '../../api/employeesApi';
+import { useAppContext } from '../../context/AppContext';
 
 const LoansAdd = ({ userId }) => {
+  const { user } = useAppContext();
+  console.log('user', user);
   const today = new Date().toISOString().split('T')[0];
   const [employees, setEmployees] = useState([]);
   const [newLoan, setNewLoan] = useState({
@@ -54,7 +57,7 @@ const LoansAdd = ({ userId }) => {
     setError('');
 
     try {
-      console.log(newLoan)
+      console.log(newLoan);
       await loansApi.createLoan(newLoan);
       alert('✅ Préstamo registrado correctamente');
 
