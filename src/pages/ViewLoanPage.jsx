@@ -9,12 +9,14 @@ import SectionTitle from '../Components/SectionTitle';
 import PrimaryButton from '../Components/PrimaryButton';
 import OffCanvas from '../components/OffCanvas';
 import PaymentAdd from '../Components/organisms/PaymentAdd';
-
+import PaymentTable from '../Components/organisms/PaymentTable';
 import { motion, AnimatePresence } from 'framer-motion';
+
 const ViewLoanPage = () => {
   const { id } = useParams();
   const { user } = useAppContext();
   const [loan, setLoan] = useState();
+  const [payments, setPayments] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -28,8 +30,14 @@ const ViewLoanPage = () => {
 
   useEffect(() => {
     async function getData() {
+      // Loan
       const response = await loansApi.getLoansById(id);
       setLoan(response.data);
+      // Payments
+      const resPayments = await paymentApi.getPaymentByLoan(id);
+
+      setPayments(resPayments.data);
+      console.log(resPayments.data);
     }
 
     getData();
@@ -130,7 +138,9 @@ const ViewLoanPage = () => {
           <div className="flex justify-between items-center">
             <SectionTitle>Pagos</SectionTitle>
             <PrimaryButton
-              onClick={() => openCanvas('Agregar Pago', <PaymentAdd loanId={id}  />)}
+              onClick={() =>
+                openCanvas('Agregar Pago', <PaymentAdd loanId={id} />)
+              }
             >
               Agregar Pago
             </PrimaryButton>
@@ -139,9 +149,7 @@ const ViewLoanPage = () => {
           <Divider className="my-3" />
 
           {loan?.payments?.length ? (
-            <table className="min-w-full border text-sm">
-              {/* tabla de pagos */}
-            </table>
+            <PaymentTable payments={payments} />
           ) : (
             <p className="text-sm text-gray-500">No hay pagos registrados.</p>
           )}

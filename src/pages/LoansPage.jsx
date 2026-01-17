@@ -66,9 +66,6 @@ const LoansPage = () => {
         <LoansTable loans={loans} />
       </div>
 
-   
-
-    
     </>
   );
 };
