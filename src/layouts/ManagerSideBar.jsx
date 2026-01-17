@@ -69,7 +69,7 @@ const ManagerSideBar = () => {
             Retenciones
           </p>
 
-          <NavLink to="/" className={navItemClass}>
+          <NavLink to="/manager/loans" className={navItemClass}>
             <User size={18} />
             Préstamos y Anticipos
           </NavLink>

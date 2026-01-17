@@ -64,11 +64,6 @@ const AwardTable = ({ awards = [] }) => {
   );
 };
 
-new Date(dateString).toLocaleDateString('es-CR', {
-  year: 'numeric',
-  month: 'short',
-  day: '2-digit',
-});
 
 
 export default AwardTable;
