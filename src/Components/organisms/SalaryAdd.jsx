@@ -3,12 +3,12 @@ import TextInput from '../TextInput';
 import DateInput from '../DateInput';
 import Label from '../Label';
 import PrimaryButton from '../PrimaryButton';
-
+import toast from 'react-hot-toast';
 import salaryApi from '../../api/salaryApi';
 
 const SalaryAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split('T')[0];
-
+  const notify = () => toast.success('Salario Agregado');
   const [newSalary, setNewSalary] = useState({
     salaryId: 0,
     salaryAmount: '',
@@ -32,7 +32,7 @@ const SalaryAdd = ({ userId, author }) => {
     e.preventDefault();
     salaryApi
       .createSalary(newSalary)
-      .then((e) => alert('Salario Registrado'))
+      .then((e) => notify())
       .catch((e) => console.error(e));
   };
 

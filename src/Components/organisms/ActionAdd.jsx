@@ -5,8 +5,10 @@ import PrimaryButton from '../PrimaryButton';
 import TextInput from '../TextInput';
 import DateInput from '../DateInput';
 
+
 const ActionAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split('T')[0];
+  const notify = () => toast.success('Agregado');
 
   const [typesOfActions, setTypesOfActions] = useState([]);
 
@@ -50,6 +52,7 @@ const ActionAdd = ({ userId, author }) => {
       console.log(newAction);
       await actionApi.createAction(newAction);
       console.log('Acción creada:', newAction);
+      notify(); 
     } catch (error) {
       console.error('Error creando acción:', error);
     }

@@ -2,7 +2,10 @@ import { motion } from 'framer-motion';
 import { Eye, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const EmployeesTable = ({ employees }) => {
+import EmployeeEdit from './EmployeeEdit';
+
+
+const EmployeesTable = ({ employees, HandleShowEdit }) => {
   const navigate = useNavigate();
 
   return (
@@ -43,7 +46,12 @@ const EmployeesTable = ({ employees }) => {
                     >
                       <Eye size={16} />
                     </button>
-                    <button className="p-1.5 rounded hover:bg-slate-200">
+                    <button
+                      className="p-1.5 rounded hover:bg-slate-200"
+                      onClick={() => {
+                        HandleShowEdit('Editar Usuario', <EmployeeEdit employee={emp} s />);
+                      }}
+                    >
                       <Edit size={16} />
                     </button>
                     <button className="p-1.5 rounded text-red-500 hover:bg-red-100">

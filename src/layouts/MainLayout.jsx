@@ -13,10 +13,9 @@ const MainLayout = () => {
       >
         <NavBar />
       </header>
-
       {/* Contenido */}
-      <main className="flex-1 pt-16 overflow-y-auto p-6">
-        <div className="bg-white rounded-xl shadow-sm p-6">
+      <main className="flex-1 pt-16 my-3 overflow-y-auto p-6">
+        <div className="bg-white max-w-7xl mx-auto rounded-xl shadow-sm p-6">
           <Outlet />
         </div>
       </main>

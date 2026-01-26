@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import user_questionApi from '../../api/user_questionApi';
 import employeesApi from '../../api/employeesApi';
 import questionApi from '../../api/questionsApi';
+import toast from 'react-hot-toast';
 
 const Add_User_Question = () => {
   const [employees, setEmployees] = useState([]);
   const [questions, setQuestions] = useState([]);
+
+  const notify = () => toast.success('Agregado');
 
   const [newUserQuestion, setNewUserQuestion] = useState({
     user_QuestionId: 0,
@@ -50,6 +53,17 @@ const Add_User_Question = () => {
     try {
       await user_questionApi.createUser_Question(newUserQuestion);
       console.log('Pregunta asignada al usuario correctamente');
+      notify();
+      // Reset form
+      setNewUserQuestion({
+        user_QuestionId: 0,
+        userId: '',
+        user: null,
+        questionId: '',
+        question: null,
+        deleted: false,
+        answers: [],
+      });
     } catch (error) {
       console.error('Error al asignar la pregunta', error);
     }

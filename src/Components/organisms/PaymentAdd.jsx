@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import paymentApi from '../../api/paymentsApi';
 import { useAppContext } from '../../context/AppContext';
 
 const PaymentAdd = ({ loanId = 0 }) => {
   const today = new Date().toISOString().split('T')[0];
+  const notify = () => toast.success('Agregado');
 
   const { user } = useAppContext();
   console.log(user);
@@ -47,6 +49,7 @@ const PaymentAdd = ({ loanId = 0 }) => {
         amount: '',
         createdDate: today,
       }));
+      notify();
     } catch (err) {
       console.error(err);
       setError('❌ Error al registrar el pago');

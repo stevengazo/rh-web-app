@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import TextInput from '../TextInput';
 import DateInput from '../DateInput';
 import PrimaryButton from '../PrimaryButton';
@@ -6,6 +7,8 @@ import courseApi from '../../api/courseApi';
 
 const CourseAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split('T')[0];
+
+    const notify = () => toast.success('Agregado');
 
   const [newCourse, setNewCourse] = useState({
     name: '',
@@ -37,7 +40,7 @@ const CourseAdd = ({ userId, author }) => {
     await courseApi
       .createCourse(newCourse)
       .then((e) => {
-        alert('curso creado');
+        notify();
       })
       .catch((err) => console.error(err));
   };

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import questionApi from '../../api/questionsApi';
 import questionCategoryApi from '../../api/QuestionCategories';
 
@@ -12,6 +13,8 @@ const AddQuestion = () => {
     user_Questions: [],
     user_Objetive: null,
   });
+
+  const notify = () => toast.success('Agregado');
 
   const [categories, setCategories] = useState([]);
 
@@ -40,7 +43,7 @@ const AddQuestion = () => {
     e.preventDefault();
     try {
       await questionApi.createQuestion(question);
-      console.log('Pregunta creada correctamente');
+      notify();
     } catch (error) {
       console.error('Error al crear la pregunta', error);
     }

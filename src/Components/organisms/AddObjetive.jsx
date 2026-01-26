@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import kpiApi from '../../api/kpiApi';
 import ObjetiveCategories from '../../api/ObjetiveCategories';
+import { toDate } from 'date-fns';
 
 const AddObjetive = () => {
   const [newObjetive, setNewObjetive] = useState({
@@ -11,6 +13,8 @@ const AddObjetive = () => {
     objetiveCategoryId: 0,
     category: null,
   });
+
+    const notify = () => toast.success('Agregado');
 
   const [categories, setCategories] = useState([]);
 
@@ -46,9 +50,9 @@ const AddObjetive = () => {
     console.log(newObjetive);
     try {
       await kpiApi.createKPI(newObjetive);
-      console.log('Objetivo creado correctamente');
+      notify();
     } catch (error) {
-      console.error('Error creating objetive', error);
+      toast.error('Error al agregar el objetivo');
     }
   };
 

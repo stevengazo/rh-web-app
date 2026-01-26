@@ -36,7 +36,7 @@ const EmployeesPage = () => {
 
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
-    setCanvasContent(<EmployeesAdd />);
+    setCanvasContent(content);
     setOpen(true);
   };
 
@@ -119,7 +119,7 @@ const EmployeesPage = () => {
               onClick={() =>
                 openCanvas(
                   'Agregar Empleado',
-                  'Contenido del canvas para agregar empleado'
+                  <EmployeesAdd />
                 )
               }
             >
@@ -139,7 +139,7 @@ const EmployeesPage = () => {
 
         {/* Table */}
         <motion.div variants={itemVariants}>
-          <EmployeesTable employees={filteredEmployees} />
+          <EmployeesTable employees={filteredEmployees} HandleShowEdit={openCanvas}  />
         </motion.div>
       </motion.div>
     </>

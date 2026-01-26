@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import ObjetiveCategories from '../../api/ObjetiveCategories';
 
 const AddObjetiveCategory = () => {
@@ -8,6 +9,7 @@ const AddObjetiveCategory = () => {
     isActived: true,
     objetives: null,
   });
+  const notify = () => toast.success('Agregado');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -23,7 +25,6 @@ const AddObjetiveCategory = () => {
 
     try {
       await ObjetiveCategories.createObjetiveCategory(newCategory);
-      console.log('Categoría creada correctamente');
 
       // Reset opcional
       setNewCategory({
@@ -32,8 +33,10 @@ const AddObjetiveCategory = () => {
         isActived: true,
         objetives: null,
       });
+      notify();
     } catch (error) {
       console.error('Error creating category', error);
+      toast.error('Error al agregar la categoría');
     }
   };
 

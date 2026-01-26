@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import TextInput from '../TextInput';
 import PrimaryButton from '../PrimaryButton';
 import CertificationApi from '../../api/certificationApi';
@@ -6,6 +7,8 @@ import certificationApi from '../../api/certificationApi';
 
 const CertificationAdd = ({ userId, author }) => {
   const today = new Date().toISOString().split('T')[0];
+
+  const notify = () => toast.success('Agregado');
 
   const [newCertification, setNewCertification] = useState({
     certificationId: 0,
@@ -33,11 +36,10 @@ const CertificationAdd = ({ userId, author }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.clear();
-    console.log('Certificación a enviar:', newCertification);
+
     certificationApi
       .createCertification(newCertification)
-      .then((e) => alert('Certificaciòn Agregada'))
+      .then((e) => notify())
       .catch((e) => console.error('Error: ' + e));
   };
 

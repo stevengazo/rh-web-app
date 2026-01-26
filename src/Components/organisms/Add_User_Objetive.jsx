@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 import user_objetiveApi from '../../api/user_objetiveApi';
 import EmployeeApi from '../../api/employeesApi';
@@ -9,6 +10,8 @@ const Add_User_Objetive = () => {
   const [kpis, setKpis] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+    const notify = () => toast.success('Agregado');
 
   const [newUser_Objetive, setNewUser_Objetive] = useState({
     user_ObjetiveId: 0,
@@ -31,6 +34,7 @@ const Add_User_Objetive = () => {
 
         setEmployees(employeesRes.data);
         setKpis(kpisRes.data);
+
       } catch (err) {
         console.error(err);
         setError('Error cargando datos');
@@ -75,6 +79,7 @@ const Add_User_Objetive = () => {
         objetive: null,
         results: [],
       });
+      notify();
     } catch (err) {
       console.error(err);
       setError('No se pudo asignar el objetivo');

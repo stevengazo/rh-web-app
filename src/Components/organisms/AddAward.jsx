@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import awardApi from '../../api/awardsApi';
 import { useAppContext } from '../../context/AppContext';
 
 const AddAward = ({ userId }) => {
   const { user } = useAppContext();
+
+  const notify = () => toast.success('Agregado');
 
   const [newAward, setNewAward] = useState({
     awardId: 0,
@@ -28,14 +31,14 @@ const AddAward = ({ userId }) => {
 
     try {
       await awardApi.createAward(newAward);
-      alert('Premio creado correctamente');
-
       // Limpia el formulario si quieres
       setNewAward((prev) => ({
         ...prev,
         title: '',
         description: '',
       }));
+
+      notify();
     } catch (error) {
       console.error(error);
       alert('Error al crear el premio');
@@ -45,9 +48,7 @@ const AddAward = ({ userId }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Título
-        </label>
+        <label className="block text-sm font-medium mb-1">Título</label>
         <input
           type="text"
           name="title"
@@ -59,9 +60,7 @@ const AddAward = ({ userId }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          Descripción
-        </label>
+        <label className="block text-sm font-medium mb-1">Descripción</label>
         <textarea
           name="description"
           value={newAward.description}

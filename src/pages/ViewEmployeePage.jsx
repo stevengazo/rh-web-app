@@ -39,7 +39,6 @@ import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
 
 const TABS = {
-  INFO: 'Información',
   TRAINING: 'Certificaciones',
   SALARY: 'Salarios',
   ACTIONS: 'Acciones',
@@ -52,7 +51,7 @@ const ViewEmployeePage = () => {
   const { id } = useParams();
   const { user } = useAppContext();
 
-  const [activeTab, setActiveTab] = useState(TABS.INFO);
+  const [activeTab, setActiveTab] = useState(TABS.TRAINING);
   const [employee, setEmployee] = useState({});
   const [courses, setCourses] = useState([]);
   const [certifications, setCertifications] = useState([]);
@@ -117,6 +116,19 @@ const ViewEmployeePage = () => {
       <div className="space-y-6">
         <PageTitle>Información del Empleado</PageTitle>
 
+        <>
+          <Header
+            title="Detalles del Empleado"
+            action={() =>
+              openCanvas(
+                'Editar Información',
+                <EmployeeEdit employee={employee} setEmployee={setEmployee} />
+              )
+            }
+          />
+          <EmployeeTableInfo employee={employee} />
+        </>
+
         {/* Tabs */}
         <div className="border-b border-gray-200">
           <nav className="flex gap-6">
@@ -134,25 +146,6 @@ const ViewEmployeePage = () => {
 
         {/* Content */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          {/* INFO */}
-          {activeTab === TABS.INFO && (
-            <>
-              <Header
-                title="Detalles del Empleado"
-                action={() =>
-                  openCanvas(
-                    'Editar Información',
-                    <EmployeeEdit
-                      employee={employee}
-                      setEmployee={setEmployee}
-                    />
-                  )
-                }
-              />
-              <EmployeeTableInfo employee={employee} />
-            </>
-          )}
-
           {/* TRAINING */}
           {activeTab === TABS.TRAINING && (
             <>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import questionCategoryApi from '../../api/QuestionCategories';
 
 const AddQuestionCategory = () => {
@@ -8,6 +9,8 @@ const AddQuestionCategory = () => {
     isActive: true,
     questions: [],
   });
+
+    const notify = () => toast.success('Agregado');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,6 +39,7 @@ const AddQuestionCategory = () => {
         isActive: true,
         questions: [],
       });
+      notify();
     } catch (err) {
       setError('Error al crear la categoría');
       console.error(err);

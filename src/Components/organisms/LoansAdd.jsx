@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import loansApi from '../../api/loansApi';
 import EmployeeApi from '../../api/employeesApi';
 import { useAppContext } from '../../context/AppContext';
 
 const LoansAdd = ({ userId }) => {
   const { user } = useAppContext();
-  console.log('user', user);
   const today = new Date().toISOString().split('T')[0];
+
+  const notify = () => toast.success('Agregado');
   const [employees, setEmployees] = useState([]);
   const [newLoan, setNewLoan] = useState({
     loanId: 0,
@@ -35,7 +37,6 @@ const LoansAdd = ({ userId }) => {
     async function GetData() {
       const response = await EmployeeApi.getAllEmployees();
       setEmployees(response.data);
-      console.log(response.data);
     }
     GetData();
   }, []);
@@ -59,7 +60,7 @@ const LoansAdd = ({ userId }) => {
     try {
       console.log(newLoan);
       await loansApi.createLoan(newLoan);
-      alert('✅ Préstamo registrado correctamente');
+      notify();
 
       // Reset form
       setNewLoan((prev) => ({

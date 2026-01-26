@@ -1,6 +1,7 @@
 import EmployeeApi from '../../api/employeesApi';
 import DepartamentApi from '../../api/departamentApi';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import TextInput from '../TextInput';
 import DateInput from '../DateInput';
 import Label from '../Label';
@@ -10,6 +11,7 @@ const EmployeesAdd = () => {
   const [departaments, setDepartaments] = useState([]);
   const [loading, setLoading] = useState(false);
 
+    const notify = () => toast.success('Agregado');
   const today = new Date().toISOString().split('T')[0];
 
   const [newUser, setNewUser] = useState({
@@ -60,6 +62,7 @@ const EmployeesAdd = () => {
         jorney: '',
         departamentId: 0,
       });
+      notify();
     } catch (error) {
       console.error('Error creando empleado:', error);
       alert('Error al crear el empleado');
