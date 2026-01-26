@@ -26,6 +26,21 @@ const VacationsApi = {
   },
 
   /**
+   * getActionsByUser
+   * =
+   * Obtiene todas las vacacione asociadas a un usuario específico.
+   *
+   * Endpoint:
+   *  GET /api/vacations/user/{userId}
+   *
+   * @param {string} userId - Identificador del usuario
+   * @returns {Promise<import("axios").AxiosResponse>}
+   */
+  getVacationsByUser: (userId) => {
+    return apiClient.get(`/vacations/user/${userId}`);
+  },
+
+  /**
    * Crea un nuevo registro de vacaciones.
    *
    * @param {Object} vacation - Objeto que contiene los datos de la vacación.

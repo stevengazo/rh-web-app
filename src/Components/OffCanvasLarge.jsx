@@ -13,7 +13,7 @@ const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
 
       {/* Panel */}
       <aside
-        className={`fixed top-0 right-0 h-full w-2/3  bg-white z-50
+        className={`fixed shadow border rounded-lg  border-gray-100 top-0 right-0 h-full w-2/4  bg-gray-200 z-50
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
@@ -29,7 +29,7 @@ const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
         </div>
 
         {/* Content */}
-        <div className="p-4 overflow-y-auto h-full ">jjkjñlkj{children}</div>
+        <div className="p-4 overflow-y-auto h-full ">{children}</div>
       </aside>
     </>
   );
