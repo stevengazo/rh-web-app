@@ -7,7 +7,12 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
+
+
+
 const ActionTable = ({ actions = [], onEdit, onDelete }) => {
+  console.log('Actions en ActionTable:', actions);  
+
   return (
     <motion.table
       initial={{ opacity: 0, y: 20 }}

@@ -25,6 +25,10 @@ const user_objetiveApi = {
     return apiClient.get(`/User_Objetive/${id}`);
   },
 
+  getAllByUser: (id) => {
+    return apiClient.get(`/User_Objetive/search?userId=${id}`);
+  },
+
   /**
    * Crea un nuevo objetivo para un usuario.
    *

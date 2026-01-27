@@ -23,6 +23,8 @@ import certificationApi from '../api/certificationApi';
 import salaryApi from '../api/salaryApi';
 import VacationsApi from '../api/vacationsApi';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
+import CourseAdd from '../Components/organisms/CourseAdd';
+import CertificationAdd from '../Components/organisms/CertificationAdd';
 
 const TABS = {
   INFO: 'Informacion',
@@ -195,16 +197,37 @@ const MyProfilePage = () => {
             <div className="space-y-6">
               {/* Cursos */}
 
-              <SectionTitle>Cursos</SectionTitle>
-              <PrimaryButton>Agregar</PrimaryButton>
+              <div className="flex flex-row justify-between">
+                <SectionTitle>Cursos</SectionTitle>
+                <PrimaryButton
+                  onClick={() => {
+                    openCanvas(
+                      'Agregar Curso',
+                      <CourseAdd userId={user.id} author={user.id} />
+                    );
+                  }}
+                >
+                  Agregar
+                </PrimaryButton>
+              </div>
               <CourseTable courses={courses} />
               <Divider />
-              <SectionTitle>Certificaciones</SectionTitle>
-              <PrimaryButton>Agregar</PrimaryButton>
+              <div className="flex flex-row justify-between">
+                <SectionTitle>Certificaciones</SectionTitle>
+                <PrimaryButton
+                  onClick={() => {
+                    openCanvas(
+                      'Agregar Certificación',
+                      <CertificationAdd userId={user.id} />
+                    );
+                  }}
+                >
+                  Agregar
+                </PrimaryButton>
+              </div>
               <CertificationTable certifications={certifications} />
               <Divider />
               <SectionTitle>Histórico de Salarios</SectionTitle>
-              <PrimaryButton>Agregar</PrimaryButton>
               <SalaryTable salaries={salaries} />
             </div>
           )}
