@@ -71,23 +71,53 @@ const MyProfilePage = () => {
 
   useEffect(() => {
     const getProfile = async () => {
+      // PERFIL
       try {
         const respData = await EmployeeApi.getEmployeeById(user.id);
         setMyProfile(respData.data);
-        // Get Courses
-        setCourses(await courseApi.getCoursesByUser(user.id).data);
-        // Certifications
-        setCertifications(
-          await certificationApi.getCertificationsByUser(user.id).data
-        );
-        // Salary
-        setSalaries((await salaryApi.getSalariesByUser(user.id)).data);
-        // Actions
-        setActions((await actionApi.getActionsByUser(user.id)).data);
-        // Vacations
-        setVacations((await VacationsApi.getVacationsByUser(user.id)).data);
       } catch (error) {
-        console.error(error);
+        console.error('Error perfil:', error);
+      }
+
+      // CURSOS
+      try {
+        const resp = await courseApi.getCoursesByUser(user.id);
+        setCourses(resp.data);
+      } catch (error) {
+        console.error('Error cursos:', error);
+      }
+
+      // CERTIFICACIONES
+      try {
+        const resp = await certificationApi.getCertificationsByUser(user.id);
+        setCertifications(resp.data);
+      } catch (error) {
+        console.error('Error certificaciones:', error);
+      }
+
+      // SALARIOS
+      try {
+        const resp = await salaryApi.getSalariesByUser(user.id);
+        setSalaries(resp.data);
+      } catch (error) {
+        console.error('Error salarios:', error);
+      }
+
+      // ACCIONES
+      try {
+        const resp = await actionApi.getActionsByUser(user.id);
+        setActions(resp.data);
+      } catch (error) {
+        console.error('Error acciones:', error);
+      }
+
+      // VACACIONES
+      try {
+        const resp = await VacationsApi.getVacationsByUser(user.id);
+        setVacations(resp.data);
+        console.log('Vacaciones:', resp.data);
+      } catch (error) {
+        console.error('Error vacaciones:', error);
       }
     };
 
@@ -194,18 +224,21 @@ const MyProfilePage = () => {
               {/* Vacaciones */}
 
               <div className="flex flex-col gap-4">
-                <div className='flex flex-row justify-between items-center'>
+                <div className="flex flex-row justify-between items-center">
                   <SectionTitle>Vacaciones</SectionTitle>
                   <PrimaryButton
                     onClick={() => {
-                      openCanvas('Solicitar Vacaciones',  <VacationsAdd />);
+                      openCanvas(
+                        'Solicitar Vacaciones',
+                        <VacationsAdd id={user.id} />
+                      );
                     }}
                   >
                     Solicitar Vacaciones
                   </PrimaryButton>
                 </div>
 
-                <VacationsTable vacationsList={vacations} />
+                <VacationsTable vacationsList={vacations} showUser={false} />
               </div>
             </div>
           )}

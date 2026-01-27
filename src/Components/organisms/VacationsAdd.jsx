@@ -1,18 +1,30 @@
 import { useState } from "react";
 
-const VacationsAdd = () => {
+import VacationsApi from "../../api/vacationsApi";
+import toast from "react-hot-toast";
+
+const VacationsAdd = ({id}) => {
+  const todayISO = new Date().toISOString().split("T")[0];
+
   const [form, setForm] = useState({
-    userId: "",
+    userId: id,
     startDate: "",
     endDate: "",
-    status: "Pendiente",
   });
 
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+
+    setForm((prev) => {
+      // Si cambia la fecha inicial y la final queda inválida, se limpia
+      if (name === "startDate" && prev.endDate && value > prev.endDate) {
+        return { ...prev, startDate: value, endDate: "" };
+      }
+
+      return { ...prev, [name]: value };
+    });
   };
 
   const calculateDays = () => {
@@ -30,12 +42,10 @@ const VacationsAdd = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Usuario
     if (!form.userId.trim()) {
       newErrors.userId = "El usuario es obligatorio";
     }
 
-    // Rango de fechas
     if (!form.startDate || !form.endDate) {
       newErrors.dateRange = "Debe seleccionar un rango de fechas válido";
     } else {
@@ -46,9 +56,7 @@ const VacationsAdd = () => {
         newErrors.dateRange = "No se permiten fechas pasadas";
       } else if (end < start) {
         newErrors.dateRange =
-          "El rango de fechas no coincide (la fecha final es menor que la inicial)";
-      } else if (calculateDays() <= 0) {
-        newErrors.dateRange = "El rango de fechas seleccionado no es válido";
+          "La fecha final no puede ser menor que la inicial";
       }
     }
 
@@ -56,22 +64,23 @@ const VacationsAdd = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     const payload = {
       userId: form.userId,
       startDate: form.startDate,
       endDate: form.endDate,
-      status: form.status,
+      status: "Pendiente", // 🔒 Estado fijo
       createdAt: new Date().toISOString(),
       deleted: false,
     };
 
     console.log("Enviar al API:", payload);
     // POST api/Vacations
+    await VacationsApi.createVacation(payload);
+    toast.success("✅ Solicitud de vacaciones registrada correctamente");
   };
 
   return (
@@ -103,7 +112,7 @@ const VacationsAdd = () => {
           )}
         </div>
 
-        {/* Rango de fechas */}
+        {/* Fechas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -113,6 +122,7 @@ const VacationsAdd = () => {
               type="date"
               name="startDate"
               value={form.startDate}
+              min={todayISO}
               onChange={handleChange}
               className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
                 ${
@@ -131,6 +141,8 @@ const VacationsAdd = () => {
               type="date"
               name="endDate"
               value={form.endDate}
+              min={form.startDate || todayISO}
+              disabled={!form.startDate}
               onChange={handleChange}
               className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
                 ${
@@ -159,21 +171,17 @@ const VacationsAdd = () => {
           />
         </div>
 
-        {/* Estado */}
+        {/* Estado (solo informativo) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Estado
           </label>
-          <select
-            name="status"
-            value={form.status}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-          >
-            <option value="Pendiente">Pendiente</option>
-            <option value="Aprobado">Aprobado</option>
-            <option value="Rechazado">Rechazado</option>
-          </select>
+          <input
+            type="text"
+            value="Pendiente"
+            disabled
+            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700"
+          />
         </div>
 
         {/* Botón */}
