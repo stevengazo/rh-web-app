@@ -1,4 +1,4 @@
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../Components/PageTitle';
 import Divider from '../components/Divider';
 
 const SettingsPage = () => {
