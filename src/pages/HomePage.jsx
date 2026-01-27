@@ -1,8 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, LogIn, UserPlus } from 'lucide-react';
-
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../Components/PageTitle';
 
 const HomePage = () => {
   return (
