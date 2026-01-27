@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import SearchEmployee from '../Components/molecules/SearchEmployee';
 import EmployeesTable from '../Components/organisms/EmployeesTable';
-import OffCanvas from '../components/OffCanvas';
-import PrimaryButton from '../components/PrimaryButton';
+import OffCanvas from '../Components/OffCanvas';
+import PrimaryButton from '../Components/PrimaryButton';
 import EmployeesAdd from '../Components/organisms/EmployeesAdd';
 
 import EmployeeApi from '../api/employeesApi';

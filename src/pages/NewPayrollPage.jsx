@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import PageTitle from '../components/PageTitle';
-import SectionTitle from '../components/SectionTitle';
-import PrimaryButton from '../components/PrimaryButton';
-import SecondaryButton from '../components/SecondaryButton';
+import PageTitle from '../Components/PageTitle';
+import SectionTitle from '../Components/SectionTitle';
+import PrimaryButton from '../Components/PrimaryButton';
+import SecondaryButton from '../Components/SecondaryButton';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 12 },

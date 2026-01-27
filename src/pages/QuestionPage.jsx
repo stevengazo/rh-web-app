@@ -1,4 +1,4 @@
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../Components/PageTitle';
 
 import questionApi from '../api/questionsApi';
 import QuestionsTable from '../Components/organisms/QuestionsTable';

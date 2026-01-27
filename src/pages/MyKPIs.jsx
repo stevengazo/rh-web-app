@@ -1,4 +1,4 @@
-import SectionTitle from '../components/SectionTitle';
+import SectionTitle from '../Components/SectionTitle';
 import { useAppContext } from '../context/AppContext';
 import user_objetiveApi from '../api/user_objetiveApi';
 import user_questionApi from '../api/user_questionApi';

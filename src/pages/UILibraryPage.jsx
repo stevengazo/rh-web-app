@@ -1,20 +1,20 @@
-import PrimaryButton from '../components/PrimaryButton';
-import SecondaryButton from '../components/SecondaryButton';
-import TextInput from '../components/TextInput';
-import Card from '../components/Card';
-import Badge from '../components/Badge';
-import Divider from '../components/Divider';
-import IconButton from '../components/IconButton';
-import Label from '../components/Label';
-import ErrorText from '../components/ErrorText';
-import DateInput from '../components/DateInput';
-import TimeInput from '../components/TimeInput';
-import SelectInput from '../components/SelectInput';
-import CheckBoxInput from '../components/CheckBoxInput';
-import RadioInput from '../components/RadioInput';
-import PageTitle from '../components/PageTitle';
-import SectionTitle from '../components/SectionTitle';
-import ExampleBlock from '../components/ExampleBlock';
+import PrimaryButton from '../Components/PrimaryButton';
+import SecondaryButton from '../Components/SecondaryButton';
+import TextInput from '../Components/TextInput';
+import Card from '../Components/Card';
+import Badge from '../Components/Badge';
+import Divider from '../Components/Divider';
+import IconButton from '../Components/IconButton';
+import Label from '../Components/Label';
+import ErrorText from '../Components/ErrorText';
+import DateInput from '../Components/DateInput';
+import TimeInput from '../Components/TimeInput';
+import SelectInput from '../Components/SelectInput';
+import CheckBoxInput from '../Components/CheckBoxInput';
+import RadioInput from '../Components/RadioInput';
+import PageTitle from '../Components/PageTitle';
+import SectionTitle from '../Components/SectionTitle';
+import ExampleBlock from '../Components/ExampleBlock';
 
 import { Plus, Trash } from 'lucide-react';
 

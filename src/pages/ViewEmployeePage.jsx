@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
 /* COMPONENTS */
-import PageTitle from '../components/PageTitle';
-import SectionTitle from '../components/SectionTitle';
-import PrimaryButton from '../components/PrimaryButton';
-import OffCanvas from '../components/OffCanvas';
+import PageTitle from '../Components/PageTitle';
+import SectionTitle from '../Components/SectionTitle';
+import PrimaryButton from '../Components/PrimaryButton';
+import OffCanvas from '../Components/OffCanvas';
 
 import EmployeeEdit from '../Components/organisms/EmployeeEdit';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';

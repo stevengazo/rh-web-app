@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 
-import SectionTitle from '../components/SectionTitle';
-import Divider from '../components/Divider';
-import PrimaryButton from '../components/PrimaryButton';
+import SectionTitle from '../Components/SectionTitle';
+import Divider from '../Components/Divider';
+import PrimaryButton from '../Components/PrimaryButton';
 
 const pageVariants = {
   hidden: { opacity: 0 },

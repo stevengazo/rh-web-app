@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import EmployeeApi from '../api/employeesApi';
-import SectionTitle from '../components/SectionTitle';
+import SectionTitle from '../Components/SectionTitle';
 import { useParams } from 'react-router-dom';
 import Divider from '../Components/Divider';
-import PrimaryButton from '../components/PrimaryButton';
+import PrimaryButton from '../Components/PrimaryButton';
 
 const TABS = {
   MAIN: 'Datos',

@@ -1,9 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 
-import SectionTitle from '../components/SectionTitle';
-import PageTitle from '../components/PageTitle';
-import Divider from '../components/Divider';
-import PrimaryButton from '../components/PrimaryButton';
+import SectionTitle from '../Components/SectionTitle';
+import PageTitle from '../Components/PageTitle';
+import Divider from '../Components/Divider';
+import PrimaryButton from '../Components/PrimaryButton';
 import ActionTable from '../Components/organisms/ActionTable';
 import CertificationTable from '../Components/organisms/CertificationTable';
 import CourseTable from '../Components/organisms/CertificationTable';

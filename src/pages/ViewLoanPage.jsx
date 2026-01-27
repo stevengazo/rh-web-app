@@ -1,4 +1,4 @@
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../Components/PageTitle';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import loansApi from '../api/loansApi';
@@ -7,7 +7,7 @@ import paymentApi from '../api/paymentsApi';
 import Divider from '../Components/Divider';
 import SectionTitle from '../Components/SectionTitle';
 import PrimaryButton from '../Components/PrimaryButton';
-import OffCanvas from '../components/OffCanvas';
+import OffCanvas from '../Components/OffCanvas';
 import PaymentAdd from '../Components/organisms/PaymentAdd';
 import PaymentTable from '../Components/organisms/PaymentTable';
 import { motion, AnimatePresence } from 'framer-motion';

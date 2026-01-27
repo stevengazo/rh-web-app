@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import LoansAdd from '../Components/organisms/LoansAdd';
 import LoansTable from '../Components/organisms/LoansTable';
 import loansApi from '../api/loansApi';
-import OffCanvas from '../components/OffCanvas';
+import OffCanvas from '../Components/OffCanvas';
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import SectionTitle from '../Components/SectionTitle';
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
 
-import PrimaryButton from '../components/PrimaryButton';
+import PrimaryButton from '../Components/PrimaryButton';
 
 const LoansPage = () => {
   const [loans, setLoans] = useState([]);

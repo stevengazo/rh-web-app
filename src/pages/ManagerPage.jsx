@@ -11,8 +11,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-import PageTitle from '../components/PageTitle';
-import SectionTitle from '../components/SectionTitle';
+import PageTitle from '../Components/PageTitle';
+import SectionTitle from '../Components/SectionTitle';
 
 /* Cards data */
 const cards = [

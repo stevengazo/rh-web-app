@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-import SectionTitle from '../components/SectionTitle';
-import Divider from '../components/Divider';
-import PrimaryButton from '../components/PrimaryButton';
+import SectionTitle from '../Components/SectionTitle';
+import Divider from '../Components/Divider';
+import PrimaryButton from '../Components/PrimaryButton';
 import PayrollListTable from '../Components/organisms/PayrollListTable';
 
 const pageVariants = {
