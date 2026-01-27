@@ -28,5 +28,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/my-vite-app:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/my-vite-app:${{ github.sha }}
+            stevengazo/rh-web:latest
+            stevengazo/rh-web:${{ github.sha }}
