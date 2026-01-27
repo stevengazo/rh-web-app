@@ -9,7 +9,6 @@ import { useState, useEffect } from 'react';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
 
-
 const MyKPIs = () => {
   const { user } = useAppContext();
   const [userObjetives, setUserObjetives] = useState([]);
@@ -22,6 +21,11 @@ const MyKPIs = () => {
         const Response = await user_objetiveApi.getAllByUser(user.id);
         setUserObjetives(Response.data);
         // fetch User Questions
+        const questionsResponse = await user_questionApi.getUser_QuestionByUser(
+          user.id
+        );
+        setUserQuestions(questionsResponse.data);
+        console.log(questionsResponse.data);
       } catch (error) {
         {
         }
@@ -91,12 +95,52 @@ const MyKPIs = () => {
         <SectionTitle>Preguntas</SectionTitle>
         <PrimaryButton>Agregar Pregunta</PrimaryButton>
       </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {userQuestions.length ? (
+            userQuestions.map((uq) => (
+              <div
+                key={uq.user_QuestionId}
+                className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition"
+              >
+                {/* Question text */}
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">
+                  {uq.question?.text || 'Pregunta sin texto'}
+                </h3>
 
+                {/* Meta info */}
+                <div className="flex justify-between text-xs text-gray-400">
+                  <span>
+                    Estado:{' '}
+                    {uq.question?.isActive ? (
+                      <span className="text-green-600 font-medium">Activa</span>
+                    ) : (
+                      <span className="text-red-500 font-medium">Inactiva</span>
+                    )}
+                  </span>
 
+                  <span>ID: {uq.question?.questionId}</span>
+                </div>
 
-
-
-
+                {/* Answers placeholder */}
+                <div className="mt-3">
+                  {uq.answers?.length ? (
+                    <p className="text-xs text-gray-500">
+                      Respuestas registradas: {uq.answers.length}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-400 italic">
+                      Sin respuestas aún
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-gray-400 italic">
+              No hay preguntas registradas para este usuario.
+            </p>
+          )}
+        </div>
     </>
   );
 };

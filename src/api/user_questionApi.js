@@ -25,6 +25,12 @@ const user_questionApi = {
     return apiClient.get(`/user_question/${id}`);
   },
 
+
+  getUser_QuestionByUser: (id) => {
+    return apiClient.get(`/User_Question/search?userId=${id}`);
+  },
+
+
   /**
    * Crea una nueva pregunta para un usuario.
    *
