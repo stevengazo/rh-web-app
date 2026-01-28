@@ -32,6 +32,9 @@ import AwardTable from '../Components/organisms/AwardTable';
 import ComissionTable from '../Components/organisms/ComissionTable';
 import ComissionAdd from '../Components/organisms/ComissionAdd';
 
+import ExtraAdd from '../Components/organisms/ExtraAdd';
+import ExtraTable from '../Components/organisms/ExtraTable';
+
 /* API */
 import EmployeeApi from '../api/employeesApi';
 import courseApi from '../api/courseApi';
@@ -121,6 +124,7 @@ const ViewEmployeePage = () => {
 
       try {
         const res = await extrasApi.getExtrasByUser(id);
+        console.log('Extras fetched:', res.data);
         setExtras(res.data);
       } catch (err) {
         console.error('Error extras', err);
@@ -256,8 +260,13 @@ const ViewEmployeePage = () => {
           {/* EXTRAS */}
           {activeTab === TABS.EXTRAS && (
             <>
-              <Header title="Horas Extras" />
-              <ExtrasTable />
+              <Header
+                title="Horas Extras"
+                action={() =>
+                  openCanvas('Registrar ', <ExtraAdd userId={id} author={user} />)
+                }
+              />
+              <ExtraTable extras={extras} />
             </>
           )}
 

@@ -1,4 +1,4 @@
-const ExtrasTable = () => {
+const ExtrasTable = ({extras}) => {
   return (
     <table>
       <thead>

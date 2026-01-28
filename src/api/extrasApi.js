@@ -32,7 +32,7 @@ const extrasApi = {
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   getExtrasByUser: (id) => {
-    return apiClient.get(`/Extras/user/${id}`);
+    return apiClient.get(`/Extras/search?employeeId=${id}`);
   },
 
   /**
