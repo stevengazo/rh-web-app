@@ -185,7 +185,7 @@ const MyProfilePage = () => {
               active={activeTab === TABS.SETTINGS}
               onClick={() => setActiveTab(TABS.SETTINGS)}
             >
-              Configuración
+              Comprobantes
             </TabButton>
           </nav>
         </div>
