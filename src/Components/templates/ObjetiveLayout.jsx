@@ -6,16 +6,29 @@ import ResultsTable from '../organisms/ResultsTable';
 import PrimaryButton from '../PrimaryButton';
 import resultsApi from '../../api/resultsApi';
 
-const ObjetiveLayout = ({ user_ObjetiveId }) => {
+const ObjetiveLayout = ({ User_Objetive }) => {
   const [showAddResult, setShowAddResult] = useState(false);
   const [results, setResults] = useState([]);
   const toggleAddResult = () => {
     setShowAddResult((prev) => !prev);
   };
 
+  const LoadResults = async () => {
+    try {
+      const res = await resultsApi.searchResults({
+        user_ObjetiveId: User_Objetive.user_ObjetiveId,
+      });
+      setResults(res.data);
+      console.log('response:', res.data);
+    } catch (error) {
+      console.error('Error cargando resultados', error);
+    }
+  };
+
   useEffect(() => {
-    const GetData = async () => {};
-    GetData();
+    if (User_Objetive?.user_ObjetiveId) {
+      LoadResults();
+    }
   }, []);
 
   return (
@@ -35,7 +48,7 @@ const ObjetiveLayout = ({ user_ObjetiveId }) => {
       {showAddResult && (
         <div className="mb-6">
           <ResultAdd
-            user_ObjetiveId={user_ObjetiveId}
+            user_ObjetiveId={User_Objetive.user_ObjetiveId}
             onSuccess={() => setShowAddResult(false)}
           />
         </div>

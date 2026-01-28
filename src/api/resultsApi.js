@@ -55,6 +55,30 @@ const resultsApi = {
   deleteResult: (id) => {
     return apiClient.delete(`/Results/${id}`);
   },
+
+  /**
+   * 🔍 Búsqueda avanzada de resultados (filtros opcionales)
+   *
+   * @param {Object} filters
+   * @param {number} [filters.user_ObjetiveId]
+   * @param {string} [filters.createdBy]
+   * @param {string} [filters.fromDate] YYYY-MM-DD
+   * @param {string} [filters.toDate] YYYY-MM-DD
+   * @param {number} [filters.minEvalution]
+   * @param {number} [filters.maxEvalution]
+   */
+  searchResults: (filters = {}) => {
+    return apiClient.get('/Results/search', {
+      params: {
+        user_ObjetiveId: filters.user_ObjetiveId,
+        createdBy: filters.createdBy,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate,
+        minEvalution: filters.minEvalution,
+        maxEvalution: filters.maxEvalution,
+      },
+    });
+  },
 };
 
 export default resultsApi;

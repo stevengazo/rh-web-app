@@ -36,7 +36,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
         user_ObjetiveId: user_ObjetiveId,
       };
 
-      await resultsApi.post("/", payload);
+      await resultsApi.createResult(payload);
 
       setFormData({
         evalution: "",

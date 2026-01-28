@@ -34,7 +34,6 @@ const MyKPIs = () => {
           user.id
         );
         setUserQuestions(questionsResponse.data);
-        console.log(questionsResponse.data);
       } catch (error) {
         {
         }
@@ -91,7 +90,7 @@ const MyKPIs = () => {
               onClick={() =>
                 openCanvas(
                   `Objetivo ${obj.objetive?.title || 'Sin título'}`,
-                  <ObjetiveLayout />
+                  <ObjetiveLayout User_Objetive={obj} />
                 )
               }
               key={index}

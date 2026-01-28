@@ -29,9 +29,7 @@ const QuestionsLayout = ({ User_Question }) => {
   };
 
   useEffect(() => {
-    if (User_Question?.user_QuestionId) {
-      loadAnswers();
-    }
+    loadAnswers();
   }, []);
 
   return (
