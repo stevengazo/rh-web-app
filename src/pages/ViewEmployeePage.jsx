@@ -29,6 +29,9 @@ import ExtrasTable from '../Components/organisms/ExtrasTable';
 import AddAward from '../Components/organisms/AddAward';
 import AwardTable from '../Components/organisms/AwardTable';
 
+import ComissionTable from '../Components/organisms/ComissionTable';
+import ComissionAdd from '../Components/organisms/ComissionAdd';
+
 /* API */
 import EmployeeApi from '../api/employeesApi';
 import courseApi from '../api/courseApi';
@@ -37,6 +40,7 @@ import salaryApi from '../api/salaryApi';
 import actionApi from '../api/actionApi';
 import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
+import comissionsApi from '../api/comissionsApi';
 
 const TABS = {
   TRAINING: 'Certificaciones',
@@ -58,6 +62,7 @@ const ViewEmployeePage = () => {
   const [salaries, setSalaries] = useState([]);
   const [actions, setActions] = useState([]);
   const [awards, setAwards] = useState([]);
+  const [comission, setComission] = useState([]);
   const [extras, setExtras] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -73,24 +78,65 @@ const ViewEmployeePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setEmployee((await EmployeeApi.getEmployeeById(id)).data);
-
-        setSalaries((await salaryApi.getSalariesByUser(id)).data);
-        setActions((await actionApi.getActionsByUser(id)).data);
-
-        setAwards((await awardApi.getAwardsByUser(id)).data);
-        setCertifications(
-          await certificationApi.getCertificationsByUser(id).data
-        );
-        setCourses((await courseApi.getCoursesByUser(id)).data);
-        setExtras((await extrasApi.getExtrasByUser(id)).data);
+        const res = await EmployeeApi.getEmployeeById(id);
+        setEmployee(res.data);
       } catch (err) {
-        console.error(err);
+        console.error('Error employee', err);
+      }
+
+      try {
+        const res = await salaryApi.getSalariesByUser(id);
+        setSalaries(res.data);
+      } catch (err) {
+        console.error('Error salaries', err);
+      }
+
+      try {
+        const res = await actionApi.getActionsByUser(id);
+        setActions(res.data);
+      } catch (err) {
+        console.error('Error actions', err);
+      }
+
+      try {
+        const res = await awardApi.getAwardsByUser(id);
+        setAwards(res.data);
+      } catch (err) {
+        console.error('Error awards', err);
+      }
+
+      try {
+        const res = await certificationApi.getCertificationsByUser(id);
+        setCertifications(res.data);
+      } catch (err) {
+        console.error('Error certifications', err);
+      }
+
+      try {
+        const res = await courseApi.getCoursesByUser(id);
+        setCourses(res.data);
+      } catch (err) {
+        console.error('Error courses', err);
+      }
+
+      try {
+        const res = await extrasApi.getExtrasByUser(id);
+        setExtras(res.data);
+      } catch (err) {
+        console.error('Error extras', err);
+      }
+
+      try {
+        const res = await comissionsApi.getComissionsByUser(id);
+        console.log('Comissions fetched:', res.data);
+        setComission(res.data);
+      } catch (err) {
+        console.error('Error comissions', err);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, []);
 
   return (
     <>
@@ -212,6 +258,23 @@ const ViewEmployeePage = () => {
             <>
               <Header title="Horas Extras" />
               <ExtrasTable />
+            </>
+          )}
+
+          {/* comissions */}
+          {activeTab === TABS.COMISSIONS && (
+            <>
+              <Header
+                title="Comisiones"
+                action={() =>
+                  openCanvas(
+                    'Agregar Comision',
+                    <ComissionAdd userId={id} author={user} />
+                  )
+                }
+              />
+
+              <ComissionTable comissions={comission} />
             </>
           )}
 

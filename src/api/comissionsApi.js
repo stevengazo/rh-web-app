@@ -32,7 +32,7 @@ const comissionsApi = {
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   getComissionsByUser: (id) => {
-    return apiClient.get(`/comissions/user/${id}`);
+    return apiClient.get(`/Comissions/user/${id}`);
   },
 
   /**

@@ -19,7 +19,6 @@ const ObjetiveLayout = ({ User_Objetive }) => {
         user_ObjetiveId: User_Objetive.user_ObjetiveId,
       });
       setResults(res.data);
-      console.log('response:', res.data);
     } catch (error) {
       console.error('Error cargando resultados', error);
     }
