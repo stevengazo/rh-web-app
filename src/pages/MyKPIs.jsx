@@ -119,6 +119,9 @@ const MyKPIs = () => {
                   </span>
 
                   <span>ID: {uq.question?.questionId}</span>
+                  <button className='bg-blue-400 text-white border rounded p-3'>
+                    +
+                  </button>
                 </div>
 
                 {/* Answers placeholder */}

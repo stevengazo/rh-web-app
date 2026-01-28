@@ -66,8 +66,8 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
             </tr>
           )}
 
-          {courses.map((item) => (
-            <tr key={item.id} className="text-sm">
+          {courses.map((item, index) => (
+            <tr key={index} className="text-sm">
               <td className="px-4 py-3 font-medium text-gray-800">
                 {item.name}
               </td>

@@ -39,7 +39,10 @@ const CertificationAdd = ({ userId, author }) => {
 
     certificationApi
       .createCertification(newCertification)
-      .then((e) => notify())
+      .then((e) => {
+        notify();
+        console.log('Created: ', e);
+      })
       .catch((e) => console.error('Error: ' + e));
   };
 

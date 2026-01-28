@@ -62,7 +62,7 @@ const certificationApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getCertificationsByUser: (userId) => {
-    return apiClient.get(`/certifications/user/${userId}`);
+    return apiClient.get(`/Certifications/user/${userId}`);
   },
 
   /**

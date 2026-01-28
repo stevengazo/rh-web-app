@@ -6,7 +6,7 @@ import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
 import ActionTable from '../Components/organisms/ActionTable';
 import CertificationTable from '../Components/organisms/CertificationTable';
-import CourseTable from '../Components/organisms/CertificationTable';
+import CourseTable from '../Components/organisms/CourseTable';
 import SalaryTable from '../Components/organisms/SalaryTable';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
 import VacationsTable from '../Components/organisms/VacationsTable';

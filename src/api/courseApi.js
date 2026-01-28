@@ -58,7 +58,7 @@ const courseApi = {
    * @returns {Promise<import("axios").AxiosResponse>}
    */
   getCoursesByUser: (userId) => {
-    return apiClient.get(`/courses/user/${userId}`);
+    return apiClient.get(`/Courses/user/${userId}`);
   },
 
   /**
