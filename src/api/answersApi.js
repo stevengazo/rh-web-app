@@ -54,6 +54,26 @@ const answersApi = {
   deleteAnswer: () => {
     return apiClient.delete(`/answers/${id}`);
   },
+
+  /**
+   * 🔍 Busca respuestas con filtros opcionales (Swagger compatible)
+   *
+   * @param {Object} filters
+   * @param {string} [filters.employeeId]
+   * @param {string} [filters.Date] ISO Date (YYYY-MM-DD)
+   * @param {number} [filters.UserQuestionId]
+   * @param {boolean} [filters.Deleted]
+   */
+  searchAnswers: (filters = {}) => {
+    return apiClient.get('/answers/search', {
+      params: {
+        employeeId: filters.employeeId,
+        Date: filters.Date,
+        UserQuestionId: filters.UserQuestionId,
+        Deleted: filters.Deleted,
+      },
+    });
+  },
 };
 
 export default answersApi;

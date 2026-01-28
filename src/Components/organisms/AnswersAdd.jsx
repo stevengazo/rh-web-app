@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MessageSquare, Save } from "lucide-react";
 import answersApi from "../../api/answersApi";
+import toast from "react-hot-toast";
 
 const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
   const [text, setText] = useState("");
@@ -24,7 +25,9 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
         user_QuestionId,
       };
 
-      await answersApi.post("/", payload);
+      await answersApi.createAnswer(payload);
+      toast.success("Respuesta guardada exitosamente.");
+
 
       setText("");
       onSuccess?.();

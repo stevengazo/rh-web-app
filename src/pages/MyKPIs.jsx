@@ -153,7 +153,7 @@ const MyKPIs = () => {
                 onClick={() =>
                   openCanvas(
                     `Pregunta ${uq.question?.text || 'Sin título'}`,
-                    <QuestionsLayout />
+                    <QuestionsLayout User_Question= {uq} />
                   )
                 }
                 key={uq.user_QuestionId}
