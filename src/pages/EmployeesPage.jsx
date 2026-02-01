@@ -28,12 +28,13 @@ const itemVariants = {
 
 const EmployeesPage = () => {
   const [search, setSearch] = useState('');
-  const [open, setOpen] = useState(false);
-  const [canvasTitle, setCanvasTitle] = useState('');
-  const [canvasContent, setCanvasContent] = useState(null);
 
   const [employees, setEmployees] = useState([]);
 
+  const [open, setOpen] = useState(false);
+  const [canvasTitle, setCanvasTitle] = useState('');
+  const [canvasContent, setCanvasContent] = useState(null);
+  
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
     setCanvasContent(content);

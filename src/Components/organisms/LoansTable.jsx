@@ -1,97 +1,109 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 
+const STATUS_STYLES = {
+  Aprobado: 'bg-green-100 text-green-700',
+  Pendiente: 'bg-yellow-100 text-yellow-700',
+  Rechazado: 'bg-red-100 text-red-700',
+};
+
 const LoansTable = ({ loans = [] }) => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
   const filteredLoans = useMemo(() => {
-    if (!search) return loans;
+    if (!search.trim()) return loans;
 
     const term = search.toLowerCase();
 
-    return loans.filter((e) =>
-      e.loanId.toString().includes(term) ||
-      e.title.toLowerCase().includes(term) ||
-      e.state.toLowerCase().includes(term)
+    return loans.filter((loan) =>
+      loan.loanId.toString().includes(term) ||
+      loan.title.toLowerCase().includes(term) ||
+      loan.state.toLowerCase().includes(term)
     );
   }, [search, loans]);
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      {/* Barra de búsqueda */}
-      <div className="mb-4">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+      {/* Búsqueda */}
+      <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
-          placeholder="Buscar por ID, título o estado..."
+          placeholder="Buscar por ID, título o estado…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="
+            w-full md:w-1/3 px-4 py-2 text-sm
+            border border-gray-300 rounded-lg
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          "
         />
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200">
-          <thead className="bg-gray-100">
+        <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+          <thead className="bg-gray-100 sticky top-0 z-10">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                ID
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                Título
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                Estado
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">
-                Fecha
-              </th>
-              <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">
-                Monto
-              </th>
+              {['ID', 'Título', 'Estado', 'Fecha', 'Monto'].map((h) => (
+                <th
+                  key={h}
+                  className={`
+                    px-4 py-3 text-sm font-semibold text-gray-600
+                    ${h === 'Monto' ? 'text-right' : 'text-left'}
+                  `}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-100">
             {filteredLoans.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-gray-500">
+                <td
+                  colSpan={5}
+                  className="px-4 py-8 text-center text-sm text-gray-500"
+                >
                   No se encontraron préstamos
                 </td>
               </tr>
             ) : (
-              filteredLoans.map((e) => (
+              filteredLoans.map((loan) => (
                 <tr
-                  key={e.loanId}
-                  onClick={() => navigate(`/manager/loan/${e.loanId}`)}
-                  className="hover:bg-gray-50 transition cursor-pointer"
+                  key={loan.loanId}
+                  onClick={() => navigate(`/manager/loan/${loan.loanId}`)}
+                  className="
+                    cursor-pointer transition
+                    hover:bg-blue-50
+                  "
                 >
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    {e.loanId}
+                    {loan.loanId}
                   </td>
+
                   <td className="px-4 py-3 text-sm text-gray-700">
-                    {e.title}
+                    {loan.title}
                   </td>
+
                   <td className="px-4 py-3 text-sm">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium
-                        ${
-                          e.state === 'Aprobado'
-                            ? 'bg-green-100 text-green-700'
-                            : e.state === 'Pendiente'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-red-100 text-red-700'
-                        }`}
+                      className={`
+                        inline-flex items-center
+                        px-3 py-1 rounded-full text-xs font-medium
+                        ${STATUS_STYLES[loan.state] ?? 'bg-gray-100 text-gray-600'}
+                      `}
                     >
-                      {e.state}
+                      {loan.state}
                     </span>
                   </td>
+
                   <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(e.createdAt).toLocaleDateString()}
+                    {new Date(loan.createdAt).toLocaleDateString()}
                   </td>
+
                   <td className="px-4 py-3 text-sm text-right font-semibold text-gray-800">
-                    ₡{Number(e.amount).toLocaleString()}
+                    ₡{Number(loan.amount).toLocaleString()}
                   </td>
                 </tr>
               ))
