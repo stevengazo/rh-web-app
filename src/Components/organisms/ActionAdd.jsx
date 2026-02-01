@@ -32,17 +32,17 @@ const ActionAdd = ({ userId, author }) => {
   });
 
   /* =========================
-     Cargar empleados (solo si hace falta)
+     Fetch empleados
      ========================= */
   useEffect(() => {
     if (!shouldSelectEmployee) return;
 
     const fetchEmployees = async () => {
       try {
-        const response = await EmployeeApi.getAllEmployees();
-        setEmployees(response.data);
-      } catch (error) {
-        console.error('Error cargando empleados:', error);
+        const res = await EmployeeApi.getAllEmployees();
+        setEmployees(res.data);
+      } catch (err) {
+        console.error(err);
       }
     };
 
@@ -50,15 +50,15 @@ const ActionAdd = ({ userId, author }) => {
   }, [shouldSelectEmployee]);
 
   /* =========================
-     Cargar tipos de acción
+     Fetch tipos de acción
      ========================= */
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await actionTypeApi.getAllActionTypes();
-        setTypesOfActions(response.data);
-      } catch (error) {
-        console.error('Error cargando tipos de acción:', error);
+        const res = await actionTypeApi.getAllActionTypes();
+        setTypesOfActions(res.data);
+      } catch (err) {
+        console.error(err);
       }
     };
 
@@ -77,34 +77,51 @@ const ActionAdd = ({ userId, author }) => {
     e.preventDefault();
     try {
       await actionApi.createAction(newAction);
-      console.log('Acción creada:', newAction);
-      toast .success('Acción creada con éxito');
-
+      toast.success('Acción creada con éxito');
     } catch (error) {
-      console.error('Error creando acción:', error);
+      console.error(error);
+      toast.error('Error al crear la acción');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit}
+      className="
+        flex flex-col gap-4
+        text-gray-800 dark:text-gray-100
+      "
+    >
       {/* Fecha */}
       <DateInput
         label="Fecha de la acción"
         name="actionDate"
         value={newAction.actionDate}
         onChange={handleChange}
+        className="
+          bg-white border-gray-300 text-gray-800
+          dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+        "
       />
 
-      {/* Empleado (solo si no viene userId) */}
+      {/* Empleado */}
       {shouldSelectEmployee && (
         <div className="flex flex-col gap-1">
-          <label className="text-sm text-gray-600">Empleado</label>
+          <label className="text-sm text-gray-600 dark:text-gray-300">
+            Empleado
+          </label>
+
           <select
             name="userId"
             value={newAction.userId}
             onChange={handleChange}
             required
-            className="px-3 py-2 border border-slate-300 rounded-md text-gray-700"
+            className="
+              px-3 py-2 rounded-md
+              bg-white border border-gray-300 text-gray-800
+              dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-blue-500
+            "
           >
             <option value="">Seleccione un empleado</option>
             {employees.map((emp) => (
@@ -123,17 +140,29 @@ const ActionAdd = ({ userId, author }) => {
         value={newAction.description}
         onChange={handleChange}
         placeholder="Descripción de la acción"
+        className="
+          bg-white border-gray-300 text-gray-800
+          dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+        "
       />
 
       {/* Tipo de acción */}
       <div className="flex flex-col gap-1">
-        <label className="text-sm text-gray-600">Tipo de acción</label>
+        <label className="text-sm text-gray-600 dark:text-gray-300">
+          Tipo de acción
+        </label>
+
         <select
           name="actionTypeId"
           value={newAction.actionTypeId}
           onChange={handleChange}
-          className="px-3 py-2 border border-slate-300 rounded-md text-gray-700"
           required
+          className="
+            px-3 py-2 rounded-md
+            bg-white border border-gray-300 text-gray-800
+            dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+            focus:outline-none focus:ring-2 focus:ring-blue-500
+          "
         >
           <option value="">Seleccione un tipo</option>
           {typesOfActions.map((type) => (
@@ -144,7 +173,9 @@ const ActionAdd = ({ userId, author }) => {
         </select>
       </div>
 
-      <PrimaryButton type="submit">Agregar acción</PrimaryButton>
+      <PrimaryButton type="submit">
+        Agregar acción
+      </PrimaryButton>
     </form>
   );
 };
