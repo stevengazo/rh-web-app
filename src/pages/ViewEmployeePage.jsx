@@ -167,14 +167,18 @@ const ViewEmployeePage = () => {
         <PageTitle>Información del Empleado</PageTitle>
 
         <>
-          <div className='flex flex-row justify-between items-center'>
+          <div className="flex flex-row justify-between items-center">
             <Header title="Detalles del Empleado" />
 
             <PrimaryButton
               onClick={() =>
                 openCanvas(
                   'Editar Información',
-                  <EmployeeEdit employee={employee} setEmployee={setEmployee} />
+                  <EmployeeEdit
+                    employee={employee}
+                    setEmployee={setEmployee}
+                    onClose={() => setOpen(false)}
+                  />
                 )
               }
             >

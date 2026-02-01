@@ -7,7 +7,7 @@ import DateInput from '../DateInput';
 import Label from '../Label';
 import PrimaryButton from '../PrimaryButton';
 
-const EmployeesAdd = () => {
+const EmployeesAdd = ({OnClose}) => {
   const [departaments, setDepartaments] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -63,6 +63,7 @@ const EmployeesAdd = () => {
         departamentId: 0,
       });
       notify();
+      OnClose()
     } catch (error) {
       console.error('Error creando empleado:', error);
       alert('Error al crear el empleado');
@@ -84,7 +85,7 @@ const EmployeesAdd = () => {
   }, []);
 
   return (
-    <form className="space-y-8" onSubmit={handleSubmit}>
+    <form className="space-y-8 py-6" onSubmit={handleSubmit}>
       {/* ================= IDENTIFICACIÓN ================= */}
       <section className="space-y-4">
         <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">

@@ -6,7 +6,7 @@ import EmployeeApi from '../../api/employeesApi';
 import DepartamentApi from '../../api/departamentApi';
 import toast from 'react-hot-toast';
 
-const EmployeeEdit = ({ employee }) => {
+const EmployeeEdit = ({ employee ,setEmployee, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -40,6 +40,8 @@ const EmployeeEdit = ({ employee }) => {
       await EmployeeApi.updateEmployee(localEmployee.id, localEmployee);
       setSuccess('El empleado fue actualizado correctamente');
       toast.success('Empleado actualizado correctamente');
+      setEmployee(localEmployee)
+      onClose()
     } catch (err) {
       console.error(err);
       setError('Error al actualizar el empleado');

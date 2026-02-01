@@ -66,7 +66,7 @@ const EmployeesPage = () => {
       }
     };
     FechData();
-  }, []);
+  }, [open]);
 
   return (
     <>
@@ -120,7 +120,7 @@ const EmployeesPage = () => {
               onClick={() =>
                 openCanvas(
                   'Agregar Empleado',
-                  <EmployeesAdd />
+                  <EmployeesAdd OnClose={ ()=>setOpen(false) } />
                 )
               }
             >
