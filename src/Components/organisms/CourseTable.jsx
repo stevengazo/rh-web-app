@@ -24,7 +24,7 @@ const tableVariants = {
   },
 };
 
-const CourseTable = ({ courses = [], onEdit, onDelete }) => {
+const CourseTable = ({ courses = [],  OnEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <motion.table
@@ -78,7 +78,7 @@ const CourseTable = ({ courses = [], onEdit, onDelete }) => {
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
                   <button
-                    onClick={() => onEdit?.(item)}
+                    onClick={() =>  OnEdit?.(item)}
                     className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
                     title="Editar"
                   >

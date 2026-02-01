@@ -1,15 +1,19 @@
 import { motion } from 'framer-motion';
 import { UserX } from 'lucide-react';
 
+const formatDate = (date) => {
+  if (!date || date.startsWith('0001-01-01')) return '—';
+  return new Date(date).toLocaleDateString();
+};
+
 const row = (label, value) => (
   <tr className="border-t">
     <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
-    <td className="px-3 py-2 text-slate-800">{value || '—'}</td>
+    <td className="px-3 py-2 text-slate-800">{value ?? '—'}</td>
   </tr>
 );
 
 const EmployeeTableInfo = ({ employee }) => {
-  // 👉 Estado: sin datos
   if (!employee) {
     return (
       <motion.div
@@ -30,7 +34,7 @@ const EmployeeTableInfo = ({ employee }) => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.25 }}
       className="bg-white rounded-lg shadow-sm overflow-hidden"
     >
       <table className="w-full border border-slate-200">
@@ -43,27 +47,32 @@ const EmployeeTableInfo = ({ employee }) => {
 
         <tbody>
           {row(
-            'Nombre',
-            `${employee.firstName || ''} ${employee.middleName || ''}`.trim()
+            'Nombre completo',
+            `${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`.trim()
           )}
 
-          {row(
-            'Apellidos',
-            `${employee.lastName || ''} ${employee.secondLastName || ''}`.trim()
-          )}
-
+          {row('Usuario', employee.userName)}
           {row('Correo', employee.email)}
+          {row('Teléfono', employee.phoneNumber)}
           {row('Cédula', employee.dni)}
+          {row('Dirección', employee.address)}
+
           {row('Departamento', employee.departament?.name)}
+          {row('Jornada', employee.jorney)}
+
+          {row('Fecha de nacimiento', formatDate(employee.birthDate))}
+          {row('Fecha de contratación', formatDate(employee.hiredDate))}
 
           {row(
-            'Fecha Contratación',
-            employee.hiredDate
-              ? new Date(employee.hiredDate).toLocaleDateString()
-              : null
+            'Estado',
+            employee.isActive ? (
+              <span className="text-green-600 font-medium">Activo</span>
+            ) : (
+              <span className="text-red-600 font-medium">Inactivo</span>
+            )
           )}
 
-          {row('Estado', employee.isActive ? 'Activo' : 'Inactivo')}
+          {row('Última edición', formatDate(employee.lastEditedDate))}
         </tbody>
       </table>
     </motion.div>

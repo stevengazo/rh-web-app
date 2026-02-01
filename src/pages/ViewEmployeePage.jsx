@@ -14,6 +14,7 @@ import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
 
 import CourseAdd from '../Components/organisms/CourseAdd';
 import CourseTable from '../Components/organisms/CourseTable';
+import CourseEdit from '../Components/organisms/CouseEdit';
 
 import CertificationAdd from '../Components/organisms/CertificationAdd';
 import CertificationTable from '../Components/organisms/CertificationTable';
@@ -217,7 +218,12 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <CourseTable courses={courses} />
+              <CourseTable
+                courses={courses}
+                OnEdit={(element) => {
+                  openCanvas(`Editar`, <CourseEdit item={element} OnClose={setOpen(false)} />);
+                }}
+              />
 
               <Divider />
 
