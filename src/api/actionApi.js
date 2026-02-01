@@ -105,6 +105,19 @@ const actionApi = {
   deleteAction: (id) => {
     return apiClient.delete(`/actions/${id}`);
   },
+
+  searchActions: (filters) => {
+    return apiClient.get('/actions/search', {
+      params: {
+        employeeId: filters.employeeId,
+        DateStart: filters.dateStart,
+        DateEnd: filters.dateEnd,
+        Type: filters.type,
+        isActive: filters.isActive,
+        Approved: filters.approved,
+      },
+    });
+  },
 };
 
 export default actionApi;

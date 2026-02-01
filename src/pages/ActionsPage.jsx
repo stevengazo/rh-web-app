@@ -1,29 +1,23 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+
 import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
-import { useState, useEffect } from 'react';
 import OffCanvas from '../Components/OffCanvas';
 import ActionAdd from '../Components/organisms/ActionAdd';
 
-const pageVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' },
-  },
-};
+import { useAppContext } from '../context/AppContext';
+import actionApi from '../api/actionApi';
+import CardAction from '../Components/CardActions';
+import ViewAction from '../Components/organisms/ViewAction';
 
 const ActionsPage = () => {
+  const { user } = useAppContext();
+
+  const [approvedActions, setApprovedActions] = useState([]);
+  const [pendingActions, setPendingActions] = useState([]);
+  const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
@@ -34,81 +28,114 @@ const ActionsPage = () => {
     setOpen(true);
   };
 
+  useEffect(() => {
+    const loadActions = async () => {
+      const base = {
+        dateStart: '2025-01-01',
+        dateEnd: '2026-12-31',
+        isActive: true,
+      };
+
+      const [approved, pending] = await Promise.all([
+        actionApi.searchActions({ ...base, approved: true }),
+        actionApi.searchActions({ ...base, approved: false }),
+      ]);
+
+      setApprovedActions(approved.data);
+      setPendingActions(pending.data);
+    };
+
+    loadActions();
+  }, []);
+
+  const filterActions = (actions) => {
+    if (!search) return actions;
+
+    const term = search.toLowerCase();
+
+    return actions.filter(
+      (a) =>
+        `${a.user?.firstName} ${a.user?.lastName}`
+          .toLowerCase()
+          .includes(term) ||
+        a.description?.toLowerCase().includes(term) ||
+        a.actionType?.name?.toLowerCase().includes(term)
+    );
+  };
+
   return (
-    <div>
-      <div>
-        {/* OffCanvas animado */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <OffCanvas
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                title={canvasTitle}
-              >
-                <motion.div
-                  initial={{ x: 50, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: 50, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {canvasContent}
-                </motion.div>
-              </OffCanvas>
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <>
+      {/* OffCanvas */}
+      <AnimatePresence>
+        {open && (
+          <OffCanvas
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            title={canvasTitle}
+          >
+            {canvasContent}
+          </OffCanvas>
+        )}
+      </AnimatePresence>
+
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <SectionTitle>Acciones de Personal</SectionTitle>
+
+        <PrimaryButton
+          onClick={() =>
+            openCanvas('Agregar Acción', <ActionAdd author={user} />)
+          }
+        >
+          Agregar Acción
+        </PrimaryButton>
       </div>
 
-      <motion.div
-        className="space-y-6"
-        variants={pageVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Title */}
-        <motion.div variants={itemVariants}>
-          <SectionTitle>Acciones de Personal</SectionTitle>
-        </motion.div>
+      <Divider />
 
-        <motion.div variants={itemVariants}>
-          <Divider />
-        </motion.div>
+      {/* Search */}
+      <input
+        type="text"
+        placeholder="Buscar por empleado, tipo o descripción…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="
+          w-full md:w-1/3 px-4 py-2 mb-6
+          border border-slate-300 rounded-lg
+          focus:ring-2 focus:ring-blue-500 focus:outline-none
+        "
+      />
 
-        {/* Header actions */}
-        <motion.div variants={itemVariants} className="flex justify-end">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <PrimaryButton
-              onClick={() => openCanvas('Agregar Acción', <ActionAdd />)}
-            >
-              Agregar Acción
-            </PrimaryButton>
-          </motion.div>
-        </motion.div>
-
-        {/* Placeholder contenido */}
-        <motion.div
-          variants={itemVariants}
-          className="rounded-lg border border-slate-200 p-6 text-sm text-slate-500"
-        >
-          <SectionTitle>Aprobadas</SectionTitle>
-          Aquí se mostrarán las acciones de personal registradas.
-        </motion.div>
-
-        {/* Placeholder contenido */}
-        <motion.div
-          variants={itemVariants}
-          className="rounded-lg border border-slate-200 p-6 text-sm text-slate-500"
-        >
-          <SectionTitle>Sin Aprobar</SectionTitle>
-          Aquí se mostrarán las acciones de personal registradas.
-        </motion.div>
+      {/* Pendientes */}
+      <SectionTitle>Sin aprobar</SectionTitle>
+      <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {filterActions(pendingActions).map((a) => (
+          <CardAction
+            key={a.actionId}
+            action={a}
+            status="pending"
+            OnHandleClick={() => {
+              openCanvas('Información de Acciòn', <ViewAction action={a} />);
+            }}
+          />
+        ))}
       </motion.div>
-    </div>
+
+      {/* Aprobadas */}
+      <SectionTitle className="mt-8">Aprobadas</SectionTitle>
+      <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {filterActions(approvedActions).map((a) => (
+          <CardAction
+            key={a.actionId}
+            action={a}
+            status="approved"
+            OnHandleClick={() => {
+              openCanvas('Información de Acciòn', <ViewAction action={a} />);
+            }}
+          />
+        ))}
+      </motion.div>
+    </>
   );
 };
 
