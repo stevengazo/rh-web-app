@@ -167,15 +167,20 @@ const ViewEmployeePage = () => {
         <PageTitle>Información del Empleado</PageTitle>
 
         <>
-          <Header
-            title="Detalles del Empleado"
-            action={() =>
-              openCanvas(
-                'Editar Información',
-                <EmployeeEdit employee={employee} setEmployee={setEmployee} />
-              )
-            }
-          />
+          <div className='flex flex-row justify-between items-center'>
+            <Header title="Detalles del Empleado" />
+
+            <PrimaryButton
+              onClick={() =>
+                openCanvas(
+                  'Editar Información',
+                  <EmployeeEdit employee={employee} setEmployee={setEmployee} />
+                )
+              }
+            >
+              Editar
+            </PrimaryButton>
+          </div>
           <EmployeeTableInfo employee={employee} />
         </>
 
@@ -263,7 +268,10 @@ const ViewEmployeePage = () => {
               <Header
                 title="Horas Extras"
                 action={() =>
-                  openCanvas('Registrar ', <ExtraAdd userId={id} author={user} />)
+                  openCanvas(
+                    'Registrar ',
+                    <ExtraAdd userId={id} author={user} />
+                  )
                 }
               />
               <ExtraTable extras={extras} />

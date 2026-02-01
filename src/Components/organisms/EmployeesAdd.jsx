@@ -11,7 +11,7 @@ const EmployeesAdd = () => {
   const [departaments, setDepartaments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-    const notify = () => toast.success('Agregado');
+  const notify = () => toast.success('Agregado');
   const today = new Date().toISOString().split('T')[0];
 
   const [newUser, setNewUser] = useState({
