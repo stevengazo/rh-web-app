@@ -16,7 +16,7 @@ const tableVariants = {
   },
 };
 
-const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
+const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
   
   console.log('Certificaciones en CertificationTable:', certifications);
   return (
@@ -70,7 +70,7 @@ const CertificationTable = ({ certifications = [], onEdit, onDelete }) => {
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
                   <button
-                    onClick={() => onEdit?.(item)}
+                    onClick={() => OnEdit?.(item)}
                     className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
                     title="Editar"
                   >

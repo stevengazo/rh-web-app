@@ -1,15 +1,33 @@
+import { motion } from 'framer-motion';
+import { Calendar } from 'lucide-react';
+
+const formatDate = (dateString) => {
+  if (!dateString) return '—';
+
+  return new Date(dateString).toLocaleDateString('es-CR', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  });
+};
+
+const tableVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      staggerChildren: 0.03,
+    },
+  },
+};
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const AwardTable = ({ awards = [] }) => {
-  const formatDate = (dateString) => {
-    if (!dateString) return '-';
-
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-CR', {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit',
-    });
-  };
-
   if (!awards.length) {
     return (
       <p className="text-center text-gray-500 py-6">
@@ -19,51 +37,50 @@ const AwardTable = ({ awards = [] }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-              Título
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-              Descripción
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-              Fecha
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-              Creado por
-            </th>
-          </tr>
-        </thead>
+    <motion.table
+      variants={tableVariants}
+      initial="hidden"
+      animate="visible"
+      className="mx-auto w-full max-w-5xl border-collapse rounded-xl overflow-hidden shadow"
+    >
+      <thead className="bg-slate-800 text-white text-sm">
+        <tr>
+          <th className="p-3 text-left">Título</th>
+          <th className="p-3 text-left">Descripción</th>
+          <th className="p-3 text-left">Fecha</th>
+          <th className="p-3 text-left">Creado por</th>
+        </tr>
+      </thead>
 
-        <tbody className="divide-y divide-gray-200">
-          {awards.map((award) => (
-            <tr
-              key={award.awardId}
-              className="hover:bg-gray-50 transition"
-            >
-              <td className="px-4 py-3 text-sm text-gray-800 font-medium">
-                {award.title}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">
-                {award.description}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
-                {formatDate(award.createdAt)}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">
-                {award.createdBy || '-'}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      <motion.tbody variants={tableVariants} className="text-sm">
+        {awards.map((award) => (
+          <motion.tr
+            key={award.awardId}
+            variants={rowVariants}
+            whileHover={{ backgroundColor: '#f8fafc' }}
+            className="border-b"
+          >
+            <td className="p-3 font-medium text-slate-800">
+              {award.title}
+            </td>
+
+            <td className="p-3 text-slate-600">
+              {award.description || '—'}
+            </td>
+
+            <td className="p-3 flex items-center gap-2 text-slate-600 whitespace-nowrap">
+              <Calendar size={14} />
+              {formatDate(award.createdAt)}
+            </td>
+
+            <td className="p-3 text-slate-600">
+              {award.createdBy || '—'}
+            </td>
+          </motion.tr>
+        ))}
+      </motion.tbody>
+    </motion.table>
   );
 };
-
-
 
 export default AwardTable;

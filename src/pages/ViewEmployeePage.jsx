@@ -24,6 +24,8 @@ import SalaryTable from '../Components/organisms/SalaryTable';
 
 import ActionAdd from '../Components/organisms/ActionAdd';
 import ActionTable from '../Components/organisms/ActionTable';
+import ActionView from '../Components/organisms/ActionView';
+import ActionEdit from '../Components/organisms/ActionEdit';
 
 import ExtrasTable from '../Components/organisms/ExtrasTable';
 
@@ -45,6 +47,7 @@ import actionApi from '../api/actionApi';
 import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
 import comissionsApi from '../api/comissionsApi';
+import CertificationEdit from '../Components/organisms/CertificationEdit';
 
 const TABS = {
   TRAINING: 'Certificaciones',
@@ -221,7 +224,10 @@ const ViewEmployeePage = () => {
               <CourseTable
                 courses={courses}
                 OnEdit={(element) => {
-                  openCanvas(`Editar`, <CourseEdit item={element} OnClose={setOpen(false)} />);
+                  openCanvas(
+                    `Editar`,
+                    <CourseEdit item={element} OnClose={setOpen(false)} />
+                  );
                 }}
               />
 
@@ -236,7 +242,18 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <CertificationTable certifications={certifications} />
+              <CertificationTable
+                certifications={certifications}
+                OnEdit={(element) => {
+                  openCanvas(
+                    'Editar Certificacion',
+                    <CertificationEdit
+                      item={element}
+                      OnUpdate={setOpen(false)}
+                    />
+                  );
+                }}
+              />
             </>
           )}
 
@@ -268,7 +285,15 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <ActionTable actions={actions} />
+              <ActionTable
+                actions={actions}
+                OnSelect={(element) =>
+                  openCanvas(
+                    'Acción de Personal',
+                    <ActionView action={element} />
+                  )
+                }
+              />
             </>
           )}
 

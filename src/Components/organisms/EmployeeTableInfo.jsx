@@ -3,14 +3,38 @@ import { UserX } from 'lucide-react';
 
 const formatDate = (date) => {
   if (!date || date.startsWith('0001-01-01')) return '—';
-  return new Date(date).toLocaleDateString();
+  return new Date(date).toLocaleDateString('es-CR');
 };
 
-const row = (label, value) => (
-  <tr className="border-t">
-    <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
-    <td className="px-3 py-2 text-slate-800">{value ?? '—'}</td>
-  </tr>
+const tableVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 6 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const Row = ({ label, value }) => (
+  <motion.tr
+    variants={rowVariants}
+    whileHover={{ backgroundColor: '#f8fafc' }}
+    className="border-t"
+  >
+    <td className="px-3 py-2 font-medium text-slate-600">
+      {label}
+    </td>
+    <td className="px-3 py-2 text-slate-800">
+      {value ?? '—'}
+    </td>
+  </motion.tr>
 );
 
 const EmployeeTableInfo = ({ employee }) => {
@@ -31,51 +55,51 @@ const EmployeeTableInfo = ({ employee }) => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="bg-white rounded-lg shadow-sm overflow-hidden"
+    <motion.table
+      variants={tableVariants}
+      initial="hidden"
+      animate="visible"
+      className="w-full border-collapse rounded-xl overflow-hidden shadow-sm bg-white"
     >
-      <table className="w-full border border-slate-200">
-        <thead className="bg-slate-100">
-          <tr>
-            <th className="text-left px-3 py-2 text-slate-600">Campo</th>
-            <th className="text-left px-3 py-2 text-slate-600">Valor</th>
-          </tr>
-        </thead>
+      <thead className="bg-slate-800 text-white text-sm">
+        <tr>
+          <th className="text-left px-3 py-2">Campo</th>
+          <th className="text-left px-3 py-2">Valor</th>
+        </tr>
+      </thead>
 
-        <tbody>
-          {row(
-            'Nombre completo',
-            `${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`.trim()
-          )}
+      <motion.tbody variants={tableVariants} className="text-sm">
+        <Row
+          label="Nombre completo"
+          value={`${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`.trim()}
+        />
 
-          {row('Usuario', employee.userName)}
-          {row('Correo', employee.email)}
-          {row('Teléfono', employee.phoneNumber)}
-          {row('Cédula', employee.dni)}
-          {row('Dirección', employee.address)}
+        <Row label="Usuario" value={employee.userName} />
+        <Row label="Correo" value={employee.email} />
+        <Row label="Teléfono" value={employee.phoneNumber} />
+        <Row label="Cédula" value={employee.dni} />
+        <Row label="Dirección" value={employee.address} />
 
-          {row('Departamento', employee.departament?.name)}
-          {row('Jornada', employee.jorney)}
+        <Row label="Departamento" value={employee.departament?.name} />
+        <Row label="Jornada" value={employee.jorney} />
 
-          {row('Fecha de nacimiento', formatDate(employee.birthDate))}
-          {row('Fecha de contratación', formatDate(employee.hiredDate))}
+        <Row label="Fecha de nacimiento" value={formatDate(employee.birthDate)} />
+        <Row label="Fecha de contratación" value={formatDate(employee.hiredDate)} />
 
-          {row(
-            'Estado',
+        <Row
+          label="Estado"
+          value={
             employee.isActive ? (
               <span className="text-green-600 font-medium">Activo</span>
             ) : (
               <span className="text-red-600 font-medium">Inactivo</span>
             )
-          )}
+          }
+        />
 
-          {row('Última edición', formatDate(employee.lastEditedDate))}
-        </tbody>
-      </table>
-    </motion.div>
+        <Row label="Última edición" value={formatDate(employee.lastEditedDate)} />
+      </motion.tbody>
+    </motion.table>
   );
 };
 

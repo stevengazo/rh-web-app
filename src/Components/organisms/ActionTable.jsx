@@ -7,11 +7,8 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
-
-
-
-const ActionTable = ({ actions = [], onEdit, onDelete }) => {
-  console.log('Actions en ActionTable:', actions);  
+const ActionTable = ({ actions = [], onEdit, onDelete, OnSelect }) => {
+  console.log('Actions en ActionTable:', actions);
 
   return (
     <motion.table
@@ -64,6 +61,12 @@ const ActionTable = ({ actions = [], onEdit, onDelete }) => {
 
             <td className="p-3">
               <div className="flex justify-center gap-3">
+                <button
+                  onClick={() => OnSelect?.(item)}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  Ver
+                </button>
                 <button
                   onClick={() => onEdit?.(item)}
                   className="text-blue-600 hover:text-blue-800"
