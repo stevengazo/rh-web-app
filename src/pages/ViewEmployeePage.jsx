@@ -144,7 +144,7 @@ const ViewEmployeePage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [open]);
 
   return (
     <>
@@ -287,6 +287,12 @@ const ViewEmployeePage = () => {
               />
               <ActionTable
                 actions={actions}
+                OnEdit={(element) =>
+                  openCanvas(
+                    'Editar',
+                    <ActionEdit action={element} OnEdited={setOpen(false)} />
+                  )
+                }
                 OnSelect={(element) =>
                   openCanvas(
                     'Acción de Personal',

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Calendar, CheckCircle, XCircle, Pencil, Trash2 } from 'lucide-react';
+import { Calendar, CheckCircle, XCircle, Pencil, Trash2 , EyeIcon} from 'lucide-react';
 import { format } from 'date-fns';
 
 const formatDate = (dateString) => {
@@ -7,7 +7,7 @@ const formatDate = (dateString) => {
   return format(new Date(dateString), 'dd/MM/yyyy');
 };
 
-const ActionTable = ({ actions = [], onEdit, onDelete, OnSelect }) => {
+const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
   console.log('Actions en ActionTable:', actions);
 
   return (
@@ -65,10 +65,10 @@ const ActionTable = ({ actions = [], onEdit, onDelete, OnSelect }) => {
                   onClick={() => OnSelect?.(item)}
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  Ver
+                  <EyeIcon size={18}  />
                 </button>
                 <button
-                  onClick={() => onEdit?.(item)}
+                  onClick={() => OnEdit?.(item)}
                   className="text-blue-600 hover:text-blue-800"
                 >
                   <Pencil size={18} />
