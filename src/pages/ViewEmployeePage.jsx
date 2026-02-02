@@ -37,6 +37,7 @@ import ComissionAdd from '../Components/organisms/ComissionAdd';
 
 import ExtraAdd from '../Components/organisms/ExtraAdd';
 import ExtraTable from '../Components/organisms/ExtraTable';
+import ExtraView from '../Components/organisms/ExtraView';
 
 /* API */
 import EmployeeApi from '../api/employeesApi';
@@ -315,7 +316,7 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <ExtraTable extras={extras} />
+              <ExtraTable extras={extras} onSelect={ (element)=>openCanvas('Ver', <ExtraView extra={element} /> )} />
             </>
           )}
 

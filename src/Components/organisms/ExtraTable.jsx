@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { Calendar, CheckCircle, EyeClosedIcon, XCircle } from 'lucide-react';
 
 const formatDate = (date) => {
   if (!date) return '—';
@@ -7,7 +7,7 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('es-CR');
 };
 
-const ExtraTable = ({ extras = [] }) => {
+const ExtraTable = ({ extras = [], onSelect }) => {
   if (!extras.length) {
     return (
       <p className="text-gray-500 text-sm text-center">
@@ -40,17 +40,14 @@ const ExtraTable = ({ extras = [] }) => {
       <tbody className="text-sm">
         {extras.map((e) => (
           <motion.tr
+            onClick={() => onSelect?.(e)}
             key={e.extraId}
             whileHover={{ backgroundColor: '#f8fafc' }}
-            className={`border-b ${
-              e.isDeleted ? 'opacity-50' : ''
-            }`}
+            className={`border-b ${e.isDeleted ? 'opacity-50' : ''}`}
           >
             <td className="p-3">{e.extraId}</td>
 
-            <td className="p-3">
-              {e.extraType?.name || '—'}
-            </td>
+            <td className="p-3">{e.extraType?.name || '—'}</td>
 
             <td className="p-3 flex items-center gap-2">
               <Calendar size={14} />
@@ -66,31 +63,19 @@ const ExtraTable = ({ extras = [] }) => {
               ₡{Number(e.amount).toLocaleString('es-CR')}
             </td>
 
-            <td className="p-3">
-              {e.notes || '—'}
-            </td>
+            <td className="p-3">{e.notes || '—'}</td>
 
             <td className="p-3 text-center">
               {e.isAproved ? (
-                <CheckCircle
-                  size={18}
-                  className="text-green-600 mx-auto"
-                />
+                <CheckCircle size={18} className="text-green-600 mx-auto" />
               ) : (
-                <XCircle
-                  size={18}
-                  className="text-yellow-500 mx-auto"
-                />
+                <XCircle size={18} className="text-yellow-500 mx-auto" />
               )}
             </td>
 
-            <td className="p-3">
-              {e.createdBy || '—'}
-            </td>
+            <td className="p-3">{e.createdBy || '—'}</td>
 
-            <td className="p-3">
-              {formatDate(e.updatedAt)}
-            </td>
+            <td className="p-3">{formatDate(e.updatedAt)}</td>
           </motion.tr>
         ))}
       </tbody>
