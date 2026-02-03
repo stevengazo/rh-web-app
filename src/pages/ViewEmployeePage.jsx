@@ -27,6 +27,9 @@ import ActionTable from '../Components/organisms/ActionTable';
 import ActionView from '../Components/organisms/ActionView';
 import ActionEdit from '../Components/organisms/ActionEdit';
 
+import ContactsEmergenciesAdd from '../Components/organisms/ContactsEmergenciesAdd';
+import ContactsEmergencyTable from '../Components/organisms/ContactsEmergencyTable';
+
 import ExtrasTable from '../Components/organisms/ExtrasTable';
 
 import AddAward from '../Components/organisms/AddAward';
@@ -49,6 +52,7 @@ import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
 import comissionsApi from '../api/comissionsApi';
 import CertificationEdit from '../Components/organisms/CertificationEdit';
+import ContactEmergencies from '../api/contactEmergenciesApi';
 
 const TABS = {
   TRAINING: 'Certificaciones',
@@ -57,6 +61,7 @@ const TABS = {
   EXTRAS: 'Extras',
   COMISSIONS: 'Comisiones',
   AWARDS: 'Reconocimientos',
+  CONTACTS: 'Contactos',
 };
 
 const ViewEmployeePage = () => {
@@ -71,6 +76,7 @@ const ViewEmployeePage = () => {
   const [actions, setActions] = useState([]);
   const [awards, setAwards] = useState([]);
   const [comission, setComission] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [extras, setExtras] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -129,7 +135,6 @@ const ViewEmployeePage = () => {
 
       try {
         const res = await extrasApi.getExtrasByUser(id);
-        console.log('Extras fetched:', res.data);
         setExtras(res.data);
       } catch (err) {
         console.error('Error extras', err);
@@ -137,10 +142,15 @@ const ViewEmployeePage = () => {
 
       try {
         const res = await comissionsApi.getComissionsByUser(id);
-        console.log('Comissions fetched:', res.data);
         setComission(res.data);
       } catch (err) {
         console.error('Error comissions', err);
+      }
+      try {
+        const res = await ContactEmergencies.getContactEmergenciesByUser(id);
+        setContacts(res.data);
+      } catch (err) {
+        console.error('Error contacts', err);
       }
     };
 
@@ -316,7 +326,12 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <ExtraTable extras={extras} onSelect={ (element)=>openCanvas('Ver', <ExtraView extra={element} /> )} />
+              <ExtraTable
+                extras={extras}
+                onSelect={(element) =>
+                  openCanvas('Ver', <ExtraView extra={element} />)
+                }
+              />
             </>
           )}
 
@@ -347,6 +362,19 @@ const ViewEmployeePage = () => {
                 }
               />
               <AwardTable awards={awards} />
+            </>
+          )}
+
+          {/* Contactos */}
+          {activeTab === TABS.CONTACTS && (
+            <>
+              <Header
+                title="Contactos"
+                action={() =>
+                  openCanvas('Agregar', <ContactsEmergenciesAdd userId={id} />)
+                }
+              />
+              <ContactsEmergencyTable items={contacts} />
             </>
           )}
         </div>
