@@ -29,6 +29,10 @@ const salaryApi = {
     return apiClient.get('/salaries');
   },
 
+    getLatests: () => {
+    return apiClient.get('/Salaries/latest');
+  },
+
   /**
    * getSalaryById
    * =====================================================

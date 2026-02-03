@@ -1,9 +1,23 @@
-import { motion } from 'framer-motion';
-import PageTitle from '../Components/PageTitle';
-import SectionTitle from '../Components/SectionTitle';
-import PrimaryButton from '../Components/PrimaryButton';
-import SecondaryButton from '../Components/SecondaryButton';
+import { motion } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
 
+import EmployeeApi from '../api/employeesApi'
+import salaryApi from '../api/salaryApi'
+
+import PageTitle from '../Components/PageTitle'
+import SectionTitle from '../Components/SectionTitle'
+import PrimaryButton from '../Components/PrimaryButton'
+import SecondaryButton from '../Components/SecondaryButton'
+
+/* =======================
+   Configuración
+======================= */
+const ASSOCIATION_PERCENT = 0.05
+const CCSS_PERCENT = 0.1067
+
+/* =======================
+   Animaciones
+======================= */
 const containerVariants = {
   hidden: { opacity: 0, y: 12 },
   visible: {
@@ -11,192 +25,269 @@ const containerVariants = {
     y: 0,
     transition: { duration: 0.35, ease: 'easeOut' },
   },
-};
+}
 
-const rowVariants = {
-  hover: {
-    backgroundColor: '#f8fafc',
-    transition: { duration: 0.15 },
-  },
-};
+/* =======================
+   Helpers
+======================= */
+const formatCRC = (value = 0) =>
+  new Intl.NumberFormat('es-CR', {
+    style: 'currency',
+    currency: 'CRC',
+    minimumFractionDigits: 0,
+  }).format(value)
 
+const calculateSalaryData = (monthly = 0) => {
+  const daily = monthly / 30
+  const hourly = daily / 8
+
+  return {
+    monthly,
+    biweekly: monthly / 2,
+    daily,
+    hourly,
+    extra: hourly * 1.5,
+    double: hourly * 2,
+  }
+}
+
+const buildFullName = (emp) =>
+  [emp.firstName, emp.middleName, emp.lastName, emp.secondLastName]
+    .filter(Boolean)
+    .join(' ')
+
+/* =======================
+   Componente
+======================= */
 const NewPayrollPage = () => {
+  const [employees, setEmployees] = useState([])
+  const [salaries, setSalaries] = useState([])
+  const [payrollType, setPayrollType] = useState('Quincenal')
+  const [timeData, setTimeData] = useState({})
+
+  useEffect(() => {
+    const loadData = async () => {
+      const empRes = await EmployeeApi.getAllEmployees()
+      setEmployees(empRes.data)
+
+      const salaryRes = await salaryApi.getLatests()
+      setSalaries(salaryRes.data)
+    }
+
+    loadData()
+  }, [])
+
+  /* =======================
+     Map salarios por usuario
+  ======================= */
+  const salaryMap = useMemo(() => {
+    const map = {}
+    salaries.forEach((s) => {
+      map[s.userId] = s
+    })
+    return map
+  }, [salaries])
+
+  /* =======================
+     Totales por empleado
+  ======================= */
+  const payrollRows = useMemo(() => {
+    return employees.map((emp) => {
+      const salaryRecord = salaryMap[emp.id]
+      const periodSalary = salaryRecord?.salaryAmount ?? 0
+
+      const monthlySalary =
+        payrollType === 'Quincenal'
+          ? periodSalary * 2
+          : periodSalary * 4
+
+      const salary = calculateSalaryData(monthlySalary)
+
+      const t = timeData[emp.id] || {}
+      const extraAmount = (t.extras || 0) * salary.extra
+      const doubleAmount = (t.doubles || 0) * salary.double
+      const bonuses =
+        (t.retro || 0) + (t.bonus || 0) + (t.commission || 0)
+
+      const total = salary.biweekly + extraAmount + doubleAmount + bonuses
+
+      return {
+        emp,
+        salary,
+        total,
+      }
+    })
+  }, [employees, salaryMap, payrollType, timeData])
+
+  /* =======================
+     Totales generales
+  ======================= */
+  const totals = useMemo(() => {
+    const gross = payrollRows.reduce((sum, r) => sum + r.total, 0)
+    const association = gross * ASSOCIATION_PERCENT
+    const ccss = gross * CCSS_PERCENT
+    const net = gross - association - ccss
+
+    return { gross, association, ccss, net }
+  }, [payrollRows])
+
   return (
     <motion.div
-      className="w-full space-y-8"
+      className="w-full space-y-10"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       <PageTitle>Generar Nueva Planilla</PageTitle>
 
-      {/* Tipo de planilla */}
+      {/* Tipo planilla */}
       <div className="max-w-xs">
-        <label className="block text-sm font-medium text-slate-600 mb-1">
-          Tipo de planilla
-        </label>
-        <select className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label className="text-sm font-medium">Tipo de planilla</label>
+        <select
+          value={payrollType}
+          onChange={(e) => setPayrollType(e.target.value)}
+          className="w-full rounded-md border px-3 py-2"
+        >
           <option>Quincenal</option>
-          <option>Mensual</option>
+          <option>Semanal</option>
         </select>
       </div>
 
-      {/* Tabla */}
-      <motion.div
-        className="rounded-xl  bg-white shadow-sm"
-        variants={containerVariants}
-      >
-        <SectionTitle>Lista de Empleados</SectionTitle>
+      {/* Tabla principal */}
+      <div className="rounded-xl bg-white shadow-sm overflow-x-auto">
+        <SectionTitle>Detalle de Planilla</SectionTitle>
 
-        <div className="relative overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
-            <thead className="border-b text-slate-700">
-              {/* Header agrupado */}
-              <tr className="text-xs uppercase tracking-wide text-center font-semibold">
-                <th colSpan={2} className="bg-blue-100 px-4 py-3">
-                  Empleado
-                </th>
-                <th colSpan={7} className="bg-emerald-100 px-4 py-3">
-                  Salario
-                </th>
-                <th colSpan={7} className="bg-amber-100 px-4 py-3">
-                  Tiempo
-                </th>
-                <th colSpan={3} className="bg-violet-100 px-4 py-3">
-                  Bonos
-                </th>
+        <table className="w-full text-sm border-collapse">
+          <thead className="bg-slate-100 text-xs font-semibold">
+            <tr>
+              <th className="px-4 py-3 text-left">Empleado</th>
+              <th className="px-4 py-3 text-right">Salario</th>
+              <th className="px-4 py-3 text-center">Extras</th>
+              <th className="px-4 py-3 text-center">Dobles</th>
+              <th className="px-4 py-3 text-right">Bonos</th>
+              <th className="px-4 py-3 text-right">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {payrollRows.map(({ emp, salary, total }) => (
+              <tr key={emp.id} className="border-b">
+                <td className="px-4 py-3">{buildFullName(emp)}</td>
+                <td className="px-4 py-3 text-right">
+                  {formatCRC(salary.biweekly)}
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <input
+                    type="number"
+                    min={0}
+                    onChange={(e) =>
+                      setTimeData({
+                        ...timeData,
+                        [emp.id]: {
+                          ...timeData[emp.id],
+                          extras: +e.target.value,
+                        },
+                      })
+                    }
+                    className="w-16 border rounded px-2 py-1 text-center"
+                  />
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <input
+                    type="number"
+                    min={0}
+                    onChange={(e) =>
+                      setTimeData({
+                        ...timeData,
+                        [emp.id]: {
+                          ...timeData[emp.id],
+                          doubles: +e.target.value,
+                        },
+                      })
+                    }
+                    className="w-16 border rounded px-2 py-1 text-center"
+                  />
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <input
+                    type="number"
+                    min={0}
+                    onChange={(e) =>
+                      setTimeData({
+                        ...timeData,
+                        [emp.id]: {
+                          ...timeData[emp.id],
+                          bonus: +e.target.value,
+                        },
+                      })
+                    }
+                    className="w-24 border rounded px-2 py-1 text-right"
+                  />
+                </td>
+                <td className="px-4 py-3 text-right font-semibold">
+                  {formatCRC(total)}
+                </td>
               </tr>
+            ))}
 
-              {/* Header principal */}
-              <tr className="bg-slate-50 text-xs font-semibold">
-                <th className="sticky left-0 z-20 bg-blue-50 px-4 py-3 min-w-[200px] shadow-md">
-                  Empleado
-                </th>
-                <th className="bg-blue-50 px-4 py-3 min-w-[180px]">
-                  Departamento
-                </th>
+            {/* FILA TOTALES */}
+            <tr className="bg-slate-200 font-bold">
+              <td colSpan={5} className="px-4 py-3 text-right">
+                TOTAL PLANILLA
+              </td>
+              <td className="px-4 py-3 text-right">
+                {formatCRC(totals.gross)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                {[
-                  'Sal. Mensual',
-                  'Sal. Quincenal',
-                  'Sal. Diario',
-                  'Hora Normal',
-                  'Hora Extra',
-                  'Hora Doble',
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="bg-emerald-50 px-4 py-3 text-right min-w-[140px]"
-                  >
-                    {h}
-                  </th>
-                ))}
+      {/* RESUMEN */}
+      <div className="max-w-lg rounded-xl bg-white shadow-sm">
+        <SectionTitle>Resumen de Planilla</SectionTitle>
 
-                <th className="bg-slate-100 px-4 py-3 min-w-[120px]">
-                  Jornada
-                </th>
-
-                {['Días', 'Efect.', 'Extras', 'Dobles', 'Feriados'].map((h) => (
-                  <th
-                    key={h}
-                    className="bg-amber-50 px-4 py-3 text-center min-w-[90px]"
-                  >
-                    {h}
-                  </th>
-                ))}
-
-                <th className="bg-amber-50 px-4 py-3 text-right min-w-[140px]">
-                  ₡ Extras
-                </th>
-                <th className="bg-amber-50 px-4 py-3 text-right min-w-[140px]">
-                  ₡ Dobles
-                </th>
-
-                {['Retroactivo', 'Bono', 'Comisión'].map((h) => (
-                  <th
-                    key={h}
-                    className="bg-violet-50 px-4 py-3 text-right min-w-[140px]"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              <motion.tr
-                variants={rowVariants}
-                whileHover="hover"
-                className="transition"
-              >
-                <td className="sticky left-0 z-10 bg-white px-4 py-3 border-b font-medium shadow-md">
-                  Juan Pérez
-                </td>
-                <td className="px-4 py-3 border-b">Recursos Humanos</td>
-
-                {[
-                  '₡800,000',
-                  '₡400,000',
-                  '₡26,667',
-                  '₡3,333',
-                  '₡5,000',
-                  '₡6,667',
-                ].map((v) => (
-                  <td key={v} className="px-4 py-3 border-b text-right">
-                    {v}
-                  </td>
-                ))}
-
-                <td className="px-4 py-3 border-b">Diurna</td>
-
-                {Array(4)
-                  .fill(0)
-                  .map((_, i) => (
-                    <td key={i} className="px-4 py-3 border-b text-center">
-                      <input
-                        type="number"
-                        className="w-16 rounded-md border border-slate-300 bg-white px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
-                      />
-                    </td>
-                  ))}
-
-                <td className="px-4 py-3 border-b text-right font-medium">
-                  ₡0
-                </td>
-                <td className="px-4 py-3 border-b text-right font-medium">
-                  ₡0
-                </td>
-
-                {Array(3)
-                  .fill(0)
-                  .map((_, i) => (
-                    <td key={i} className="px-4 py-3 border-b text-right">
-                      <input
-                        type="number"
-                        className="w-24 rounded-md border border-slate-300 bg-white px-2 py-1 text-right focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1"
-                      />
-                    </td>
-                  ))}
-              </motion.tr>
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+        <table className="w-full text-sm">
+          <tbody>
+            <tr>
+              <td className="px-4 py-2">Monto bruto</td>
+              <td className="px-4 py-2 text-right font-semibold">
+                {formatCRC(totals.gross)}
+              </td>
+            </tr>
+            <tr>
+              <td className="px-4 py-2">
+                Asociación ({ASSOCIATION_PERCENT * 100}%)
+              </td>
+              <td className="px-4 py-2 text-right text-red-600">
+                - {formatCRC(totals.association)}
+              </td>
+            </tr>
+            <tr>
+              <td className="px-4 py-2">
+                CCSS ({(CCSS_PERCENT * 100).toFixed(2)}%)
+              </td>
+              <td className="px-4 py-2 text-right text-red-600">
+                - {formatCRC(totals.ccss)}
+              </td>
+            </tr>
+            <tr className="border-t font-bold text-lg">
+              <td className="px-4 py-3">Total neto</td>
+              <td className="px-4 py-3 text-right text-emerald-700">
+                {formatCRC(totals.net)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       {/* Acciones */}
-      <motion.div variants={containerVariants}>
-        <SectionTitle>Acciones</SectionTitle>
-        <div className="flex items-center gap-4">
-          <motion.div whileTap={{ scale: 0.97 }}>
-            <PrimaryButton>Guardar Planilla</PrimaryButton>
-          </motion.div>
-          <motion.div whileTap={{ scale: 0.97 }}>
-            <SecondaryButton>Cancelar</SecondaryButton>
-          </motion.div>
-        </div>
-      </motion.div>
+      <div className="flex gap-4">
+        <PrimaryButton>Guardar Planilla</PrimaryButton>
+        <SecondaryButton>Cancelar</SecondaryButton>
+      </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default NewPayrollPage;
+export default NewPayrollPage

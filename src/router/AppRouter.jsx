@@ -60,7 +60,7 @@ const AppRouter = () => {
             element={<ViewLoanPage />}
           />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/payroll/new" element={<NewPayrollPage />} />
+          <Route path="/payroll/new/:id" element={<NewPayrollPage />} />
         </Route>
 
         {/* 404 */}
