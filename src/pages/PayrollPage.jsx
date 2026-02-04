@@ -1,13 +1,15 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
 import PayrollListTable from '../Components/organisms/PayrollListTable';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
-import  PayrollGenerate from '../Components/organisms/PayrollGenerate'
+import PayrollGenerate from '../Components/organisms/PayrollGenerate';
+
+import payrollApi from '../api/payrollApi';
 
 const pageVariants = {
   hidden: { opacity: 0 },
@@ -28,6 +30,7 @@ const itemVariants = {
 
 const PayrollPage = () => {
   const navigate = useNavigate();
+  const [payrolls, setPayrolls] = useState([]);
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -38,6 +41,18 @@ const PayrollPage = () => {
     setCanvasContent(content);
     setOpen(true);
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await payrollApi.getAllPayrolls();
+        setPayrolls(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
 
   return (
     <>
@@ -78,7 +93,11 @@ const PayrollPage = () => {
         {/* Action */}
         <motion.div variants={itemVariants} className="flex justify-end">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <PrimaryButton onClick={() => openCanvas('Generar Planilla', <PayrollGenerate /> ) }>
+            <PrimaryButton
+              onClick={() =>
+                openCanvas('Generar Planilla', <PayrollGenerate />)
+              }
+            >
               Generar Nueva Planilla
             </PrimaryButton>
           </motion.div>
@@ -86,7 +105,7 @@ const PayrollPage = () => {
 
         {/* Table */}
         <motion.div variants={itemVariants}>
-          <PayrollListTable />
+          <PayrollListTable payrolls={payrolls} />
         </motion.div>
       </motion.div>
     </>
