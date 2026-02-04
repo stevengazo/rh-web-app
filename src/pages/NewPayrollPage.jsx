@@ -1,293 +1,300 @@
-import { motion } from 'framer-motion'
-import { useEffect, useMemo, useState } from 'react'
+import { motion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
 
-import EmployeeApi from '../api/employeesApi'
-import salaryApi from '../api/salaryApi'
+import EmployeeApi from '../api/employeesApi';
+import salaryApi from '../api/salaryApi';
 
-import PageTitle from '../Components/PageTitle'
-import SectionTitle from '../Components/SectionTitle'
-import PrimaryButton from '../Components/PrimaryButton'
-import SecondaryButton from '../Components/SecondaryButton'
+import PageTitle from '../Components/PageTitle';
+import SectionTitle from '../Components/SectionTitle';
+import PrimaryButton from '../Components/PrimaryButton';
+import SecondaryButton from '../Components/SecondaryButton';
 
-/* =======================
-   Configuración
-======================= */
-const ASSOCIATION_PERCENT = 0.05
-const CCSS_PERCENT = 0.1067
+/* =====================================================
+   CONFIGURACIÓN GENERAL DE PORCENTAJES
+===================================================== */
+const CCSS_PERCENT = 0.1067;
+const ISR_PERCENT = 0.10;
+const ASSOCIATION_PERCENT = 0.05;
 
-/* =======================
-   Animaciones
-======================= */
-const containerVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.35, ease: 'easeOut' },
-  },
-}
+/* =====================================================
+   HELPERS GENERALES
+===================================================== */
 
-/* =======================
-   Helpers
-======================= */
+/**
+ * Formatea un número a moneda CRC
+ */
 const formatCRC = (value = 0) =>
   new Intl.NumberFormat('es-CR', {
     style: 'currency',
     currency: 'CRC',
     minimumFractionDigits: 0,
-  }).format(value)
+  }).format(value);
 
-const calculateSalaryData = (monthly = 0) => {
-  const daily = monthly / 30
-  const hourly = daily / 8
+/**
+ * Calcula todos los valores base del salario
+ */
+const calculateSalaryBase = (monthly = 0) => {
+  const daily = monthly / 30;
+  const hourly = monthly / 8;
 
   return {
-    monthly,
-    biweekly: monthly / 2,
-    daily,
-    hourly,
-    extra: hourly * 1.5,
-    double: hourly * 2,
-  }
-}
+    salarioMensual: monthly,
+    salarioQuincenal: monthly / 2,
+    montoPorDia: daily,
+    horaOrdinaria: hourly,
+    horaExtra: hourly * 1.5,
+    feriadoDia: daily * 2,
+    horaFeriado: (daily * 2) / 8,
+  };
+};
 
-const buildFullName = (emp) =>
-  [emp.firstName, emp.middleName, emp.lastName, emp.secondLastName]
+/**
+ * Construye el nombre completo del empleado
+ */
+const buildFullName = (e) =>
+  [e.firstName, e.middleName, e.lastName, e.secondLastName]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 
-/* =======================
-   Componente
-======================= */
+/* =====================================================
+   COMPONENTE PRINCIPAL
+===================================================== */
 const NewPayrollPage = () => {
-  const [employees, setEmployees] = useState([])
-  const [salaries, setSalaries] = useState([])
-  const [payrollType, setPayrollType] = useState('Quincenal')
-  const [timeData, setTimeData] = useState({})
+  const [employees, setEmployees] = useState([]);
+  const [salaries, setSalaries] = useState([]);
+  const [timeData, setTimeData] = useState({});
 
+  /* =====================================================
+     CARGA INICIAL DE DATOS
+  ===================================================== */
   useEffect(() => {
     const loadData = async () => {
-      const empRes = await EmployeeApi.getAllEmployees()
-      setEmployees(empRes.data)
+      const emp = await EmployeeApi.getAllEmployees();
+      const sal = await salaryApi.getLatests();
+      setEmployees(emp.data);
+      setSalaries(sal.data);
+    };
+    loadData();
+  }, []);
 
-      const salaryRes = await salaryApi.getLatests()
-      setSalaries(salaryRes.data)
-    }
-
-    loadData()
-  }, [])
-
-  /* =======================
-     Map salarios por usuario
-  ======================= */
+  /* =====================================================
+     MAPA SALARIO POR EMPLEADO
+  ===================================================== */
   const salaryMap = useMemo(() => {
-    const map = {}
-    salaries.forEach((s) => {
-      map[s.userId] = s
-    })
-    return map
-  }, [salaries])
+    const map = {};
+    salaries.forEach((s) => (map[s.userId] = s.salaryAmount));
+    return map;
+  }, [salaries]);
 
-  /* =======================
-     Totales por empleado
-  ======================= */
-  const payrollRows = useMemo(() => {
+  /* =====================================================
+     CÁLCULO COMPLETO POR EMPLEADO
+  ===================================================== */
+  const rows = useMemo(() => {
     return employees.map((emp) => {
-      const salaryRecord = salaryMap[emp.id]
-      const periodSalary = salaryRecord?.salaryAmount ?? 0
+      const t = timeData[emp.id] || {};
+      const base = calculateSalaryBase(salaryMap[emp.id] || 0);
 
-      const monthlySalary =
-        payrollType === 'Quincenal'
-          ? periodSalary * 2
-          : periodSalary * 4
+      /* ===== Ingresos ===== */
+      const montoHorasExtras = (t.cantExtras || 0) * base.horaExtra;
+      const montoFeriado = (t.cantFeriado || 0) * base.feriadoDia;
+      const montoExtraFeriado =
+        (t.cantExtrasFeriado || 0) * base.horaFeriado;
 
-      const salary = calculateSalaryData(monthlySalary)
+      /* ===== Deducciones patronales ===== */
+      const pagoCCSS = base.montoPorDia / 2;
+      const pagoPatrono = pagoCCSS * (t.diasIncCCSS || 0);
+      const pagoINS = base.montoPorDia * (t.diasIncINS || 0);
 
-      const t = timeData[emp.id] || {}
-      const extraAmount = (t.extras || 0) * salary.extra
-      const doubleAmount = (t.doubles || 0) * salary.double
-      const bonuses =
-        (t.retro || 0) + (t.bonus || 0) + (t.commission || 0)
+      /* ===== Rebajos ===== */
+      const montoXHA = base.horaOrdinaria;
+      const montoRebajar =
+        montoXHA * (t.tiempoAusente || 0);
 
-      const total = salary.biweekly + extraAmount + doubleAmount + bonuses
+      /* ===== Salario Bruto ===== */
+      const salarioBruto =
+        base.salarioQuincenal +
+        montoHorasExtras +
+        montoFeriado +
+        montoExtraFeriado +
+        (t.retroactivo || 0) +
+        (t.bono || 0) +
+        (t.comisiones || 0) -
+        pagoPatrono -
+        (t.montoRebajable || 0) -
+        montoRebajar;
+
+      /* ===== Deducciones ===== */
+      const ccss = salarioBruto * CCSS_PERCENT;
+      const isr = salarioBruto * ISR_PERCENT;
+      const aporteAsoc = salarioBruto * ASSOCIATION_PERCENT;
+
+      const totalDeducciones =
+        ccss +
+        isr +
+        (t.embargo || 0) +
+        (t.pension || 0) +
+        aporteAsoc +
+        (t.prestamoAsoc || 0) +
+        (t.ahorro || 0) +
+        (t.otrosRebajos || 0);
+
+      /* ===== Neto ===== */
+      const neto = salarioBruto - totalDeducciones;
 
       return {
         emp,
-        salary,
-        total,
-      }
-    })
-  }, [employees, salaryMap, payrollType, timeData])
+        base,
+        salarioBruto,
+        totalDeducciones,
+        neto,
+      };
+    });
+  }, [employees, salaryMap, timeData]);
 
-  /* =======================
-     Totales generales
-  ======================= */
-  const totals = useMemo(() => {
-    const gross = payrollRows.reduce((sum, r) => sum + r.total, 0)
-    const association = gross * ASSOCIATION_PERCENT
-    const ccss = gross * CCSS_PERCENT
-    const net = gross - association - ccss
+  /* =====================================================
+     TOTAL GENERAL PLANILLA
+  ===================================================== */
+  const totalPlanilla = rows.reduce((s, r) => s + r.neto, 0);
 
-    return { gross, association, ccss, net }
-  }, [payrollRows])
+  /* =====================================================
+     ACTUALIZADOR DE INPUTS
+  ===================================================== */
+  const update = (id, field, value) =>
+    setTimeData({
+      ...timeData,
+      [id]: { ...timeData[id], [field]: +value },
+    });
 
   return (
-    <motion.div
-      className="w-full space-y-10"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.div className="space-y-10">
       <PageTitle>Generar Nueva Planilla</PageTitle>
 
-      {/* Tipo planilla */}
-      <div className="max-w-xs">
-        <label className="text-sm font-medium">Tipo de planilla</label>
-        <select
-          value={payrollType}
-          onChange={(e) => setPayrollType(e.target.value)}
-          className="w-full rounded-md border px-3 py-2"
-        >
-          <option>Quincenal</option>
-          <option>Semanal</option>
-        </select>
-      </div>
+      {/* =====================================================
+         TABLA CON SCROLL
+      ===================================================== */}
+      <div className="bg-white rounded-xl shadow">
+        <SectionTitle>Detalle Completo de Planilla</SectionTitle>
 
-      {/* Tabla principal */}
-      <div className="rounded-xl bg-white shadow-sm overflow-x-auto">
-        <SectionTitle>Detalle de Planilla</SectionTitle>
-
-        <table className="w-full text-sm border-collapse">
-          <thead className="bg-slate-100 text-xs font-semibold">
-            <tr>
-              <th className="px-4 py-3 text-left">Empleado</th>
-              <th className="px-4 py-3 text-right">Salario</th>
-              <th className="px-4 py-3 text-center">Extras</th>
-              <th className="px-4 py-3 text-center">Dobles</th>
-              <th className="px-4 py-3 text-right">Bonos</th>
-              <th className="px-4 py-3 text-right">Total</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {payrollRows.map(({ emp, salary, total }) => (
-              <tr key={emp.id} className="border-b">
-                <td className="px-4 py-3">{buildFullName(emp)}</td>
-                <td className="px-4 py-3 text-right">
-                  {formatCRC(salary.biweekly)}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <input
-                    type="number"
-                    min={0}
-                    onChange={(e) =>
-                      setTimeData({
-                        ...timeData,
-                        [emp.id]: {
-                          ...timeData[emp.id],
-                          extras: +e.target.value,
-                        },
-                      })
-                    }
-                    className="w-16 border rounded px-2 py-1 text-center"
-                  />
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <input
-                    type="number"
-                    min={0}
-                    onChange={(e) =>
-                      setTimeData({
-                        ...timeData,
-                        [emp.id]: {
-                          ...timeData[emp.id],
-                          doubles: +e.target.value,
-                        },
-                      })
-                    }
-                    className="w-16 border rounded px-2 py-1 text-center"
-                  />
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <input
-                    type="number"
-                    min={0}
-                    onChange={(e) =>
-                      setTimeData({
-                        ...timeData,
-                        [emp.id]: {
-                          ...timeData[emp.id],
-                          bonus: +e.target.value,
-                        },
-                      })
-                    }
-                    className="w-24 border rounded px-2 py-1 text-right"
-                  />
-                </td>
-                <td className="px-4 py-3 text-right font-semibold">
-                  {formatCRC(total)}
-                </td>
+        {/* Scroll horizontal + vertical */}
+        <div className="max-h-[70vh] overflow-x-auto overflow-y-auto">
+          <table className="min-w-[2400px] text-xs border-collapse">
+            <thead className="bg-slate-100 sticky top-0 z-10">
+              <tr>
+                <th title="Nombre completo del empleado">Empleado</th>
+                <th title="Salario mensual obtenido del sistema">Salario Mensual</th>
+                <th title="Salario Mensual / 2">Salario Quincenal</th>
+                <th title="Cantidad de horas extra">Cant Extras</th>
+                <th title="Monto horas extra">Monto Horas Extras</th>
+                <th title="Cantidad de días feriado">Cant Feriado</th>
+                <th title="Monto total feriados">Monto Feriado</th>
+                <th title="Cantidad extras en feriado">Cant Extras Feriado</th>
+                <th title="Monto extras feriado">Monto EX Feriado</th>
+                <th title="Pago retroactivo">Retroactivo</th>
+                <th title="Bono adicional">Bono</th>
+                <th title="Comisiones">Comisiones</th>
+                <th title="Días incapacidad CCSS">Días INC CCSS</th>
+                <th title="Días incapacidad INS">Días INC INS</th>
+                <th title="Tiempo ausente en horas">Tiempo Ausente</th>
+                <th title="Salario bruto calculado">Salario Bruto</th>
+                <th title="Total deducciones">Total Deducciones</th>
+                <th title="Monto final a pagar">Monto X SE</th>
               </tr>
-            ))}
+            </thead>
 
-            {/* FILA TOTALES */}
-            <tr className="bg-slate-200 font-bold">
-              <td colSpan={5} className="px-4 py-3 text-right">
-                TOTAL PLANILLA
-              </td>
-              <td className="px-4 py-3 text-right">
-                {formatCRC(totals.gross)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.emp.id} className="border-b">
+                  <td className='p-1 align-middle'>{buildFullName(r.emp)}</td>
+                  <td className="text-right">{formatCRC(r.base.salarioMensual)}</td>
+                  <td className="text-right">{formatCRC(r.base.salarioQuincenal)}</td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'cantExtras', e.target.value)} />
+                  </td>
+
+                  <td className="text-right">
+                    {formatCRC(r.base.horaExtra * (timeData[r.emp.id]?.cantExtras || 0))}
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'cantFeriado', e.target.value)} />
+                  </td>
+
+                  <td className="text-right">
+                    {formatCRC(r.base.feriadoDia * (timeData[r.emp.id]?.cantFeriado || 0))}
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'cantExtrasFeriado', e.target.value)} />
+                  </td>
+
+                  <td className="text-right">
+                    {formatCRC(r.base.horaFeriado * (timeData[r.emp.id]?.cantExtrasFeriado || 0))}
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) => update(r.emp.id, 'retroactivo', e.target.value)} />
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) => update(r.emp.id, 'bono', e.target.value)} />
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) => update(r.emp.id, 'comisiones', e.target.value)} />
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'diasIncCCSS', e.target.value)} />
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'diasIncINS', e.target.value)} />
+                  </td>
+
+                  <td className='p-1 align-middle'>
+                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) => update(r.emp.id, 'tiempoAusente', e.target.value)} />
+                  </td>
+
+                  <td className="text-right font-semibold">
+                    {formatCRC(r.salarioBruto)}
+                  </td>
+
+                  <td className="text-right text-red-600">
+                    {formatCRC(r.totalDeducciones)}
+                  </td>
+
+                  <td className="text-right font-bold text-emerald-700">
+                    {formatCRC(r.neto)}
+                  </td>
+                </tr>
+              ))}
+
+              <tr className="bg-slate-200 font-bold">
+                <td colSpan={17} className="text-right">TOTAL PLANILLA</td>
+                <td className="text-right">{formatCRC(totalPlanilla)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* RESUMEN */}
-      <div className="max-w-lg rounded-xl bg-white shadow-sm">
-        <SectionTitle>Resumen de Planilla</SectionTitle>
-
-        <table className="w-full text-sm">
-          <tbody>
-            <tr>
-              <td className="px-4 py-2">Monto bruto</td>
-              <td className="px-4 py-2 text-right font-semibold">
-                {formatCRC(totals.gross)}
-              </td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2">
-                Asociación ({ASSOCIATION_PERCENT * 100}%)
-              </td>
-              <td className="px-4 py-2 text-right text-red-600">
-                - {formatCRC(totals.association)}
-              </td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2">
-                CCSS ({(CCSS_PERCENT * 100).toFixed(2)}%)
-              </td>
-              <td className="px-4 py-2 text-right text-red-600">
-                - {formatCRC(totals.ccss)}
-              </td>
-            </tr>
-            <tr className="border-t font-bold text-lg">
-              <td className="px-4 py-3">Total neto</td>
-              <td className="px-4 py-3 text-right text-emerald-700">
-                {formatCRC(totals.net)}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Acciones */}
+      {/* ACCIONES */}
       <div className="flex gap-4">
         <PrimaryButton>Guardar Planilla</PrimaryButton>
         <SecondaryButton>Cancelar</SecondaryButton>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default NewPayrollPage
+export default NewPayrollPage;
