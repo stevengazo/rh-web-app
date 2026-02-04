@@ -13,7 +13,7 @@ import SecondaryButton from '../Components/SecondaryButton';
    CONFIGURACIÓN GENERAL DE PORCENTAJES
 ===================================================== */
 const CCSS_PERCENT = 0.1067;
-const ISR_PERCENT = 0.10;
+const ISR_PERCENT = 0.1;
 const ASSOCIATION_PERCENT = 0.05;
 
 /* =====================================================
@@ -97,8 +97,7 @@ const NewPayrollPage = () => {
       /* ===== Ingresos ===== */
       const montoHorasExtras = (t.cantExtras || 0) * base.horaExtra;
       const montoFeriado = (t.cantFeriado || 0) * base.feriadoDia;
-      const montoExtraFeriado =
-        (t.cantExtrasFeriado || 0) * base.horaFeriado;
+      const montoExtraFeriado = (t.cantExtrasFeriado || 0) * base.horaFeriado;
 
       /* ===== Deducciones patronales ===== */
       const pagoCCSS = base.montoPorDia / 2;
@@ -107,8 +106,7 @@ const NewPayrollPage = () => {
 
       /* ===== Rebajos ===== */
       const montoXHA = base.horaOrdinaria;
-      const montoRebajar =
-        montoXHA * (t.tiempoAusente || 0);
+      const montoRebajar = montoXHA * (t.tiempoAusente || 0);
 
       /* ===== Salario Bruto ===== */
       const salarioBruto =
@@ -181,8 +179,11 @@ const NewPayrollPage = () => {
             <thead className="bg-slate-100 sticky top-0 z-10">
               <tr>
                 <th title="Nombre completo del empleado">Empleado</th>
-                <th title="Salario mensual obtenido del sistema">Salario Mensual</th>
+                <th title="Salario mensual obtenido del sistema">
+                  Salario Mensual
+                </th>
                 <th title="Salario Mensual / 2">Salario Quincenal</th>
+                <th title="Salario Mensual / 30">Salario Por Hora</th>
                 <th title="Cantidad de horas extra">Cant Extras</th>
                 <th title="Monto horas extra">Monto Horas Extras</th>
                 <th title="Cantidad de días feriado">Cant Feriado</th>
@@ -204,65 +205,122 @@ const NewPayrollPage = () => {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.emp.id} className="border-b">
-                  <td className='p-1 align-middle'>{buildFullName(r.emp)}</td>
-                  <td className="text-right">{formatCRC(r.base.salarioMensual)}</td>
-                  <td className="text-right">{formatCRC(r.base.salarioQuincenal)}</td>
+                  <td className="p-1 align-middle">{buildFullName(r.emp)}</td>
+                  <td className="text-right">
+                    {formatCRC(r.base.salarioMensual)}
+                  </td>
+                  <td className="text-right">
+                    {formatCRC(r.base.salarioQuincenal)}
+                  </td>
+                  <td className="text-right">
+                    {formatCRC(r.base.salarioQuincenal)}
+                  </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'cantExtras', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'cantExtras', e.target.value)
+                      }
+                    />
                   </td>
 
                   <td className="text-right">
-                    {formatCRC(r.base.horaExtra * (timeData[r.emp.id]?.cantExtras || 0))}
+                    {formatCRC(
+                      r.base.horaExtra * (timeData[r.emp.id]?.cantExtras || 0)
+                    )}
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'cantFeriado', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'cantFeriado', e.target.value)
+                      }
+                    />
                   </td>
 
                   <td className="text-right">
-                    {formatCRC(r.base.feriadoDia * (timeData[r.emp.id]?.cantFeriado || 0))}
+                    {formatCRC(
+                      r.base.feriadoDia * (timeData[r.emp.id]?.cantFeriado || 0)
+                    )}
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'cantExtrasFeriado', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'cantExtrasFeriado', e.target.value)
+                      }
+                    />
                   </td>
 
                   <td className="text-right">
-                    {formatCRC(r.base.horaFeriado * (timeData[r.emp.id]?.cantExtrasFeriado || 0))}
+                    {formatCRC(
+                      r.base.horaFeriado *
+                        (timeData[r.emp.id]?.cantExtrasFeriado || 0)
+                    )}
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
-                      onChange={(e) => update(r.emp.id, 'retroactivo', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'retroactivo', e.target.value)
+                      }
+                    />
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
-                      onChange={(e) => update(r.emp.id, 'bono', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) => update(r.emp.id, 'bono', e.target.value)}
+                    />
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-20 border border-gray-200 rounded m-1 p-1"
-                      onChange={(e) => update(r.emp.id, 'comisiones', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-20 border border-gray-200 rounded m-1 p-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'comisiones', e.target.value)
+                      }
+                    />
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'diasIncCCSS', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'diasIncCCSS', e.target.value)
+                      }
+                    />
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'diasIncINS', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'diasIncINS', e.target.value)
+                      }
+                    />
                   </td>
 
-                  <td className='p-1 align-middle'>
-                    <input type="number" className="w-16 p-1 border rounded border-gray-200 m-1"
-                      onChange={(e) => update(r.emp.id, 'tiempoAusente', e.target.value)} />
+                  <td className="p-1 align-middle">
+                    <input
+                      type="number"
+                      className="w-16 p-1 border rounded border-gray-200 m-1"
+                      onChange={(e) =>
+                        update(r.emp.id, 'tiempoAusente', e.target.value)
+                      }
+                    />
                   </td>
 
                   <td className="text-right font-semibold">
@@ -280,7 +338,9 @@ const NewPayrollPage = () => {
               ))}
 
               <tr className="bg-slate-200 font-bold">
-                <td colSpan={17} className="text-right">TOTAL PLANILLA</td>
+                <td colSpan={17} className="text-right">
+                  TOTAL PLANILLA
+                </td>
                 <td className="text-right">{formatCRC(totalPlanilla)}</td>
               </tr>
             </tbody>
