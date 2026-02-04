@@ -72,15 +72,15 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   // ========================
   return (
     <tr className="hover:bg-slate-50 transition">
-      <td className="p-1 border text-left font-medium">
+      <td className="p-1 border border-gray-200 text-left font-medium">
         {data.firstName} {data.lastName}
       </td>
 
-      <td className="p-1 border text-right">{formatMoney(salarioMensual)}</td>
-      <td className="p-1 border text-right">{formatMoney(salarioQuincenal)}</td>
-      <td className="p-1 border text-right">{formatMoney(salarioHora)}</td>
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioMensual)}</td>
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioQuincenal)}</td>
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioHora)}</td>
 
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -89,9 +89,9 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="p-1 border text-right">{formatMoney(montoExtras)}</td>
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(montoExtras)}</td>
 
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -100,9 +100,9 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="p-1 border text-right">{formatMoney(montoFeriados)}</td>
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(montoFeriados)}</td>
 
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -111,11 +111,11 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="p-1 border text-right">
+      <td className="p-1 border border-gray-200 text-right">
         {formatMoney(montoExtrasFeriado)}
       </td>
 
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -124,7 +124,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -133,7 +133,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -143,7 +143,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
         />
       </td>
 
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -152,7 +152,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -161,7 +161,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
           className="input"
         />
       </td>
-      <td className="border">
+      <td className="border border-gray-200 text-right ">
         <input
           type="number"
           min={0}
@@ -171,15 +171,15 @@ const PayrollRow = ({ data, onChanged, salary }) => {
         />
       </td>
 
-      <td className="p-1 border text-right font-semibold">
+      <td className="p-1 border border-gray-200 text-right font-semibold">
         {formatMoney(salarioBruto)}
       </td>
 
-      <td className="p-1 border text-right text-red-600">
+      <td className="p-1 border border-gray-200 text-right text-red-600">
         {formatMoney(deducciones)}
       </td>
 
-      <td className="p-1 border text-right font-bold text-emerald-600">
+      <td className="p-1 border border-gray-200 text-right font-bold text-emerald-600">
         {formatMoney(netoPagar)}
       </td>
     </tr>
