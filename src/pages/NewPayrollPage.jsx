@@ -1,6 +1,7 @@
 // Libraries
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
+import Employee_PayrollApi from '../api/Employee_PayrollApi';
 
 // Api Imports
 import EmployeeApi from '../api/employeesApi';
@@ -19,9 +20,12 @@ import TablePayrollHeader from '../Components/molecules/tablePayrollHeader';
 
 // Hooks
 import useLatestSalaryMap from '../hooks/useLatestSalaryMap';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 /* COMPONENTE PRINCIPAL */
 const NewPayrollPage = () => {
+  const { id } = useParams();
   const [employees, setEmployees] = useState([]);
   const [salaries, setSalaries] = useState([]);
 
@@ -66,10 +70,13 @@ const NewPayrollPage = () => {
 
       base[emp.id] = {
         userId: emp.id,
-        workShift: emp.workShift ?? null,
+        workShift: emp.workShift ?? '',
 
         daysWorked: 15,
         effectiveness: 100,
+
+        payrollId: id,
+        payrollData: null,
 
         monthlySalary,
         biweeklySalary: monthlySalary / 2,
@@ -129,19 +136,25 @@ const NewPayrollPage = () => {
         ...rowData,
       },
     }));
+    toast.success('Registro Actualizado localmente');
   };
 
-  /* GUARDAR (SOLO CONSOLA)*/
-  const handleSave = () => {
-    console.clear();
-    console.table(
-      Object.values(payrollByEmployee).map((p) => ({
-        userId: p.userId,
-        grossSalary: p.grossSalary,
-        totalDeductions: p.totalDeductions,
-        netAmount: p.netAmount,
-      }))
-    );
+  /* GUARDAR (ENVÍO AL API) */
+  const handleSave = async () => {
+    try {
+      console.table(payrollByEmployee);
+
+      const payrollList = Object.values(payrollByEmployee);
+
+      for (const payroll of payrollList) {
+        await Employee_PayrollApi.create(payroll);
+      }
+
+      toast.success('Agregado al API');
+    } catch (error) {
+      console.error('Error guardando nómina:', error);
+      toast.error('Error al guardar la nómina');
+    }
   };
 
   /*  RENDER */
@@ -162,6 +175,7 @@ const NewPayrollPage = () => {
                   employee={employees.find((e) => e.id === payroll.userId)}
                   key={payroll.userId ?? index}
                   PayrollData={payroll}
+                  onChanged={handleRowChange}
                 />
               ))}
             </tbody>

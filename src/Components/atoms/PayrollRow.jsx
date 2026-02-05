@@ -1,8 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { formatMoney } from '../../utils/formatMoney';
 
 const PayrollRow = ({ employee, PayrollData, onChanged, salary }) => {
-  /// Print in console
-  console.table(PayrollData);
 
   if (!PayrollData) {
     return (
@@ -14,18 +13,14 @@ const PayrollRow = ({ employee, PayrollData, onChanged, salary }) => {
     );
   }
 
-  // ========================
   // Cálculos base
-  // ========================
   const salarioMensual = PayrollData.monthlySalary;
 
   const salarioQuincenal = salarioMensual / 2;
   const salarioHora = salarioMensual / 30 / 8;
   const salarioDia = salarioMensual / 30;
 
-  // ========================
   // Estados editables (DECIMALES)
-  // ========================
   const [extras, setExtras] = useState(0);
   const [feriados, setFeriados] = useState(0);
   const [extrasFeriado, setExtrasFeriado] = useState(0);
@@ -36,9 +31,7 @@ const PayrollRow = ({ employee, PayrollData, onChanged, salary }) => {
   const [incINS, setIncINS] = useState(0);
   const [ausencias, setAusencias] = useState(0);
 
-  // ========================
   // Montos calculados
-  // ========================
   const montoExtras = extras * (salarioHora * 1.5);
   const montoFeriados = feriados * (salarioHora * 8 * 2);
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
@@ -66,18 +59,89 @@ const PayrollRow = ({ employee, PayrollData, onChanged, salary }) => {
 
   const netoPagar = salarioBruto - deducciones;
 
-  // ========================
-  // FORMATO CON DECIMALES
-  // ========================
-  const formatMoney = (v) =>
-    `₡${Number(v || 0).toLocaleString('es-CR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  /*
+  
+  Row Data {
+    "userId": "1a56aeff-f7e3-4183-a321-a51a3f4429c8",
+    "workShift": null,
+    "daysWorked": 15,
+    "effectiveness": 100,
+    "monthlySalary": 300000,
+    "biweeklySalary": 150000,
+    "dailySalary": 10000,
+    "hourlySalary": 1250,
+    "regularHourRate": 1250,
+    "overTimeHourRate": 1875,
+    "overTimeHours": 0,
+    "overtimeAmount": 0,
+    "holiDayRate": 2500,
+    "holidayDaysWorked": 0,
+    "holidayAmount": 0,
+    "holidayHourRate": 3125,
+    "holidayOvertimeHours": 0,
+    "holidayOvertimeAmount": 0,
+    "retroactivePay": 0,
+    "bonus": 0,
+    "comissions": 0,
+    "ccssDays": 0,
+    "insDays": 0,
+    "unPaidLeaveHours": 0,
+    "unPaidLeaveAmount": 0,
+    "medicalLeaveHours": 0,
+    "medicalLeaveAmount": 0,
+    "absenseTime": 0,
+    "absenceAmount": 0,
+    "grossSalary": 300000,
+    "totalDeductions": 0,
+    "netAmount": 300000
+}
+  */
 
-  // ========================
-  // Render (MISMAS FILAS)
-  // ========================
+  const buildRowData = () => ({
+    monthlySalary: salarioMensual,
+    biweeklySalary: salarioQuincenal,
+    dailySalary: salarioDia,
+    hourlySalary: salarioHora,
+
+    overTimeHours: extras,
+    overtimeAmount: montoExtras,
+
+    holidayDaysWorked: feriados,
+    holidayAmount: montoFeriados,
+
+    holidayOvertimeHours: extrasFeriado,
+    holidayOvertimeAmount: montoExtrasFeriado,
+
+    retroactivePay: retroactivo,
+    bonus: bonos,
+    comissions: comisiones,
+
+    ccssDays: incCCSS,
+    insDays: incINS,
+    absenseTime: ausencias,
+
+    grossSalary: salarioBruto,
+    totalDeductions: deducciones,
+    netAmount: netoPagar,
+  });
+
+  useEffect(() => {
+    onChanged(employee.id, buildRowData());
+  }, [
+    extras,
+    feriados,
+    extrasFeriado,
+    retroactivo,
+    bonos,
+    comisiones,
+    incCCSS,
+    incINS,
+    ausencias,
+    salarioBruto,
+    deducciones,
+    netoPagar,
+  ]);
+
   return (
     <tr className="hover:bg-slate-50 transition">
       {/* Empleado */}
