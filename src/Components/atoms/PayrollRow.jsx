@@ -1,11 +1,17 @@
 import { useState, useMemo } from 'react';
 
-const PayrollRow = ({ data, onChanged, salary }) => {
-  if (!salary) {
+const PayrollRow = ({ employee, PayrollData , onChanged, salary }) => {
+
+  /// Print in console
+  console.log(employee)
+  console.table(PayrollData)
+
+  
+  if (!PayrollData) {
     return (
       <tr className="bg-red-50 text-red-600">
         <td colSpan={19} className="p-2 text-left">
-          ⚠ {data.firstName} {data.lastName} no tiene salario asignado
+          ⚠ {employee.firstName} {employee.lastName} no tiene salario asignado
         </td>
       </tr>
     );
@@ -14,10 +20,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   // ========================
   // Cálculos base
   // ========================
-  const salarioMensual =
-    salary.type === 'Hora'
-      ? salary.salaryAmount * 30 * 8
-      : salary.salaryAmount;
+  const salarioMensual = PayrollData.monthlySalary
 
   const salarioQuincenal = salarioMensual / 2;
   const salarioHora = salarioMensual / 30 / 8;
@@ -42,7 +45,6 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   const montoExtras = extras * (salarioHora * 1.5);
   const montoFeriados = feriados * ( (salarioHora * 8 ) * 2);
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
-
   const deducciones = (incCCSS + incINS + ausencias) * salarioDia;
 
   const salarioBruto = useMemo(
@@ -82,7 +84,7 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   return (
     <tr className="hover:bg-slate-50 transition">
       <td className="p-1 border border-gray-200 text-left font-medium">
-        {data.firstName} {data.lastName}
+        {employee.firstName} {employee.lastName}
       </td>
 
       <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioMensual)}</td>

@@ -41,24 +41,26 @@ const NewPayrollPage = () => {
     };
     loadData();
   }, []);
-
-  useEffect(()=>{
-
-    console.log(salaryMap)
-
-  }, [salaryMap])
-
-  /*   REGISTRO BASE POR EMPLEADO */
+  /*
   useEffect(() => {
-    if (!employees.length) return;
+    console.log(salaryMap);
+  }, [salaryMap]);
+*/
+  /*   REGISTRO BASE POR EMPLEADO */
+  /* REGISTRO BASE POR EMPLEADO */
+  useEffect(() => {
+    if (!employees?.length || !salaryMap) return;
 
     const base = {};
 
-    employees.forEach(emp => {
-      const salary = salaryMap[emp.id];
-      if (!salary) return;
+    employees.forEach((emp) => {
+      const salaryEntry = salaryMap[emp.id];
 
-      const monthlySalary = salary.amount;
+      // Si el empleado no tiene salario asignado, se omite
+      if (!salaryEntry) return;
+
+      const monthlySalary = salaryEntry.salaryAmount;
+
       const dailySalary = monthlySalary / 30;
       const hourlySalary = dailySalary / 8;
 
@@ -106,23 +108,26 @@ const NewPayrollPage = () => {
 
         grossSalary: monthlySalary,
         totalDeductions: 0,
-        netAmount: monthlySalary
+        netAmount: monthlySalary,
       };
     });
+    /*
+    console.group('🧾 Payroll base generado');
+    console.table(base);
+    console.groupEnd();
+    */
 
     setPayrollByEmployee(base);
-
-    console.table(base)
   }, [employees, salaryMap]);
 
   /*ACTUALIZACIÓN DESDE LA FILA */
   const handleRowChange = (employeeId, rowData) => {
-    setPayrollByEmployee(prev => ({
+    setPayrollByEmployee((prev) => ({
       ...prev,
       [employeeId]: {
         ...prev[employeeId],
-        ...rowData
-      }
+        ...rowData,
+      },
     }));
   };
 
@@ -130,15 +135,13 @@ const NewPayrollPage = () => {
   const handleSave = () => {
     console.clear();
     console.table(
-      Object.values(payrollByEmployee).map(p => ({
+      Object.values(payrollByEmployee).map((p) => ({
         userId: p.userId,
         grossSalary: p.grossSalary,
         totalDeductions: p.totalDeductions,
-        netAmount: p.netAmount
+        netAmount: p.netAmount,
       }))
     );
-
-    console.log('DETALLE COMPLETO:', payrollByEmployee);
   };
 
   /*  RENDER */
@@ -154,19 +157,11 @@ const NewPayrollPage = () => {
             <TablePayrollHeader />
 
             <tbody>
-              {employees.map(emp => (
+              {Object.values(payrollByEmployee).map((payroll, index) => (
                 <PayrollRow
-                  key={emp.id}
-                  data={emp}
-                  salary={salaryMap[emp.id]}
-                  onChanged={(rowData) =>
-                    handleRowChange(emp.id, {
-                      ...rowData,
-                      grossSalary: rowData.salarioBruto,
-                      totalDeductions: rowData.totalDeducciones,
-                      netAmount: rowData.neto
-                    })
-                  }
+                  employee={employees.find((e) => e.id === payroll.userId)}
+                  key={payroll.userId ?? index}
+                  PayrollData={payroll}
                 />
               ))}
             </tbody>
@@ -178,9 +173,7 @@ const NewPayrollPage = () => {
       </div>
 
       <div className="flex gap-4">
-        <PrimaryButton onClick={handleSave}>
-          Guardar Planilla
-        </PrimaryButton>
+        <PrimaryButton onClick={handleSave}>Guardar Planilla</PrimaryButton>
         <SecondaryButton>Cancelar</SecondaryButton>
       </div>
     </motion.div>
