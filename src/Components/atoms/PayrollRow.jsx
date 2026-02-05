@@ -15,14 +15,16 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   // Cálculos base
   // ========================
   const salarioMensual =
-    salary.type === 'Hora' ? salary.salaryAmount * 30 * 8 : salary.salaryAmount;
+    salary.type === 'Hora'
+      ? salary.salaryAmount * 30 * 8
+      : salary.salaryAmount;
 
   const salarioQuincenal = salarioMensual / 2;
   const salarioHora = salarioMensual / 30 / 8;
   const salarioDia = salarioMensual / 30;
 
   // ========================
-  // Estados editables
+  // Estados editables (DECIMALES)
   // ========================
   const [extras, setExtras] = useState(0);
   const [feriados, setFeriados] = useState(0);
@@ -37,8 +39,8 @@ const PayrollRow = ({ data, onChanged, salary }) => {
   // ========================
   // Montos calculados
   // ========================
-  const montoExtras = extras * salarioHora * 1.5;
-  const montoFeriados = feriados * salarioHora * 8 * 2;
+  const montoExtras = extras * (salarioHora * 1.5);
+  const montoFeriados = feriados * ( (salarioHora * 8 ) * 2);
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
 
   const deducciones = (incCCSS + incINS + ausencias) * salarioDia;
@@ -65,10 +67,17 @@ const PayrollRow = ({ data, onChanged, salary }) => {
 
   const netoPagar = salarioBruto - deducciones;
 
-  const formatMoney = (v) => `₡${Math.round(v).toLocaleString('es-CR')}`;
+  // ========================
+  // FORMATO CON DECIMALES
+  // ========================
+  const formatMoney = (v) =>
+    `₡${Number(v || 0).toLocaleString('es-CR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
 
   // ========================
-  // Render
+  // Render (MISMAS FILAS)
   // ========================
   return (
     <tr className="hover:bg-slate-50 transition">
@@ -80,95 +89,61 @@ const PayrollRow = ({ data, onChanged, salary }) => {
       <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioQuincenal)}</td>
       <td className="p-1 border border-gray-200 text-right">{formatMoney(salarioHora)}</td>
 
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={extras}
-          onChange={(e) => setExtras(+e.target.value || 0)}
-          className="input"
-        />
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={extras}
+          onChange={(e) => setExtras(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
       <td className="p-1 border border-gray-200 text-right">{formatMoney(montoExtras)}</td>
 
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={feriados}
-          onChange={(e) => setFeriados(+e.target.value || 0)}
-          className="input"
-        />
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={feriados}
+          onChange={(e) => setFeriados(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
       <td className="p-1 border border-gray-200 text-right">{formatMoney(montoFeriados)}</td>
 
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={extrasFeriado}
-          onChange={(e) => setExtrasFeriado(+e.target.value || 0)}
-          className="input"
-        />
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={extrasFeriado}
+          onChange={(e) => setExtrasFeriado(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
-      <td className="p-1 border border-gray-200 text-right">
-        {formatMoney(montoExtrasFeriado)}
+      <td className="p-1 border border-gray-200 text-right">{formatMoney(montoExtrasFeriado)}</td>
+
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={retroactivo}
+          onChange={(e) => setRetroactivo(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
 
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={retroactivo}
-          onChange={(e) => setRetroactivo(+e.target.value || 0)}
-          className="input"
-        />
-      </td>
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={bonos}
-          onChange={(e) => setBonos(+e.target.value || 0)}
-          className="input"
-        />
-      </td>
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={comisiones}
-          onChange={(e) => setComisiones(+e.target.value || 0)}
-          className="input"
-        />
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={bonos}
+          onChange={(e) => setBonos(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
 
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={incCCSS}
-          onChange={(e) => setIncCCSS(+e.target.value || 0)}
-          className="input"
-        />
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={comisiones}
+          onChange={(e) => setComisiones(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={incINS}
-          onChange={(e) => setIncINS(+e.target.value || 0)}
-          className="input"
-        />
+
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={incCCSS}
+          onChange={(e) => setIncCCSS(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
-      <td className="border border-gray-200 text-right ">
-        <input
-          type="number"
-          min={0}
-          value={ausencias}
-          onChange={(e) => setAusencias(+e.target.value || 0)}
-          className="input"
-        />
+
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={incINS}
+          onChange={(e) => setIncINS(parseFloat(e.target.value) || 0)}
+          className="input" />
+      </td>
+
+      <td className="border border-gray-200 text-right">
+        <input type="number" step="0.01" min={0} value={ausencias}
+          onChange={(e) => setAusencias(parseFloat(e.target.value) || 0)}
+          className="input" />
       </td>
 
       <td className="p-1 border border-gray-200 text-right font-semibold">
