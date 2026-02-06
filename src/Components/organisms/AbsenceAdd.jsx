@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import absencesApi from '../../api/absencesApi';
 import EmployeeApi from '../../api/employeesApi';
 import toast from 'react-hot-toast';
@@ -7,10 +7,18 @@ import { useAppContext } from '../../context/AppContext';
 const AbsenceAdd = ({ userId }) => {
   const [employees, setEmployees] = useState([]);
   const { user } = useAppContext();
+
+  // helper: hoy a las 7:00 am
+  const getTodayAtSevenAM = () => {
+    const d = new Date();
+    d.setHours(7, 0, 0, 0);
+    return d.toISOString().slice(0, 16);
+  };
+
   const [absenceForm, setAbsenceForm] = useState({
-    startDate: '',
+    startDate: getTodayAtSevenAM(),
     endDate: '',
-    createdBy: user.email ?? '', 
+    createdBy: user.email ?? '',
     reason: '',
     justified: false,
     title: '',
@@ -23,7 +31,7 @@ const AbsenceAdd = ({ userId }) => {
         try {
           const response = await EmployeeApi.getAllEmployees();
           setEmployees(response.data);
-        } catch (error) {
+        } catch {
           toast.error('Error cargando empleados');
         }
       };
@@ -37,27 +45,44 @@ const AbsenceAdd = ({ userId }) => {
     setAbsenceForm((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
+      // si cambia fecha inicio y fecha fin queda antes, la limpiamos
+      ...(name === 'startDate' &&
+        prev.endDate &&
+        value > prev.endDate && { endDate: '' }),
     }));
   };
+
+  // duración en días (incluye fracciones)
+  const durationDays = useMemo(() => {
+    if (!absenceForm.startDate || !absenceForm.endDate) return null;
+
+    const start = new Date(absenceForm.startDate);
+    const end = new Date(absenceForm.endDate);
+
+    const diffMs = end - start;
+    if (diffMs < 0) return null;
+
+    return (diffMs / (1000 * 60 * 60 * 24)).toFixed(2);
+  }, [absenceForm.startDate, absenceForm.endDate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const resp = await absencesApi.createAbsence(absenceForm);
-
       console.log('server res', resp);
+
       toast.success('Ausencia agregada');
 
       setAbsenceForm({
-        startDate: '',
+        startDate: getTodayAtSevenAM(),
         endDate: '',
         reason: '',
         justified: false,
         title: '',
         userId: userId || '',
       });
-    } catch (error) {
+    } catch {
       toast.error('Error al guardar la ausencia');
     }
   };
@@ -77,7 +102,7 @@ const AbsenceAdd = ({ userId }) => {
             <option value="">Seleccione un empleado</option>
             {employees.map((emp) => (
               <option key={emp.id} value={emp.id}>
-                {emp.fullName}
+                {emp.firstName} {emp.lastName}
               </option>
             ))}
           </select>
@@ -115,9 +140,16 @@ const AbsenceAdd = ({ userId }) => {
           className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
           value={absenceForm.endDate}
           onChange={handleChange}
+          min={absenceForm.startDate}
           required
         />
       </div>
+
+      {durationDays && (
+        <div className="m-1 p-2 text-sm text-gray-700">
+          Duración: <strong>{durationDays}</strong> días
+        </div>
+      )}
 
       <div className="flex flex-col m-1">
         <label>Motivo</label>
@@ -129,7 +161,7 @@ const AbsenceAdd = ({ userId }) => {
         />
       </div>
 
-      <div className="flex flex-row p-2 m-1  m-1">
+      <div className="flex flex-row p-2 m-1">
         <label>
           <input
             type="checkbox"

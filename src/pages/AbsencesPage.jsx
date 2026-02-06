@@ -7,10 +7,11 @@ import AbsenceAdd from '../Components/organisms/AbsenceAdd';
 import OffCanvas from '../Components/OffCanvas';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const AbsencesPage = () => {
-  const [absences, setAbsences] = useState();
+  const [absences, setAbsences] = useState([]);
+  const [search, setSearch] = useState('');
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -24,14 +25,31 @@ const AbsencesPage = () => {
 
   useEffect(() => {
     const GetData = async () => {
-      const resp = await absencesApi.getAllAbsences()
-      setAbsences(resp.data)
-      console.table(resp.data)
-
+      const resp = await absencesApi.getAllAbsences();
+      setAbsences(resp.data ?? []);
+      console.table(resp.data);
     };
     GetData();
-
   }, []);
+
+  // 🔎 filtro reactivo
+  const filteredAbsences = useMemo(() => {
+    if (!search.trim()) return absences;
+
+    const q = search.toLowerCase();
+
+    return absences.filter((a) =>
+      [
+        a.title,
+        a.reason,
+        a.createdBy,
+        a.user.firstName,
+        a.user.lastName
+      ]
+        .filter(Boolean)
+        .some((field) => field.toLowerCase().includes(q))
+    );
+  }, [absences, search]);
 
   return (
     <>
@@ -54,8 +72,9 @@ const AbsencesPage = () => {
         )}
       </AnimatePresence>
 
-      <div className="d-flex flex flex-row justify-between p-1">
+      <div className="flex flex-row justify-between items-center p-1">
         <PageTitle>Ausencias</PageTitle>
+
         <PrimaryButton
           onClick={() => {
             openCanvas('Agregar', <AbsenceAdd />);
@@ -65,7 +84,23 @@ const AbsencesPage = () => {
         </PrimaryButton>
       </div>
 
-      <AbsenceTable items={absences} />
+      {/* 🔍 Buscador */}
+      <div className="p-2">
+        <input
+          type="text"
+          placeholder="Buscar por título, motivo o creador..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="
+            w-full max-w-md
+            border border-gray-300 rounded-lg
+            px-4 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-blue-400
+          "
+        />
+      </div>
+
+      <AbsenceTable items={filteredAbsences} />
     </>
   );
 };
