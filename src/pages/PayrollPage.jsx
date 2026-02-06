@@ -1,7 +1,7 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, number } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-
 import { useEffect, useState } from 'react';
+
 import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
@@ -30,7 +30,10 @@ const itemVariants = {
 
 const PayrollPage = () => {
   const navigate = useNavigate();
+
   const [payrolls, setPayrolls] = useState([]);
+  const [filteredPayrolls, setFilteredPayrolls] = useState([]);
+  const [search, setSearch] = useState('');
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -42,17 +45,39 @@ const PayrollPage = () => {
     setOpen(true);
   };
 
+  // Cargar planillas
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await payrollApi.getAllPayrolls();
         setPayrolls(response.data);
+        setFilteredPayrolls(response.data);
+        console.log(response.data)
       } catch (error) {
         console.log(error);
       }
     };
     getData();
   }, []);
+
+  // Buscador
+  useEffect(() => {
+  
+    if (!search) {
+      setFilteredPayrolls(payrolls);
+      return;
+    }
+
+
+    const value = search.toLowerCase();
+
+    const filtered = payrolls.filter(p =>
+      p.payrollId == number.parse(value)  || 
+      p.payrollType?.toLowerCase().includes(value)
+    );
+
+    setFilteredPayrolls(filtered);
+  }, [search, payrolls]);
 
   return (
     <>
@@ -74,6 +99,7 @@ const PayrollPage = () => {
           </OffCanvasLarge>
         )}
       </AnimatePresence>
+
       <motion.div
         className="space-y-6"
         variants={pageVariants}
@@ -90,22 +116,31 @@ const PayrollPage = () => {
           <Divider />
         </motion.div>
 
-        {/* Action */}
-        <motion.div variants={itemVariants} className="flex justify-end">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <PrimaryButton
-              onClick={() =>
-                openCanvas('Generar Planilla', <PayrollGenerate />)
-              }
-            >
-              Generar Nueva Planilla
-            </PrimaryButton>
-          </motion.div>
+        {/* Actions + Search */}
+        <motion.div
+          variants={itemVariants}
+          className="flex justify-between items-center gap-4"
+        >
+          <input
+            type="text"
+            placeholder="Buscar por código, periodo o estado..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-80 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+
+          <PrimaryButton
+            onClick={() =>
+              openCanvas('Generar Planilla', <PayrollGenerate />)
+            }
+          >
+            Generar Nueva Planilla
+          </PrimaryButton>
         </motion.div>
 
         {/* Table */}
         <motion.div variants={itemVariants}>
-          <PayrollListTable payrolls={payrolls} />
+          <PayrollListTable payrolls={filteredPayrolls} />
         </motion.div>
       </motion.div>
     </>

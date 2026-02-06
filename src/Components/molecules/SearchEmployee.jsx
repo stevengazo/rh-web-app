@@ -7,7 +7,7 @@ const SearchEmployee = ({ value, onChange, onClear }) => {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm"
+      className="flex items-center  bg-white rounded-xl  border-slate-200 "
     >
       {/* Input */}
       <div className="relative flex-1">
@@ -22,16 +22,7 @@ const SearchEmployee = ({ value, onChange, onClear }) => {
         />
       </div>
 
-      {/* Clear */}
-      {value && (
-        <button
-          onClick={onClear}
-          className="p-2 rounded-lg hover:bg-slate-100 transition"
-          title="Limpiar búsqueda"
-        >
-          <X size={18} className="text-slate-500" />
-        </button>
-      )}
+   
     </motion.div>
   );
 };
