@@ -15,11 +15,6 @@ const tableVariants = {
   },
 };
 
-const rowVariants = {
-  hidden: { opacity: 0, y: 6 },
-  visible: { opacity: 1, y: 0 },
-};
-
 const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
   const navigate = useNavigate();
 
@@ -47,28 +42,18 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
             </tr>
           </thead>
 
-          <motion.tbody
-            variants={tableVariants}
-            className="divide-y"
-          >
+          <tbody className="divide-y">
             {employees.map((emp) => (
-              <motion.tr
+              <tr
                 key={emp.id}
-                variants={rowVariants}
                 whileHover={{ backgroundColor: '#f8fafc' }}
                 className="transition"
               >
-                <td className="px-6 py-3 font-medium">
-                  {emp.firstName}
-                </td>
+                <td className="px-6 py-3 font-medium">{emp.firstName}</td>
 
-                <td className="px-6 py-3">
-                  {emp.lastName}
-                </td>
+                <td className="px-6 py-3">{emp.lastName}</td>
 
-                <td className="px-6 py-3 text-slate-600">
-                  {emp.email}
-                </td>
+                <td className="px-6 py-3 text-slate-600">{emp.email}</td>
 
                 <td className="px-6 py-3 text-slate-600">
                   {emp.departament?.name || '—'}
@@ -78,9 +63,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
                   <div className="flex justify-center gap-2">
                     <button
                       className="p-1.5 rounded hover:bg-slate-200"
-                      onClick={() =>
-                        navigate(`/manager/employees/${emp.id}`)
-                      }
+                      onClick={() => navigate(`/manager/employees/${emp.id}`)}
                     >
                       <Eye size={16} />
                     </button>
@@ -97,16 +80,14 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
                       <Edit size={16} />
                     </button>
 
-                    <button
-                      className="p-1.5 rounded text-red-500 hover:bg-red-100"
-                    >
+                    <button className="p-1.5 rounded text-red-500 hover:bg-red-100">
                       <Trash2 size={16} />
                     </button>
                   </div>
                 </td>
-              </motion.tr>
+              </tr>
             ))}
-          </motion.tbody>
+          </tbody>
         </motion.table>
       </div>
     </motion.div>

@@ -28,7 +28,7 @@ const Employee_PayrollApi = {
 
 
    Search: ({ employeeId, year, month }) => {
-    return apiClient.get('/api/Employee_Payroll/search', {
+    return apiClient.get('/Employee_Payroll/search', {
       params: {
         employeeId,
         year,

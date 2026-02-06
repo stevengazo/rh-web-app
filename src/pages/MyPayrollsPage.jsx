@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import SectionTitle from '../Components/SectionTitle';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
 import { useAppContext } from '../context/AppContext';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
+import TablePayrollsData from '../Components/organisms/TablePayrollsData';
 
 const MyPayrollsPage = () => {
   const { user } = useAppContext();
@@ -22,14 +23,17 @@ const MyPayrollsPage = () => {
     const GetData = async () => {
       const Response = await Employee_PayrollApi.Search({
         employeeId: user.id,
-        year: Date.now.year,
       });
       setPayrollsData(Response.data);
-      console.log(Response.data)
+      console.log(Response.data);
     };
 
     GetData();
   }, []);
+
+  const OnSelected = (element) => {
+    openCanvas('Ver datos', <>{element}</>);
+  };
 
   return (
     <>
@@ -52,6 +56,7 @@ const MyPayrollsPage = () => {
         )}
       </AnimatePresence>
       <SectionTitle>Mis Comprobantes</SectionTitle>
+      <TablePayrollsData items={payrollsData} HandleShowEdit={openCanvas} />
     </>
   );
 };
