@@ -1,13 +1,17 @@
-import { formatMoney } from "../../utils/formatMoney";
+import { formatMoney } from '../../utils/formatMoney';
 
-const Info = ({ label, value, tooltip }) => (
+const Info = ({ label, value, tooltip, money = false }) => (
   <div
     className="flex justify-between items-center py-1 border-b last:border-b-0"
     title={tooltip}
   >
     <span className="text-sm text-slate-600">{label}</span>
     <span className="font-medium text-slate-800">
-      {value !== null && value !== undefined ? value.toString() : '-'}
+      {value !== null && value !== undefined
+        ? money
+          ? formatMoney(value)
+          : value.toString()
+        : '-'}
     </span>
   </div>
 );
@@ -32,21 +36,25 @@ const Employee_PayrollDetails = ({ data }) => {
         <Info
           label="Salario mensual"
           value={data.monthlySalary}
+          money
           tooltip="Salario mensual registrado en la planilla"
         />
         <Info
           label="Salario quincenal"
           value={data.biweeklySalary}
+          money
           tooltip="Salario quincenal registrado"
         />
         <Info
           label="Salario diario"
           value={data.dailySalary}
+          money
           tooltip="Salario diario registrado"
         />
         <Info
           label="Salario por hora"
           value={data.hourlySalary}
+          money
           tooltip="Salario por hora registrado"
         />
       </section>
@@ -83,31 +91,37 @@ const Employee_PayrollDetails = ({ data }) => {
         <Info
           label="Monto horas extra"
           value={data.overtimeAmount}
+          money
           tooltip="Monto total por horas extra"
         />
         <Info
           label="Monto feriados"
           value={data.holidayAmount}
+          money
           tooltip="Monto total por días feriados"
         />
         <Info
           label="Monto horas extra feriado"
           value={data.holidayOvertimeAmount}
+          money
           tooltip="Monto total por horas extra en feriado"
         />
         <Info
           label="Retroactivo"
           value={data.retroactivePay}
+          money
           tooltip="Monto retroactivo aplicado"
         />
         <Info
           label="Bonos"
           value={data.bonus}
+          money
           tooltip="Bonificaciones otorgadas"
         />
         <Info
           label="Comisiones"
           value={data.comissions}
+          money
           tooltip="Comisiones generadas"
         />
       </section>
@@ -140,16 +154,19 @@ const Employee_PayrollDetails = ({ data }) => {
         <Info
           label="Salario bruto"
           value={data.grossSalary}
+          money
           tooltip="Monto bruto registrado en la planilla"
         />
         <Info
           label="Total deducciones"
           value={data.totalDeductions}
+          money
           tooltip="Monto total de deducciones"
         />
         <Info
           label="Neto a pagar"
           value={data.netAmount}
+          money
           tooltip="Monto final a pagar al empleado"
         />
       </section>
