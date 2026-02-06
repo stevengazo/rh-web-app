@@ -107,6 +107,7 @@ const actionApi = {
   },
 
   searchActions: (filters) => {
+    console.log('filtros', filters);
     return apiClient.get('/actions/search', {
       params: {
         employeeId: filters.employeeId,
@@ -114,7 +115,7 @@ const actionApi = {
         DateEnd: filters.dateEnd,
         Type: filters.type,
         isActive: filters.isActive,
-        Approved: filters.approved,
+        Approved: filters.Approved,
       },
     });
   },
