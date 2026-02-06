@@ -60,6 +60,9 @@ const ManagerSideBar = () => {
           <NavLink to="/manager/actions" className={navItemClass}>
             <Briefcase size={18} /> Acciones
           </NavLink>
+          <NavLink to="/manager/absences" className={navItemClass}>
+            <Briefcase size={18} /> Ausencias
+          </NavLink>
         </div>
 
         <div>

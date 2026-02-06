@@ -24,6 +24,8 @@ import QuestionPage from '../pages/QuestionPage';
 import ViewPerformancePage from '../pages/ViewPerformancePage';
 import LoansPage from '../pages/LoansPage';
 import ViewLoanPage from '../pages/ViewLoanPage';
+import AbsencesPage from '../pages/AbsencesPage';
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -47,6 +49,8 @@ const AppRouter = () => {
           <Route path="/manager/payroll" element={<PayrollPage />} />
           <Route path="/manager/actions" element={<ActionsPage />} />
           <Route path="/manager/kpis" element={<KPIPage />} />
+          
+          <Route path="/manager/absences" element={<AbsencesPage />} />
            <Route path="/manager/loans" element={<LoansPage />} /> 
           <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />

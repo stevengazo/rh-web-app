@@ -1,6 +1,10 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, UserPlus, CalendarCheck, BarChart3 } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import EmployeeApi from '../api/employeesApi';
+import actionApi from '../api/actionApi.js';
+
 import {
   LineChart,
   Line,
@@ -14,35 +18,7 @@ import {
 import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
 
-/* Cards data */
-const cards = [
-  {
-    title: 'Empleados',
-    value: '128',
-    icon: Users,
-    color: 'text-indigo-600',
-  },
-  {
-    title: 'Nuevos ingresos',
-    value: '5',
-    icon: UserPlus,
-    color: 'text-emerald-600',
-  },
-  {
-    title: 'Asistencias',
-    value: '96%',
-    icon: CalendarCheck,
-    color: 'text-blue-600',
-  },
-  {
-    title: 'Reportes',
-    value: '12',
-    icon: BarChart3,
-    color: 'text-purple-600',
-  },
-];
-
-/* Chart data */
+/* Chart data (mock por ahora) */
 const chartData = [
   { name: 'Ene', empleados: 120, planilla: 240 },
   { name: 'Feb', empleados: 130, planilla: 260 },
@@ -54,6 +30,57 @@ const chartData = [
 const ManagerPage = () => {
   const { user } = useAppContext();
 
+  const [countEmployees, setCountEmployees] = useState(0);
+  const [countActions, setCountActions] = useState(0);
+
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        const [employeesRes, actionsRes] = await Promise.all([
+          EmployeeApi.getAllEmployees(),
+          actionApi.getAllActions(),
+        ]);
+
+        setCountEmployees(employeesRes.data.length);
+        setCountActions(actionsRes.data.length);
+      } catch (error) {
+        console.error('Error cargando datos del dashboard', error);
+        setCountEmployees(0);
+        setCountActions(0);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
+
+  /* Cards dinámicas */
+  const cards = [
+    {
+      title: 'Empleados',
+      value: countEmployees,
+      icon: Users,
+      color: 'text-indigo-600',
+    },
+    {
+      title: 'Acciones',
+      value: countActions,
+      icon: UserPlus,
+      color: 'text-emerald-600',
+    },
+    {
+      title: 'Asistencias',
+      value: '96%',
+      icon: CalendarCheck,
+      color: 'text-blue-600',
+    },
+    {
+      title: 'Reportes',
+      value: 12,
+      icon: BarChart3,
+      color: 'text-purple-600',
+    },
+  ];
+
   console.log('Usuario en ManagerPage:', user);
 
   return (
@@ -63,7 +90,7 @@ const ManagerPage = () => {
       transition={{ duration: 0.4 }}
       className="space-y-8"
     >
-      {/* Titles */}
+      {/* Title */}
       <div>
         <SectionTitle>Resumen general del sistema</SectionTitle>
       </div>
@@ -72,6 +99,7 @@ const ManagerPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => {
           const Icon = card.icon;
+
           return (
             <motion.div
               key={card.title}
@@ -86,6 +114,7 @@ const ManagerPage = () => {
                   {card.value}
                 </h3>
               </div>
+
               <div className={card.color}>
                 <Icon size={32} />
               </div>

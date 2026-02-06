@@ -7,11 +7,11 @@ import { formatMoney } from '../../utils/formatMoney';
 ========================= */
 const colors = {
   bg: '#ffffff',
-  sectionBg: '#f8fafc',      // slate-50
-  border: '#e5e7eb',         // gray-200
-  label: '#64748b',          // slate-500
-  text: '#1f2937',           // slate-800
-  title: '#334155',          // slate-700
+  sectionBg: '#f8fafc', // slate-50
+  border: '#e5e7eb', // gray-200
+  label: '#64748b', // slate-500
+  text: '#1f2937', // slate-800
+  title: '#334155', // slate-700
 };
 
 /* =========================
@@ -82,6 +82,8 @@ const Section = ({ title, children }) => (
 const Employee_PayrollDetails = ({ data }) => {
   const pdfRef = useRef(null);
 
+  console.log(data);
+
   if (!data) {
     return (
       <div className="p-4 text-sm text-red-600">
@@ -114,9 +116,7 @@ const Employee_PayrollDetails = ({ data }) => {
     <div className="space-y-4">
       {/* Header UI (normal Tailwind, no PDF) */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-slate-800">
-          Detalle de Planilla
-        </h2>
+        <h2 className="text-lg font-semibold text-slate-800">Acciones</h2>
 
         <button
           onClick={handleDownloadPDF}
@@ -140,6 +140,16 @@ const Employee_PayrollDetails = ({ data }) => {
           gap: '16px',
         }}
       >
+        {/* Informaciòn Basica */}
+
+        <Section title={'Datos'}>
+          <Info label={'Tipo'} value={data.payrollData.payrollType} />
+          <Info label={'Final'} value={data.payrollData.finalDate} />
+          <Info label={'Inicio'} value={data.payrollData.initialDate} />
+          <Info label={'ID de Planilla'} value={data.payrollData.payrollId} />
+          
+          <Info label={'Registro'} value={data.employee_PayrollId} />
+        </Section>
         {/* SALARIOS BASE */}
         <Section title="Salarios base">
           <Info label="Salario mensual" value={data.monthlySalary} money />

@@ -2,8 +2,10 @@ import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, LogIn, UserPlus } from 'lucide-react';
 import PageTitle from '../Components/PageTitle';
+import { useEffect, useState } from 'react';
 
 const HomePage = () => {
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-700 text-white px-4">
       <motion.div
