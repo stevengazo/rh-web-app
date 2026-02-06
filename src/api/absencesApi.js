@@ -32,7 +32,7 @@ const absencesApi = {
    * Promesa con la respuesta del servidor tras crear la ausencia.
    */
   createAbsence: (absence) => {
-    return apiClient.get('/Absences', absence);
+    return apiClient.post('/Absences', absence);
   },
   /**
    * Actualiza una ausencia existente.
