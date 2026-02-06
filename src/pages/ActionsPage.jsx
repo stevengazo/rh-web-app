@@ -11,6 +11,7 @@ import { useAppContext } from '../context/AppContext';
 import actionApi from '../api/actionApi';
 import CardAction from '../Components/CardActions';
 import ViewAction from '../Components/organisms/ViewAction';
+import ActionTable from '../Components/organisms/ActionTable';
 
 const ActionsPage = () => {
   const { user } = useAppContext();
@@ -30,19 +31,21 @@ const ActionsPage = () => {
 
   useEffect(() => {
     const loadActions = async () => {
-      const base = {
-        dateStart: '2025-01-01',
-        dateEnd: '2026-12-31',
-        isActive: true,
-      };
+      try {
+        const approvedRes = await actionApi.searchActions({ Approved: true });
+        setApprovedActions(approvedRes.data ?? []);
+      } catch (error) {
+        console.error(error);
+        setApprovedActions([]);
+      }
 
-      const [approved, pending] = await Promise.all([
-        actionApi.searchActions({ ...base, approved: true }),
-        actionApi.searchActions({ ...base, approved: false }),
-      ]);
-
-      setApprovedActions(approved.data);
-      setPendingActions(pending.data);
+      try {
+        const pendingRes = await actionApi.searchActions({ Approved: false });
+        setPendingActions(pendingRes.data ?? []);
+      } catch (error) {
+        console.error(error);
+        setPendingActions([]);
+      }
     };
 
     loadActions();

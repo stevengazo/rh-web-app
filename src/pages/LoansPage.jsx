@@ -76,7 +76,7 @@ const LoansPage = () => {
       <Divider />
 
       {/* Tabla */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-3">
+      <div className="bg-white  border-gray-200 rounded-xl ">
         <LoansTable loans={loans} />
       </div>
     </>

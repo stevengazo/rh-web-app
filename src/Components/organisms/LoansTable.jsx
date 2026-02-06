@@ -24,7 +24,7 @@ const LoansTable = ({ loans = [] }) => {
   }, [search, loans]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+    <div className="bg-white rounded-xl p-4">
       {/* Búsqueda */}
       <div className="mb-4 flex justify-between items-center">
         <input

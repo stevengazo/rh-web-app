@@ -5,6 +5,7 @@ import AbsenceCalendar from '../Components/organisms/AbsenceCalendar';
 import AbsenceTable from '../Components/organisms/AbsenceTable';
 import AbsenceAdd from '../Components/organisms/AbsenceAdd';
 import OffCanvas from '../Components/OffCanvas';
+import Divider from '../Components/Divider';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { useEffect, useMemo, useState } from 'react';
@@ -83,6 +84,9 @@ const AbsencesPage = () => {
           Agregar Registro
         </PrimaryButton>
       </div>
+
+      
+      <Divider />
 
       {/* 🔍 Buscador */}
       <div className="p-2">
