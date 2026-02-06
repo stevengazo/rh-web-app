@@ -26,6 +26,18 @@ const Employee_PayrollApi = {
     return apiClient.get(`/Employee_Payroll/${id}`);
   },
 
+
+   Search: ({ employeeId, year, month }) => {
+    return apiClient.get('/api/Employee_Payroll/search', {
+      params: {
+        employeeId,
+        year,
+        month,
+      },
+    });
+  },
+
+  
   /**
    * Crea un nuevo registro de nómina para un empleado
    *

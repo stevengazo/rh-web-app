@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, UserPlus } from 'lucide-react';
+import { Mail, Lock, UserPlus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import { registerRequest } from '../api/authApi';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
   const [newUser, setNewUser] = useState({
@@ -12,13 +12,28 @@ const RegisterPage = () => {
     password: '',
   });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     try {
-      await registerRequest(newUser)
-        .then((e) => alert('Usuario Creado'))
-        .catch((err) => console.error(err));
+      await registerRequest({
+        ...newUser,
+        username: newUser.email, // se mantiene así 👍
+      });
+
+      toast.success('Usuario creado correctamente');
     } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        Object.values(error.response?.data?.errors || {})?.[0]?.[0] ||
+        'Error al registrar usuario';
+
+      toast.error(msg);
       console.error(error);
     }
   };
@@ -44,24 +59,6 @@ const RegisterPage = () => {
 
         {/* Form */}
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Nombre */}
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              Nombre completo
-            </label>
-            <div className="relative">
-              <User
-                className="absolute left-3 top-2.5 text-slate-400"
-                size={18}
-              />
-              <input
-                type="text"
-                placeholder="Juan Pérez"
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
-              />
-            </div>
-          </div>
-
           {/* Email */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">
@@ -73,14 +70,18 @@ const RegisterPage = () => {
                 size={18}
               />
               <input
+                name="email"
                 type="email"
+                value={newUser.email}
+                onChange={handleChange}
                 placeholder="correo@empresa.com"
+                required
                 className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
           </div>
 
-          {/* Contraseña */}
+          {/* Password */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">
               Contraseña
@@ -91,32 +92,18 @@ const RegisterPage = () => {
                 size={18}
               />
               <input
+                name="password"
                 type="password"
+                value={newUser.password}
+                onChange={handleChange}
                 placeholder="••••••••"
+                required
                 className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
           </div>
 
-          {/* Confirmar */}
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">
-              Confirmar contraseña
-            </label>
-            <div className="relative">
-              <Lock
-                className="absolute left-3 top-2.5 text-slate-400"
-                size={18}
-              />
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
-              />
-            </div>
-          </div>
-
-          {/* Botón */}
+          {/* Button */}
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}

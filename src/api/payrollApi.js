@@ -15,6 +15,8 @@ const payrollApi = {
     return apiClient.get(`/Payrolls`);
   },
 
+ 
+
   /**
    * Obtiene una planilla por su identificador.
    *
