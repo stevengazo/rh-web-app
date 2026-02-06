@@ -4,8 +4,10 @@ import { NavLink } from 'react-router-dom';
 import { registerRequest } from '../api/authApi';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
+  const Nav = useNavigate();
   const [newUser, setNewUser] = useState({
     username: '',
     email: '',
@@ -27,6 +29,7 @@ const RegisterPage = () => {
       });
 
       toast.success('Usuario creado correctamente');
+      Nav("/login")
     } catch (error) {
       const msg =
         error.response?.data?.message ||
