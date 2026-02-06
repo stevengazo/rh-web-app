@@ -41,7 +41,7 @@ const AddObjetiveCategory = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white shadow-md rounded-xl p-6">
+    <div className="">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         Nueva Categoría de Objetivo
       </h2>

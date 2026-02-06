@@ -91,7 +91,7 @@ const Add_User_Objetive = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-xl space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+      className="py-2 flex flex-col gap-2"
     >
       <h3 className="text-lg font-semibold text-gray-800">
         Asignar Objetivo a Usuario

@@ -85,10 +85,10 @@ const KPIPage = () => {
       </div>
 
       {/* Content */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="py-2">
         {/* TAB 1 */}
         {activeTab === TABS.OBJECTIVES && (
-          <div className="space-y-6">
+          <div className="">
             <section className="flex flex-row gap-0 justify-items-start align-bottom">
               <div className="w-2/5 p-2">
                 <AddObjetive />
@@ -112,18 +112,10 @@ const KPIPage = () => {
         )}
 
         {/* TAB 3 */}
-        {activeTab === TABS.ASSIGN && (
-          <div className="space-y-4">
-            <Add_User_Objetive />
-          </div>
-        )}
+        {activeTab === TABS.ASSIGN && <Add_User_Objetive />}
 
         {/* TAB 4 */}
-        {activeTab === TABS.SETTINGS && (
-          <div className="space-y-4">
-            <AddObjetiveCategory />
-          </div>
-        )}
+        {activeTab === TABS.SETTINGS && <AddObjetiveCategory />}
       </div>
     </div>
   );
