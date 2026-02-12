@@ -9,6 +9,8 @@ class ApiClient {
       },
     });
 
+    console.log("API URL:", import.meta.env.VITE_API_URL);
+
     // Interceptor REQUEST (agrega JWT)
     this.client.interceptors.request.use(
       (config) => {
