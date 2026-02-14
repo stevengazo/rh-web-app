@@ -1,4 +1,4 @@
- 📌 Sistema de Recursos Humanos – Web App (React + Vite)
+## 📌 Sistema de Recursos Humanos – Web App (React + Vite)
 
 Aplicación web para la gestión integral de Recursos Humanos, desarrollada con **React + Vite**, conectada a una API en **.NET** y base de datos **SQL Server**, todo orquestado con **Docker Compose**.
 
