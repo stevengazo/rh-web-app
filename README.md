@@ -91,8 +91,7 @@ El proyecto utiliza **Docker Compose** para levantar los siguientes servicios:
 
 ## 📦 Archivo `docker-compose.yml`
 
-    `
-    version: "3.9"
+´version: "3.9"
 
 services:
   sqlserver:
@@ -117,14 +116,12 @@ services:
       - "5000:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-
       ConnectionStrings__DefaultConnection: >
         Server=sqlserver,1433;
         Database=RH;
         User ID=sa;
         Password=Your_password123;
         TrustServerCertificate=True;
-
       Jwt__Key: TU_LLAVE_SECRETA_LARGA_DE_MINIMO_32_CARACTERES
       Jwt__Issuer: MyApi
       Jwt__Audience: MyApiUsers
@@ -141,9 +138,7 @@ services:
 
 volumes:
   sql_data1:
-
-        
-        ` 
+´
 
 ----------
 
