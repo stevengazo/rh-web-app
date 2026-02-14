@@ -1,4 +1,4 @@
- 📌 Sistema de Recursos Humanos – Web App (React + Vite)
+## 📌 Sistema de Recursos Humanos – Web App (React + Vite)
 
 Aplicación web para la gestión integral de Recursos Humanos, desarrollada con **React + Vite**, conectada a una API en **.NET** y base de datos **SQL Server**, todo orquestado con **Docker Compose**.
 
@@ -105,7 +105,6 @@ services:
       MSSQL_SA_PASSWORD: "Your_password123"
     volumes:
       - sql_data1:/var/opt/mssql
-
   rhapi:
     image: stevengazo/rh-api:latest
     container_name: api_rh_test
@@ -126,7 +125,6 @@ services:
       Jwt__Issuer: MyApi
       Jwt__Audience: MyApiUsers
       Jwt__ExpiresInHours: 5
-
   rh-webapp:
     image: stevengazo/rh-web:latest
     container_name: webapp_rh_test
@@ -135,10 +133,13 @@ services:
       - rhapi
     ports:
       - "3000:80"
-
 volumes:
   sql_data1:
+<<<<<<< HEAD
 ´
+=======
+        ` 
+>>>>>>> b591e8db929567f7f1a61027dcc49985571f7d4e
 
 ----------
 
