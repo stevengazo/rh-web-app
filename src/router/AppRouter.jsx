@@ -25,6 +25,7 @@ import ViewPerformancePage from '../pages/ViewPerformancePage';
 import LoansPage from '../pages/LoansPage';
 import ViewLoanPage from '../pages/ViewLoanPage';
 import AbsencesPage from '../pages/AbsencesPage';
+import RolesPage from '../pages/RolesPage';
 
 const AppRouter = () => {
   return (
@@ -54,6 +55,7 @@ const AppRouter = () => {
            <Route path="/manager/loans" element={<LoansPage />} /> 
           <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
+          <Route path="/manager/roles" element={<RolesPage />} />
           <Route
             path="/manager/perfornance/:id"
             element={<ViewPerformancePage />}

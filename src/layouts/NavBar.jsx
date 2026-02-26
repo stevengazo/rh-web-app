@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
 import { Home, User, LogOut, PanelsTopLeft } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import { useAppContext } from '../context/AppContext';
 const NavBar = () => {
   const navigate = useNavigate();
+  const { hasRole } = useAppContext();
 
   const handleLogout = () => {
     // aquí luego limpias token / auth
@@ -27,10 +28,12 @@ const NavBar = () => {
 
       {/* Links */}
       <div className="flex items-center gap-2">
-        <NavLink to="/manager" className={linkClass}>
-          <PanelsTopLeft size={18} />
-          Recursos Humanos
-        </NavLink>
+        {hasRole('admin') && (
+          <NavLink to="/manager" className={linkClass}>
+            <PanelsTopLeft size={18} />
+            Recursos Humanos
+          </NavLink>
+        )}
 
         <NavLink to="/my-profile" className={linkClass}>
           <User size={18} />

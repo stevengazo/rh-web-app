@@ -7,6 +7,7 @@ import {
   Cog,
   FileText,
   Briefcase,
+  Settings,
   User,
   LogOut,
   Menu,
@@ -92,6 +93,15 @@ const ManagerSideBar = () => {
           </p>
           <NavLink to="/my-profile" className={navItemClass}>
             <User size={18} /> Mi Perfil
+          </NavLink>
+        </div>
+
+        <div>
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+            Configuración
+          </p>
+          <NavLink to="/manager/roles" className={navItemClass}>
+            <Settings size={18} /> Roles
           </NavLink>
         </div>
       </nav>
