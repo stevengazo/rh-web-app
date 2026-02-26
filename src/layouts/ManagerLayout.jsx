@@ -1,11 +1,24 @@
-import { Outlet } from 'react-router-dom';
-import ManagerSideBar from './ManagerSideBar';
-import { LayoutDashboard } from 'lucide-react';
+import { Outlet, Navigate } from "react-router-dom";
+import ManagerSideBar from "./ManagerSideBar";
+import { LayoutDashboard } from "lucide-react";
+import { useAppContext } from "../context/AppContext";
 
 const ManagerLayout = () => {
+  const { hasRole, isAuthenticated } = useAppContext();
+
+  // 🔐 Si no está autenticado → login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 🔐 Si no tiene rol admin → no autorizado
+  if (!hasRole("admin")) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden">
-      {/* Sidebar (maneja mobile internamente) */}
+      {/* Sidebar */}
       <ManagerSideBar />
 
       {/* Main Area */}
