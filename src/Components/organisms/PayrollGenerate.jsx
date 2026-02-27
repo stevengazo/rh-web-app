@@ -1,123 +1,125 @@
-import { useEffect, useMemo, useState } from 'react'
-import payrollApi from '../../api/payrollApi'
-import toast from 'react-hot-toast'
+import { useEffect, useMemo, useState } from 'react';
+import payrollApi from '../../api/payrollApi';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
 
 const PAYROLL_TYPES = {
   WEEKLY: 'Semanal',
   BIWEEKLY: 'Quincenal',
-}
+};
 
 const PayrollGenerate = ({ onGenerated }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     payrollType: '',
     payrollDescription: '',
     initialDate: '',
     finalDate: '',
-    Payrolls: []
-  })
+    Payrolls: [],
+  });
 
   // Calcula automáticamente la fecha final según el tipo
   useEffect(() => {
-    if (!formData.initialDate || !formData.payrollType) return
+    if (!formData.initialDate || !formData.payrollType) return;
 
-    const start = new Date(formData.initialDate)
-    const end = new Date(start)
+    const start = new Date(formData.initialDate);
+    const end = new Date(start);
 
     if (formData.payrollType === PAYROLL_TYPES.WEEKLY) {
-      end.setDate(start.getDate() + 6)
+      end.setDate(start.getDate() + 6);
     }
 
     if (formData.payrollType === PAYROLL_TYPES.BIWEEKLY) {
-      end.setDate(start.getDate() + 14)
+      end.setDate(start.getDate() + 14);
     }
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       finalDate: end.toISOString().split('T')[0],
-    }))
-  }, [formData.initialDate, formData.payrollType])
+    }));
+  }, [formData.initialDate, formData.payrollType]);
 
   // Días seleccionados (dinámico)
   const selectedDays = useMemo(() => {
-    if (!formData.initialDate || !formData.finalDate) return 0
+    if (!formData.initialDate || !formData.finalDate) return 0;
 
-    const start = new Date(formData.initialDate)
-    const end = new Date(formData.finalDate)
+    const start = new Date(formData.initialDate);
+    const end = new Date(formData.finalDate);
 
-    if (end < start) return 0
+    if (end < start) return 0;
 
-    const diffTime = end.getTime() - start.getTime()
-    return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1
-  }, [formData.initialDate, formData.finalDate])
+    const diffTime = end.getTime() - start.getTime();
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  }, [formData.initialDate, formData.finalDate]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const validateForm = () => {
     if (!formData.payrollType) {
-      toast.error('Seleccione el tipo de planilla')
-      return false
+      toast.error('Seleccione el tipo de planilla');
+      return false;
     }
 
     if (!formData.initialDate) {
-      toast.error('Seleccione la fecha inicial')
-      return false
+      toast.error('Seleccione la fecha inicial');
+      return false;
     }
 
     if (selectedDays === 0) {
-      toast.error('El rango de fechas no es válido')
-      return false
+      toast.error('El rango de fechas no es válido');
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validateForm()) return
+    e.preventDefault();
+    if (!validateForm()) return;
 
     try {
-     const response = await payrollApi.createPayroll({
+      const response = await payrollApi.createPayroll({
         ...formData,
         deleted: false,
-      })
+      });
 
-      toast.success('Planilla generada correctamente')
-      onGenerated?.()
-      navigate(`/payroll/new/${response.data.payrollId}`)
+      toast.success('Planilla generada correctamente');
+      onGenerated?.();
+      navigate(`/payroll/new/${response.data.payrollId}`);
 
       setFormData({
         payrollType: '',
         payrollDescription: '',
         initialDate: '',
         finalDate: '',
-      })
+      });
     } catch (error) {
-      console.error(error)
-      toast.error('Error al generar la planilla')
+      console.error(error);
+      toast.error('Error al generar la planilla');
     }
-  }
+  };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-md space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold">Generar planilla</h2>
+        <p className="text-xs text-gray-300 mt-1">
+          Configura el período de la nueva planilla
+        </p>
+      </div>
+
       {/* Tipo */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Tipo de planilla
-        </label>
+        <label className="text-sm text-gray-200">Tipo de planilla</label>
         <select
           name="payrollType"
           value={formData.payrollType}
           onChange={handleChange}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-slate-600 focus:outline-none"
+          className="w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition"
         >
           <option value="">Seleccione...</option>
           <option value={PAYROLL_TYPES.WEEKLY}>Semanal</option>
@@ -126,43 +128,37 @@ const PayrollGenerate = ({ onGenerated }) => {
       </div>
 
       {/* Fechas */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Fecha inicio
-          </label>
+          <label className="text-sm text-gray-200">Fecha inicio</label>
           <input
             type="date"
             name="initialDate"
             value={formData.initialDate}
             onChange={handleChange}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-slate-600 focus:outline-none"
+            className="w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Fecha final
-          </label>
+          <label className="text-sm text-gray-200">Fecha final</label>
           <input
             type="date"
             name="finalDate"
             value={formData.finalDate}
             disabled
-            className="mt-1 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-sm cursor-not-allowed"
+            className="w-full mt-1 bg-gray-500 border border-gray-500 rounded-lg px-3 py-2 text-sm text-gray-300 cursor-not-allowed"
           />
         </div>
       </div>
 
       {/* Días calculados */}
       {formData.initialDate && formData.finalDate && (
-        <div className="rounded-md bg-slate-50 border px-4 py-2 text-sm">
-          <span className="font-medium text-slate-700">
-            Días del período:
-          </span>{' '}
+        <div className="border border-gray-600 rounded-lg px-4 py-3 text-sm">
+          <span className="text-gray-300">Días del período:</span>{' '}
           <span
             className={`font-semibold ${
-              selectedDays > 0 ? 'text-slate-900' : 'text-red-600'
+              selectedDays > 0 ? 'text-blue-400' : 'text-red-400'
             }`}
           >
             {selectedDays}
@@ -172,26 +168,26 @@ const PayrollGenerate = ({ onGenerated }) => {
 
       {/* Descripción */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Descripción
-        </label>
+        <label className="text-sm text-gray-200">Descripción</label>
         <textarea
           name="payrollDescription"
           value={formData.payrollDescription}
           onChange={handleChange}
           rows={3}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-slate-600 focus:outline-none"
+          placeholder="Ej: Planilla primera quincena de enero"
+          className="w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition resize-none"
         />
       </div>
 
+      {/* Botón */}
       <button
         type="submit"
-        className="w-full rounded-md bg-slate-800 py-2 text-sm font-semibold text-white hover:bg-slate-700 transition"
+        className="w-full py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 hover:scale-[1.02] active:scale-[0.98] transition"
       >
         Generar planilla
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default PayrollGenerate
+export default PayrollGenerate;

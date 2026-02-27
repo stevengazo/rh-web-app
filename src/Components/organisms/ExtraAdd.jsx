@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import extrasApi from "../../api/extrasApi";
 import extraTypeApi from "../../api/extraType";
 import PrimaryButton from "../PrimaryButton";
 import toast from "react-hot-toast";
 
-// Helpers
+// Helper fecha
 const formatDateYYYYMMDD = (date) => {
   if (!date) return null;
   return new Date(date).toISOString().split("T")[0];
@@ -12,6 +12,8 @@ const formatDateYYYYMMDD = (date) => {
 
 const ExtraAdd = ({ userId, author }) => {
   const [extraTypes, setExtraTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     extraId: 0,
@@ -21,43 +23,47 @@ const ExtraAdd = ({ userId, author }) => {
     notes: "",
     createdBy: author?.email || author || "",
     createdAt: new Date().toISOString(),
-    updatedBy: null,
-    updatedAt: null,
-    approvedBy: null,
-    approvedAt: null,
-    isAproved: false,
-    isDeleted: false,
     userId: userId || "",
-    user: null,
     extraTypeId: "",
-    extraType: null,
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // 🔹 Cargar tipos de extra
+  /* =========================
+     Cargar tipos
+  ========================= */
   useEffect(() => {
     const fetchExtraTypes = async () => {
       try {
         const res = await extraTypeApi.getallExtraTypes();
         setExtraTypes(res.data);
       } catch (err) {
-        console.error("Error cargando tipos de extra", err);
+        console.error(err);
       }
     };
-
     fetchExtraTypes();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  /* =========================
+     Calcular duración dinámica
+  ========================= */
+  const duration = useMemo(() => {
+    if (!form.start || !form.end) return null;
 
+    const startDate = new Date(form.start);
+    const endDate = new Date(form.end);
+
+    if (endDate < startDate) return "Rango inválido";
+
+    const diffMs = endDate - startDate;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+
+    return `${diffDays} día${diffDays > 1 ? "s" : ""}`;
+  }, [form.start, form.end]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
-      updatedAt: new Date().toISOString(),
-      updatedBy: prev.createdBy,
+      [name]: value,
     }));
   };
 
@@ -77,18 +83,11 @@ const ExtraAdd = ({ userId, author }) => {
       amount: Number(form.amount),
     };
 
-    // ❌ eliminar DateTime nulos
-    if (!payload.approvedAt) delete payload.approvedAt;
-    if (!payload.updatedAt) delete payload.updatedAt;
-    if (!payload.approvedBy) delete payload.approvedBy;
-    if (!payload.updatedBy) delete payload.updatedBy;
-
     try {
       setLoading(true);
       await extrasApi.createExtra(payload);
       toast.success("Extra registrado exitosamente");
 
-      // reset parcial
       setForm((prev) => ({
         ...prev,
         start: "",
@@ -104,32 +103,40 @@ const ExtraAdd = ({ userId, author }) => {
     }
   };
 
+  const inputStyle =
+    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg text-black bg-white p-6 rounded-xl shadow-md space-y-5"
+      className="flex flex-col gap-5 text-white"
     >
-      <h2 className="text-xl font-semibold text-gray-800">
-        Registrar extra
-      </h2>
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold">
+          Registrar extra
+        </h2>
+        <p className="text-xs text-gray-300 mt-1">
+          Registro de horas o compensaciones adicionales
+        </p>
+      </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 px-4 py-2 rounded text-sm">
+        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
-      {/* Tipo de extra */}
+      {/* Tipo */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Tipo de extra
         </label>
         <select
           name="extraTypeId"
           value={form.extraTypeId}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         >
           <option value="">Seleccione un tipo</option>
           {extraTypes.map((t) => (
@@ -142,7 +149,7 @@ const ExtraAdd = ({ userId, author }) => {
 
       {/* Fecha inicio */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Fecha inicio
         </label>
         <input
@@ -150,14 +157,13 @@ const ExtraAdd = ({ userId, author }) => {
           name="start"
           value={form.start}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         />
       </div>
 
       {/* Fecha fin */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Fecha fin
         </label>
         <input
@@ -165,14 +171,20 @@ const ExtraAdd = ({ userId, author }) => {
           name="end"
           value={form.end}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         />
       </div>
 
+      {/* Duración dinámica */}
+      {duration && (
+        <div className="bg-blue-500/10 border border-blue-400/40 text-blue-300 px-3 py-2 rounded text-sm">
+          Duración calculada: <span className="font-semibold">{duration}</span>
+        </div>
+      )}
+
       {/* Monto */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Monto
         </label>
         <input
@@ -181,14 +193,13 @@ const ExtraAdd = ({ userId, author }) => {
           name="amount"
           value={form.amount}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         />
       </div>
 
       {/* Notas */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Notas
         </label>
         <textarea
@@ -196,13 +207,15 @@ const ExtraAdd = ({ userId, author }) => {
           rows={3}
           value={form.notes}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle + " resize-none"}
         />
       </div>
 
-      {/* Botón */}
-      <PrimaryButton type="submit" disabled={loading}>
+      <PrimaryButton
+        type="submit"
+        disabled={loading}
+        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+      >
         {loading ? "Guardando..." : "Guardar extra"}
       </PrimaryButton>
     </form>

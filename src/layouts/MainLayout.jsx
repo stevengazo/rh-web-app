@@ -8,7 +8,7 @@ const MainLayout = () => {
     <div className="h-screen bg-gray-100 text-gray-800 flex flex-col">
       {/* Header fijo */}
       <header
-        className="fixed top-0 left-0 right-0 w-full bg-white z-50
+        className="fixed top-0 left-0 right-0 w-full bg-gray-800 z-50
                    h-16  shadow-sm px-6 "
       >
         <NavBar />

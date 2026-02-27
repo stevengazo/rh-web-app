@@ -86,7 +86,7 @@ const CourseEdit = ({ item, onUpdated, OnClose }) => {
             name="modality"
             value={course.modality || ''}
             onChange={handleChange}
-            className="w-full border rounded-md px-2 py-1"
+            className="w-full border bg-white text-gray-700 rounded-md px-2 py-1"
           >
             <option value="">Seleccione</option>
             <option value="Presencial">Presencial</option>
@@ -101,7 +101,7 @@ const CourseEdit = ({ item, onUpdated, OnClose }) => {
             name="state"
             value={course.state || ''}
             onChange={handleChange}
-            className="w-full border rounded-md px-2 py-1"
+            className="w-full border  bg-white text-gray-700 rounded-md px-2 py-1"
           >
             <option value="Activo">Activo</option>
             <option value="Inactivo">Inactivo</option>
@@ -150,7 +150,7 @@ const CourseEdit = ({ item, onUpdated, OnClose }) => {
           name="description"
           value={course.description || ''}
           onChange={handleChange}
-          className="w-full border rounded-md px-2 py-1 min-h-[80px]"
+          className="w-full border  bg-white text-gray-700 rounded-md px-2 py-1 min-h-[80px]"
         />
       </div>
 

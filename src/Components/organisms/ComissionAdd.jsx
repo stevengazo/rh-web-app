@@ -1,109 +1,100 @@
-import { useState } from 'react';
-import comissionsApi from '../../api/comissionsApi';
-import PrimaryButton from '../PrimaryButton';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import comissionsApi from "../../api/comissionsApi";
+import PrimaryButton from "../PrimaryButton";
+import toast from "react-hot-toast";
 
-// --- Helpers ---
+// Helper
 const formatDateYYYYMMDD = (date) => {
   if (!date) return null;
-  return new Date(date).toISOString().split('T')[0];
+  return new Date(date).toISOString().split("T")[0];
 };
 
 const ComissionAdd = ({ userId, author }) => {
-  console.log('ComissionAdd author:', author);
-
   const [form, setForm] = useState({
     comissionId: 0,
-    date: '',
-    amount: '',
-    description: '',
-    approvedBy: null,
-    approvedAt: null,
-    createdBy: author?.email || author || '',
+    date: "",
+    amount: "",
+    description: "",
+    createdBy: author?.email || author || "",
     createdAt: new Date().toISOString(),
-    lastEditedBy: null,
-    lastEditedAt: null,
     draft: true,
     deleted: false,
-    userId: userId || '',
-    user: null,
+    userId: userId || "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-      lastEditedAt: new Date().toISOString(),
-      lastEditedBy: prev.createdBy,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!form.date || !form.amount) {
-      setError('La fecha y el monto son obligatorios');
+      setError("La fecha y el monto son obligatorios");
       return;
     }
 
-    // --- Payload seguro para ASP.NET ---
     const payload = {
       ...form,
       date: formatDateYYYYMMDD(form.date),
       amount: Number(form.amount),
     };
 
-    // ❌ Eliminar DateTime nulos (rompen System.DateTime)
-    if (!payload.approvedAt) delete payload.approvedAt;
-    if (!payload.lastEditedAt) delete payload.lastEditedAt;
-    if (!payload.approvedBy) delete payload.approvedBy;
-    if (!payload.lastEditedBy) delete payload.lastEditedBy;
-
     try {
       setLoading(true);
       await comissionsApi.createComission(payload);
+      toast.success("Comisión guardada exitosamente");
 
-      toast.success('Comisión guardada exitosamente');
-
-      // Opcional: reset parcial
       setForm((prev) => ({
         ...prev,
-        date: '',
-        amount: '',
-        description: '',
+        date: "",
+        amount: "",
+        description: "",
         draft: true,
       }));
     } catch (err) {
-      setError('Error al guardar la comisión');
+      setError("Error al guardar la comisión");
     } finally {
       setLoading(false);
     }
   };
 
+  const inputStyle =
+    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg text-black bg-white p-6 rounded-xl shadow-md space-y-5"
+      className="flex flex-col gap-5 text-white"
     >
-      <h2 className="text-xl font-semibold text-gray-800">
-        Registrar comisión
-      </h2>
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold">
+          Registrar comisión
+        </h2>
+        <p className="text-xs text-gray-300 mt-1">
+          Registro de comisiones del empleado
+        </p>
+      </div>
 
       {error && (
-        <div className="bg-red-50 text-red-600 px-4 py-2 rounded text-sm">
+        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Fecha */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Fecha
         </label>
         <input
@@ -111,14 +102,13 @@ const ComissionAdd = ({ userId, author }) => {
           name="date"
           value={form.date}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         />
       </div>
 
       {/* Monto */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Monto
         </label>
         <input
@@ -127,14 +117,13 @@ const ComissionAdd = ({ userId, author }) => {
           name="amount"
           value={form.amount}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle}
         />
       </div>
 
       {/* Descripción */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="text-sm text-gray-200">
           Descripción
         </label>
         <textarea
@@ -142,29 +131,32 @@ const ComissionAdd = ({ userId, author }) => {
           rows={3}
           value={form.description}
           onChange={handleChange}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyle + " resize-none"}
         />
       </div>
 
       {/* Draft */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <input
           type="checkbox"
           name="draft"
           checked={form.draft}
           onChange={handleChange}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+          className="h-4 w-4 rounded bg-gray-600 border-gray-500 text-blue-400 focus:ring-blue-400"
         />
-        <span className="text-sm text-gray-700">Guardar como borrador</span>
+        <span className="text-sm text-gray-200">
+          Guardar como borrador
+        </span>
       </div>
 
       {/* Botón */}
-      <div className="pt-2">
-        <PrimaryButton type="submit" disabled={loading}>
-          {loading ? 'Guardando...' : 'Guardar comisión'}
-        </PrimaryButton>
-      </div>
+      <PrimaryButton
+        type="submit"
+        disabled={loading}
+        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+      >
+        {loading ? "Guardando..." : "Guardar comisión"}
+      </PrimaryButton>
     </form>
   );
 };

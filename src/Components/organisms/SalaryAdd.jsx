@@ -1,23 +1,20 @@
-import { useState } from 'react';
-import TextInput from '../TextInput';
-import DateInput from '../DateInput';
-import Label from '../Label';
-import PrimaryButton from '../PrimaryButton';
-import toast from 'react-hot-toast';
-import salaryApi from '../../api/salaryApi';
+import { useState } from "react";
+import toast from "react-hot-toast";
+import salaryApi from "../../api/salaryApi";
+import PrimaryButton from "../PrimaryButton";
 
 const SalaryAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split('T')[0];
-  const notify = () => toast.success('Salario Agregado');
+  const today = new Date().toISOString().split("T")[0];
+
   const [newSalary, setNewSalary] = useState({
     salaryId: 0,
-    salaryAmount: '',
+    salaryAmount: "",
     effectiveDate: today,
-    type: '',
-    currency: '',
-    createdBy: author?.userName ?? '',
+    type: "",
+    currency: "",
+    createdBy: author?.userName ?? "",
     createdAt: today,
-    updatedBy: author?.userName ?? '',
+    updatedBy: author?.userName ?? "",
     updatedAt: today,
     userId: userId,
     user: null,
@@ -28,96 +25,95 @@ const SalaryAdd = ({ userId, author }) => {
     setNewSalary((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    salaryApi
-      .createSalary(newSalary)
-      .then((e) => notify())
-      .catch((e) => console.error(e));
+    try {
+      await salaryApi.createSalary(newSalary);
+      toast.success("Salario agregado correctamente");
+    } catch (err) {
+      toast.error("Ocurrió un error");
+      console.error(err);
+    }
   };
 
+  const inputStyle =
+    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800">Agregar salario</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-lg font-semibold">Agregar salario</h2>
+        <p className="text-xs text-gray-300 mt-1">
           Información salarial del empleado
         </p>
       </div>
 
       {/* Monto */}
       <div>
-        <Label>Monto</Label>
-        <TextInput
-          name="salaryAmount"
+        <label className="text-sm text-gray-200">Monto</label>
+        <input
           type="number"
+          name="salaryAmount"
           value={newSalary.salaryAmount}
           onChange={handleChange}
           placeholder="₡ 850000"
+          className={inputStyle}
         />
       </div>
 
       {/* Fecha efectiva */}
       <div>
-        <Label>Fecha efectiva</Label>
-        <DateInput
+        <label className="text-sm text-gray-200">Fecha efectiva</label>
+        <input
+          type="date"
           name="effectiveDate"
           value={newSalary.effectiveDate}
           onChange={handleChange}
+          className={inputStyle}
         />
       </div>
 
-      {/* Tipo */}
-      <div>
-        <Label>Tipo de salario</Label>
-        <select
-          name="type"
-          value={newSalary.type}
-          onChange={handleChange}
-          className="w-full text-sm"
-        >
-          <option className="text-gray-600" value="">
-            Seleccionar
-          </option>
-          <option className="text-gray-600" value="Base">
-            Base
-          </option>
-          <option className="text-gray-600" value="Hora">
-            Por hora
-          </option>
-          <option className="text-gray-600" value="Contrato">
-            Contrato
-          </option>
-        </select>
+      {/* Tipo y Moneda */}
+      <div className="flex flex-col gap-4">
+        <div>
+          <label className="text-sm text-gray-200">
+            Tipo de salario
+          </label>
+          <select
+            name="type"
+            value={newSalary.type}
+            onChange={handleChange}
+            className={inputStyle}
+          >
+            <option value="">Seleccionar</option>
+            <option value="Base">Base</option>
+            <option value="Hora">Por hora</option>
+            <option value="Contrato">Contrato</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm text-gray-200">Moneda</label>
+          <select
+            name="currency"
+            value={newSalary.currency}
+            onChange={handleChange}
+            className={inputStyle}
+          >
+            <option value="">Seleccionar</option>
+            <option value="CRC">CRC</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
       </div>
 
-      {/* Moneda */}
-      <div>
-        <Label>Moneda</Label>
-        <select
-          name="currency"
-          value={newSalary.currency}
-          onChange={handleChange}
-          className="w-full text-sm"
-        >
-          <option className="text-gray-600" value="">
-            Seleccionar
-          </option>
-          <option className="text-gray-600" value="CRC">
-            CRC
-          </option>
-          <option className="text-gray-600" value="USD">
-            USD
-          </option>
-          <option className="text-gray-600" value="EUR">
-            EUR
-          </option>
-        </select>
-      </div>
-
-      {/* Acción */}
-      <PrimaryButton type="submit" className="w-full">
+      {/* Botón */}
+      <PrimaryButton
+        type="submit"
+        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+      >
         Agregar salario
       </PrimaryButton>
     </form>

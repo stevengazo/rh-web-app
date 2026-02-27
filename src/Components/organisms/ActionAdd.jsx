@@ -1,15 +1,13 @@
-import actionTypeApi from '../../api/actionTypeApi';
-import actionApi from '../../api/actionApi';
-import EmployeeApi from '../../api/employeesApi';
+import actionTypeApi from "../../api/actionTypeApi";
+import actionApi from "../../api/actionApi";
+import EmployeeApi from "../../api/employeesApi";
 
-import { useEffect, useState } from 'react';
-import PrimaryButton from '../PrimaryButton';
-import TextInput from '../TextInput';
-import DateInput from '../DateInput';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import PrimaryButton from "../PrimaryButton";
+import toast from "react-hot-toast";
 
 const ActionAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
   const shouldSelectEmployee = !userId;
 
   const [employees, setEmployees] = useState([]);
@@ -18,22 +16,22 @@ const ActionAdd = ({ userId, author }) => {
   const [newAction, setNewAction] = useState({
     actionId: 0,
     actionDate: today,
-    description: '',
-    createdBy: author?.userName ?? '',
+    description: "",
+    createdBy: author?.userName ?? "",
     createdDate: today,
-    lastUpdatedBy: author?.userName ?? '',
+    lastUpdatedBy: author?.userName ?? "",
     lastUpdatedDate: today,
-    approvedBy: '',
+    approvedBy: "",
     approvedDate: today,
-    userId: userId ?? '',
+    userId: userId ?? "",
     user: null,
-    actionTypeId: '',
+    actionTypeId: "",
     actionType: {},
   });
 
   /* =========================
      Fetch empleados
-     ========================= */
+  ========================= */
   useEffect(() => {
     if (!shouldSelectEmployee) return;
 
@@ -51,7 +49,7 @@ const ActionAdd = ({ userId, author }) => {
 
   /* =========================
      Fetch tipos de acción
-     ========================= */
+  ========================= */
   useEffect(() => {
     const fetchTypes = async () => {
       try {
@@ -65,9 +63,6 @@ const ActionAdd = ({ userId, author }) => {
     fetchTypes();
   }, []);
 
-  /* =========================
-     Handlers
-     ========================= */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewAction((prev) => ({ ...prev, [name]: value }));
@@ -77,51 +72,52 @@ const ActionAdd = ({ userId, author }) => {
     e.preventDefault();
     try {
       await actionApi.createAction(newAction);
-      toast.success('Acción creada con éxito');
+      toast.success("Acción creada con éxito");
     } catch (error) {
       console.error(error);
-      toast.error('Error al crear la acción');
+      toast.error("Error al crear la acción");
     }
   };
 
+  const inputStyle =
+    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="
-        flex flex-col gap-4
-        text-gray-800 dark:text-gray-100
-      "
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold">Agregar acción</h2>
+        <p className="text-xs text-gray-300 mt-1">
+          Registro de acción del empleado
+        </p>
+      </div>
+
       {/* Fecha */}
-      <DateInput
-        label="Fecha de la acción"
-        name="actionDate"
-        value={newAction.actionDate}
-        onChange={handleChange}
-        className="
-          bg-white border-gray-300 text-gray-800
-          dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
-        "
-      />
+      <div>
+        <label className="text-sm text-gray-200">
+          Fecha de la acción
+        </label>
+        <input
+          type="date"
+          name="actionDate"
+          value={newAction.actionDate}
+          onChange={handleChange}
+          className={inputStyle}
+        />
+      </div>
 
       {/* Empleado */}
       {shouldSelectEmployee && (
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-gray-600 dark:text-gray-300">
+        <div>
+          <label className="text-sm text-gray-200">
             Empleado
           </label>
-
           <select
             name="userId"
             value={newAction.userId}
             onChange={handleChange}
             required
-            className="
-              px-3 py-2 rounded-md
-              bg-white border border-gray-300 text-gray-800
-              dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
-              focus:outline-none focus:ring-2 focus:ring-blue-500
-            "
+            className={inputStyle}
           >
             <option value="">Seleccione un empleado</option>
             {employees.map((emp) => (
@@ -134,46 +130,49 @@ const ActionAdd = ({ userId, author }) => {
       )}
 
       {/* Descripción */}
-      <TextInput
-        label="Descripción"
-        name="description"
-        value={newAction.description}
-        onChange={handleChange}
-        placeholder="Descripción de la acción"
-        className="
-          bg-white border-gray-300 text-gray-800
-          dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
-        "
-      />
+      <div>
+        <label className="text-sm text-gray-200">
+          Descripción
+        </label>
+        <textarea
+          name="description"
+          value={newAction.description}
+          onChange={handleChange}
+          rows={3}
+          placeholder="Descripción de la acción"
+          className={inputStyle + " resize-none"}
+        />
+      </div>
 
       {/* Tipo de acción */}
-      <div className="flex flex-col gap-1">
-        <label className="text-sm text-gray-600 dark:text-gray-300">
+      <div>
+        <label className="text-sm text-gray-200">
           Tipo de acción
         </label>
-
         <select
           name="actionTypeId"
           value={newAction.actionTypeId}
           onChange={handleChange}
           required
-          className="
-            px-3 py-2 rounded-md
-            bg-white border border-gray-300 text-gray-800
-            dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-          "
+          className={inputStyle}
         >
           <option value="">Seleccione un tipo</option>
           {typesOfActions.map((type) => (
-            <option key={type.actionTypeId} value={type.actionTypeId}>
+            <option
+              key={type.actionTypeId}
+              value={type.actionTypeId}
+            >
               {type.name}
             </option>
           ))}
         </select>
       </div>
 
-      <PrimaryButton type="submit">
+      {/* Botón */}
+      <PrimaryButton
+        type="submit"
+        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+      >
         Agregar acción
       </PrimaryButton>
     </form>

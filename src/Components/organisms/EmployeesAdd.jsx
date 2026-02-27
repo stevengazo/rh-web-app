@@ -7,7 +7,7 @@ import DateInput from '../DateInput';
 import Label from '../Label';
 import PrimaryButton from '../PrimaryButton';
 
-const EmployeesAdd = ({OnClose}) => {
+const EmployeesAdd = ({ OnClose }) => {
   const [departaments, setDepartaments] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +63,7 @@ const EmployeesAdd = ({OnClose}) => {
         departamentId: 0,
       });
       notify();
-      OnClose()
+      OnClose();
     } catch (error) {
       console.error('Error creando empleado:', error);
       alert('Error al crear el empleado');
@@ -84,17 +84,33 @@ const EmployeesAdd = ({OnClose}) => {
     fetchDepartaments();
   }, []);
 
+  const inputStyle =
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+
   return (
-    <form className="space-y-8 py-6" onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-8 text-white py-4"
+    >
+      {/* Header */}
+      <div className="border-b border-gray-600 pb-4">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Agregar empleado
+        </h2>
+        <p className="text-sm text-gray-400 mt-1">
+          Completa la información del nuevo colaborador
+        </p>
+      </div>
+
       {/* ================= IDENTIFICACIÓN ================= */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+      <section className="flex flex-col gap-5">
+        <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
           Identificación
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <Label>Cédula</Label>
+        <div className="grid md:grid-cols-2 gap-5">
+          <div>
+            <Label className="text-gray-300 text-sm">Cédula</Label>
             <TextInput
               name="dni"
               value={newUser.dni}
@@ -103,8 +119,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Fecha de Nacimiento</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Fecha de nacimiento</Label>
             <DateInput
               name="birthDate"
               value={newUser.birthDate}
@@ -115,14 +131,14 @@ const EmployeesAdd = ({OnClose}) => {
       </section>
 
       {/* ================= INFORMACIÓN PERSONAL ================= */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+      <section className="flex flex-col gap-5">
+        <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
           Información personal
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <Label>Nombre</Label>
+        <div className="grid md:grid-cols-2 gap-5">
+          <div>
+            <Label className="text-gray-300 text-sm">Nombre</Label>
             <TextInput
               name="firstName"
               value={newUser.firstName}
@@ -131,8 +147,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Segundo Nombre</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Segundo nombre</Label>
             <TextInput
               name="middleName"
               value={newUser.middleName}
@@ -141,8 +157,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Apellido</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Apellido</Label>
             <TextInput
               name="lastName"
               value={newUser.lastName}
@@ -151,8 +167,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Segundo Apellido</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Segundo apellido</Label>
             <TextInput
               name="secondLastName"
               value={newUser.secondLastName}
@@ -164,14 +180,14 @@ const EmployeesAdd = ({OnClose}) => {
       </section>
 
       {/* ================= CONTACTO ================= */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+      <section className="flex flex-col gap-5">
+        <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
           Contacto
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <Label>Correo electrónico</Label>
+        <div className="grid md:grid-cols-2 gap-5">
+          <div>
+            <Label className="text-gray-300 text-sm">Correo electrónico</Label>
             <TextInput
               type="email"
               name="email"
@@ -180,8 +196,9 @@ const EmployeesAdd = ({OnClose}) => {
               placeholder="demo@mail.com"
             />
           </div>
-          <div className="flex flex-col gap-1">
-            <Label>Nombre de Usuario</Label>
+
+          <div>
+            <Label className="text-gray-300 text-sm">Nombre de usuario</Label>
             <TextInput
               type="text"
               name="userName"
@@ -191,8 +208,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Teléfono</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Teléfono</Label>
             <TextInput
               type="tel"
               name="phoneNumber"
@@ -202,8 +219,8 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1 md:col-span-2">
-            <Label>Dirección</Label>
+          <div className="md:col-span-2">
+            <Label className="text-gray-300 text-sm">Dirección</Label>
             <TextInput
               name="address"
               value={newUser.address}
@@ -215,14 +232,16 @@ const EmployeesAdd = ({OnClose}) => {
       </section>
 
       {/* ================= INFORMACIÓN LABORAL ================= */}
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+      <section className="flex flex-col gap-5">
+        <h3 className="text-xs uppercase tracking-wider text-gray-400 font-semibold">
           Información laboral
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <Label>Fecha de contratación</Label>
+        <div className="grid md:grid-cols-2 gap-5">
+          <div>
+            <Label className="text-gray-300 text-sm">
+              Fecha de contratación
+            </Label>
             <DateInput
               name="hiredDate"
               value={newUser.hiredDate}
@@ -230,13 +249,13 @@ const EmployeesAdd = ({OnClose}) => {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <Label>Jornada</Label>
+          <div>
+            <Label className="text-gray-300 text-sm">Jornada</Label>
             <select
               name="journey"
               value={newUser.jorney}
               onChange={handleChange}
-              className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              className="w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition"
             >
               <option value="">Seleccione una jornada</option>
               <option value="Diurna">Diurna</option>
@@ -245,13 +264,13 @@ const EmployeesAdd = ({OnClose}) => {
             </select>
           </div>
 
-          <div className="flex flex-col gap-1 md:col-span-2">
-            <Label>Departamento</Label>
+          <div className="md:col-span-2">
+            <Label className="text-gray-300 text-sm">Departamento</Label>
             <select
               name="departamentId"
               value={newUser.departamentId}
               onChange={handleChange}
-              className="bg-white border text-gray-600 border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              className="w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition"
             >
               <option value="">Seleccione un departamento</option>
               {departaments.map((dept) => (
@@ -268,9 +287,13 @@ const EmployeesAdd = ({OnClose}) => {
         </div>
       </section>
 
-      {/* ================= ACTIONS ================= */}
-      <div className="flex justify-end pt-4 border-t border-slate-200">
-        <PrimaryButton onClick={handleSubmit} disabled={loading}>
+      {/* ================= ACTION ================= */}
+      <div className="pt-4 border-t border-gray-600">
+        <PrimaryButton
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full py-2.5 rounded-lg text-sm font-semibold tracking-wide hover:scale-[1.02] active:scale-[0.98] transition"
+        >
           {loading ? 'Guardando...' : 'Agregar Empleado'}
         </PrimaryButton>
       </div>
