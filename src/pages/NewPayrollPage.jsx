@@ -136,7 +136,6 @@ const NewPayrollPage = () => {
         ...rowData,
       },
     }));
-    toast.success('Registro Actualizado localmente');
   };
 
   /* GUARDAR (ENVÍO AL API) */
@@ -156,6 +155,40 @@ const NewPayrollPage = () => {
       toast.error('Error al guardar la nómina');
     }
   };
+
+  /* RESUMEN GLOBAL */
+  const payrollResume = useMemo(() => {
+    const payrollList = Object.values(payrollByEmployee);
+
+    return payrollList.reduce(
+      (acc, emp) => {
+        acc.totalExtras +=
+          (emp.overtimeAmount || 0) +
+          (emp.holidayAmount || 0) +
+          (emp.holidayOvertimeAmount || 0);
+
+        acc.totalDeductions +=
+          (emp.totalDeductions || 0) +
+          (emp.unPaidLeaveAmount || 0) +
+          (emp.medicalLeaveAmount || 0) +
+          (emp.absenceAmount || 0);
+
+        acc.association += emp.associationAmount || 0; // si lo agregas luego
+        acc.ccss += emp.ccssAmount || 0; // si lo agregas luego
+
+        acc.totalToPay += emp.netAmount || 0;
+
+        return acc;
+      },
+      {
+        totalExtras: 0,
+        totalDeductions: 0,
+        association: 0,
+        ccss: 0,
+        totalToPay: 0,
+      }
+    );
+  }, [payrollByEmployee]);
 
   /*  RENDER */
   return (
@@ -183,7 +216,7 @@ const NewPayrollPage = () => {
         </div>
 
         <SectionTitle>Resumen</SectionTitle>
-        <PayrollResumeTable />
+        <PayrollResumeTable resume={payrollResume} />
       </div>
 
       <div className="flex gap-4">

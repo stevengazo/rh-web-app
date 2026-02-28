@@ -45,7 +45,7 @@ const EmployeesAdd = ({ OnClose }) => {
 
     try {
       await EmployeeApi.createEmployee(newUser);
-      alert('Empleado creado correctamente');
+      toast.success('Empleado creado correctamente');
       setNewUser({
         userName: '',
         email: '',
@@ -65,8 +65,9 @@ const EmployeesAdd = ({ OnClose }) => {
       notify();
       OnClose();
     } catch (error) {
-      console.error('Error creando empleado:', error);
-      alert('Error al crear el empleado');
+      console.error('Error creando empleado:');
+      console.error(error);
+      toast.error('Error al crear el empleado');
     } finally {
       setLoading(false);
     }
