@@ -1,4 +1,4 @@
-import { PencilIcon, CheckIcon } from 'lucide-react';
+import { PencilIcon, CheckIcon, EyeIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const formatDate = (date) => {
@@ -15,7 +15,6 @@ const formatMoney = (amount) => {
 };
 
 const PayrollListTable = ({ payrolls = [] }) => {
-  console.log(payrolls);
   const nav = useNavigate();
   if (!payrolls.length) {
     return (
@@ -73,7 +72,7 @@ const PayrollListTable = ({ payrolls = [] }) => {
               <td className="px-4 py-3 text-sm flex flex-row justify-end items-center gap-3 font-semibold text-emerald-600">
                 {/* Ver / Confirmado */}
                 <div className="relative group flex items-center">
-                  <CheckIcon size={18} className="cursor-default" />
+                  <EyeIcon onClick={()=> nav(`/manager/payroll/${p.payrollId}`) } size={18} className="cursor-default" />
 
                   <span
                     className="absolute -top-9 left-1/2 -translate-x-1/2 
@@ -83,7 +82,7 @@ const PayrollListTable = ({ payrolls = [] }) => {
                      opacity-0 group-hover:opacity-100 
                      transition pointer-events-none"
                   >
-                    Aprobar planilla
+                    Ver
                   </span>
                 </div>
 

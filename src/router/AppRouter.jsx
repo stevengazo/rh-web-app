@@ -17,6 +17,7 @@ import ViewEmployeePage from '../pages/ViewEmployeePage';
 import SettingsPage from '../pages/SettingsPage';
 import NewPayrollPage from '../pages/NewPayrollPage';
 import KPIPage from '../pages/KPIPage';
+import PayrollView from '../pages/PayrollView';
 import MyKPIs from '../pages/MyKPIs';
 import MyCommissionsPage from '../pages/MyComissionsPage';
 import MyPayrollsPage from '../pages/MyPayrollsPage';
@@ -48,11 +49,12 @@ const AppRouter = () => {
           <Route path="/manager" element={<ManagerPage />} />
           <Route path="/manager/employees" element={<EmployeesPage />} />
           <Route path="/manager/payroll" element={<PayrollPage />} />
+          <Route path="/manager/payroll/:id" element={<PayrollView />} />
           <Route path="/manager/actions" element={<ActionsPage />} />
           <Route path="/manager/kpis" element={<KPIPage />} />
-          
+
           <Route path="/manager/absences" element={<AbsencesPage />} />
-           <Route path="/manager/loans" element={<LoansPage />} /> 
+          <Route path="/manager/loans" element={<LoansPage />} />
           <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
           <Route path="/manager/roles" element={<RolesPage />} />
@@ -61,10 +63,7 @@ const AppRouter = () => {
             element={<ViewPerformancePage />}
           />
 
-            <Route
-            path="/manager/loan/:id"
-            element={<ViewLoanPage />}
-          />
+          <Route path="/manager/loan/:id" element={<ViewLoanPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new/:id" element={<NewPayrollPage />} />
         </Route>
