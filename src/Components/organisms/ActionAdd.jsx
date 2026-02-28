@@ -7,27 +7,31 @@ import PrimaryButton from "../PrimaryButton";
 import toast from "react-hot-toast";
 
 const ActionAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const todayISO = new Date().toISOString();
+  const todayDate = todayISO.split("T")[0];
+
   const shouldSelectEmployee = !userId;
 
   const [employees, setEmployees] = useState([]);
   const [typesOfActions, setTypesOfActions] = useState([]);
 
-  const [newAction, setNewAction] = useState({
-    actionId: 0,
-    actionDate: today,
+  const initialState = {
+    actionDate: todayDate,
     description: "",
-    createdBy: author?.userName ?? "",
-    createdDate: today,
-    lastUpdatedBy: author?.userName ?? "",
-    lastUpdatedDate: today,
-    approvedBy: "",
-    approvedDate: today,
     userId: userId ?? "",
-    user: null,
     actionTypeId: "",
-    actionType: {},
-  });
+  };
+
+  const [newAction, setNewAction] = useState(initialState);
+
+  /* =========================
+     Sync userId si viene por props
+  ========================= */
+  useEffect(() => {
+    if (userId) {
+      setNewAction((prev) => ({ ...prev, userId }));
+    }
+  }, [userId]);
 
   /* =========================
      Fetch empleados
@@ -41,6 +45,7 @@ const ActionAdd = ({ userId, author }) => {
         setEmployees(res.data);
       } catch (err) {
         console.error(err);
+        toast.error("Error cargando empleados");
       }
     };
 
@@ -57,6 +62,7 @@ const ActionAdd = ({ userId, author }) => {
         setTypesOfActions(res.data);
       } catch (err) {
         console.error(err);
+        toast.error("Error cargando tipos de acción");
       }
     };
 
@@ -65,14 +71,38 @@ const ActionAdd = ({ userId, author }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewAction((prev) => ({ ...prev, [name]: value }));
+
+    setNewAction((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!newAction.userId || !newAction.actionTypeId) {
+      toast.error("Debe completar los campos obligatorios");
+      return;
+    }
+
+    const payload = {
+      actionDate: newAction.actionDate,
+      description: newAction.description,
+      userId: Number(newAction.userId),
+      actionTypeId: Number(newAction.actionTypeId),
+      createdBy: author?.userName ?? "Sistema",
+      createdDate: new Date().toISOString(),
+      lastUpdatedBy: author?.userName ?? "Sistema",
+      lastUpdatedDate: new Date().toISOString(),
+    };
+
     try {
-      await actionApi.createAction(newAction);
+      await actionApi.createAction(payload);
       toast.success("Acción creada con éxito");
+
+      // Reset formulario
+      setNewAction(initialState);
     } catch (error) {
       console.error(error);
       toast.error("Error al crear la acción");
@@ -80,23 +110,21 @@ const ActionAdd = ({ userId, author }) => {
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    "w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Agregar acción</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-gray-400 mt-1">
           Registro de acción del empleado
         </p>
       </div>
 
       {/* Fecha */}
       <div>
-        <label className="text-sm text-gray-200">
-          Fecha de la acción
-        </label>
+        <label className="text-sm">Fecha de la acción</label>
         <input
           type="date"
           name="actionDate"
@@ -109,9 +137,7 @@ const ActionAdd = ({ userId, author }) => {
       {/* Empleado */}
       {shouldSelectEmployee && (
         <div>
-          <label className="text-sm text-gray-200">
-            Empleado
-          </label>
+          <label className="text-sm">Empleado</label>
           <select
             name="userId"
             value={newAction.userId}
@@ -131,24 +157,20 @@ const ActionAdd = ({ userId, author }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">
-          Descripción
-        </label>
+        <label className="text-sm">Descripción</label>
         <textarea
           name="description"
           value={newAction.description}
           onChange={handleChange}
           rows={3}
           placeholder="Descripción de la acción"
-          className={inputStyle + " resize-none"}
+          className={`${inputStyle} resize-none`}
         />
       </div>
 
       {/* Tipo de acción */}
       <div>
-        <label className="text-sm text-gray-200">
-          Tipo de acción
-        </label>
+        <label className="text-sm">Tipo de acción</label>
         <select
           name="actionTypeId"
           value={newAction.actionTypeId}
@@ -168,7 +190,6 @@ const ActionAdd = ({ userId, author }) => {
         </select>
       </div>
 
-      {/* Botón */}
       <PrimaryButton
         type="submit"
         className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"

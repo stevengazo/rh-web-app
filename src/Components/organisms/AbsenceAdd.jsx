@@ -88,96 +88,121 @@ const AbsenceAdd = ({ userId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {!userId && (
-        <div className="flex flex-col m-1">
-          <label>Empleado</label>
-          <select
-            name="userId"
-            value={absenceForm.userId}
-            className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
+    <form onSubmit={handleSubmit} className="space-y-6 text-gray-200">
+      {/* Card principal */}
+      <div className="bg-gray-700/60 rounded-xl p-5 border border-gray-600 space-y-5">
+        {/* Empleado */}
+        {!userId && (
+          <div>
+            <label className="text-xs uppercase tracking-wide text-gray-400">
+              Empleado
+            </label>
+            <select
+              name="userId"
+              value={absenceForm.userId}
+              onChange={handleChange}
+              required
+              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            >
+              <option value="">Seleccione un empleado</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Título */}
+        <div>
+          <label className="text-xs uppercase tracking-wide text-gray-400">
+            Título
+          </label>
+          <input
+            type="text"
+            name="title"
+            value={absenceForm.title}
             onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione un empleado</option>
-            {employees.map((emp) => (
-              <option key={emp.id} value={emp.id}>
-                {emp.firstName} {emp.lastName}
-              </option>
-            ))}
-          </select>
+            className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            placeholder="Ej: Incapacidad médica"
+          />
         </div>
-      )}
 
-      <div className="flex flex-col m-1">
-        <label>Título</label>
-        <input
-          type="text"
-          className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
-          name="title"
-          value={absenceForm.title}
-          onChange={handleChange}
-        />
-      </div>
+        {/* Fechas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs uppercase tracking-wide text-gray-400">
+              Fecha inicio
+            </label>
+            <input
+              type="datetime-local"
+              name="startDate"
+              value={absenceForm.startDate}
+              onChange={handleChange}
+              required
+              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
 
-      <div className="flex flex-col m-1">
-        <label>Fecha inicio</label>
-        <input
-          type="datetime-local"
-          name="startDate"
-          value={absenceForm.startDate}
-          onChange={handleChange}
-          className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
-          required
-        />
-      </div>
-
-      <div className="flex flex-col m-1">
-        <label>Fecha fin</label>
-        <input
-          type="datetime-local"
-          name="endDate"
-          className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
-          value={absenceForm.endDate}
-          onChange={handleChange}
-          min={absenceForm.startDate}
-          required
-        />
-      </div>
-
-      {durationDays && (
-        <div className="m-1 p-2 text-sm text-gray-700">
-          Duración: <strong>{durationDays}</strong> días
+          <div>
+            <label className="text-xs uppercase tracking-wide text-gray-400">
+              Fecha fin
+            </label>
+            <input
+              type="datetime-local"
+              name="endDate"
+              value={absenceForm.endDate}
+              onChange={handleChange}
+              min={absenceForm.startDate}
+              required
+              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
         </div>
-      )}
 
-      <div className="flex flex-col m-1">
-        <label>Motivo</label>
-        <textarea
-          name="reason"
-          className="border border-gray-300 rounded p-2 m-1 shadow shadow-sm"
-          value={absenceForm.reason}
-          onChange={handleChange}
-        />
-      </div>
+        {/* Duración */}
+        {durationDays && (
+          <div className="bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-lg px-3 py-2 text-sm">
+            Duración estimada:{' '}
+            <span className="font-semibold">{durationDays}</span> días
+          </div>
+        )}
 
-      <div className="flex flex-row p-2 m-1">
-        <label>
+        {/* Motivo */}
+        <div>
+          <label className="text-xs uppercase tracking-wide text-gray-400">
+            Motivo
+          </label>
+          <textarea
+            name="reason"
+            value={absenceForm.reason}
+            onChange={handleChange}
+            rows={3}
+            className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+            placeholder="Descripción de la ausencia"
+          />
+        </div>
+
+        {/* Justificada */}
+        <div className="flex items-center gap-3">
           <input
             type="checkbox"
             name="justified"
             checked={absenceForm.justified}
             onChange={handleChange}
+            className="w-4 h-4 accent-blue-500"
           />
-          Justificada
-        </label>
+          <label className="text-sm text-gray-300">Ausencia justificada</label>
+        </div>
       </div>
 
+      {/* Botón */}
       <button
-        className="bg-blue-500 text-white p-1 rounded hover:bg-white hover:text-blue-500 hover:border-blue-500 hover:border duration-500"
         type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition rounded-lg py-2 text-sm font-semibold"
       >
-        Guardar
+        Guardar ausencia
       </button>
     </form>
   );

@@ -9,9 +9,8 @@ import toast from 'react-hot-toast';
 import SecondaryButton from '../SecondaryButton';
 import { useAppContext } from '../../context/AppContext';
 
-
 const ViewAction = ({ action, onUpdated }) => {
-  const {user} = useAppContext();
+  const { user } = useAppContext();
   if (!action) return null;
 
   const isApproved = !!action.approvedBy;
@@ -73,9 +72,9 @@ const ViewAction = ({ action, onUpdated }) => {
       setLoadingApprove(true);
       const payload = {
         ...action,
-        approvedBy : user.email
-      }
-      await actionApi.updateAction (action.actionId, payload);
+        approvedBy: user.email,
+      };
+      await actionApi.updateAction(action.actionId, payload);
       toast.success('Acción aprobada');
       onUpdated?.();
     } catch (err) {
@@ -86,26 +85,25 @@ const ViewAction = ({ action, onUpdated }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 text-gray-200">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <SectionTitle>
-            {action.actionType?.name || 'Acción'}
-          </SectionTitle>
-          <p className="text-sm">
+          <SectionTitle className="text-white">{action.actionType?.name || 'Acción'}</SectionTitle>
+
+          <p className="text-sm text-gray-400 mt-1">
             {action.user?.firstName} {action.user?.lastName}
           </p>
         </div>
 
         <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold
-            ${
-              isApproved
-                ? 'bg-green-100 text-green-700'
-                : 'bg-yellow-100 text-yellow-700'
-            }
-          `}
+          className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide
+          ${
+            isApproved
+              ? 'bg-green-600/20 text-green-400 border border-green-500/30'
+              : 'bg-yellow-600/20 text-yellow-400 border border-yellow-500/30'
+          }
+        `}
         >
           {isApproved ? 'Aprobada' : 'Pendiente'}
         </span>
@@ -113,100 +111,119 @@ const ViewAction = ({ action, onUpdated }) => {
 
       <Divider />
 
-      {/* Info */}
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        {/* Fecha */}
-        <div>
-          <p>Fecha</p>
-          {editMode ? (
-            <input
-              type="date"
-              name="actionDate"
-              value={form.actionDate}
-              onChange={handleChange}
-              className="w-full border rounded-md px-2 py-1"
-            />
-          ) : (
-            <p className="font-medium">
-              {new Date(action.actionDate).toLocaleDateString()}
+      {/* Info Card */}
+      <div className="bg-gray-700/60 rounded-xl p-4 space-y-4 border border-gray-600">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          {/* Fecha */}
+          <div>
+            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+              Fecha
             </p>
-          )}
-        </div>
 
-        {/* Tipo */}
-        <div>
-          <p>Tipo de acción</p>
-          {editMode ? (
-            <select
-              name="actionTypeId"
-              value={form.actionTypeId}
-              onChange={handleChange}
-              className="w-full border rounded-md px-2 py-1"
-            >
-              {types.map((t) => (
-                <option key={t.actionTypeId} value={t.actionTypeId}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <p className="font-medium">
-              {action.actionType?.name}
+            {editMode ? (
+              <input
+                type="date"
+                name="actionDate"
+                value={form.actionDate}
+                onChange={handleChange}
+                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            ) : (
+              <p className="font-medium text-gray-100">
+                {new Date(action.actionDate).toLocaleDateString()}
+              </p>
+            )}
+          </div>
+
+          {/* Tipo */}
+          <div>
+            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+              Tipo de acción
             </p>
-          )}
-        </div>
 
-        {/* Creado por */}
-        <div>
-          <p>Creado por</p>
-          <p className="font-medium">{action.createdBy}</p>
+            {editMode ? (
+              <select
+                name="actionTypeId"
+                value={form.actionTypeId}
+                onChange={handleChange}
+                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                {types.map((t) => (
+                  <option key={t.actionTypeId} value={t.actionTypeId}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="font-medium text-gray-100">
+                {action.actionType?.name}
+              </p>
+            )}
+          </div>
+
+          {/* Creado por */}
+          <div>
+            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+              Creado por
+            </p>
+            <p className="font-medium text-gray-100">{action.createdBy}</p>
+          </div>
         </div>
       </div>
 
       {/* Descripción */}
-      <div>
-        <p className="text-sm mb-1">Descripción</p>
+      <div className="bg-gray-700/60 rounded-xl p-4 border border-gray-600">
+        <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
+          Descripción
+        </p>
+
         {editMode ? (
           <textarea
             name="description"
             value={form.description}
             onChange={handleChange}
             rows={3}
-            className="w-full border rounded-md p-2 text-sm"
+            className="w-full bg-gray-800 border border-gray-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
           />
         ) : (
-          <div className="rounded-lg border bg-slate-50 p-3 text-sm">
+          <p className="text-sm text-gray-100 leading-relaxed">
             {action.description || 'Sin descripción'}
-          </div>
+          </p>
         )}
       </div>
 
       {/* Actions */}
       {!isApproved && (
-        <div className="flex justify-end gap-2 pt-4">
+        <div className="flex justify-end gap-3 pt-2">
           {editMode ? (
             <>
               <button
                 onClick={() => setEditMode(false)}
-                className="px-4 py-2 text-sm rounded-md border"
+                className="px-4 py-2 text-sm rounded-lg border border-gray-600 hover:bg-gray-700 transition"
               >
                 Cancelar
               </button>
 
-              <PrimaryButton onClick={handleSave}>
+              <PrimaryButton
+                onClick={handleSave}
+                className="px-5 py-2 rounded-lg"
+              >
                 Guardar cambios
               </PrimaryButton>
             </>
           ) : (
             <>
-              <PrimaryButton onClick={() => setEditMode(true)}>
+              <PrimaryButton
+                onClick={() => setEditMode(true)}
+                className="px-5 py-2 rounded-lg"
+              >
                 Editar
               </PrimaryButton>
 
               <SecondaryButton
                 onClick={handleApprove}
                 disabled={loadingApprove}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg"
               >
                 {loadingApprove ? 'Aprobando...' : 'Aprobar'}
               </SecondaryButton>
