@@ -4,19 +4,12 @@ import extraTypeApi from "../../api/extraType";
 import PrimaryButton from "../PrimaryButton";
 import toast from "react-hot-toast";
 
-// Helper fecha
-const formatDateYYYYMMDD = (date) => {
-  if (!date) return null;
-  return new Date(date).toISOString().split("T")[0];
-};
-
 const ExtraAdd = ({ userId, author }) => {
   const [extraTypes, setExtraTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-    extraId: 0,
     start: "",
     end: "",
     amount: "",
@@ -28,7 +21,7 @@ const ExtraAdd = ({ userId, author }) => {
   });
 
   /* =========================
-     Cargar tipos
+     Cargar tipos de extra
   ========================= */
   useEffect(() => {
     const fetchExtraTypes = async () => {
@@ -36,14 +29,14 @@ const ExtraAdd = ({ userId, author }) => {
         const res = await extraTypeApi.getallExtraTypes();
         setExtraTypes(res.data);
       } catch (err) {
-        console.error(err);
+        toast.error("Error cargando tipos de extra");
       }
     };
     fetchExtraTypes();
   }, []);
 
   /* =========================
-     Calcular duración dinámica
+     Calcular duración en horas
   ========================= */
   const duration = useMemo(() => {
     if (!form.start || !form.end) return null;
@@ -51,19 +44,23 @@ const ExtraAdd = ({ userId, author }) => {
     const startDate = new Date(form.start);
     const endDate = new Date(form.end);
 
-    if (endDate < startDate) return "Rango inválido";
+    if (endDate <= startDate) return "Rango inválido";
 
     const diffMs = endDate - startDate;
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1;
+    const diffHours = diffMs / (1000 * 60 * 60);
 
-    return `${diffDays} día${diffDays > 1 ? "s" : ""}`;
+    return `${diffHours.toFixed(2)} hora${diffHours !== 1 ? "s" : ""}`;
   }, [form.start, form.end]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "start" &&
+        prev.end &&
+        value >= prev.end && { end: "" }),
     }));
   };
 
@@ -78,8 +75,8 @@ const ExtraAdd = ({ userId, author }) => {
 
     const payload = {
       ...form,
-      start: formatDateYYYYMMDD(form.start),
-      end: formatDateYYYYMMDD(form.end),
+      start: new Date(form.start).toISOString(),
+      end: new Date(form.end).toISOString(),
       amount: Number(form.amount),
     };
 
@@ -104,32 +101,32 @@ const ExtraAdd = ({ userId, author }) => {
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    "w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition";
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-5 text-white"
+      className="space-y-6 text-gray-200"
     >
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">
           Registrar extra
         </h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-gray-400 mt-1">
           Registro de horas o compensaciones adicionales
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
+        <div className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Tipo */}
       <div>
-        <label className="text-sm text-gray-200">
+        <label className="text-xs uppercase tracking-wide text-gray-400">
           Tipo de extra
         </label>
         <select
@@ -147,44 +144,47 @@ const ExtraAdd = ({ userId, author }) => {
         </select>
       </div>
 
-      {/* Fecha inicio */}
-      <div>
-        <label className="text-sm text-gray-200">
-          Fecha inicio
-        </label>
-        <input
-          type="date"
-          name="start"
-          value={form.start}
-          onChange={handleChange}
-          className={inputStyle}
-        />
+      {/* Fechas */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="text-xs uppercase tracking-wide text-gray-400">
+            Fecha y hora inicio
+          </label>
+          <input
+            type="datetime-local"
+            name="start"
+            value={form.start}
+            onChange={handleChange}
+            className={inputStyle}
+          />
+        </div>
+
+        <div>
+          <label className="text-xs uppercase tracking-wide text-gray-400">
+            Fecha y hora fin
+          </label>
+          <input
+            type="datetime-local"
+            name="end"
+            value={form.end}
+            onChange={handleChange}
+            min={form.start}
+            className={inputStyle}
+          />
+        </div>
       </div>
 
-      {/* Fecha fin */}
-      <div>
-        <label className="text-sm text-gray-200">
-          Fecha fin
-        </label>
-        <input
-          type="date"
-          name="end"
-          value={form.end}
-          onChange={handleChange}
-          className={inputStyle}
-        />
-      </div>
-
-      {/* Duración dinámica */}
+      {/* Duración */}
       {duration && (
-        <div className="bg-blue-500/10 border border-blue-400/40 text-blue-300 px-3 py-2 rounded text-sm">
-          Duración calculada: <span className="font-semibold">{duration}</span>
+        <div className="bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-lg px-3 py-2 text-sm">
+          Duración calculada:{" "}
+          <span className="font-semibold">{duration}</span>
         </div>
       )}
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">
+        <label className="text-xs uppercase tracking-wide text-gray-400">
           Monto
         </label>
         <input
@@ -199,7 +199,7 @@ const ExtraAdd = ({ userId, author }) => {
 
       {/* Notas */}
       <div>
-        <label className="text-sm text-gray-200">
+        <label className="text-xs uppercase tracking-wide text-gray-400">
           Notas
         </label>
         <textarea
@@ -207,7 +207,7 @@ const ExtraAdd = ({ userId, author }) => {
           rows={3}
           value={form.notes}
           onChange={handleChange}
-          className={inputStyle + " resize-none"}
+          className={`${inputStyle} resize-none`}
         />
       </div>
 
