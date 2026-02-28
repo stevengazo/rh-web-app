@@ -53,6 +53,8 @@ import extrasApi from '../api/extrasApi';
 import comissionsApi from '../api/comissionsApi';
 import CertificationEdit from '../Components/organisms/CertificationEdit';
 import ContactEmergencies from '../api/contactEmergenciesApi';
+import EmployeeInfoCard from '../Components/organisms/EmployeeInfoCard';
+import { KeyIcon, UserX } from 'lucide-react';
 
 const TABS = {
   TRAINING: 'Certificaciones',
@@ -200,12 +202,83 @@ const ViewEmployeePage = () => {
               Editar
             </PrimaryButton>
           </div>
-          <EmployeeTableInfo employee={employee} />
+          <EmployeeInfoCard employee={employee} />
         </>
 
-        {/* Tabs */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+          <SectionTitle>Acciones</SectionTitle>
+
+          <div className="mt-4 flex flex-col sm:flex-row gap-3">
+            {/* Cambiar contraseña */}
+            <button
+              className="
+        w-full sm:w-auto
+        flex items-center justify-center gap-2
+        bg-purple-600 hover:bg-purple-700
+        text-white
+        px-4 py-2.5
+        rounded-xl
+        text-sm font-medium
+        transition-all duration-200
+        active:scale-[0.97]
+        shadow-md hover:shadow-lg
+      "
+            >
+              <KeyIcon size={18} />
+              Cambiar Contraseña
+            </button>
+
+            {/* Desactivar */}
+            <button
+              className="
+        w-full sm:w-auto
+        flex items-center justify-center gap-2
+        bg-red-600 hover:bg-red-700
+        text-white
+        px-4 py-2.5
+        rounded-xl
+        text-sm font-medium
+        transition-all duration-200
+        active:scale-[0.97]
+        shadow-md hover:shadow-lg
+      "
+            >
+              <UserX size={18} />
+              Desactivar
+            </button>
+          </div>
+        </div>
+
+        {/* TABS RESPONSIVE */}
         <div className="border-b border-gray-200">
-          <nav className="flex gap-6">
+          {/* MOBILE DROPDOWN */}
+          <div className="sm:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="
+        w-full
+        mt-2
+        px-4 py-2.5
+        rounded-xl
+        border border-gray-300
+        bg-white
+        text-sm font-medium
+        shadow-sm
+        focus:outline-none
+        focus:ring-2 focus:ring-indigo-500
+      "
+            >
+              {Object.entries(TABS).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* DESKTOP TABS */}
+          <nav className="hidden sm:flex gap-6 min-w-max px-1">
             {Object.entries(TABS).map(([key, value]) => (
               <TabButton
                 key={key}

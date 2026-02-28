@@ -81,100 +81,157 @@ const LoansAdd = ({ userId }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className=" p-6 rounded-xl shadow-md space-y-4 max-w-lg"
+      className="
+      bg-gray-800 text-gray-100
+      p-6 rounded-2xl shadow-xl
+      space-y-6
+      w-full max-w-xl
+    "
     >
-      <h2 className="text-xl font-semibold text-gray-700">
-        ➕ Solicitud de Préstamo
-      </h2>
-
-      {/* Título */}
       <div>
-        <label className="block text-sm font-medium">Empleado</label>
+        <h2 className="text-xl font-semibold tracking-wide">
+          ➕ Solicitud de Préstamo
+        </h2>
+        <p className="text-sm text-gray-400">
+          Completa la información para registrar el préstamo
+        </p>
+      </div>
+
+      {/* Empleado */}
+      <div className="space-y-1">
+        <label className="text-sm text-gray-300">Empleado</label>
         <select
           name="userId"
           value={newLoan.userId}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
+          className="
+          w-full bg-gray-700 border border-gray-600
+          rounded-xl px-3 py-2
+          text-sm
+          focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition
+        "
         >
           {employees.map((e) => (
             <option key={e.id} value={e.id} className="text-black">
-              {e.firstName} {e.lastName}{' '}
+              {e.firstName} {e.lastName}
             </option>
           ))}
         </select>
       </div>
 
-      {/* Título */}
-      <div>
-        <label className="block text-sm font-medium">Título</label>
-        <input
-          type="text"
-          name="title"
-          value={newLoan.title}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-          required
-        />
-      </div>
+      {/* Grid Responsive */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Título */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-300">Título</label>
+          <input
+            type="text"
+            name="title"
+            value={newLoan.title}
+            onChange={handleChange}
+            required
+            className="
+            w-full bg-gray-700 border border-gray-600
+            rounded-xl px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            transition
+          "
+          />
+        </div>
 
-      {/* Monto */}
-      <div>
-        <label className="block text-sm font-medium">Monto</label>
-        <input
-          type="number"
-          name="amount"
-          value={newLoan.amount}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-          required
-        />
-      </div>
+        {/* Monto */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-300">Monto</label>
+          <input
+            type="number"
+            name="amount"
+            value={newLoan.amount}
+            onChange={handleChange}
+            required
+            className="
+            w-full bg-gray-700 border border-gray-600
+            rounded-xl px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            transition
+          "
+          />
+        </div>
 
-      {/* Plazo */}
-      <div>
-        <label className="block text-sm font-medium">Meses de pago</label>
-        <input
-          type="number"
-          name="paymentMonths"
-          value={newLoan.paymentMonths}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-          required
-        />
-      </div>
+        {/* Plazo */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-300">Meses de pago</label>
+          <input
+            type="number"
+            name="paymentMonths"
+            value={newLoan.paymentMonths}
+            onChange={handleChange}
+            required
+            className="
+            w-full bg-gray-700 border border-gray-600
+            rounded-xl px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            transition
+          "
+          />
+        </div>
 
-      {/* Fecha */}
-      <div>
-        <label className="block text-sm font-medium">Fecha de solicitud</label>
-        <input
-          type="date"
-          name="requestAt"
-          value={newLoan.requestAt}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
-        />
+        {/* Fecha */}
+        <div className="space-y-1">
+          <label className="text-sm text-gray-300">Fecha de solicitud</label>
+          <input
+            type="date"
+            name="requestAt"
+            value={newLoan.requestAt}
+            onChange={handleChange}
+            className="
+            w-full bg-gray-700 border border-gray-600
+            rounded-xl px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            transition
+          "
+          />
+        </div>
       </div>
 
       {/* Descripción */}
-      <div>
-        <label className="block text-sm font-medium">Descripción</label>
+      <div className="space-y-1">
+        <label className="text-sm text-gray-300">Descripción</label>
         <textarea
           name="description"
           value={newLoan.description}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2"
           rows={3}
+          className="
+          w-full bg-gray-700 border border-gray-600
+          rounded-xl px-3 py-2 text-sm
+          focus:outline-none focus:ring-2 focus:ring-indigo-500
+          transition resize-none
+        "
         />
       </div>
 
       {/* Error */}
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && (
+        <p className="text-red-400 text-sm bg-red-500/10 px-3 py-2 rounded-lg">
+          {error}
+        </p>
+      )}
 
       {/* Botón */}
       <button
         type="submit"
         disabled={loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+        className="
+        w-full sm:w-auto
+        bg-indigo-600 hover:bg-indigo-700
+        px-5 py-2.5
+        rounded-xl
+        text-sm font-medium
+        transition
+        disabled:opacity-50 disabled:cursor-not-allowed
+        active:scale-[0.98]
+      "
       >
         {loading ? 'Guardando...' : 'Guardar préstamo'}
       </button>
