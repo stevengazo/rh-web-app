@@ -81,6 +81,7 @@ const ActionAdd = ({ userId, author }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    
     if (!newAction.userId || !newAction.actionTypeId) {
       toast.error("Debe completar los campos obligatorios");
       return;
@@ -95,6 +96,7 @@ const ActionAdd = ({ userId, author }) => {
       createdDate: new Date().toISOString(),
       lastUpdatedBy: author?.userName ?? "Sistema",
       lastUpdatedDate: new Date().toISOString(),
+      userId: newAction.userId
     };
 
     try {
