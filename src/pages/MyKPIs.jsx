@@ -1,46 +1,50 @@
-import SectionTitle from '../Components/SectionTitle';
-import { useAppContext } from '../context/AppContext';
-import user_objetiveApi from '../api/user_objetiveApi';
-import user_questionApi from '../api/user_questionApi';
-import answersApi from '../api/answersApi';
-import resultsApi from '../api/resultsApi';
-import { use } from 'react';
 import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+
+import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
-import PrimaryButton from '../Components/PrimaryButton';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
+
 import ObjetiveLayout from '../Components/templates/ObjetiveLayout';
 import QuestionsLayout from '../Components/templates/QuestionsLayout';
-import { AnimatePresence, motion } from 'framer-motion';
+
+import { useAppContext } from '../context/AppContext';
+
+import user_objetiveApi from '../api/user_objetiveApi';
+import user_questionApi from '../api/user_questionApi';
+
 const MyKPIs = () => {
   const { user } = useAppContext();
+
   const [userObjetives, setUserObjetives] = useState([]);
   const [userQuestions, setUserQuestions] = useState([]);
 
-  // OffCanvas State
+  const [viewMode, setViewMode] = useState("cards");
+
+  // OffCanvas
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
 
-  // GetData
   useEffect(() => {
+    if (!user?.id) return;
+
     const fetchData = async () => {
       try {
-        // Fetch User Objetives
-        const Response = await user_objetiveApi.getAllByUser(user.id);
-        setUserObjetives(Response.data);
-        // fetch User Questions
-        const questionsResponse = await user_questionApi.getUser_QuestionByUser(
-          user.id
-        );
-        setUserQuestions(questionsResponse.data);
+        const response = await user_objetiveApi.getAllByUser(user.id);
+        setUserObjetives(response.data || []);
+
+        const questionsResponse =
+          await user_questionApi.getUser_QuestionByUser(user.id);
+
+        setUserQuestions(questionsResponse.data || []);
       } catch (error) {
-        {
-        }
+        console.error('Error loading KPI data:', error);
       }
     };
+
     fetchData();
-  }, []);
+  }, [user?.id]);
 
   const openCanvas = (title, content) => {
     setCanvasTitle(title);
@@ -50,7 +54,7 @@ const MyKPIs = () => {
 
   return (
     <>
-      {/* OffCanvas animado */}
+      {/* OffCanvas */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -79,123 +83,149 @@ const MyKPIs = () => {
       <SectionTitle>Mis Indicadores de Rendimiento</SectionTitle>
       <Divider />
 
+      {/* OBJETIVOS */}
       <div>
+
         <div className="flex justify-between items-center mb-6">
           <SectionTitle>Objetivos Asignados</SectionTitle>
-         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {userObjetives.map((obj, index) => (
-            <div
-              onClick={() =>
-                openCanvas(
-                  `Objetivo ${obj.objetive?.title || 'Sin título'}`,
-                  <ObjetiveLayout User_Objetive={obj} />
-                )
-              }
-              key={index}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6"
+          {/* View toggle */}
+          <div className="flex border rounded-lg overflow-hidden">
+            <button
+              onClick={() => setViewMode("cards")}
+              className={`px-4 py-1 text-sm ${
+                viewMode === "cards"
+                  ? "bg-gray-900 text-white"
+                  : "bg-white text-gray-600"
+              }`}
             >
-              {/* Header */}
-              <div className="mb-4">
+              Cards
+            </button>
+
+            <button
+              onClick={() => setViewMode("table")}
+              className={`px-4 py-1 text-sm ${
+                viewMode === "table"
+                  ? "bg-gray-900 text-white"
+                  : "bg-white text-gray-600"
+              }`}
+            >
+              Tabla
+            </button>
+          </div>
+        </div>
+
+        {/* CARD VIEW */}
+        {viewMode === "cards" && (
+          <div className="grid gap-6 md:grid-cols-2">
+            {userObjetives.map((obj) => (
+              <div
+                key={obj.user_ObjetiveId}
+                onClick={() =>
+                  openCanvas(
+                    `Objetivo ${obj.objetive?.title || 'Sin título'}`,
+                    <ObjetiveLayout User_Objetive={obj} />
+                  )
+                }
+                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
+              >
                 <h2 className="text-lg font-bold text-gray-800">
                   {obj.objetive?.title || 'Sin título'}
                 </h2>
-                <span className="text-xs text-gray-400">Objetivo</span>
+
+                <p className="text-gray-600 text-sm mt-2">
+                  {obj.objetive?.description || 'Sin descripción'}
+                </p>
+
+                <div className="mt-4 text-xs text-gray-400">
+                  {obj.objetive?.questions?.length || 0} preguntas asociadas
+                </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              {/* Description */}
-              <p className="text-gray-600 text-sm mb-5">
-                {obj.objetive?.description || 'Sin descripción'}
-              </p>
+        {/* TABLE VIEW */}
+        {viewMode === "table" && (
+          <div className="overflow-x-auto border rounded-xl">
+            <table className="min-w-full text-sm">
 
-              {/* Questions */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                  Preguntas asociadas
-                </h3>
+              <thead className="bg-gray-50 text-gray-600">
+                <tr>
+                  <th className="text-left px-4 py-3">Objetivo</th>
+                  <th className="text-left px-4 py-3">Descripción</th>
+                  <th className="text-left px-4 py-3">Preguntas</th>
+                </tr>
+              </thead>
 
-                {obj.objetive?.questions?.length ? (
-                  <ul className="space-y-2">
-                    {obj.objetive.questions.map((q) => (
-                      <li
-                        key={q.id}
-                        className="bg-gray-50 border rounded-md px-3 py-2 text-sm text-gray-700"
-                      >
-                        {q.text}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-gray-400 italic">
-                    No hay preguntas asociadas
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+              <tbody className="divide-y">
+                {userObjetives.map((obj) => (
+                  <tr
+                    key={obj.user_ObjetiveId}
+                    onClick={() =>
+                      openCanvas(
+                        `Objetivo ${obj.objetive?.title || 'Sin título'}`,
+                        <ObjetiveLayout User_Objetive={obj} />
+                      )
+                    }
+                    className="hover:bg-gray-50 cursor-pointer"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-800">
+                      {obj.objetive?.title}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-600">
+                      {obj.objetive?.description}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-500">
+                      {obj.objetive?.questions?.length || 0}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
+          </div>
+        )}
+
       </div>
 
       <Divider />
 
-      {/* Preguntas */}
+      {/* PREGUNTAS */}
       <div>
         <div className="flex justify-between items-center mb-6">
           <SectionTitle>Preguntas</SectionTitle>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          {userQuestions.length ? (
-            userQuestions.map((uq) => (
-              <div
-                onClick={() =>
-                  openCanvas(
-                    `Pregunta ${uq.question?.text || 'Sin título'}`,
-                    <QuestionsLayout User_Question= {uq} />
-                  )
-                }
-                key={uq.user_QuestionId}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition"
-              >
-                {/* Question text */}
-                <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                  {uq.question?.text || 'Pregunta sin texto'}
-                </h3>
+          {userQuestions.map((uq) => (
+            <div
+              key={uq.user_QuestionId}
+              onClick={() =>
+                openCanvas(
+                  `Pregunta ${uq.question?.text || 'Sin título'}`,
+                  <QuestionsLayout User_Question={uq} />
+                )
+              }
+              className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition cursor-pointer"
+            >
+              <h3 className="text-sm font-semibold text-gray-800 mb-2">
+                {uq.question?.text}
+              </h3>
 
-                {/* Meta info */}
-                <div className="flex justify-between text-xs text-gray-400">
-                  <span>
-                    Estado:{' '}
-                    {uq.question?.isActive ? (
-                      <span className="text-green-600 font-medium">Activa</span>
-                    ) : (
-                      <span className="text-red-500 font-medium">Inactiva</span>
-                    )}
-                  </span>
+              <div className="flex justify-between text-xs text-gray-400">
+                <span>
+                  {uq.question?.isActive
+                    ? "Activa"
+                    : "Inactiva"}
+                </span>
 
-                  <span>ID: {uq.question?.questionId}</span>
-                </div>
-
-                {/* Answers placeholder */}
-                <div className="mt-3">
-                  {uq.answers?.length ? (
-                    <p className="text-xs text-gray-500">
-                      Respuestas registradas: {uq.answers.length}
-                    </p>
-                  ) : (
-                    <p className="text-xs text-gray-400 italic">
-                      Sin respuestas aún
-                    </p>
-                  )}
-                </div>
+                <span>ID: {uq.question?.questionId}</span>
               </div>
-            ))
-          ) : (
-            <p className="text-sm text-gray-400 italic">
-              No hay preguntas registradas para este usuario.
-            </p>
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </>

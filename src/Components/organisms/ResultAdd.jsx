@@ -12,6 +12,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -33,7 +34,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
       const payload = {
         evalution: Number(formData.evalution),
         resultDate: formData.resultDate,
-        user_ObjetiveId: user_ObjetiveId,
+        user_ObjetiveId,
       };
 
       await resultsApi.createResult(payload);
@@ -55,53 +56,102 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-xl shadow-md space-y-4"
+      className="w-full max-w-md mx-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-6 space-y-6"
     >
-      <h2 className="text-lg font-semibold text-gray-800">
-        Agregar Resultado
-      </h2>
+      {/* Title */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+          Agregar Resultado
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Registra una nueva evaluación del objetivo.
+        </p>
+      </div>
 
       {/* Evaluación */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Evaluación
         </label>
+
         <input
           type="number"
           name="evalution"
           value={formData.evalution}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Ej: 85"
+          className="
+            w-full
+            border border-gray-300 dark:border-gray-700
+            bg-white dark:bg-gray-950
+            rounded-lg
+            px-3 py-2
+            text-sm
+            focus:outline-none
+            focus:ring-2
+            focus:ring-primary
+            focus:border-primary
+            transition
+          "
         />
       </div>
 
-      {/* Fecha del resultado */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+      {/* Fecha */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Fecha del resultado
         </label>
+
         <input
           type="date"
           name="resultDate"
           value={formData.resultDate}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="
+            w-full
+            border border-gray-300 dark:border-gray-700
+            bg-white dark:bg-gray-950
+            rounded-lg
+            px-3 py-2
+            text-sm
+            focus:outline-none
+            focus:ring-2
+            focus:ring-primary
+            focus:border-primary
+            transition
+          "
         />
       </div>
 
       {/* Error */}
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          {error}
+        </div>
       )}
 
-      {/* Botón */}
+      {/* Button */}
       <div className="flex justify-end">
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          className="
+            inline-flex items-center gap-2
+            bg-primary
+            text-white
+            px-5 py-2.5
+            text-sm
+            font-medium
+            rounded-lg
+            hover:opacity-90
+            transition
+            disabled:opacity-50
+          "
         >
+          {loading && (
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          )}
+
           {loading ? "Guardando..." : "Guardar"}
         </button>
       </div>

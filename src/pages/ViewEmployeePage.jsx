@@ -3,11 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
+import FileApi from '../api/FileApi';
 /* COMPONENTS */
 import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
 import PrimaryButton from '../Components/PrimaryButton';
 import OffCanvas from '../Components/OffCanvas';
+import ViewEmployeePhoto from '../Components/organisms/ViewEmployeePhoto';
+import UploadImage from '../Components/organisms/UploadImage';
 
 import EmployeeEdit from '../Components/organisms/EmployeeEdit';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
@@ -79,6 +82,7 @@ const ViewEmployeePage = () => {
   const [awards, setAwards] = useState([]);
   const [comission, setComission] = useState([]);
   const [contacts, setContacts] = useState([]);
+  const [employeePhoto, setEmployeePhoto] = useState(null);
   const [extras, setExtras] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -98,6 +102,16 @@ const ViewEmployeePage = () => {
         setEmployee(res.data);
       } catch (err) {
         console.error('Error employee', err);
+      }
+
+      try {
+        const files = await FileApi.getByReference('Users', id);
+
+        if (files.length > 0) {
+          setEmployeePhoto(files[0]);
+        }
+      } catch (err) {
+        console.error('Error photo', err);
       }
 
       try {
@@ -186,6 +200,10 @@ const ViewEmployeePage = () => {
         <>
           <div className="flex flex-row justify-between items-center">
             <Header title="Detalles del Empleado" />
+
+            <UploadImage userId={employee.id} />
+
+            <ViewEmployeePhoto img={employeePhoto?.filePath} />
 
             <PrimaryButton
               onClick={() =>

@@ -38,7 +38,7 @@ const NavBar = () => {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-2">
-          {hasRole("admin") && (
+          {hasRole("Admin") && (
             <NavLink to="/manager" className={linkClass}>
               <PanelsTopLeft size={18} />
               Recursos Humanos
@@ -117,7 +117,7 @@ const NavBar = () => {
                 </button>
               </div>
 
-              {hasRole("admin") && (
+              {hasRole("Admin") && (
                 <NavLink to="/manager" className={linkClass} onClick={closeMenu}>
                   <PanelsTopLeft size={18} />
                   Recursos Humanos

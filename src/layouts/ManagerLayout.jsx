@@ -12,7 +12,7 @@ const ManagerLayout = () => {
   }
 
   // 🔐 Si no tiene rol admin → no autorizado
-  if (!hasRole("admin")) {
+  if (!hasRole("Admin")) {
     return <Navigate to="/unauthorized" replace />;
   }
 
