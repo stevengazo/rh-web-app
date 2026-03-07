@@ -57,7 +57,9 @@ import comissionsApi from '../api/comissionsApi';
 import CertificationEdit from '../Components/organisms/CertificationEdit';
 import ContactEmergencies from '../api/contactEmergenciesApi';
 import EmployeeInfoCard from '../Components/organisms/EmployeeInfoCard';
+import ListFiles from '../Components/organisms/ListFiles';
 import { KeyIcon, UserX } from 'lucide-react';
+import UploadFile from '../Components/organisms/UploadFile';
 
 const TABS = {
   TRAINING: 'Certificaciones',
@@ -67,6 +69,7 @@ const TABS = {
   COMISSIONS: 'Comisiones',
   AWARDS: 'Reconocimientos',
   CONTACTS: 'Contactos',
+  FILES: 'Archivos',
 };
 
 const ViewEmployeePage = () => {
@@ -85,6 +88,7 @@ const ViewEmployeePage = () => {
   const [employeePhoto, setEmployeePhoto] = useState(null);
   const [extras, setExtras] = useState([]);
 
+  const [otherFiles,setOtherFiles] = useState([])
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
@@ -96,22 +100,34 @@ const ViewEmployeePage = () => {
   };
 
   useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const allFiles = await FileApi.getByReference('Users', id);
+
+        if (allFiles.length > 0) {
+          // Solo tomamos la primera imagen como foto de perfil
+          setEmployeePhoto(allFiles[0]);
+        }
+      } catch (err) {
+        console.error('Error cargando foto de usuario', err);
+      }
+
+      try {
+        const otherFiles = await FileApi.getByReference('Documents', id); // Cambia 'Documents' por tu otra tabla si es necesario
+        setOtherFiles(otherFiles);
+      } catch (err) {
+        console.error('Error cargando otros archivos', err);
+      }
+    };
+
+    fetchFiles();
+
     const fetchData = async () => {
       try {
         const res = await EmployeeApi.getEmployeeById(id);
         setEmployee(res.data);
       } catch (err) {
         console.error('Error employee', err);
-      }
-
-      try {
-        const files = await FileApi.getByReference('Users', id);
-
-        if (files.length > 0) {
-          setEmployeePhoto(files[0]);
-        }
-      } catch (err) {
-        console.error('Error photo', err);
       }
 
       try {
@@ -195,44 +211,52 @@ const ViewEmployeePage = () => {
       </AnimatePresence>
 
       <div className="space-y-6">
+        {/* Título Página */}
         <PageTitle>Información del Empleado</PageTitle>
 
-        <>
-          <div className="flex flex-row justify-between items-center">
+        {/* Detalles del empleado + Foto + Botón Editar */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
             <Header title="Detalles del Empleado" />
-
-            <UploadImage userId={employee.id} />
-
-            <ViewEmployeePhoto img={employeePhoto?.filePath} />
-
-            <PrimaryButton
-              onClick={() =>
-                openCanvas(
-                  'Editar Información',
-                  <EmployeeEdit
-                    employee={employee}
-                    setEmployee={setEmployee}
-                    onClose={() => setOpen(false)}
-                  />
-                )
-              }
-            >
-              Editar
-            </PrimaryButton>
           </div>
-          <EmployeeInfoCard employee={employee} />
-        </>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm">
+          <PrimaryButton
+            className="self-start sm:self-auto"
+            onClick={() =>
+              openCanvas(
+                'Editar Información',
+                <EmployeeEdit
+                  employee={employee}
+                  setEmployee={setEmployee}
+                  onClose={() => setOpen(false)}
+                />
+              )
+            }
+          >
+            Editar
+          </PrimaryButton>
+        </div>
+
+        {/* Información general del empleado */}
+        <div className="d-flex flex-row">
+          <ViewEmployeePhoto
+            img={employeePhoto?.filePath}
+            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-200"
+          />
+          <EmployeeInfoCard employee={employee} />
+        </div>
+
+        {/* Panel de acciones */}
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
           <SectionTitle>Acciones</SectionTitle>
 
+          {/* Cambiar Contraseña y Desactivar */}
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            {/* Cambiar contraseña */}
             <button
               className="
         w-full sm:w-auto
         flex items-center justify-center gap-2
-        bg-purple-600 hover:bg-purple-700
+        bg-blue-600 hover:bg-blue-700
         text-white
         px-4 py-2.5
         rounded-xl
@@ -241,26 +265,22 @@ const ViewEmployeePage = () => {
         active:scale-[0.97]
         shadow-md hover:shadow-lg
       "
+              onClick={() =>
+                openCanvas(
+                  'Agregar Imagen de Perfil',
+                  <UploadImage userId={employee.id} />
+                )
+              }
             >
+              Agregar Imagen
+            </button>
+
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg">
               <KeyIcon size={18} />
               Cambiar Contraseña
             </button>
 
-            {/* Desactivar */}
-            <button
-              className="
-        w-full sm:w-auto
-        flex items-center justify-center gap-2
-        bg-red-600 hover:bg-red-700
-        text-white
-        px-4 py-2.5
-        rounded-xl
-        text-sm font-medium
-        transition-all duration-200
-        active:scale-[0.97]
-        shadow-md hover:shadow-lg
-      "
-            >
+            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg">
               <UserX size={18} />
               Desactivar
             </button>
@@ -270,22 +290,11 @@ const ViewEmployeePage = () => {
         {/* TABS RESPONSIVE */}
         <div className="border-b border-gray-200">
           {/* MOBILE DROPDOWN */}
-          <div className="sm:hidden">
+          <div className="sm:hidden mt-2">
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
-              className="
-        w-full
-        mt-2
-        px-4 py-2.5
-        rounded-xl
-        border border-gray-300
-        bg-white
-        text-sm font-medium
-        shadow-sm
-        focus:outline-none
-        focus:ring-2 focus:ring-indigo-500
-      "
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {Object.entries(TABS).map(([key, value]) => (
                 <option key={key} value={value}>
@@ -296,7 +305,7 @@ const ViewEmployeePage = () => {
           </div>
 
           {/* DESKTOP TABS */}
-          <nav className="hidden sm:flex gap-6 min-w-max px-1">
+          <nav className="hidden sm:flex gap-6 min-w-max px-1 mt-2">
             {Object.entries(TABS).map(([key, value]) => (
               <TabButton
                 key={key}
@@ -309,7 +318,7 @@ const ViewEmployeePage = () => {
           </nav>
         </div>
 
-        {/* Content */}
+        {/* CONTENT TABS */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
           {/* TRAINING */}
           {activeTab === TABS.TRAINING && (
@@ -325,12 +334,12 @@ const ViewEmployeePage = () => {
               />
               <CourseTable
                 courses={courses}
-                OnEdit={(element) => {
+                OnEdit={(element) =>
                   openCanvas(
-                    `Editar`,
+                    'Editar',
                     <CourseEdit item={element} OnClose={setOpen(false)} />
-                  );
-                }}
+                  )
+                }
               />
 
               <Divider />
@@ -346,15 +355,15 @@ const ViewEmployeePage = () => {
               />
               <CertificationTable
                 certifications={certifications}
-                OnEdit={(element) => {
+                OnEdit={(element) =>
                   openCanvas(
-                    'Editar Certificacion',
+                    'Editar Certificación',
                     <CertificationEdit
                       item={element}
                       OnUpdate={setOpen(false)}
                     />
-                  );
-                }}
+                  )
+                }
               />
             </>
           )}
@@ -412,7 +421,7 @@ const ViewEmployeePage = () => {
                 title="Horas Extras"
                 action={() =>
                   openCanvas(
-                    'Registrar ',
+                    'Registrar',
                     <ExtraAdd userId={id} author={user} />
                   )
                 }
@@ -426,37 +435,34 @@ const ViewEmployeePage = () => {
             </>
           )}
 
-          {/* comissions */}
+          {/* COMISSIONS */}
           {activeTab === TABS.COMISSIONS && (
             <>
               <Header
                 title="Comisiones"
                 action={() =>
                   openCanvas(
-                    'Agregar Comision',
+                    'Agregar Comisión',
                     <ComissionAdd userId={id} author={user} />
                   )
                 }
               />
-
               <ComissionTable comissions={comission} />
             </>
           )}
 
-          {/* Awards */}
+          {/* AWARDS */}
           {activeTab === TABS.AWARDS && (
             <>
               <Header
                 title="Reconocimiento"
-                action={() =>
-                  openCanvas('Registrar ', <AddAward userId={id} />)
-                }
+                action={() => openCanvas('Registrar', <AddAward userId={id} />)}
               />
               <AwardTable awards={awards} />
             </>
           )}
 
-          {/* Contactos */}
+          {/* CONTACTS */}
           {activeTab === TABS.CONTACTS && (
             <>
               <Header
@@ -466,6 +472,17 @@ const ViewEmployeePage = () => {
                 }
               />
               <ContactsEmergencyTable items={contacts} />
+            </>
+          )}
+
+          {/* Files */}
+          {activeTab === TABS.FILES && (
+            <>
+              <Header
+                title="Archivos"
+                action={() => openCanvas('Agregar', <UploadFile userId={id} /> )}
+              />
+              <ListFiles files={otherFiles} />
             </>
           )}
         </div>
