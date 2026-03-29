@@ -1,29 +1,22 @@
-import { Mail, Phone, Building2 } from "lucide-react";
-import EmployeeView from "./EmployeeView";
+import { Mail, Phone, Building2 } from 'lucide-react';
+import EmployeeView from './EmployeeView';
 
 const EmployeesCards = ({ employees, HandleShowEdit }) => {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
       {employees.map((emp) => {
-
-        const initials = `${emp.firstName?.[0] ?? ""}${emp.lastName?.[0] ?? ""}`;
+        const initials = `${emp.firstName?.[0] ?? ''}${emp.lastName?.[0] ?? ''}`;
 
         return (
           <div
             key={emp.id}
             className="bg-white rounded-xl shadow-sm p-5 border border-slate-200 hover:shadow-md transition cursor-pointer"
             onClick={() =>
-              HandleShowEdit(
-                "Ver Empleado",
-                <EmployeeView employee={emp} />
-              )
+              HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} />)
             }
           >
-
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
-
               {/* Avatar */}
               <div className="h-10 w-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold text-sm">
                 {initials}
@@ -41,7 +34,6 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
                   </p>
                 )}
               </div>
-
             </div>
 
             {/* Email */}
@@ -71,18 +63,16 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
               <span
                 className={`text-xs px-2 py-1 rounded-full font-medium ${
                   emp.isActive
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600"
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-600'
                 }`}
               >
-                {emp.isActive ? "Activo" : "Inactivo"}
+                {emp.isActive ? 'Activo' : 'Inactivo'}
               </span>
             </div>
-
           </div>
         );
       })}
-
     </div>
   );
 };

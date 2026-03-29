@@ -1,11 +1,11 @@
-import { format } from "date-fns";
-import { Pencil, Trash2, MessageSquare } from "lucide-react";
+import { format } from 'date-fns';
+import { Pencil, Trash2, MessageSquare } from 'lucide-react';
 
 const formatDate = (date) => {
-  if (!date) return "—";
+  if (!date) return '—';
   const d = new Date(date);
-  if (isNaN(d)) return "—";
-  return format(d, "dd/MM/yyyy");
+  if (isNaN(d)) return '—';
+  return format(d, 'dd/MM/yyyy');
 };
 
 const AnswersTable = ({ answers = [], onEdit, onDelete }) => {
@@ -25,15 +25,9 @@ const AnswersTable = ({ answers = [], onEdit, onDelete }) => {
             <th className="px-4 py-3 text-left font-semibold flex items-center gap-2">
               <MessageSquare size={16} /> Respuesta
             </th>
-            <th className="px-4 py-3 text-left font-semibold">
-              Fecha
-            </th>
-            <th className="px-4 py-3 text-center font-semibold">
-              Estado
-            </th>
-            <th className="px-4 py-3 text-center font-semibold">
-              Acciones
-            </th>
+            <th className="px-4 py-3 text-left font-semibold">Fecha</th>
+            <th className="px-4 py-3 text-center font-semibold">Estado</th>
+            <th className="px-4 py-3 text-center font-semibold">Acciones</th>
           </tr>
         </thead>
 
@@ -41,7 +35,7 @@ const AnswersTable = ({ answers = [], onEdit, onDelete }) => {
           {answers.map((item) => (
             <tr key={item.answerId}>
               <td className="px-4 py-3 text-gray-700 max-w-md">
-                <p className="line-clamp-2">{item.text || "—"}</p>
+                <p className="line-clamp-2">{item.text || '—'}</p>
               </td>
 
               <td className="px-4 py-3 text-gray-600">

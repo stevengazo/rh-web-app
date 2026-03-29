@@ -6,8 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    host: true,      // 👈 necesario para Docker
+    host: true, // 👈 necesario para Docker
     port: 5173,
-    strictPort: true
-  }
+    strictPort: true,
+  },
 });

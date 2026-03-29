@@ -59,7 +59,10 @@ const ExtraView = ({ extra, onDelete, onUpdated, OnClose }) => {
 
   const handleReject = async () => {
     try {
-        await extrasApi.updateExtra(extra.extraId, { ...extra, isAproved: false });
+      await extrasApi.updateExtra(extra.extraId, {
+        ...extra,
+        isAproved: false,
+      });
       toast.success('Hora extra rechazada');
       onUpdated?.();
       OnClose?.();

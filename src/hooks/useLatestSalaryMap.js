@@ -7,7 +7,7 @@ const useLatestSalaryMap = (salaries = []) => {
   return useMemo(() => {
     const map = {};
 
-    salaries.forEach(s => {
+    salaries.forEach((s) => {
       if (!s?.userId) return;
 
       const current = map[s.userId];

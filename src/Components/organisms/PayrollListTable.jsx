@@ -72,7 +72,11 @@ const PayrollListTable = ({ payrolls = [] }) => {
               <td className="px-4 py-3 text-sm flex flex-row justify-end items-center gap-3 font-semibold text-emerald-600">
                 {/* Ver / Confirmado */}
                 <div className="relative group flex items-center">
-                  <EyeIcon onClick={()=> nav(`/manager/payroll/${p.payrollId}`) } size={18} className="cursor-default" />
+                  <EyeIcon
+                    onClick={() => nav(`/manager/payroll/${p.payrollId}`)}
+                    size={18}
+                    className="cursor-default"
+                  />
 
                   <span
                     className="absolute -top-9 left-1/2 -translate-x-1/2 

@@ -147,7 +147,7 @@ const Employee_PayrollDetails = ({ data }) => {
           <Info label={'Final'} value={data.payrollData.finalDate} />
           <Info label={'Inicio'} value={data.payrollData.initialDate} />
           <Info label={'ID de Planilla'} value={data.payrollData.payrollId} />
-          
+
           <Info label={'Registro'} value={data.employee_PayrollId} />
         </Section>
         {/* SALARIOS BASE */}

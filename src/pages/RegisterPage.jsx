@@ -16,7 +16,7 @@ const RegisterPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewUser(prev => ({ ...prev, [name]: value }));
+    setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +29,7 @@ const RegisterPage = () => {
       });
 
       toast.success('Usuario creado correctamente');
-      Nav("/login")
+      Nav('/login');
     } catch (error) {
       const msg =
         error.response?.data?.message ||

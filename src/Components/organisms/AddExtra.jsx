@@ -8,7 +8,7 @@ const AddExtra = () => {
   const { user } = useAppContext();
   const [types, setTypes] = useState([]);
   const [newExtra, setNewExtra] = useState({});
-    const notify = () => toast.success('Agregado');
+  const notify = () => toast.success('Agregado');
 
   useEffect(() => {
     async function GetData() {
@@ -16,7 +16,7 @@ const AddExtra = () => {
       setTypes(Resp.data);
     }
     GetData();
-    console.log(types)
+    console.log(types);
   }, []);
   return <form></form>;
 };

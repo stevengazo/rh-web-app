@@ -1,7 +1,7 @@
-import { Outlet, Navigate } from "react-router-dom";
-import ManagerSideBar from "./ManagerSideBar";
-import { LayoutDashboard } from "lucide-react";
-import { useAppContext } from "../context/AppContext";
+import { Outlet, Navigate } from 'react-router-dom';
+import ManagerSideBar from './ManagerSideBar';
+import { LayoutDashboard } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 
 const ManagerLayout = () => {
   const { hasRole, isAuthenticated } = useAppContext();
@@ -12,7 +12,7 @@ const ManagerLayout = () => {
   }
 
   // 🔐 Si no tiene rol admin → no autorizado
-  if (!hasRole("Admin")) {
+  if (!hasRole('Admin')) {
     return <Navigate to="/unauthorized" replace />;
   }
 
@@ -35,9 +35,7 @@ const ManagerLayout = () => {
             </h1>
           </div>
 
-          <div className="text-xs md:text-sm text-slate-500">
-            RH System
-          </div>
+          <div className="text-xs md:text-sm text-slate-500">RH System</div>
         </header>
 
         {/* Content */}

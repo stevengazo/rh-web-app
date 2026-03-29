@@ -5,12 +5,10 @@ on:
     branches:
       - main
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: Production   # 👈 ESTE ES EL FIX
-
+    environment: Production # 👈 ESTE ES EL FIX
 
     steps:
       - name: Checkout code

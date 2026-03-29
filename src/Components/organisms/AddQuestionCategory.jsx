@@ -10,7 +10,7 @@ const AddQuestionCategory = () => {
     questions: [],
   });
 
-    const notify = () => toast.success('Agregado');
+  const notify = () => toast.success('Agregado');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

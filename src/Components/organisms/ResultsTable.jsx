@@ -1,18 +1,16 @@
-import { format } from "date-fns";
+import { format } from 'date-fns';
 
 const formatDate = (date) => {
-  if (!date) return "—";
+  if (!date) return '—';
   const d = new Date(date);
-  if (isNaN(d)) return "—";
-  return format(d, "dd/MM/yyyy");
+  if (isNaN(d)) return '—';
+  return format(d, 'dd/MM/yyyy');
 };
 
 const getBadge = (value) => {
-  if (value >= 80)
-    return "bg-green-100 text-green-700";
-  if (value >= 60)
-    return "bg-yellow-100 text-yellow-700";
-  return "bg-red-100 text-red-700";
+  if (value >= 80) return 'bg-green-100 text-green-700';
+  if (value >= 60) return 'bg-yellow-100 text-yellow-700';
+  return 'bg-red-100 text-red-700';
 };
 
 const ResultsTable = ({ results = [] }) => {
@@ -25,9 +23,7 @@ const ResultsTable = ({ results = [] }) => {
   }
 
   const values = results.map((r) => r.evalution);
-  const avg = (
-    values.reduce((a, b) => a + b, 0) / values.length
-  ).toFixed(2);
+  const avg = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
   const min = Math.min(...values);
   const max = Math.max(...values);
 
@@ -45,9 +41,7 @@ const ResultsTable = ({ results = [] }) => {
         <table className="min-w-full text-sm">
           <thead className="bg-slate-800 text-white">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold">
-                Fecha
-              </th>
+              <th className="px-4 py-3 text-left font-semibold">Fecha</th>
               <th className="px-4 py-3 text-center font-semibold">
                 Evaluación
               </th>
@@ -81,9 +75,7 @@ const ResultsTable = ({ results = [] }) => {
 const StatCard = ({ label, value }) => (
   <div className="bg-white border rounded-xl p-4 text-center shadow-sm">
     <p className="text-sm text-gray-500">{label}</p>
-    <p className="text-2xl font-semibold text-gray-800">
-      {value}
-    </p>
+    <p className="text-2xl font-semibold text-gray-800">{value}</p>
   </div>
 );
 

@@ -9,9 +9,7 @@ const CardAction = ({ action, status, OnHandleClick }) => {
           <p className="font-semibold text-slate-800">
             {action.user?.firstName} {action.user?.lastName}
           </p>
-          <p className="text-sm text-slate-500">
-            {action.actionType?.name}
-          </p>
+          <p className="text-sm text-slate-500">{action.actionType?.name}</p>
         </div>
 
         <span

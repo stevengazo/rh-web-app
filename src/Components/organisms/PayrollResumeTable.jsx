@@ -1,8 +1,8 @@
 const PayrollResumeTable = ({ resume }) => {
   const formatCurrency = (value) =>
-    new Intl.NumberFormat("es-CR", {
-      style: "currency",
-      currency: "CRC",
+    new Intl.NumberFormat('es-CR', {
+      style: 'currency',
+      currency: 'CRC',
     }).format(value || 0);
 
   return (
@@ -58,6 +58,5 @@ const PayrollResumeTable = ({ resume }) => {
     </div>
   );
 };
-
 
 export default PayrollResumeTable;

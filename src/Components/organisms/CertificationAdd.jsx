@@ -1,25 +1,25 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import TextInput from "../TextInput";
-import PrimaryButton from "../PrimaryButton";
-import certificationApi from "../../api/certificationApi";
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import TextInput from '../TextInput';
+import PrimaryButton from '../PrimaryButton';
+import certificationApi from '../../api/certificationApi';
 
 const CertificationAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newCertification, setNewCertification] = useState({
     certificationId: 0,
-    name: "",
-    institution: "",
+    name: '',
+    institution: '',
     emissionDate: today,
     expirationDate: today,
-    credentialId: "",
-    status: "",
-    fileUrl: "",
-    description: "",
-    createdBy: author?.userName ?? "",
+    credentialId: '',
+    status: '',
+    fileUrl: '',
+    description: '',
+    createdBy: author?.userName ?? '',
     createdAt: today,
-    updatedBy: author?.userName ?? "",
+    updatedBy: author?.userName ?? '',
     updatedAt: today,
     isDeleted: false,
     userId: userId,
@@ -37,28 +37,24 @@ const CertificationAdd = ({ userId, author }) => {
     certificationApi
       .createCertification(newCertification)
       .then((res) => {
-        toast.success("Certificación agregada");
-        console.log("Created: ", res);
+        toast.success('Certificación agregada');
+        console.log('Created: ', res);
       })
       .catch((err) => {
-        toast.error("Ocurrió un error");
-        console.error("Error: ", err);
+        toast.error('Ocurrió un error');
+        console.error('Error: ', err);
       });
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Agregar certificación
-        </h2>
-        <p className="text-xs text-gray-300 mt-1">
-          Información básica
-        </p>
+        <h2 className="text-lg font-semibold">Agregar certificación</h2>
+        <p className="text-xs text-gray-300 mt-1">Información básica</p>
       </div>
 
       {/* Nombre */}
@@ -78,9 +74,7 @@ const CertificationAdd = ({ userId, author }) => {
 
       {/* Institución */}
       <div>
-        <label className="text-sm text-gray-200">
-          Institución
-        </label>
+        <label className="text-sm text-gray-200">Institución</label>
         <input
           type="text"
           name="institution"
@@ -94,9 +88,7 @@ const CertificationAdd = ({ userId, author }) => {
       {/* Fechas */}
       <div className="grid grid-cols-1 gap-4">
         <div>
-          <label className="text-sm text-gray-200">
-            Fecha de emisión
-          </label>
+          <label className="text-sm text-gray-200">Fecha de emisión</label>
           <input
             type="date"
             name="emissionDate"
@@ -107,9 +99,7 @@ const CertificationAdd = ({ userId, author }) => {
         </div>
 
         <div>
-          <label className="text-sm text-gray-200">
-            Fecha de expiración
-          </label>
+          <label className="text-sm text-gray-200">Fecha de expiración</label>
           <input
             type="date"
             name="expirationDate"
@@ -122,9 +112,7 @@ const CertificationAdd = ({ userId, author }) => {
 
       {/* Credential */}
       <div>
-        <label className="text-sm text-gray-200">
-          Credential ID
-        </label>
+        <label className="text-sm text-gray-200">Credential ID</label>
         <input
           type="text"
           name="credentialId"
@@ -152,9 +140,7 @@ const CertificationAdd = ({ userId, author }) => {
 
       {/* URL */}
       <div>
-        <label className="text-sm text-gray-200">
-          URL del certificado
-        </label>
+        <label className="text-sm text-gray-200">URL del certificado</label>
         <input
           type="text"
           name="fileUrl"
@@ -167,16 +153,14 @@ const CertificationAdd = ({ userId, author }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">
-          Descripción
-        </label>
+        <label className="text-sm text-gray-200">Descripción</label>
         <textarea
           name="description"
           value={newCertification.description}
           onChange={handleChange}
           rows={3}
           placeholder="Descripción breve"
-          className={inputStyle + " resize-none"}
+          className={inputStyle + ' resize-none'}
         />
       </div>
 

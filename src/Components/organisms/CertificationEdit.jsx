@@ -18,7 +18,7 @@ const CertificationEdit = ({ item, OnClose }) => {
     credentialId: item?.credentialId || '',
     status: item?.status || '',
     description: item?.description || '',
-    userId: item.userId
+    userId: item.userId,
   });
 
   const handleChange = (e) => {
@@ -34,14 +34,10 @@ const CertificationEdit = ({ item, OnClose }) => {
     setLoading(true);
 
     try {
-      await certificationApi.updateCertification(
-        form.certificationId,
-        form
-      );
+      await certificationApi.updateCertification(form.certificationId, form);
 
       toast.success('Certificación actualizada correctamente');
       OnUpdate?.();
-
     } catch (error) {
       console.error(error);
       toast.error('Error al actualizar la certificación');
@@ -104,11 +100,7 @@ const CertificationEdit = ({ item, OnClose }) => {
 
       <div>
         <Label>Estado</Label>
-        <TextInput
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-        />
+        <TextInput name="status" value={form.status} onChange={handleChange} />
       </div>
 
       <div>

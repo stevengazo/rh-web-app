@@ -1,14 +1,14 @@
-import actionTypeApi from "../../api/actionTypeApi";
-import actionApi from "../../api/actionApi";
-import EmployeeApi from "../../api/employeesApi";
+import actionTypeApi from '../../api/actionTypeApi';
+import actionApi from '../../api/actionApi';
+import EmployeeApi from '../../api/employeesApi';
 
-import { useEffect, useState } from "react";
-import PrimaryButton from "../PrimaryButton";
-import toast from "react-hot-toast";
+import { useEffect, useState } from 'react';
+import PrimaryButton from '../PrimaryButton';
+import toast from 'react-hot-toast';
 
 const ActionAdd = ({ userId, author }) => {
   const todayISO = new Date().toISOString();
-  const todayDate = todayISO.split("T")[0];
+  const todayDate = todayISO.split('T')[0];
 
   const shouldSelectEmployee = !userId;
 
@@ -17,9 +17,9 @@ const ActionAdd = ({ userId, author }) => {
 
   const initialState = {
     actionDate: todayDate,
-    description: "",
-    userId: userId ?? "",
-    actionTypeId: "",
+    description: '',
+    userId: userId ?? '',
+    actionTypeId: '',
   };
 
   const [newAction, setNewAction] = useState(initialState);
@@ -45,7 +45,7 @@ const ActionAdd = ({ userId, author }) => {
         setEmployees(res.data);
       } catch (err) {
         console.error(err);
-        toast.error("Error cargando empleados");
+        toast.error('Error cargando empleados');
       }
     };
 
@@ -62,7 +62,7 @@ const ActionAdd = ({ userId, author }) => {
         setTypesOfActions(res.data);
       } catch (err) {
         console.error(err);
-        toast.error("Error cargando tipos de acción");
+        toast.error('Error cargando tipos de acción');
       }
     };
 
@@ -81,9 +81,8 @@ const ActionAdd = ({ userId, author }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     if (!newAction.userId || !newAction.actionTypeId) {
-      toast.error("Debe completar los campos obligatorios");
+      toast.error('Debe completar los campos obligatorios');
       return;
     }
 
@@ -92,27 +91,27 @@ const ActionAdd = ({ userId, author }) => {
       description: newAction.description,
       userId: Number(newAction.userId),
       actionTypeId: Number(newAction.actionTypeId),
-      createdBy: author?.userName ?? "Sistema",
+      createdBy: author?.userName ?? 'Sistema',
       createdDate: new Date().toISOString(),
-      lastUpdatedBy: author?.userName ?? "Sistema",
+      lastUpdatedBy: author?.userName ?? 'Sistema',
       lastUpdatedDate: new Date().toISOString(),
-      userId: newAction.userId
+      userId: newAction.userId,
     };
 
     try {
       await actionApi.createAction(payload);
-      toast.success("Acción creada con éxito");
+      toast.success('Acción creada con éxito');
 
       // Reset formulario
       setNewAction(initialState);
     } catch (error) {
       console.error(error);
-      toast.error("Error al crear la acción");
+      toast.error('Error al crear la acción');
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
@@ -182,10 +181,7 @@ const ActionAdd = ({ userId, author }) => {
         >
           <option value="">Seleccione un tipo</option>
           {typesOfActions.map((type) => (
-            <option
-              key={type.actionTypeId}
-              value={type.actionTypeId}
-            >
+            <option key={type.actionTypeId} value={type.actionTypeId}>
               {type.name}
             </option>
           ))}

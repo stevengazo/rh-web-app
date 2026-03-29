@@ -1,23 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
-import extrasApi from "../../api/extrasApi";
-import extraTypeApi from "../../api/extraType";
-import PrimaryButton from "../PrimaryButton";
-import toast from "react-hot-toast";
+import { useEffect, useMemo, useState } from 'react';
+import extrasApi from '../../api/extrasApi';
+import extraTypeApi from '../../api/extraType';
+import PrimaryButton from '../PrimaryButton';
+import toast from 'react-hot-toast';
 
 const ExtraAdd = ({ userId, author }) => {
   const [extraTypes, setExtraTypes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [form, setForm] = useState({
-    start: "",
-    end: "",
-    amount: "",
-    notes: "",
-    createdBy: author?.email || author || "",
+    start: '',
+    end: '',
+    amount: '',
+    notes: '',
+    createdBy: author?.email || author || '',
     createdAt: new Date().toISOString(),
-    userId: userId || "",
-    extraTypeId: "",
+    userId: userId || '',
+    extraTypeId: '',
   });
 
   /* =========================
@@ -29,7 +29,7 @@ const ExtraAdd = ({ userId, author }) => {
         const res = await extraTypeApi.getallExtraTypes();
         setExtraTypes(res.data);
       } catch (err) {
-        toast.error("Error cargando tipos de extra");
+        toast.error('Error cargando tipos de extra');
       }
     };
     fetchExtraTypes();
@@ -44,12 +44,12 @@ const ExtraAdd = ({ userId, author }) => {
     const startDate = new Date(form.start);
     const endDate = new Date(form.end);
 
-    if (endDate <= startDate) return "Rango inválido";
+    if (endDate <= startDate) return 'Rango inválido';
 
     const diffMs = endDate - startDate;
     const diffHours = diffMs / (1000 * 60 * 60);
 
-    return `${diffHours.toFixed(2)} hora${diffHours !== 1 ? "s" : ""}`;
+    return `${diffHours.toFixed(2)} hora${diffHours !== 1 ? 's' : ''}`;
   }, [form.start, form.end]);
 
   const handleChange = (e) => {
@@ -58,18 +58,16 @@ const ExtraAdd = ({ userId, author }) => {
     setForm((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "start" &&
-        prev.end &&
-        value >= prev.end && { end: "" }),
+      ...(name === 'start' && prev.end && value >= prev.end && { end: '' }),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!form.start || !form.end || !form.amount || !form.extraTypeId) {
-      setError("Debe completar fechas, monto y tipo de extra");
+      setError('Debe completar fechas, monto y tipo de extra');
       return;
     }
 
@@ -83,36 +81,31 @@ const ExtraAdd = ({ userId, author }) => {
     try {
       setLoading(true);
       await extrasApi.createExtra(payload);
-      toast.success("Extra registrado exitosamente");
+      toast.success('Extra registrado exitosamente');
 
       setForm((prev) => ({
         ...prev,
-        start: "",
-        end: "",
-        amount: "",
-        notes: "",
-        extraTypeId: "",
+        start: '',
+        end: '',
+        amount: '',
+        notes: '',
+        extraTypeId: '',
       }));
     } catch (err) {
-      setError("Error al guardar el extra");
+      setError('Error al guardar el extra');
     } finally {
       setLoading(false);
     }
   };
 
   const inputStyle =
-    "w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition";
+    'w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition';
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6 text-gray-200"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6 text-gray-200">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Registrar extra
-        </h2>
+        <h2 className="text-lg font-semibold">Registrar extra</h2>
         <p className="text-xs text-gray-400 mt-1">
           Registro de horas o compensaciones adicionales
         </p>
@@ -177,8 +170,7 @@ const ExtraAdd = ({ userId, author }) => {
       {/* Duración */}
       {duration && (
         <div className="bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-lg px-3 py-2 text-sm">
-          Duración calculada:{" "}
-          <span className="font-semibold">{duration}</span>
+          Duración calculada: <span className="font-semibold">{duration}</span>
         </div>
       )}
 
@@ -216,7 +208,7 @@ const ExtraAdd = ({ userId, author }) => {
         disabled={loading}
         className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
-        {loading ? "Guardando..." : "Guardar extra"}
+        {loading ? 'Guardando...' : 'Guardar extra'}
       </PrimaryButton>
     </form>
   );

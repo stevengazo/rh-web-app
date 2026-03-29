@@ -3,13 +3,13 @@ import axios from 'axios';
 class ApiClient {
   constructor() {
     this.client = axios.create({
-       baseURL:   import.meta.env.VITE_API_URL || "/api",
+      baseURL: import.meta.env.VITE_API_URL || '/api',
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    console.log("API URL:", import.meta.env.VITE_API_URL);
+    console.log('API URL:', import.meta.env.VITE_API_URL);
 
     // Interceptor REQUEST (agrega JWT)
     this.client.interceptors.request.use(

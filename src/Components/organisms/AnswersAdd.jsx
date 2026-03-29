@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { MessageSquare, Save } from "lucide-react";
-import answersApi from "../../api/answersApi";
-import toast from "react-hot-toast";
+import { useState } from 'react';
+import { MessageSquare, Save } from 'lucide-react';
+import answersApi from '../../api/answersApi';
+import toast from 'react-hot-toast';
 
 const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!text.trim()) {
-      setError("La respuesta no puede estar vacía.");
+      setError('La respuesta no puede estar vacía.');
       return;
     }
 
@@ -26,14 +26,13 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
       };
 
       await answersApi.createAnswer(payload);
-      toast.success("Respuesta guardada exitosamente.");
+      toast.success('Respuesta guardada exitosamente.');
 
-
-      setText("");
+      setText('');
       onSuccess?.();
     } catch (err) {
       console.error(err);
-      setError("Error al guardar la respuesta.");
+      setError('Error al guardar la respuesta.');
     } finally {
       setLoading(false);
     }
@@ -95,7 +94,7 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
               disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Save size={16} />
-            {loading ? "Guardando..." : "Guardar respuesta"}
+            {loading ? 'Guardando...' : 'Guardar respuesta'}
           </button>
         </div>
       </form>

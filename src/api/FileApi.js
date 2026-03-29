@@ -1,10 +1,9 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 const FileApi = {
-
   // obtener todos los archivos
   getAll: async () => {
-    const res = await apiClient.get("/FileModels");
+    const res = await apiClient.get('/FileModels');
     return res.data;
   },
 
@@ -16,16 +15,15 @@ const FileApi = {
 
   // subir archivo con referencia
   upload: async (file, tableName, referenceId) => {
-
     const formData = new FormData();
 
-    formData.append("File", file);
-    formData.append("TableName", tableName);
-    formData.append("ReferenceId", referenceId);
+    formData.append('File', file);
+    formData.append('TableName', tableName);
+    formData.append('ReferenceId', referenceId);
 
-    const res = await apiClient.post("/FileModels/upload", formData, {
+    const res = await apiClient.post('/FileModels/upload', formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
 

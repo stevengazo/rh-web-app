@@ -60,22 +60,16 @@ const AwardTable = ({ awards = [] }) => {
             whileHover={{ backgroundColor: '#f8fafc' }}
             className="border-b"
           >
-            <td className="p-3 font-medium text-slate-800">
-              {award.title}
-            </td>
+            <td className="p-3 font-medium text-slate-800">{award.title}</td>
 
-            <td className="p-3 text-slate-600">
-              {award.description || '—'}
-            </td>
+            <td className="p-3 text-slate-600">{award.description || '—'}</td>
 
             <td className="p-3 flex items-center gap-2 text-slate-600 whitespace-nowrap">
               <Calendar size={14} />
               {formatDate(award.createdAt)}
             </td>
 
-            <td className="p-3 text-slate-600">
-              {award.createdBy || '—'}
-            </td>
+            <td className="p-3 text-slate-600">{award.createdBy || '—'}</td>
           </motion.tr>
         ))}
       </motion.tbody>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
   const navigate = useNavigate();
 
-  console.log("questionsbyuser", QuestionsByUser)
+  console.log('questionsbyuser', QuestionsByUser);
   if (!QuestionsByUser.length) {
     return (
       <p className="text-center text-gray-500 py-6">

@@ -21,8 +21,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
   const requestSort = (key) => {
     setSortConfig((prev) => ({
       key,
-      direction:
-        prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
+      direction: prev.key === key && prev.direction === 'asc' ? 'desc' : 'asc',
     }));
   };
 

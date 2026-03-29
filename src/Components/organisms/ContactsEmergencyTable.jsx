@@ -1,5 +1,5 @@
-import { Phone, User, Users, Pencil, Trash2 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Phone, User, Users, Pencil, Trash2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
   return (
@@ -49,9 +49,7 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
                 {item.name || '-'}
               </td>
 
-              <td className="px-4 py-3 text-gray-600">
-                {item.phone || '-'}
-              </td>
+              <td className="px-4 py-3 text-gray-600">{item.phone || '-'}</td>
 
               <td className="px-4 py-3 text-gray-600">
                 {item.relationship || '-'}
@@ -81,7 +79,7 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
         </motion.tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default ContactsEmergencyTable
+export default ContactsEmergencyTable;

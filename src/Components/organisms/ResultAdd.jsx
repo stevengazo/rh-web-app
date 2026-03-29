@@ -1,14 +1,14 @@
-import { useState } from "react";
-import resultsApi from "../../api/resultsApi";
+import { useState } from 'react';
+import resultsApi from '../../api/resultsApi';
 
 const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   const [formData, setFormData] = useState({
-    evalution: "",
-    resultDate: "",
+    evalution: '',
+    resultDate: '',
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +21,10 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!formData.evalution || !formData.resultDate) {
-      setError("Todos los campos son obligatorios");
+      setError('Todos los campos son obligatorios');
       return;
     }
 
@@ -40,14 +40,14 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
       await resultsApi.createResult(payload);
 
       setFormData({
-        evalution: "",
-        resultDate: "",
+        evalution: '',
+        resultDate: '',
       });
 
       onSuccess?.();
     } catch (err) {
       console.error(err);
-      setError("Error al guardar el resultado");
+      setError('Error al guardar el resultado');
     } finally {
       setLoading(false);
     }
@@ -152,7 +152,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
           )}
 
-          {loading ? "Guardando..." : "Guardar"}
+          {loading ? 'Guardando...' : 'Guardar'}
         </button>
       </div>
     </form>

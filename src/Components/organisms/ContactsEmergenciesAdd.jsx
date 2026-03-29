@@ -1,15 +1,15 @@
-import { useState } from "react";
-import contactEmergenciesApi from "../../api/contactEmergenciesApi";
-import toast from "react-hot-toast";
-import PrimaryButton from "../PrimaryButton";
+import { useState } from 'react';
+import contactEmergenciesApi from '../../api/contactEmergenciesApi';
+import toast from 'react-hot-toast';
+import PrimaryButton from '../PrimaryButton';
 
 const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    relationship: "",
+    name: '',
+    phone: '',
+    relationship: '',
   });
 
   const handleChange = (e) => {
@@ -19,10 +19,10 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!formData.name || !formData.phone || !formData.relationship) {
-      setError("Todos los campos son obligatorios");
+      setError('Todos los campos son obligatorios');
       return;
     }
 
@@ -33,24 +33,22 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
       });
 
       onEdited?.();
-      setFormData({ name: "", phone: "", relationship: "" });
-      toast.success("Contacto agregado correctamente");
+      setFormData({ name: '', phone: '', relationship: '' });
+      toast.success('Contacto agregado correctamente');
     } catch (error) {
-      console.error("Error al guardar contacto de emergencia", error);
-      setError("Error al guardar el contacto");
+      console.error('Error al guardar contacto de emergencia', error);
+      setError('Error al guardar el contacto');
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Contacto de emergencia
-        </h2>
+        <h2 className="text-lg font-semibold">Contacto de emergencia</h2>
         <p className="text-xs text-gray-300 mt-1">
           Persona de contacto en caso de emergencia
         </p>
@@ -64,9 +62,7 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
 
       {/* Nombre */}
       <div>
-        <label className="text-sm text-gray-200">
-          Nombre
-        </label>
+        <label className="text-sm text-gray-200">Nombre</label>
         <input
           type="text"
           name="name"
@@ -79,9 +75,7 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
 
       {/* Teléfono */}
       <div>
-        <label className="text-sm text-gray-200">
-          Teléfono
-        </label>
+        <label className="text-sm text-gray-200">Teléfono</label>
         <input
           type="text"
           name="phone"
@@ -94,9 +88,7 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
 
       {/* Relación */}
       <div>
-        <label className="text-sm text-gray-200">
-          Relación
-        </label>
+        <label className="text-sm text-gray-200">Relación</label>
         <input
           type="text"
           name="relationship"

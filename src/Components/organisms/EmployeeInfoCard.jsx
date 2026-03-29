@@ -1,9 +1,9 @@
-import { motion } from "framer-motion";
-import { UserX } from "lucide-react";
+import { motion } from 'framer-motion';
+import { UserX } from 'lucide-react';
 
 const formatDate = (date) => {
-  if (!date || date.startsWith("0001-01-01")) return "—";
-  return new Date(date).toLocaleDateString("es-CR");
+  if (!date || date.startsWith('0001-01-01')) return '—';
+  return new Date(date).toLocaleDateString('es-CR');
 };
 
 const containerVariants = {
@@ -33,7 +33,7 @@ const Field = ({ label, value }) => (
       {label}
     </p>
     <p className="text-sm font-medium text-slate-800 break-words">
-      {value ?? "—"}
+      {value ?? '—'}
     </p>
   </motion.div>
 );
@@ -50,9 +50,7 @@ const EmployeeInfoCard = ({ employee }) => {
       >
         <UserX size={40} className="mb-3 text-slate-400" />
         <p className="font-medium">No hay información del empleado</p>
-        <p className="text-sm">
-          Selecciona un empleado para ver sus datos
-        </p>
+        <p className="text-sm">Selecciona un empleado para ver sus datos</p>
       </motion.div>
     );
   }
@@ -65,9 +63,7 @@ const EmployeeInfoCard = ({ employee }) => {
       className="bg-white rounded-2xl shadow-md p-6"
     >
       {/* Header */}
-      <div className="mb-6">
-
-      </div>
+      <div className="mb-6"></div>
 
       {/* Grid Info */}
       <motion.div
@@ -81,10 +77,10 @@ const EmployeeInfoCard = ({ employee }) => {
       >
         <Field
           label="Nombre completo"
-          value={`${employee.firstName ?? ""} 
-                  ${employee.middleName ?? ""} 
-                  ${employee.lastName ?? ""} 
-                  ${employee.secondLastName ?? ""}`.trim()}
+          value={`${employee.firstName ?? ''} 
+                  ${employee.middleName ?? ''} 
+                  ${employee.lastName ?? ''} 
+                  ${employee.secondLastName ?? ''}`.trim()}
         />
 
         <Field label="Usuario" value={employee.userName} />
@@ -110,13 +106,9 @@ const EmployeeInfoCard = ({ employee }) => {
           label="Estado"
           value={
             employee.isActive ? (
-              <span className="text-green-600 font-semibold">
-                Activo
-              </span>
+              <span className="text-green-600 font-semibold">Activo</span>
             ) : (
-              <span className="text-red-600 font-semibold">
-                Inactivo
-              </span>
+              <span className="text-red-600 font-semibold">Inactivo</span>
             )
           }
         />

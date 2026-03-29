@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { formatMoney } from '../../utils/formatMoney';
 
 const PayrollRow = ({ employee, PayrollData, onChanged, salary }) => {
-
   if (!PayrollData) {
     return (
       <tr className="bg-red-50 text-red-600">

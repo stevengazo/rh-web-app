@@ -25,10 +25,9 @@ const paymentApi = {
     return apiClient.get(`/payments/${id}`);
   },
 
-getPaymentByLoan: (id) => {
+  getPaymentByLoan: (id) => {
     return apiClient.get(`/payments/loan/${id}`);
   },
-
 
   /**
    * Crea un nuevo pago.

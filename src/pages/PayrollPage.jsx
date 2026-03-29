@@ -52,7 +52,7 @@ const PayrollPage = () => {
         const response = await payrollApi.getAllPayrolls();
         setPayrolls(response.data);
         setFilteredPayrolls(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -62,18 +62,17 @@ const PayrollPage = () => {
 
   // Buscador
   useEffect(() => {
-  
     if (!search) {
       setFilteredPayrolls(payrolls);
       return;
     }
 
-
     const value = search.toLowerCase();
 
-    const filtered = payrolls.filter(p =>
-      p.payrollId == number.parse(value)  || 
-      p.payrollType?.toLowerCase().includes(value)
+    const filtered = payrolls.filter(
+      (p) =>
+        p.payrollId == number.parse(value) ||
+        p.payrollType?.toLowerCase().includes(value)
     );
 
     setFilteredPayrolls(filtered);
@@ -130,9 +129,7 @@ const PayrollPage = () => {
           />
 
           <PrimaryButton
-            onClick={() =>
-              openCanvas('Generar Planilla', <PayrollGenerate />)
-            }
+            onClick={() => openCanvas('Generar Planilla', <PayrollGenerate />)}
           >
             Generar Nueva Planilla
           </PrimaryButton>

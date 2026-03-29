@@ -1,20 +1,20 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import salaryApi from "../../api/salaryApi";
-import PrimaryButton from "../PrimaryButton";
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import salaryApi from '../../api/salaryApi';
+import PrimaryButton from '../PrimaryButton';
 
 const SalaryAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newSalary, setNewSalary] = useState({
     salaryId: 0,
-    salaryAmount: "",
+    salaryAmount: '',
     effectiveDate: today,
-    type: "",
-    currency: "",
-    createdBy: author?.userName ?? "",
+    type: '',
+    currency: '',
+    createdBy: author?.userName ?? '',
     createdAt: today,
-    updatedBy: author?.userName ?? "",
+    updatedBy: author?.userName ?? '',
     updatedAt: today,
     userId: userId,
     user: null,
@@ -29,15 +29,15 @@ const SalaryAdd = ({ userId, author }) => {
     e.preventDefault();
     try {
       await salaryApi.createSalary(newSalary);
-      toast.success("Salario agregado correctamente");
+      toast.success('Salario agregado correctamente');
     } catch (err) {
-      toast.error("Ocurrió un error");
+      toast.error('Ocurrió un error');
       console.error(err);
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
@@ -77,9 +77,7 @@ const SalaryAdd = ({ userId, author }) => {
       {/* Tipo y Moneda */}
       <div className="flex flex-col gap-4">
         <div>
-          <label className="text-sm text-gray-200">
-            Tipo de salario
-          </label>
+          <label className="text-sm text-gray-200">Tipo de salario</label>
           <select
             name="type"
             value={newSalary.type}

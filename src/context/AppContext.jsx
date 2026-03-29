@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from 'react';
 
 /**
  * =====================================================
@@ -16,7 +16,7 @@ const getRolesFromToken = (token) => {
   try {
     if (!token) return [];
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const payload = JSON.parse(atob(token.split('.')[1]));
 
     // Puede venir como:
     // - roles
@@ -25,9 +25,7 @@ const getRolesFromToken = (token) => {
     const roleClaim =
       payload.roles ||
       payload.role ||
-      payload[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-      ];
+      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
     if (!roleClaim) return [];
 
@@ -46,10 +44,10 @@ export const AppProvider = ({ children }) => {
   /**
    * Inicialización segura desde localStorage
    */
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
 
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
@@ -59,7 +57,7 @@ export const AppProvider = ({ children }) => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    () => !!localStorage.getItem("token")
+    () => !!localStorage.getItem('token')
   );
 
   /**
@@ -69,22 +67,22 @@ export const AppProvider = ({ children }) => {
    */
   useEffect(() => {
     if (token) {
-      localStorage.setItem("token", token);
+      localStorage.setItem('token', token);
       setRoles(getRolesFromToken(token));
     } else {
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
       setRoles([]);
     }
   }, [token]);
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user));
       if (user.roles) {
         setRoles(user.roles);
       }
     } else {
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
     }
   }, [user]);
 
@@ -100,7 +98,7 @@ export const AppProvider = ({ children }) => {
       setRoles(user?.roles || getRolesFromToken(token));
       setIsAuthenticated(true);
     } catch (error) {
-      console.error("Error durante el login:", error);
+      console.error('Error durante el login:', error);
     }
   };
 
@@ -114,8 +112,8 @@ export const AppProvider = ({ children }) => {
     setUser(null);
     setRoles([]);
     setIsAuthenticated(false);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   /**
@@ -157,7 +155,7 @@ export const useAppContext = () => {
   const context = useContext(AppContext);
 
   if (!context) {
-    throw new Error("useAppContext debe usarse dentro de AppProvider");
+    throw new Error('useAppContext debe usarse dentro de AppProvider');
   }
 
   return context;

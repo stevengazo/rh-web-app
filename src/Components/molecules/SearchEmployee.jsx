@@ -21,8 +21,6 @@ const SearchEmployee = ({ value, onChange, onClear }) => {
                      focus:outline-none focus:ring-2 focus:ring-sky-500"
         />
       </div>
-
-   
     </motion.div>
   );
 };

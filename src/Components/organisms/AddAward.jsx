@@ -1,18 +1,18 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import awardApi from "../../api/awardsApi";
-import { useAppContext } from "../../context/AppContext";
-import PrimaryButton from "../PrimaryButton";
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import awardApi from '../../api/awardsApi';
+import { useAppContext } from '../../context/AppContext';
+import PrimaryButton from '../PrimaryButton';
 
 const AddAward = ({ userId }) => {
   const { user } = useAppContext();
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [newAward, setNewAward] = useState({
     awardId: 0,
-    title: "",
-    description: "",
+    title: '',
+    description: '',
     createdAt: new Date().toISOString(),
     createdBy: user.userName,
     userId: userId,
@@ -29,10 +29,10 @@ const AddAward = ({ userId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!newAward.title || !newAward.description) {
-      setError("Debe completar título y descripción");
+      setError('Debe completar título y descripción');
       return;
     }
 
@@ -41,27 +41,25 @@ const AddAward = ({ userId }) => {
 
       setNewAward((prev) => ({
         ...prev,
-        title: "",
-        description: "",
+        title: '',
+        description: '',
       }));
 
-      toast.success("Premio agregado correctamente");
+      toast.success('Premio agregado correctamente');
     } catch (error) {
       console.error(error);
-      setError("Error al crear el premio");
+      setError('Error al crear el premio');
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Registrar premio
-        </h2>
+        <h2 className="text-lg font-semibold">Registrar premio</h2>
         <p className="text-xs text-gray-300 mt-1">
           Reconocimiento otorgado al empleado
         </p>
@@ -75,9 +73,7 @@ const AddAward = ({ userId }) => {
 
       {/* Título */}
       <div>
-        <label className="text-sm text-gray-200">
-          Título
-        </label>
+        <label className="text-sm text-gray-200">Título</label>
         <input
           type="text"
           name="title"
@@ -90,15 +86,13 @@ const AddAward = ({ userId }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">
-          Descripción
-        </label>
+        <label className="text-sm text-gray-200">Descripción</label>
         <textarea
           name="description"
           rows={4}
           value={newAward.description}
           onChange={handleChange}
-          className={inputStyle + " resize-none"}
+          className={inputStyle + ' resize-none'}
           placeholder="Detalle del reconocimiento"
         />
       </div>

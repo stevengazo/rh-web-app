@@ -34,10 +34,8 @@ const ObjetiveLayout = ({ User_Objetive }) => {
 
   return (
     <div className="space-y-6">
-
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-
         <div className="flex items-center gap-3">
           <h2>Resultados</h2>
           <span className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-600">
@@ -48,7 +46,6 @@ const ObjetiveLayout = ({ User_Objetive }) => {
         <PrimaryButton onClick={toggleAddResult}>
           {showAddResult ? 'Cancelar' : 'Agregar resultado'}
         </PrimaryButton>
-
       </div>
 
       <Divider />
@@ -56,7 +53,6 @@ const ObjetiveLayout = ({ User_Objetive }) => {
       {/* FORM CARD */}
       {showAddResult && (
         <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm transition-all">
-
           <h3 className="text-sm font-semibold text-gray-700 mb-4">
             Nuevo Resultado
           </h3>
@@ -68,13 +64,11 @@ const ObjetiveLayout = ({ User_Objetive }) => {
               LoadResults();
             }}
           />
-
         </div>
       )}
 
       {/* TABLE CARD */}
       <div className=" border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-
         {results.length === 0 ? (
           <div className="text-center py-12 text-sm text-gray-500">
             No hay resultados registrados para este objetivo.
@@ -82,9 +76,7 @@ const ObjetiveLayout = ({ User_Objetive }) => {
         ) : (
           <ResultsTable results={results} />
         )}
-
       </div>
-
     </div>
   );
 };

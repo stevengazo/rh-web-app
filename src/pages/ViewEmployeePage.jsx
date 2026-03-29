@@ -88,7 +88,7 @@ const ViewEmployeePage = () => {
   const [employeePhoto, setEmployeePhoto] = useState(null);
   const [extras, setExtras] = useState([]);
 
-  const [otherFiles,setOtherFiles] = useState([])
+  const [otherFiles, setOtherFiles] = useState([]);
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
@@ -480,7 +480,7 @@ const ViewEmployeePage = () => {
             <>
               <Header
                 title="Archivos"
-                action={() => openCanvas('Agregar', <UploadFile userId={id} /> )}
+                action={() => openCanvas('Agregar', <UploadFile userId={id} />)}
               />
               <ListFiles files={otherFiles} />
             </>

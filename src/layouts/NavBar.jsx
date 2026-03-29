@@ -1,8 +1,8 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { User, LogOut, PanelsTopLeft, Menu, X } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useAppContext } from "../context/AppContext";
-import { useState } from "react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { User, LogOut, PanelsTopLeft, Menu, X } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import { useState } from 'react';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -11,15 +11,15 @@ const NavBar = () => {
 
   const handleLogout = () => {
     setIsOpen(false);
-    navigate("/");
+    navigate('/');
   };
 
   const linkClass = ({ isActive }) =>
     `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
      ${
        isActive
-         ? "bg-indigo-600 text-white shadow-md"
-         : "text-gray-300 hover:bg-gray-700 hover:text-white"
+         ? 'bg-indigo-600 text-white shadow-md'
+         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
      }`;
 
   const closeMenu = () => setIsOpen(false);
@@ -38,7 +38,7 @@ const NavBar = () => {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-2">
-          {hasRole("Admin") && (
+          {hasRole('Admin') && (
             <NavLink to="/manager" className={linkClass}>
               <PanelsTopLeft size={18} />
               Recursos Humanos
@@ -98,17 +98,15 @@ const NavBar = () => {
 
             {/* Drawer */}
             <motion.aside
-              initial={{ x: "100%" }}
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: '100%' }}
               transition={{ duration: 0.3 }}
               className="fixed top-0 right-0 h-full w-72 bg-gray-900 z-50 shadow-xl p-6 flex flex-col gap-3"
             >
               {/* Header */}
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-white font-semibold text-lg">
-                  Menú
-                </h3>
+                <h3 className="text-white font-semibold text-lg">Menú</h3>
                 <button
                   onClick={closeMenu}
                   className="text-gray-300 hover:text-white"
@@ -117,14 +115,22 @@ const NavBar = () => {
                 </button>
               </div>
 
-              {hasRole("Admin") && (
-                <NavLink to="/manager" className={linkClass} onClick={closeMenu}>
+              {hasRole('Admin') && (
+                <NavLink
+                  to="/manager"
+                  className={linkClass}
+                  onClick={closeMenu}
+                >
                   <PanelsTopLeft size={18} />
                   Recursos Humanos
                 </NavLink>
               )}
 
-              <NavLink to="/my-profile" className={linkClass} onClick={closeMenu}>
+              <NavLink
+                to="/my-profile"
+                className={linkClass}
+                onClick={closeMenu}
+              >
                 <User size={18} />
                 Mi Perfil
               </NavLink>
@@ -134,12 +140,20 @@ const NavBar = () => {
                 KPI
               </NavLink>
 
-              <NavLink to="/my-comissions" className={linkClass} onClick={closeMenu}>
+              <NavLink
+                to="/my-comissions"
+                className={linkClass}
+                onClick={closeMenu}
+              >
                 <User size={18} />
                 Comisiones
               </NavLink>
 
-              <NavLink to="/my-payrolls" className={linkClass} onClick={closeMenu}>
+              <NavLink
+                to="/my-payrolls"
+                className={linkClass}
+                onClick={closeMenu}
+              >
                 <User size={18} />
                 Comprobantes
               </NavLink>

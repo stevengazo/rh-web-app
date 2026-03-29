@@ -11,7 +11,7 @@ const Add_User_Objetive = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-    const notify = () => toast.success('Agregado');
+  const notify = () => toast.success('Agregado');
 
   const [newUser_Objetive, setNewUser_Objetive] = useState({
     user_ObjetiveId: 0,
@@ -34,7 +34,6 @@ const Add_User_Objetive = () => {
 
         setEmployees(employeesRes.data);
         setKpis(kpisRes.data);
-
       } catch (err) {
         console.error(err);
         setError('Error cargando datos');
@@ -89,10 +88,7 @@ const Add_User_Objetive = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="py-2 flex flex-col gap-2"
-    >
+    <form onSubmit={handleSubmit} className="py-2 flex flex-col gap-2">
       <h3 className="text-lg font-semibold text-gray-800">
         Asignar Objetivo a Usuario
       </h3>

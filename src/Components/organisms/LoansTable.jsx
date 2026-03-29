@@ -16,10 +16,11 @@ const LoansTable = ({ loans = [] }) => {
 
     const term = search.toLowerCase();
 
-    return loans.filter((loan) =>
-      loan.loanId.toString().includes(term) ||
-      loan.title.toLowerCase().includes(term) ||
-      loan.state.toLowerCase().includes(term)
+    return loans.filter(
+      (loan) =>
+        loan.loanId.toString().includes(term) ||
+        loan.title.toLowerCase().includes(term) ||
+        loan.state.toLowerCase().includes(term)
     );
   }, [search, loans]);
 

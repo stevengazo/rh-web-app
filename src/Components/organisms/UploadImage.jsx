@@ -1,8 +1,7 @@
-import { useState } from "react";
-import FileApi from "../../api/FileApi";
+import { useState } from 'react';
+import FileApi from '../../api/FileApi';
 
 const UploadImage = ({ userId }) => {
-
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -17,25 +16,22 @@ const UploadImage = ({ userId }) => {
   };
 
   const handleUpload = async () => {
-
     if (!file) return;
 
     try {
-
       setLoading(true);
 
       const result = await FileApi.upload(
         file,
-        "Users", // tabla
-        userId   // id referencia
+        'Users', // tabla
+        userId // id referencia
       );
 
       setPreview(result.filePath);
       setFile(null);
-
     } catch (error) {
       console.error(error);
-      alert("Error subiendo imagen");
+      alert('Error subiendo imagen');
     } finally {
       setLoading(false);
     }
@@ -43,10 +39,7 @@ const UploadImage = ({ userId }) => {
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-4 w-full max-w-sm">
-
-      <h3 className="font-semibold text-lg">
-        Subir Imagen
-      </h3>
+      <h3 className="font-semibold text-lg">Subir Imagen</h3>
 
       {preview && (
         <img
@@ -56,20 +49,15 @@ const UploadImage = ({ userId }) => {
         />
       )}
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleSelectFile}
-      />
+      <input type="file" accept="image/*" onChange={handleSelectFile} />
 
       <button
         onClick={handleUpload}
         disabled={loading || !file}
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
       >
-        {loading ? "Subiendo..." : "Subir Imagen"}
+        {loading ? 'Subiendo...' : 'Subir Imagen'}
       </button>
-
     </div>
   );
 };

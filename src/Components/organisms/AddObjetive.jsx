@@ -14,7 +14,7 @@ const AddObjetive = () => {
     category: null,
   });
 
-    const notify = () => toast.success('Agregado');
+  const notify = () => toast.success('Agregado');
 
   const [categories, setCategories] = useState([]);
 

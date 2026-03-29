@@ -28,12 +28,8 @@ const Row = ({ label, value }) => (
     whileHover={{ backgroundColor: '#f8fafc' }}
     className="border-t"
   >
-    <td className="px-3 py-2 font-medium text-slate-600">
-      {label}
-    </td>
-    <td className="px-3 py-2 text-slate-800">
-      {value ?? '—'}
-    </td>
+    <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
+    <td className="px-3 py-2 text-slate-800">{value ?? '—'}</td>
   </motion.tr>
 );
 
@@ -83,8 +79,14 @@ const EmployeeTableInfo = ({ employee }) => {
         <Row label="Departamento" value={employee.departament?.name} />
         <Row label="Jornada" value={employee.jorney} />
 
-        <Row label="Fecha de nacimiento" value={formatDate(employee.birthDate)} />
-        <Row label="Fecha de contratación" value={formatDate(employee.hiredDate)} />
+        <Row
+          label="Fecha de nacimiento"
+          value={formatDate(employee.birthDate)}
+        />
+        <Row
+          label="Fecha de contratación"
+          value={formatDate(employee.hiredDate)}
+        />
 
         <Row
           label="Estado"
@@ -97,7 +99,10 @@ const EmployeeTableInfo = ({ employee }) => {
           }
         />
 
-        <Row label="Última edición" value={formatDate(employee.lastEditedDate)} />
+        <Row
+          label="Última edición"
+          value={formatDate(employee.lastEditedDate)}
+        />
       </motion.tbody>
     </motion.table>
   );

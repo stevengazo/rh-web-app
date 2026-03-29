@@ -19,7 +19,9 @@ const QuestionsLayout = ({ User_Question }) => {
   const loadAnswers = async () => {
     try {
       setLoading(true);
-      const res = await answersApi.searchAnswers({ UserQuestionId: User_Question.user_QuestionId });
+      const res = await answersApi.searchAnswers({
+        UserQuestionId: User_Question.user_QuestionId,
+      });
       setAnswers(res.data);
     } catch (error) {
       console.error('Error cargando respuestas', error);

@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from './apiClient';
 
 const RolesApi = {
   /**
@@ -7,7 +7,7 @@ const RolesApi = {
    * ==========================
    */
   getAll: async () => {
-    const response = await apiClient.get("/Roles");
+    const response = await apiClient.get('/Roles');
     return response;
   },
 
@@ -27,7 +27,7 @@ const RolesApi = {
    * ==========================
    */
   create: async (roleName) => {
-    const response = await apiClient.post("/Roles", roleName);
+    const response = await apiClient.post('/Roles', roleName);
     return response;
   },
 
@@ -57,7 +57,7 @@ const RolesApi = {
    * ==========================
    */
   assignToUser: async (userId, roleName) => {
-    const response = await apiClient.post("/Roles/assign", null, {
+    const response = await apiClient.post('/Roles/assign', null, {
       params: { userId, roleName },
     });
     return response;
@@ -69,7 +69,7 @@ const RolesApi = {
    * ==========================
    */
   removeFromUser: async (userId, roleName) => {
-    const response = await apiClient.post("/Roles/remove", null, {
+    const response = await apiClient.post('/Roles/remove', null, {
       params: { userId, roleName },
     });
     return response;

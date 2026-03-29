@@ -1,11 +1,11 @@
-import { useParams } from "react-router-dom";
-import SectionTitle from "../Components/SectionTitle";
-import payrollApi from "../api/payrollApi";
-import { useEffect, useMemo, useState } from "react";
-import EmployeeApi from "../api/employeesApi";
+import { useParams } from 'react-router-dom';
+import SectionTitle from '../Components/SectionTitle';
+import payrollApi from '../api/payrollApi';
+import { useEffect, useMemo, useState } from 'react';
+import EmployeeApi from '../api/employeesApi';
 
 const GetEmployeeName = ({ id }) => {
-  const [name, setName] = useState("Cargando...");
+  const [name, setName] = useState('Cargando...');
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -14,7 +14,7 @@ const GetEmployeeName = ({ id }) => {
         setName(response.data.firstName);
       } catch (error) {
         console.error(error);
-        setName("No encontrado");
+        setName('No encontrado');
       }
     };
 
@@ -43,13 +43,12 @@ const PayrollView = () => {
     getData();
   }, [id]);
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString("es-CR");
+  const formatDate = (date) => new Date(date).toLocaleDateString('es-CR');
 
   const formatCurrency = (amount) =>
-    new Intl.NumberFormat("es-CR", {
-      style: "currency",
-      currency: "CRC",
+    new Intl.NumberFormat('es-CR', {
+      style: 'currency',
+      currency: 'CRC',
     }).format(amount || 0);
 
   const totals = useMemo(() => {
@@ -71,9 +70,7 @@ const PayrollView = () => {
 
   return (
     <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto">
-      <SectionTitle>
-        Detalle de Nómina - ID: {payroll.payrollId}
-      </SectionTitle>
+      <SectionTitle>Detalle de Nómina - ID: {payroll.payrollId}</SectionTitle>
 
       {/* Información General */}
       <div className="bg-white shadow-sm rounded-2xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -82,14 +79,8 @@ const PayrollView = () => {
           label="Fecha Inicial"
           value={formatDate(payroll.initialDate)}
         />
-        <InfoItem
-          label="Fecha Final"
-          value={formatDate(payroll.finalDate)}
-        />
-        <InfoItem
-          label="Empleados"
-          value={payroll.payrolls.length}
-        />
+        <InfoItem label="Fecha Final" value={formatDate(payroll.finalDate)} />
+        <InfoItem label="Empleados" value={payroll.payrolls.length} />
       </div>
 
       {/* Tabla Desktop */}

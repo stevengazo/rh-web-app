@@ -1,15 +1,15 @@
-import EmployeeApi from "../api/employeesApi";
-import RolesApi from "../api/roles";
-import { useEffect, useState, useMemo } from "react";
-import { Plus, Shield, User, Trash2, Search, Loader2 } from "lucide-react";
+import EmployeeApi from '../api/employeesApi';
+import RolesApi from '../api/roles';
+import { useEffect, useState, useMemo } from 'react';
+import { Plus, Shield, User, Trash2, Search, Loader2 } from 'lucide-react';
 
 const RolesPage = () => {
   const [roles, setRoles] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userRoles, setUserRoles] = useState([]);
-  const [selectedRole, setSelectedRole] = useState("");
-  const [search, setSearch] = useState("");
+  const [selectedRole, setSelectedRole] = useState('');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [assigning, setAssigning] = useState(false);
 
@@ -56,7 +56,7 @@ const RolesPage = () => {
       await RolesApi.assignToUser(selectedUser.id, selectedRole);
       const updated = await RolesApi.getByUser(selectedUser.id);
       setUserRoles(updated.data);
-      setSelectedRole("");
+      setSelectedRole('');
     } catch (error) {
       console.error(error);
     } finally {
@@ -91,13 +91,10 @@ const RolesPage = () => {
         <div className="bg-blue-100 p-3 rounded-2xl">
           <Shield className="w-6 h-6 text-blue-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-800">
-          Gestión de Roles
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800">Gestión de Roles</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
         {/* ================= EMPLEADOS ================= */}
         <div className="bg-white rounded-3xl shadow-lg p-6 flex flex-col">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -107,10 +104,7 @@ const RolesPage = () => {
 
           {/* Buscador */}
           <div className="relative mb-4">
-            <Search
-              size={16}
-              className="absolute left-3 top-3 text-gray-400"
-            />
+            <Search size={16} className="absolute left-3 top-3 text-gray-400" />
             <input
               type="text"
               placeholder="Buscar empleado..."
@@ -128,13 +122,11 @@ const RolesPage = () => {
                 onClick={() => handleSelectUser(emp)}
                 className={`p-4 rounded-2xl cursor-pointer border border-gray-300 transition-all duration-200 transform hover:scale-[1.02] ${
                   selectedUser?.id === emp.id
-                    ? "bg-blue-50 border-blue-500 shadow-md"
-                    : "hover:bg-gray-50"
+                    ? 'bg-blue-50 border-blue-500 shadow-md'
+                    : 'hover:bg-gray-50'
                 }`}
               >
-                <p className="font-semibold text-gray-800">
-                  {emp.userName}
-                </p>
+                <p className="font-semibold text-gray-800">{emp.userName}</p>
                 <p className="text-sm text-gray-500">{emp.email}</p>
               </div>
             ))}
@@ -143,9 +135,7 @@ const RolesPage = () => {
 
         {/* ================= ROLES ================= */}
         <div className="bg-white rounded-3xl shadow-lg p-6">
-          <h2 className="text-lg font-semibold mb-6">
-            Roles del Usuario
-          </h2>
+          <h2 className="text-lg font-semibold mb-6">Roles del Usuario</h2>
 
           {!selectedUser && (
             <div className="text-center text-gray-400 py-20">
@@ -160,9 +150,7 @@ const RolesPage = () => {
                 <p className="font-semibold text-blue-700">
                   {selectedUser.userName}
                 </p>
-                <p className="text-sm text-blue-500">
-                  {selectedUser.email}
-                </p>
+                <p className="text-sm text-blue-500">{selectedUser.email}</p>
               </div>
 
               {loading ? (
@@ -216,10 +204,7 @@ const RolesPage = () => {
                       className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 active:scale-95 transition disabled:opacity-50"
                     >
                       {assigning ? (
-                        <Loader2
-                          size={16}
-                          className="animate-spin"
-                        />
+                        <Loader2 size={16} className="animate-spin" />
                       ) : (
                         <Plus size={16} />
                       )}

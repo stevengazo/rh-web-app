@@ -95,6 +95,4 @@ const TablePayrollHeader = () => {
   );
 };
 
-
-
 export default TablePayrollHeader;

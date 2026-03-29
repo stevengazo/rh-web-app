@@ -1,25 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Wallet, CheckCircle2, Clock } from "lucide-react";
+import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Wallet, CheckCircle2, Clock } from 'lucide-react';
 
-import loansApi from "../api/loansApi";
+import loansApi from '../api/loansApi';
 
-import LoansAdd from "../Components/organisms/LoansAdd";
-import LoansTable from "../Components/organisms/LoansTable";
-import OffCanvas from "../Components/OffCanvas";
+import LoansAdd from '../Components/organisms/LoansAdd';
+import LoansTable from '../Components/organisms/LoansTable';
+import OffCanvas from '../Components/OffCanvas';
 
-import PageTitle from "../Components/PageTitle";
-import Divider from "../Components/Divider";
-import PrimaryButton from "../Components/PrimaryButton";
+import PageTitle from '../Components/PageTitle';
+import Divider from '../Components/Divider';
+import PrimaryButton from '../Components/PrimaryButton';
 
 const LoansPage = () => {
-
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-  const [canvasTitle, setCanvasTitle] = useState("");
+  const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
 
   const openCanvas = (title, content) => {
@@ -39,7 +38,7 @@ const LoansPage = () => {
       const response = await loansApi.getAllsLoans();
       setLoans(response.data ?? []);
     } catch (error) {
-      console.error("Error loading loans", error);
+      console.error('Error loading loans', error);
     } finally {
       setLoading(false);
     }
@@ -51,35 +50,26 @@ const LoansPage = () => {
 
   /* filtro */
   const filteredLoans = useMemo(() => {
-
     if (!search.trim()) return loans;
 
     const q = search.toLowerCase();
 
     return loans.filter((loan) =>
-      [
-        loan.user?.firstName,
-        loan.user?.lastName,
-        loan.reason,
-        loan.createdBy
-      ]
+      [loan.user?.firstName, loan.user?.lastName, loan.reason, loan.createdBy]
         .filter(Boolean)
         .some((field) => field.toLowerCase().includes(q))
     );
-
   }, [loans, search]);
 
   /* métricas */
   const stats = useMemo(() => {
-
     const total = loans.length;
 
-    const approved = loans.filter(l => l.status === "approved").length;
+    const approved = loans.filter((l) => l.status === 'approved').length;
 
-    const pending = loans.filter(l => l.status === "pending").length;
+    const pending = loans.filter((l) => l.status === 'pending').length;
 
     return { total, approved, pending };
-
   }, [loans]);
 
   return (
@@ -96,7 +86,7 @@ const LoansPage = () => {
               initial={{ x: 60, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 60, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               {canvasContent}
             </motion.div>
@@ -106,27 +96,21 @@ const LoansPage = () => {
 
       {/* HEADER */}
       <div className="flex items-center justify-between gap-4">
-
         <PageTitle>Préstamos</PageTitle>
 
         <PrimaryButton
           onClick={() =>
-            openCanvas(
-              "Agregar Préstamo",
-              <LoansAdd onCreated={fetchLoans} />
-            )
+            openCanvas('Agregar Préstamo', <LoansAdd onCreated={fetchLoans} />)
           }
         >
           Agregar Préstamo
         </PrimaryButton>
-
       </div>
 
       <Divider />
 
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-
         <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
           <Wallet className="text-blue-500" />
           <div>
@@ -150,12 +134,10 @@ const LoansPage = () => {
             <p className="text-xl font-semibold">{stats.pending}</p>
           </div>
         </div>
-
       </div>
 
       {/* SEARCH */}
       <div className="mt-6 flex justify-between items-center gap-4">
-
         <input
           type="text"
           placeholder="Buscar por empleado, motivo..."
@@ -168,12 +150,10 @@ const LoansPage = () => {
             focus:outline-none focus:ring-2 focus:ring-blue-400
           "
         />
-
       </div>
 
       {/* TABLE */}
       <div className="bg-white border border-gray-200 rounded-xl mt-6">
-
         {loading ? (
           <div className="p-8 text-center text-gray-500">
             Cargando préstamos...
@@ -181,7 +161,6 @@ const LoansPage = () => {
         ) : (
           <LoansTable loans={filteredLoans} />
         )}
-
       </div>
     </>
   );

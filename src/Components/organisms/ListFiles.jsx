@@ -1,7 +1,7 @@
-import { Trash2, Download } from "lucide-react";
+import { Trash2, Download } from 'lucide-react';
 
 const ListFiles = ({ files = [], onDelete }) => {
-    console.log(files)
+  console.log(files);
   if (!files || files.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
@@ -13,7 +13,7 @@ const ListFiles = ({ files = [], onDelete }) => {
 
   // Eliminar archivo
   const handleDelete = async (id) => {
-    if (!confirm("¿Desea eliminar este archivo?")) return;
+    if (!confirm('¿Desea eliminar este archivo?')) return;
     if (onDelete) onDelete(id);
   };
 

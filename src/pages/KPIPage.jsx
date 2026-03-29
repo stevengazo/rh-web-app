@@ -44,12 +44,12 @@ const KPIPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 space-y-6">
-
       {/* HEADER */}
       <header className="space-y-1">
         <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
         <p className="text-sm text-gray-600">
-          Gestión y administración de los indicadores de rendimiento de los empleados.
+          Gestión y administración de los indicadores de rendimiento de los
+          empleados.
         </p>
       </header>
 
@@ -88,11 +88,9 @@ const KPIPage = () => {
 
       {/* CONTENT */}
       <div>
-
         {/* TAB 1 */}
         {activeTab === TABS.OBJECTIVES && (
           <div className="grid lg:grid-cols-3 gap-6">
-
             {/* FORM */}
             <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
               <h2 className="font-semibold mb-4">Agregar Objetivo</h2>
@@ -104,7 +102,6 @@ const KPIPage = () => {
               <h2 className="font-semibold mb-4">Objetivos (KPIs)</h2>
               <ObjetivesTable objetives={kpis} />
             </div>
-
           </div>
         )}
 
@@ -131,7 +128,6 @@ const KPIPage = () => {
             <AddObjetiveCategory />
           </div>
         )}
-
       </div>
     </div>
   );

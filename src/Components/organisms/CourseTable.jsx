@@ -1,16 +1,10 @@
-import { motion } from "framer-motion";
-import { format } from "date-fns";
-import {
-  BookOpen,
-  Clock,
-  School,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { motion } from 'framer-motion';
+import { format } from 'date-fns';
+import { BookOpen, Clock, School, Pencil, Trash2 } from 'lucide-react';
 
 const formatDate = (date) => {
-  if (!date) return "";
-  return format(new Date(date), "dd/MM/yyyy");
+  if (!date) return '';
+  return format(new Date(date), 'dd/MM/yyyy');
 };
 
 const tableVariants = {
@@ -81,9 +75,7 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
                 {item.name}
               </td>
 
-              <td className="px-4 py-3 text-gray-600">
-                {item.institution}
-              </td>
+              <td className="px-4 py-3 text-gray-600">{item.institution}</td>
 
               <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
                 {formatDate(item.start)} – {formatDate(item.end)}

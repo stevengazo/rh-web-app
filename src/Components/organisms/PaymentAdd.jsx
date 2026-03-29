@@ -1,20 +1,20 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import paymentApi from "../../api/paymentsApi";
-import { useAppContext } from "../../context/AppContext";
-import PrimaryButton from "../PrimaryButton";
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import paymentApi from '../../api/paymentsApi';
+import { useAppContext } from '../../context/AppContext';
+import PrimaryButton from '../PrimaryButton';
 
 const PaymentAdd = ({ loanId = 0 }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
   const { user } = useAppContext();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [newPayment, setNewPayment] = useState({
     paymentId: 0,
     createdDate: today,
-    amount: "",
+    amount: '',
     createdBy: user.userName,
     createdAt: today,
     editedBy: user.userName,
@@ -35,10 +35,10 @@ const PaymentAdd = ({ loanId = 0 }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!newPayment.amount) {
-      setError("El monto es obligatorio");
+      setError('El monto es obligatorio');
       return;
     }
 
@@ -50,31 +50,29 @@ const PaymentAdd = ({ loanId = 0 }) => {
         amount: Number(newPayment.amount),
       });
 
-      toast.success("Pago registrado correctamente");
+      toast.success('Pago registrado correctamente');
 
       setNewPayment((prev) => ({
         ...prev,
-        amount: "",
+        amount: '',
         createdDate: today,
       }));
     } catch (err) {
       console.error(err);
-      setError("Error al registrar el pago");
+      setError('Error al registrar el pago');
     } finally {
       setLoading(false);
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Registrar pago
-        </h2>
+        <h2 className="text-lg font-semibold">Registrar pago</h2>
         <p className="text-xs text-gray-300 mt-1">
           Registro de abono a préstamo
         </p>
@@ -88,9 +86,7 @@ const PaymentAdd = ({ loanId = 0 }) => {
 
       {/* Fecha */}
       <div>
-        <label className="text-sm text-gray-200">
-          Fecha de pago
-        </label>
+        <label className="text-sm text-gray-200">Fecha de pago</label>
         <input
           type="date"
           name="createdDate"
@@ -103,9 +99,7 @@ const PaymentAdd = ({ loanId = 0 }) => {
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">
-          Monto
-        </label>
+        <label className="text-sm text-gray-200">Monto</label>
         <input
           type="number"
           name="amount"
@@ -123,7 +117,7 @@ const PaymentAdd = ({ loanId = 0 }) => {
         disabled={loading || !loanId}
         className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
       >
-        {loading ? "Guardando..." : "Guardar pago"}
+        {loading ? 'Guardando...' : 'Guardar pago'}
       </PrimaryButton>
     </form>
   );

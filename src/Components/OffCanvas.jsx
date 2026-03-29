@@ -1,13 +1,13 @@
-import { X } from "lucide-react";
-import { useEffect } from "react";
+import { X } from 'lucide-react';
+import { useEffect } from 'react';
 
 const OffCanvas = ({ isOpen, onClose, title, children }) => {
   // Bloquear scroll del body cuando está abierto
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     }
   }, [isOpen]);
 
@@ -18,7 +18,7 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
         className={`
           fixed inset-0 z-40 transition-opacity duration-300
           bg-black/50 backdrop-blur-sm
-          ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+          ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
         `}
         onClick={onClose}
       />
@@ -34,7 +34,7 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
           dark:bg-gray-900 dark:text-gray-100
           shadow-2xl
           transform transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "translate-x-full"}
+          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
         {/* Header */}
@@ -46,9 +46,7 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
             border-gray-200 dark:border-gray-700
           "
         >
-          <h3 className="text-lg sm:text-xl font-semibold">
-            {title}
-          </h3>
+          <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
 
           <button
             onClick={onClose}

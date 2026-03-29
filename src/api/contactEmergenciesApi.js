@@ -18,7 +18,6 @@ const ContactEmergencies = {
     return apiClient.get(`/ContactEmergencies/user/${id}`);
   },
 
-
   /**
    * Obtiene un contacto de emergencia por su identificador.
    *

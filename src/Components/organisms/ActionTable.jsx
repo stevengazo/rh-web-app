@@ -1,5 +1,12 @@
 import { motion } from 'framer-motion';
-import { Calendar, CheckCircle, XCircle, Pencil, Trash2 , EyeIcon} from 'lucide-react';
+import {
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Pencil,
+  Trash2,
+  EyeIcon,
+} from 'lucide-react';
 import { format } from 'date-fns';
 
 const formatDate = (dateString) => {
@@ -65,7 +72,7 @@ const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
                   onClick={() => OnSelect?.(item)}
                   className="text-blue-600 hover:text-blue-800"
                 >
-                  <EyeIcon size={18}  />
+                  <EyeIcon size={18} />
                 </button>
                 <button
                   onClick={() => OnEdit?.(item)}

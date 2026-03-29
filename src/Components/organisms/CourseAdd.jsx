@@ -1,24 +1,24 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import TextInput from "../TextInput";
-import DateInput from "../DateInput";
-import PrimaryButton from "../PrimaryButton";
-import courseApi from "../../api/courseApi";
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
+import PrimaryButton from '../PrimaryButton';
+import courseApi from '../../api/courseApi';
 
 const CourseAdd = ({ userId, author }) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
   const [newCourse, setNewCourse] = useState({
-    name: "",
-    institution: "",
+    name: '',
+    institution: '',
     start: today,
     end: today,
     durationInHours: 0,
-    modality: "",
-    state: "",
-    description: "",
-    author: author?.email ?? "",
-    UpdatedBy: author?.email ?? "",
+    modality: '',
+    state: '',
+    description: '',
+    author: author?.email ?? '',
+    UpdatedBy: author?.email ?? '',
     userId: userId,
   });
 
@@ -27,7 +27,7 @@ const CourseAdd = ({ userId, author }) => {
 
     setNewCourse((prev) => ({
       ...prev,
-      [name]: name === "durationInHours" ? Number(value) : value,
+      [name]: name === 'durationInHours' ? Number(value) : value,
     }));
   };
 
@@ -36,15 +36,15 @@ const CourseAdd = ({ userId, author }) => {
 
     try {
       await courseApi.createCourse(newCourse);
-      toast.success("Curso agregado");
+      toast.success('Curso agregado');
     } catch (err) {
-      toast.error("Ocurrió un error");
+      toast.error('Ocurrió un error');
       console.error(err);
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
@@ -160,7 +160,7 @@ const CourseAdd = ({ userId, author }) => {
           onChange={handleChange}
           rows={3}
           placeholder="Descripción breve del curso"
-          className={inputStyle + " resize-none"}
+          className={inputStyle + ' resize-none'}
         />
       </div>
 

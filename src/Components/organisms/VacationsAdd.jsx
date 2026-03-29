@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import VacationsApi from "../../api/vacationsApi";
-import toast from "react-hot-toast";
+import VacationsApi from '../../api/vacationsApi';
+import toast from 'react-hot-toast';
 
-const VacationsAdd = ({id}) => {
-  const todayISO = new Date().toISOString().split("T")[0];
+const VacationsAdd = ({ id }) => {
+  const todayISO = new Date().toISOString().split('T')[0];
 
   const [form, setForm] = useState({
     userId: id,
-    startDate: "",
-    endDate: "",
+    startDate: '',
+    endDate: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -19,8 +19,8 @@ const VacationsAdd = ({id}) => {
 
     setForm((prev) => {
       // Si cambia la fecha inicial y la final queda inválida, se limpia
-      if (name === "startDate" && prev.endDate && value > prev.endDate) {
-        return { ...prev, startDate: value, endDate: "" };
+      if (name === 'startDate' && prev.endDate && value > prev.endDate) {
+        return { ...prev, startDate: value, endDate: '' };
       }
 
       return { ...prev, [name]: value };
@@ -43,20 +43,20 @@ const VacationsAdd = ({id}) => {
     today.setHours(0, 0, 0, 0);
 
     if (!form.userId.trim()) {
-      newErrors.userId = "El usuario es obligatorio";
+      newErrors.userId = 'El usuario es obligatorio';
     }
 
     if (!form.startDate || !form.endDate) {
-      newErrors.dateRange = "Debe seleccionar un rango de fechas válido";
+      newErrors.dateRange = 'Debe seleccionar un rango de fechas válido';
     } else {
       const start = new Date(form.startDate);
       const end = new Date(form.endDate);
 
       if (start < today) {
-        newErrors.dateRange = "No se permiten fechas pasadas";
+        newErrors.dateRange = 'No se permiten fechas pasadas';
       } else if (end < start) {
         newErrors.dateRange =
-          "La fecha final no puede ser menor que la inicial";
+          'La fecha final no puede ser menor que la inicial';
       }
     }
 
@@ -64,7 +64,7 @@ const VacationsAdd = ({id}) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -72,15 +72,15 @@ const VacationsAdd = ({id}) => {
       userId: form.userId,
       startDate: form.startDate,
       endDate: form.endDate,
-      status: "Pendiente", // 🔒 Estado fijo
+      status: 'Pendiente', // 🔒 Estado fijo
       createdAt: new Date().toISOString(),
       deleted: false,
     };
 
-    console.log("Enviar al API:", payload);
+    console.log('Enviar al API:', payload);
     // POST api/Vacations
     await VacationsApi.createVacation(payload);
-    toast.success("✅ Solicitud de vacaciones registrada correctamente");
+    toast.success('✅ Solicitud de vacaciones registrada correctamente');
   };
 
   return (
@@ -103,8 +103,8 @@ const VacationsAdd = ({id}) => {
             className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
               ${
                 errors.userId
-                  ? "border-red-500 focus:ring-red-300"
-                  : "border-gray-300 focus:ring-blue-300"
+                  ? 'border-red-500 focus:ring-red-300'
+                  : 'border-gray-300 focus:ring-blue-300'
               }`}
           />
           {errors.userId && (
@@ -127,8 +127,8 @@ const VacationsAdd = ({id}) => {
               className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
                 ${
                   errors.dateRange
-                    ? "border-red-500 focus:ring-red-300"
-                    : "border-gray-300 focus:ring-blue-300"
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-gray-300 focus:ring-blue-300'
                 }`}
             />
           </div>
@@ -147,8 +147,8 @@ const VacationsAdd = ({id}) => {
               className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
                 ${
                   errors.dateRange
-                    ? "border-red-500 focus:ring-red-300"
-                    : "border-gray-300 focus:ring-blue-300"
+                    ? 'border-red-500 focus:ring-red-300'
+                    : 'border-gray-300 focus:ring-blue-300'
                 }`}
             />
           </div>

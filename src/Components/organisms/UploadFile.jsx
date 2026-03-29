@@ -1,5 +1,5 @@
-import { useState } from "react";
-import FileApi from "../../api/FileApi";
+import { useState } from 'react';
+import FileApi from '../../api/FileApi';
 
 const UploadFile = ({ userId, onUploaded }) => {
   const [file, setFile] = useState(null);
@@ -12,16 +12,21 @@ const UploadFile = ({ userId, onUploaded }) => {
     if (!selected) return;
 
     // Validar tipo permitido
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/jpg',
+      'application/pdf',
+    ];
     if (!allowedTypes.includes(selected.type)) {
-      alert("Tipo de archivo no permitido. Solo imágenes o PDF.");
+      alert('Tipo de archivo no permitido. Solo imágenes o PDF.');
       return;
     }
 
     setFile(selected);
 
     // Vista previa solo para imágenes
-    if (selected.type.startsWith("image/")) {
+    if (selected.type.startsWith('image/')) {
       setPreview(URL.createObjectURL(selected));
     } else {
       setPreview(null);
@@ -34,7 +39,7 @@ const UploadFile = ({ userId, onUploaded }) => {
 
     try {
       setLoading(true);
-      const result = await FileApi.upload(file, "User_Data", userId);
+      const result = await FileApi.upload(file, 'User_Data', userId);
 
       setFile(null);
 
@@ -42,14 +47,14 @@ const UploadFile = ({ userId, onUploaded }) => {
       if (onUploaded) onUploaded(result);
 
       // Mostrar preview si es imagen
-      if (result.contentType.startsWith("image/")) {
+      if (result.contentType.startsWith('image/')) {
         setPreview(result.filePath);
       } else {
         setPreview(null);
       }
     } catch (error) {
       console.error(error);
-      alert("Error subiendo archivo");
+      alert('Error subiendo archivo');
     } finally {
       setLoading(false);
     }
@@ -76,10 +81,14 @@ const UploadFile = ({ userId, onUploaded }) => {
 
       {/* Mensaje de estado */}
       {!file && !loading && (
-        <p className="text-sm text-gray-500">Seleccione un archivo para habilitar el botón</p>
+        <p className="text-sm text-gray-500">
+          Seleccione un archivo para habilitar el botón
+        </p>
       )}
       {loading && (
-        <p className="text-sm text-gray-500">Subiendo archivo, por favor espere...</p>
+        <p className="text-sm text-gray-500">
+          Subiendo archivo, por favor espere...
+        </p>
       )}
 
       {/* Botón subir */}
@@ -88,11 +97,11 @@ const UploadFile = ({ userId, onUploaded }) => {
         disabled={!file || loading}
         className={`px-4 py-2 rounded-xl text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
           file
-            ? "bg-blue-600 hover:bg-blue-700 active:scale-[0.97]"
-            : "bg-gray-300 cursor-not-allowed"
+            ? 'bg-blue-600 hover:bg-blue-700 active:scale-[0.97]'
+            : 'bg-gray-300 cursor-not-allowed'
         }`}
       >
-        {loading ? "Subiendo..." : "Subir"}
+        {loading ? 'Subiendo...' : 'Subir'}
       </button>
     </div>
   );

@@ -51,10 +51,7 @@ const ComissionTable = ({ comissions = [] }) => {
         </tr>
       </thead>
 
-      <motion.tbody
-        variants={tableVariants}
-        className="text-sm"
-      >
+      <motion.tbody variants={tableVariants} className="text-sm">
         {comissions.map((c) => (
           <motion.tr
             key={c.comissionId}
@@ -73,31 +70,19 @@ const ComissionTable = ({ comissions = [] }) => {
               ₡{Number(c.amount).toLocaleString('es-CR')}
             </td>
 
-            <td className="p-3">
-              {c.description || '—'}
-            </td>
+            <td className="p-3">{c.description || '—'}</td>
 
             <td className="p-3 text-center">
               {c.draft ? (
-                <XCircle
-                  size={18}
-                  className="text-yellow-500 mx-auto"
-                />
+                <XCircle size={18} className="text-yellow-500 mx-auto" />
               ) : (
-                <CheckCircle
-                  size={18}
-                  className="text-green-600 mx-auto"
-                />
+                <CheckCircle size={18} className="text-green-600 mx-auto" />
               )}
             </td>
 
-            <td className="p-3">
-              {c.createdBy || '—'}
-            </td>
+            <td className="p-3">{c.createdBy || '—'}</td>
 
-            <td className="p-3">
-              {formatDate(c.lastEditedAt)}
-            </td>
+            <td className="p-3">{formatDate(c.lastEditedAt)}</td>
           </motion.tr>
         ))}
       </motion.tbody>

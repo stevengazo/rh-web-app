@@ -1,4 +1,4 @@
-const VacationsTable = ({ vacationsList = [], showUser= false }) => {
+const VacationsTable = ({ vacationsList = [], showUser = false }) => {
   if (!vacationsList.length) {
     return (
       <p className="text-gray-500 italic">
@@ -7,8 +7,7 @@ const VacationsTable = ({ vacationsList = [], showUser= false }) => {
     );
   }
 
-  const formatDate = (date) =>
-    new Date(date).toLocaleDateString("es-CR");
+  const formatDate = (date) => new Date(date).toLocaleDateString('es-CR');
 
   const calculateDays = (startDate, endDate) => {
     const start = new Date(startDate);
@@ -46,14 +45,11 @@ const VacationsTable = ({ vacationsList = [], showUser= false }) => {
         <tbody className="divide-y">
           {vacationsList.map((vacation) => (
             <tr key={vacation.vacationId} className="hover:bg-gray-50">
-            {
-              showUser && (<td className="px-4 py-2 text-sm text-gray-800">
-                {vacation.userId}
-              </td>
-              )
-            }
-            
-       
+              {showUser && (
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  {vacation.userId}
+                </td>
+              )}
 
               <td className="px-4 py-2 text-sm text-gray-800">
                 {formatDate(vacation.startDate)}
@@ -71,11 +67,11 @@ const VacationsTable = ({ vacationsList = [], showUser= false }) => {
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
                     ${
-                      vacation.status === "Pendiente"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : vacation.status === "Aprobado"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
+                      vacation.status === 'Pendiente'
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : vacation.status === 'Aprobado'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
                     }`}
                 >
                   {vacation.status}

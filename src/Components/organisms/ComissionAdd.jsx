@@ -1,45 +1,45 @@
-import { useState } from "react";
-import comissionsApi from "../../api/comissionsApi";
-import PrimaryButton from "../PrimaryButton";
-import toast from "react-hot-toast";
+import { useState } from 'react';
+import comissionsApi from '../../api/comissionsApi';
+import PrimaryButton from '../PrimaryButton';
+import toast from 'react-hot-toast';
 
 // Helper
 const formatDateYYYYMMDD = (date) => {
   if (!date) return null;
-  return new Date(date).toISOString().split("T")[0];
+  return new Date(date).toISOString().split('T')[0];
 };
 
 const ComissionAdd = ({ userId, author }) => {
   const [form, setForm] = useState({
     comissionId: 0,
-    date: "",
-    amount: "",
-    description: "",
-    createdBy: author?.email || author || "",
+    date: '',
+    amount: '',
+    description: '',
+    createdBy: author?.email || author || '',
     createdAt: new Date().toISOString(),
     draft: true,
     deleted: false,
-    userId: userId || "",
+    userId: userId || '',
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
 
     if (!form.date || !form.amount) {
-      setError("La fecha y el monto son obligatorios");
+      setError('La fecha y el monto son obligatorios');
       return;
     }
 
@@ -52,35 +52,30 @@ const ComissionAdd = ({ userId, author }) => {
     try {
       setLoading(true);
       await comissionsApi.createComission(payload);
-      toast.success("Comisión guardada exitosamente");
+      toast.success('Comisión guardada exitosamente');
 
       setForm((prev) => ({
         ...prev,
-        date: "",
-        amount: "",
-        description: "",
+        date: '',
+        amount: '',
+        description: '',
         draft: true,
       }));
     } catch (err) {
-      setError("Error al guardar la comisión");
+      setError('Error al guardar la comisión');
     } finally {
       setLoading(false);
     }
   };
 
   const inputStyle =
-    "w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition";
+    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-5 text-white"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">
-          Registrar comisión
-        </h2>
+        <h2 className="text-lg font-semibold">Registrar comisión</h2>
         <p className="text-xs text-gray-300 mt-1">
           Registro de comisiones del empleado
         </p>
@@ -94,9 +89,7 @@ const ComissionAdd = ({ userId, author }) => {
 
       {/* Fecha */}
       <div>
-        <label className="text-sm text-gray-200">
-          Fecha
-        </label>
+        <label className="text-sm text-gray-200">Fecha</label>
         <input
           type="date"
           name="date"
@@ -108,9 +101,7 @@ const ComissionAdd = ({ userId, author }) => {
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">
-          Monto
-        </label>
+        <label className="text-sm text-gray-200">Monto</label>
         <input
           type="number"
           step="0.01"
@@ -123,15 +114,13 @@ const ComissionAdd = ({ userId, author }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">
-          Descripción
-        </label>
+        <label className="text-sm text-gray-200">Descripción</label>
         <textarea
           name="description"
           rows={3}
           value={form.description}
           onChange={handleChange}
-          className={inputStyle + " resize-none"}
+          className={inputStyle + ' resize-none'}
         />
       </div>
 
@@ -144,9 +133,7 @@ const ComissionAdd = ({ userId, author }) => {
           onChange={handleChange}
           className="h-4 w-4 rounded bg-gray-600 border-gray-500 text-blue-400 focus:ring-blue-400"
         />
-        <span className="text-sm text-gray-200">
-          Guardar como borrador
-        </span>
+        <span className="text-sm text-gray-200">Guardar como borrador</span>
       </div>
 
       {/* Botón */}
@@ -155,7 +142,7 @@ const ComissionAdd = ({ userId, author }) => {
         disabled={loading}
         className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
-        {loading ? "Guardando..." : "Guardar comisión"}
+        {loading ? 'Guardando...' : 'Guardar comisión'}
       </PrimaryButton>
     </form>
   );

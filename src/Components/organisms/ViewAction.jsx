@@ -89,7 +89,9 @@ const ViewAction = ({ action, onUpdated }) => {
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <SectionTitle className="text-white">{action.actionType?.name || 'Acción'}</SectionTitle>
+          <SectionTitle className="text-white">
+            {action.actionType?.name || 'Acción'}
+          </SectionTitle>
 
           <p className="text-sm text-gray-400 mt-1">
             {action.user?.firstName} {action.user?.lastName}

@@ -22,10 +22,7 @@ const PaymentTable = ({ payments = [] }) => {
       currency: 'CRC',
     }).format(amount);
 
-  const totalAmount = payments.reduce(
-    (sum, p) => sum + (p.amount || 0),
-    0
-  );
+  const totalAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0);
 
   return (
     <div className="space-y-3">
@@ -54,9 +51,7 @@ const PaymentTable = ({ payments = [] }) => {
           <tbody className="divide-y divide-gray-200">
             {payments.map((payment) => (
               <tr key={payment.paymentId} className="hover:bg-gray-50">
-                <td className="px-4 py-2 text-sm">
-                  {payment.paymentId}
-                </td>
+                <td className="px-4 py-2 text-sm">{payment.paymentId}</td>
 
                 <td className="px-4 py-2 text-sm">
                   {formatDate(payment.createdDate)}
@@ -66,9 +61,7 @@ const PaymentTable = ({ payments = [] }) => {
                   {formatAmount(payment.amount)}
                 </td>
 
-                <td className="px-4 py-2 text-sm">
-                  {payment.createdBy}
-                </td>
+                <td className="px-4 py-2 text-sm">{payment.createdBy}</td>
 
                 <td className="px-4 py-2 text-sm text-gray-500">
                   {formatDate(payment.editedAt)}

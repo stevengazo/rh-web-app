@@ -25,8 +25,6 @@ const extraType = {
     return apiClient.get(`/ExtraTypes/${id}`);
   },
 
-
-
   /**
    * Crea un nuevo tipo de extra.
    *

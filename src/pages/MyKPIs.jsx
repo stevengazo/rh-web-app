@@ -19,7 +19,7 @@ const MyKPIs = () => {
   const [userObjetives, setUserObjetives] = useState([]);
   const [userQuestions, setUserQuestions] = useState([]);
 
-  const [viewMode, setViewMode] = useState("cards");
+  const [viewMode, setViewMode] = useState('cards');
 
   // OffCanvas
   const [open, setOpen] = useState(false);
@@ -34,8 +34,9 @@ const MyKPIs = () => {
         const response = await user_objetiveApi.getAllByUser(user.id);
         setUserObjetives(response.data || []);
 
-        const questionsResponse =
-          await user_questionApi.getUser_QuestionByUser(user.id);
+        const questionsResponse = await user_questionApi.getUser_QuestionByUser(
+          user.id
+        );
 
         setUserQuestions(questionsResponse.data || []);
       } catch (error) {
@@ -85,29 +86,28 @@ const MyKPIs = () => {
 
       {/* OBJETIVOS */}
       <div>
-
         <div className="flex justify-between items-center mb-6">
           <SectionTitle>Objetivos Asignados</SectionTitle>
 
           {/* View toggle */}
           <div className="flex border rounded-lg overflow-hidden">
             <button
-              onClick={() => setViewMode("cards")}
+              onClick={() => setViewMode('cards')}
               className={`px-4 py-1 text-sm ${
-                viewMode === "cards"
-                  ? "bg-gray-900 text-white"
-                  : "bg-white text-gray-600"
+                viewMode === 'cards'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-600'
               }`}
             >
               Cards
             </button>
 
             <button
-              onClick={() => setViewMode("table")}
+              onClick={() => setViewMode('table')}
               className={`px-4 py-1 text-sm ${
-                viewMode === "table"
-                  ? "bg-gray-900 text-white"
-                  : "bg-white text-gray-600"
+                viewMode === 'table'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-600'
               }`}
             >
               Tabla
@@ -116,7 +116,7 @@ const MyKPIs = () => {
         </div>
 
         {/* CARD VIEW */}
-        {viewMode === "cards" && (
+        {viewMode === 'cards' && (
           <div className="grid gap-6 md:grid-cols-2">
             {userObjetives.map((obj) => (
               <div
@@ -146,10 +146,9 @@ const MyKPIs = () => {
         )}
 
         {/* TABLE VIEW */}
-        {viewMode === "table" && (
+        {viewMode === 'table' && (
           <div className="overflow-x-auto border rounded-xl">
             <table className="min-w-full text-sm">
-
               <thead className="bg-gray-50 text-gray-600">
                 <tr>
                   <th className="text-left px-4 py-3">Objetivo</th>
@@ -184,11 +183,9 @@ const MyKPIs = () => {
                   </tr>
                 ))}
               </tbody>
-
             </table>
           </div>
         )}
-
       </div>
 
       <Divider />
@@ -216,11 +213,7 @@ const MyKPIs = () => {
               </h3>
 
               <div className="flex justify-between text-xs text-gray-400">
-                <span>
-                  {uq.question?.isActive
-                    ? "Activa"
-                    : "Inactiva"}
-                </span>
+                <span>{uq.question?.isActive ? 'Activa' : 'Inactiva'}</span>
 
                 <span>ID: {uq.question?.questionId}</span>
               </div>

@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AbsenceCalendar = ({ items = [], selectedItem }) => {
-
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
@@ -39,7 +38,6 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
     });
 
     return map;
-
   }, [items]);
 
   const prevMonth = () => {
@@ -50,18 +48,13 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  const monthName = currentDate.toLocaleString("default", { month: "long" });
+  const monthName = currentDate.toLocaleString('default', { month: 'long' });
 
   return (
     <div className="bg-white border border-gray-50  rounded-lg shadow-sm p-4">
-
       {/* header */}
       <div className="flex items-center justify-between mb-4">
-
-        <button
-          onClick={prevMonth}
-          className="p-2 rounded hover:bg-gray-100"
-        >
+        <button onClick={prevMonth} className="p-2 rounded hover:bg-gray-100">
           <ChevronLeft size={18} />
         </button>
 
@@ -69,13 +62,9 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
           {monthName} {year}
         </h3>
 
-        <button
-          onClick={nextMonth}
-          className="p-2 rounded hover:bg-gray-100"
-        >
+        <button onClick={nextMonth} className="p-2 rounded hover:bg-gray-100">
           <ChevronRight size={18} />
         </button>
-
       </div>
 
       {/* week days */}
@@ -91,9 +80,7 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
 
       {/* calendar grid */}
       <div className="grid grid-cols-7 gap-2">
-
         {days.map((day, index) => {
-
           if (!day) {
             return <div key={index}></div>;
           }
@@ -106,24 +93,20 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
               key={index}
               className="min-h-[90px] border  rounded-md p-2 text-xs bg-gray-50"
             >
-
-              <div className="font-medium text-slate-700">
-                {day.getDate()}
-              </div>
+              <div className="font-medium text-slate-700">{day.getDate()}</div>
 
               <div className="space-y-1 mt-1">
-
                 {dayAbsences.slice(0, 2).map((a) => {
-
                   const isSelected = selectedItem?.id === a.id;
 
                   return (
                     <div
                       key={a.id}
                       className={`px-1 py-[2px] rounded text-[10px] truncate cursor-pointer
-                        ${isSelected
-                          ? "bg-blue-600 text-white"
-                          : "bg-blue-100 text-blue-700"
+                        ${
+                          isSelected
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-blue-100 text-blue-700'
                         }`}
                     >
                       {a.user?.firstName} {a.user?.lastName}
@@ -136,15 +119,11 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
                     +{dayAbsences.length - 2} más
                   </div>
                 )}
-
               </div>
-
             </div>
           );
         })}
-
       </div>
-
     </div>
   );
 };

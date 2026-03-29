@@ -12,7 +12,6 @@ const MyCommissionsPage = () => {
   const { user } = useAppContext();
   const [comission, setComission] = useState([]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {

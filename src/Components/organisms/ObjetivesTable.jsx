@@ -1,5 +1,5 @@
 const ObjetivesTable = ({ objetives }) => {
-  console.log(objetives)
+  console.log(objetives);
   return (
     <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200">
       <table className="min-w-full divide-y divide-gray-200 bg-white">
@@ -29,7 +29,9 @@ const ObjetivesTable = ({ objetives }) => {
               <td className="px-6 py-4 text-sm text-gray-800 font-medium">
                 {e.objetiveId}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-700">{e.category?.name}</td>
+              <td className="px-6 py-4 text-sm text-gray-700">
+                {e.category?.name}
+              </td>
               <td className="px-6 py-4 text-sm text-gray-700">{e.title}</td>
               <td className="px-6 py-4 text-sm text-gray-600">
                 {e.description}

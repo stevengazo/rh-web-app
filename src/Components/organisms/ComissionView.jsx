@@ -1,8 +1,5 @@
-
-
-const ComissionView = ()=>{
-    return <>
-    </>
-}
+const ComissionView = () => {
+  return <></>;
+};
 
 export default ComissionView;
