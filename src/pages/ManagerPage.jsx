@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Users, UserPlus, CalendarCheck, BarChart3 } from 'lucide-react';
 
@@ -19,6 +20,9 @@ import {
   Cell,
 } from 'recharts';
 
+import { GridStack } from 'gridstack';
+import 'gridstack/dist/gridstack.min.css';
+
 import SectionTitle from '../Components/SectionTitle';
 
 const COLORS = [
@@ -32,6 +36,7 @@ const COLORS = [
 
 const ManagerPage = () => {
   const { user } = useAppContext();
+  const gridRef = useRef(null);
 
   const {
     loading,
@@ -43,6 +48,23 @@ const ManagerPage = () => {
     totalAbsences,
     totalExtras,
   } = useManagerDashboard(user);
+
+  // 🔥 INIT GRIDSTACK
+  useEffect(() => {
+    if (!gridRef.current) return;
+
+    const grid = GridStack.init(
+      {
+        column: 12,
+        cellHeight: 80,
+        margin: 10,
+        float: true,
+      },
+      gridRef.current
+    );
+
+    return () => grid.destroy(false);
+  }, []);
 
   const cards = [
     {
@@ -72,67 +94,64 @@ const ManagerPage = () => {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-8"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <SectionTitle>Resumen general del sistema</SectionTitle>
 
-      {/* CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* GRIDSTACK CONTAINER */}
+      <div className="grid-stack" ref={gridRef}>
+        
+        {/* CARDS */}
         {cards.map((card, index) => {
           const Icon = card.icon;
 
           return (
-            <motion.div
+            <div
               key={card.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="rounded-xl shadow-sm p-6 flex justify-between"
+              className="grid-stack-item"
+              gs-w="3"
+              gs-h="2"
             >
-              <div>
-                <p className="text-sm text-slate-500">{card.title}</p>
-                <h3 className="text-2xl font-bold text-slate-800">
-                  {loading ? '...' : card.value}
-                </h3>
-              </div>
+              <div className="grid-stack-item-content bg-white rounded-xl shadow-sm p-6 flex justify-between">
+                <div>
+                  <p className="text-sm text-slate-500">{card.title}</p>
+                  <h3 className="text-2xl font-bold text-slate-800">
+                    {loading ? '...' : card.value}
+                  </h3>
+                </div>
 
-              <Icon className={card.color} size={32} />
-            </motion.div>
+                <Icon className={card.color} size={32} />
+              </div>
+            </div>
           );
         })}
-      </div>
 
-      {/* ACTIVIDAD */}
-      <div className="bg-white p-6 rounded-xl shadow-sm">
-        <h3 className="font-semibold mb-4">Actividad mensual</h3>
+        {/* ACTIVIDAD */}
+        <div className="grid-stack-item" gs-w="12" gs-h="4">
+          <div className="grid-stack-item-content bg-white p-6 rounded-xl shadow-sm">
+            <h3 className="font-semibold mb-4">Actividad mensual</h3>
 
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={activityChart}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
+            <div className="h-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={activityChart}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
 
-              <Line dataKey="actions" stroke="#6366f1" strokeWidth={2} />
-              <Line dataKey="extras" stroke="#22c55e" strokeWidth={2} />
-              <Line dataKey="absences" stroke="#ef4444" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
+                  <Line dataKey="actions" stroke="#6366f1" strokeWidth={2} />
+                  <Line dataKey="extras" stroke="#22c55e" strokeWidth={2} />
+                  <Line dataKey="absences" stroke="#ef4444" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* GRAFICOS */}
-      <div className="grid md:grid-cols-2 gap-6">
-        
         {/* CUMPLEAÑOS */}
-        <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h3 className="font-semibold mb-4">Cumpleaños del personal</h3>
+        <div className="grid-stack-item" gs-w="6" gs-h="4">
+          <div className="grid-stack-item-content bg-white p-6 rounded-xl shadow-sm">
+            <h3 className="font-semibold mb-4">Cumpleaños del personal</h3>
 
-          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={birthdayChart}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -146,10 +165,12 @@ const ManagerPage = () => {
         </div>
 
         {/* DEPARTAMENTOS */}
-        <div className="bg-white p-6 rounded-xl shadow-sm">
-          <h3 className="font-semibold mb-4">Empleados por departamento</h3>
+        <div className="grid-stack-item" gs-w="6" gs-h="4">
+          <div className="grid-stack-item-content bg-white p-6 rounded-xl shadow-sm">
+            <h3 className="font-semibold mb-4">
+              Empleados por departamento
+            </h3>
 
-          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -160,7 +181,10 @@ const ManagerPage = () => {
                   label
                 >
                   {departamentChart.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={index}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
 
@@ -169,6 +193,7 @@ const ManagerPage = () => {
             </ResponsiveContainer>
           </div>
         </div>
+
       </div>
     </motion.div>
   );
