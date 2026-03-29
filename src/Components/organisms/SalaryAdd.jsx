@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import salaryApi from '../../api/salaryApi';
 import PrimaryButton from '../PrimaryButton';
 
-const SalaryAdd = ({ userId, author }) => {
+const SalaryAdd = ({ userId, author, onAdded }) => {
   const today = new Date().toISOString().split('T')[0];
 
   const [newSalary, setNewSalary] = useState({
@@ -30,6 +30,7 @@ const SalaryAdd = ({ userId, author }) => {
     try {
       await salaryApi.createSalary(newSalary);
       toast.success('Salario agregado correctamente');
+      onAdded();
     } catch (err) {
       toast.error('Ocurrió un error');
       console.error(err);

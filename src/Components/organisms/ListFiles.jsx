@@ -1,60 +1,69 @@
 import { Trash2, Download } from 'lucide-react';
 
 const ListFiles = ({ files = [], onDelete }) => {
-  if (!files || files.length === 0) {
-    return (
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-        <h3 className="text-lg font-medium mb-4">Archivos Adjuntos</h3>
-        <p>No hay archivos cargados.</p>
-      </div>
-    );
-  }
+  const hasFiles = files && files.length > 0;
 
-  // Eliminar archivo
   const handleDelete = async (id) => {
-    if (!confirm('¿Desea eliminar este archivo?')) return;
     if (onDelete) onDelete(id);
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-      <h3 className="text-lg font-medium mb-4">Archivos Adjuntos</h3>
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-100">
+        <h3 className="text-lg font-semibold text-slate-700">
+          Archivos Adjuntos
+        </h3>
+      </div>
 
-      <ul className="space-y-3">
-        {files.map((file) => (
-          <li
-            key={file.fileModelId}
-            className="flex items-center justify-between p-2 border rounded hover:bg-gray-50"
-          >
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{file.fileName}</span>
-              <span className="text-gray-400 text-sm">
-                {(file.size / 1024).toFixed(2)} KB
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <a
-                href={file.filePath}
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-600 hover:underline flex items-center gap-1"
+      {/* Content */}
+      <div className="p-5">
+        {!hasFiles ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center text-slate-500">
+            <p className="text-sm">No hay archivos cargados</p>
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {files.map((file) => (
+              <li
+                key={file.fileModelId}
+                className="group flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
               >
-                <Download size={16} />
-                Descargar
-              </a>
+                {/* Info */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+                  <span className="font-medium text-slate-700 truncate max-w-[200px] sm:max-w-xs">
+                    {file.fileName}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {(file.size / 1024).toFixed(2)} KB
+                  </span>
+                </div>
 
-              <button
-                onClick={() => handleDelete(file.fileModelId)}
-                className="text-red-600 hover:text-red-800 flex items-center gap-1"
-              >
-                <Trash2 size={16} />
-                Eliminar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                  <a
+                    href={file.filePath}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    <Download size={16} />
+                    <span className="hidden sm:inline">Descargar</span>
+                  </a>
+
+                  <button
+                    onClick={() => handleDelete(file.fileModelId)}
+                    className="flex items-center gap-1 text-sm text-red-500 hover:text-red-600 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                    <span className="hidden sm:inline">Eliminar</span>
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };

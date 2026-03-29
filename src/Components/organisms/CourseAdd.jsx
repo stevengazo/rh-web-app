@@ -5,7 +5,7 @@ import DateInput from '../DateInput';
 import PrimaryButton from '../PrimaryButton';
 import courseApi from '../../api/courseApi';
 
-const CourseAdd = ({ userId, author }) => {
+const CourseAdd = ({ userId, author, onAdded }) => {
   const today = new Date().toISOString().split('T')[0];
 
   const [newCourse, setNewCourse] = useState({
@@ -37,6 +37,7 @@ const CourseAdd = ({ userId, author }) => {
     try {
       await courseApi.createCourse(newCourse);
       toast.success('Curso agregado');
+      onAdded && onAdded();
     } catch (err) {
       toast.error('Ocurrió un error');
       console.error(err);

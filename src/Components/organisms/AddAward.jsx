@@ -4,7 +4,7 @@ import awardApi from '../../api/awardsApi';
 import { useAppContext } from '../../context/AppContext';
 import PrimaryButton from '../PrimaryButton';
 
-const AddAward = ({ userId }) => {
+const AddAward = ({ userId, onAdded }) => {
   const { user } = useAppContext();
 
   const [error, setError] = useState('');
@@ -46,6 +46,7 @@ const AddAward = ({ userId }) => {
       }));
 
       toast.success('Premio agregado correctamente');
+      if (onAdded) onAdded();
     } catch (error) {
       console.error(error);
       setError('Error al crear el premio');

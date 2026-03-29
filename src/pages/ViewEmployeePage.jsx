@@ -57,13 +57,8 @@ const ViewEmployeePage = () => {
   const { id } = useParams();
   const { user } = useAppContext();
 
-  const {
-    open,
-    canvasTitle,
-    canvasContent,
-    openCanvas,
-    closeCanvas,
-  } = useOffCanvas();
+  const { open, canvasTitle, canvasContent, openCanvas, closeCanvas } =
+    useOffCanvas();
 
   const {
     activeTab,
@@ -78,9 +73,16 @@ const ViewEmployeePage = () => {
     comission,
     contacts,
     extras,
+    handleDeleteFile,
     employeePhoto,
     otherFiles,
+    refetch,
   } = useEmployeeView(id, open);
+
+  const handleAdded = () => {
+    refetch();
+    closeCanvas();
+  };
 
   return (
     <>
@@ -196,7 +198,7 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Curso',
-                    <CourseAdd userId={id} author={user} />
+                    <CourseAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
@@ -217,7 +219,7 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Certificación',
-                    <CertificationAdd userId={id} author={user} />
+                    <CertificationAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
@@ -226,10 +228,7 @@ const ViewEmployeePage = () => {
                 OnEdit={(e) =>
                   openCanvas(
                     'Editar Certificación',
-                    <CertificationEdit
-                      item={e}
-                      OnUpdate={closeCanvas}
-                    />
+                    <CertificationEdit item={e} OnUpdate={closeCanvas} />
                   )
                 }
               />
@@ -243,7 +242,7 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Registrar Salario',
-                    <SalaryAdd userId={id} author={user} />
+                    <SalaryAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
@@ -258,7 +257,7 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Acción',
-                    <ActionAdd userId={id} author={user} />
+                    <ActionAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
@@ -284,15 +283,13 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Registrar',
-                    <ExtraAdd userId={id} author={user} />
+                    <ExtraAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
               <ExtraTable
                 extras={extras}
-                onSelect={(e) =>
-                  openCanvas('Ver', <ExtraView extra={e} />)
-                }
+                onSelect={(e) => openCanvas('Ver', <ExtraView extra={e} />)}
               />
             </>
           )}
@@ -304,7 +301,7 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Comisión',
-                    <ComissionAdd userId={id} author={user} />
+                    <ComissionAdd userId={id} author={user} onAdded={handleAdded} />
                   )
                 }
               />
@@ -316,9 +313,7 @@ const ViewEmployeePage = () => {
             <>
               <Header
                 title="Reconocimiento"
-                action={() =>
-                  openCanvas('Registrar', <AddAward userId={id} />)
-                }
+                action={() => openCanvas('Registrar', <AddAward userId={id} onAdded={handleAdded} />)}
               />
               <AwardTable awards={awards} />
             </>
@@ -329,10 +324,7 @@ const ViewEmployeePage = () => {
               <Header
                 title="Contactos"
                 action={() =>
-                  openCanvas(
-                    'Agregar',
-                    <ContactsEmergenciesAdd userId={id} />
-                  )
+                  openCanvas('Agregar', <ContactsEmergenciesAdd userId={id}  onAdded={handleAdded}/>)
                 }
               />
               <ContactsEmergencyTable items={contacts} />
@@ -343,11 +335,9 @@ const ViewEmployeePage = () => {
             <>
               <Header
                 title="Archivos"
-                action={() =>
-                  openCanvas('Agregar', <UploadFile userId={id} />)
-                }
+                action={() => openCanvas('Agregar', <UploadFile userId={id} onAdded={handleAdded} />)}
               />
-              <ListFiles files={otherFiles} />
+              <ListFiles files={otherFiles} onDelete={handleDeleteFile} />
             </>
           )}
         </div>

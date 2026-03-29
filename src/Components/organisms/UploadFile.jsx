@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import FileApi from '../../api/FileApi';
 
-const UploadFile = ({ userId, onUploaded }) => {
+const UploadFile = ({ userId, onUploaded, onAdded }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +52,7 @@ const UploadFile = ({ userId, onUploaded }) => {
       } else {
         setPreview(null);
       }
+      onAdded();
     } catch (error) {
       console.error(error);
       alert('Error subiendo archivo');

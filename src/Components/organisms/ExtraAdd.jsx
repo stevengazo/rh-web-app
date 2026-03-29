@@ -4,7 +4,7 @@ import extraTypeApi from '../../api/extraType';
 import PrimaryButton from '../PrimaryButton';
 import toast from 'react-hot-toast';
 
-const ExtraAdd = ({ userId, author }) => {
+const ExtraAdd = ({ userId, author, onAdded }) => {
   const [extraTypes, setExtraTypes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -91,6 +91,8 @@ const ExtraAdd = ({ userId, author }) => {
         notes: '',
         extraTypeId: '',
       }));
+
+      onAdded();
     } catch (err) {
       setError('Error al guardar el extra');
     } finally {

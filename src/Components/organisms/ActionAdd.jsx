@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import PrimaryButton from '../PrimaryButton';
 import toast from 'react-hot-toast';
 
-const ActionAdd = ({ userId, author }) => {
+const ActionAdd = ({ userId, author, onAdded }) => {
   const todayISO = new Date().toISOString();
   const todayDate = todayISO.split('T')[0];
 
@@ -104,6 +104,8 @@ const ActionAdd = ({ userId, author }) => {
 
       // Reset formulario
       setNewAction(initialState);
+
+      onAdded();
     } catch (error) {
       console.error(error);
       toast.error('Error al crear la acción');

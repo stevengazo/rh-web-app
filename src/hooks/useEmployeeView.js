@@ -41,6 +41,34 @@ const useEmployeeView = (id, open) => {
   const [otherFiles, setOtherFiles] = useState([]);
 
   /* =========================
+     DELETE FILE
+  ========================= */
+  const handleDeleteFile = async (id) => {
+
+    const confirm = window.confirm('¿Desea eliminar este archivo?');
+    if (!confirm) return;
+
+    try {
+      await FileApi.delete(id);
+
+      // Si es la foto principal
+      if (employeePhoto && id === employeePhoto.id) {
+        setEmployeePhoto(null);
+      }
+
+      FileApi.delete(id);
+
+      // Remover de otros archivos
+      setOtherFiles((prev) => prev.filter((f) => f.id !== id));
+
+      toast.success('Archivo eliminado correctamente');
+    } catch (err) {
+      console.error('Error eliminando archivo', err);
+      toast.error('No se pudo eliminar el archivo');
+    }
+  };
+
+  /* =========================
      FETCH FILES
   ========================= */
   const fetchFiles = async () => {
@@ -62,7 +90,7 @@ const useEmployeeView = (id, open) => {
     }
 
     try {
-      const files = await FileApi.getByReference('Documents', id);
+      const files = await FileApi.getByReference('User_Data', id);
 
       if (Array.isArray(files)) {
         setOtherFiles(files);
@@ -85,12 +113,7 @@ const useEmployeeView = (id, open) => {
   const fetchData = async () => {
     try {
       const res = await EmployeeApi.getEmployeeById(id);
-
-      if (res?.data && typeof res.data === 'object') {
-        setEmployee(res.data);
-      } else {
-        setEmployee({});
-      }
+      setEmployee(res?.data && typeof res.data === 'object' ? res.data : {});
     } catch (err) {
       if (err?.response?.status === 404) {
         setEmployee({});
@@ -102,12 +125,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await salaryApi.getSalariesByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setSalaries(res.data);
-      } else {
-        setSalaries([]);
-      }
+      setSalaries(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setSalaries([]);
@@ -119,12 +137,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await actionApi.getActionsByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setActions(res.data);
-      } else {
-        setActions([]);
-      }
+      setActions(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setActions([]);
@@ -136,12 +149,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await awardApi.getAwardsByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setAwards(res.data);
-      } else {
-        setAwards([]);
-      }
+      setAwards(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setAwards([]);
@@ -153,12 +161,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await certificationApi.getCertificationsByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setCertifications(res.data);
-      } else {
-        setCertifications([]);
-      }
+      setCertifications(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setCertifications([]);
@@ -170,12 +173,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await courseApi.getCoursesByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setCourses(res.data);
-      } else {
-        setCourses([]);
-      }
+      setCourses(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setCourses([]);
@@ -187,12 +185,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await extrasApi.getExtrasByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setExtras(res.data);
-      } else {
-        setExtras([]);
-      }
+      setExtras(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setExtras([]);
@@ -204,12 +197,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await comissionsApi.getComissionsByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setComission(res.data);
-      } else {
-        setComission([]);
-      }
+      setComission(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setComission([]);
@@ -221,12 +209,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await ContactEmergencies.getContactEmergenciesByUser(id);
-
-      if (Array.isArray(res?.data)) {
-        setContacts(res.data);
-      } else {
-        setContacts([]);
-      }
+      setContacts(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
         setContacts([]);
@@ -252,6 +235,7 @@ const useEmployeeView = (id, open) => {
     salaries,
     actions,
     awards,
+    handleDeleteFile,
     comission,
     contacts,
     extras,

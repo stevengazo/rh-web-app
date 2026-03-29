@@ -3,7 +3,7 @@ import contactEmergenciesApi from '../../api/contactEmergenciesApi';
 import toast from 'react-hot-toast';
 import PrimaryButton from '../PrimaryButton';
 
-const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
+const ContactsEmergenciesAdd = ({ userId, onEdited , onAdded}) => {
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
@@ -35,6 +35,7 @@ const ContactsEmergenciesAdd = ({ userId, onEdited }) => {
       onEdited?.();
       setFormData({ name: '', phone: '', relationship: '' });
       toast.success('Contacto agregado correctamente');
+      onAdded?.();
     } catch (error) {
       console.error('Error al guardar contacto de emergencia', error);
       setError('Error al guardar el contacto');

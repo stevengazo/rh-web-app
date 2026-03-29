@@ -4,7 +4,7 @@ import TextInput from '../TextInput';
 import PrimaryButton from '../PrimaryButton';
 import certificationApi from '../../api/certificationApi';
 
-const CertificationAdd = ({ userId, author }) => {
+const CertificationAdd = ({ userId, author, onAdded }) => {
   const today = new Date().toISOString().split('T')[0];
 
   const [newCertification, setNewCertification] = useState({
@@ -38,6 +38,7 @@ const CertificationAdd = ({ userId, author }) => {
       .createCertification(newCertification)
       .then((res) => {
         toast.success('Certificación agregada');
+        onAdded();
       })
       .catch((err) => {
         toast.error('Ocurrió un error');

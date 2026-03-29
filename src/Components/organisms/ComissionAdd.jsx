@@ -9,7 +9,7 @@ const formatDateYYYYMMDD = (date) => {
   return new Date(date).toISOString().split('T')[0];
 };
 
-const ComissionAdd = ({ userId, author }) => {
+const ComissionAdd = ({ userId, author , onAdded}) => {
   const [form, setForm] = useState({
     comissionId: 0,
     date: '',
@@ -61,6 +61,8 @@ const ComissionAdd = ({ userId, author }) => {
         description: '',
         draft: true,
       }));
+
+      onAdded && onAdded();
     } catch (err) {
       setError('Error al guardar la comisión');
     } finally {
