@@ -47,7 +47,6 @@ const AddObjetive = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newObjetive);
     try {
       await kpiApi.createKPI(newObjetive);
       notify();

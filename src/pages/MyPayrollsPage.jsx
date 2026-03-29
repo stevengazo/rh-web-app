@@ -25,7 +25,6 @@ const MyPayrollsPage = () => {
         employeeId: user.id,
       });
       setPayrollsData(Response.data);
-      console.log(Response.data);
     };
 
     GetData();

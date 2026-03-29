@@ -52,9 +52,8 @@ const PayrollPage = () => {
         const response = await payrollApi.getAllPayrolls();
         setPayrolls(response.data);
         setFilteredPayrolls(response.data);
-        console.log(response.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     getData();

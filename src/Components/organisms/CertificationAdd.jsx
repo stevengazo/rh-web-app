@@ -38,7 +38,6 @@ const CertificationAdd = ({ userId, author }) => {
       .createCertification(newCertification)
       .then((res) => {
         toast.success('Certificación agregada');
-        console.log('Created: ', res);
       })
       .catch((err) => {
         toast.error('Ocurrió un error');

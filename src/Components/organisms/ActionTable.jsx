@@ -15,8 +15,6 @@ const formatDate = (dateString) => {
 };
 
 const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
-  console.log('Actions en ActionTable:', actions);
-
   return (
     <motion.table
       initial={{ opacity: 0, y: 20 }}

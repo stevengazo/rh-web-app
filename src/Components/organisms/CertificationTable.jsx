@@ -17,7 +17,6 @@ const tableVariants = {
 };
 
 const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
-  console.log('Certificaciones en CertificationTable:', certifications);
   return (
     <div className="overflow-x-auto">
       <motion.table

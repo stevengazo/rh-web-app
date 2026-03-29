@@ -58,7 +58,6 @@ const LoansAdd = ({ userId }) => {
     setError('');
 
     try {
-      console.log(newLoan);
       await loansApi.createLoan(newLoan);
       notify();
 

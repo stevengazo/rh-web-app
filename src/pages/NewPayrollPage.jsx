@@ -49,7 +49,7 @@ const NewPayrollPage = () => {
   useEffect(() => {
     console.log(salaryMap);
   }, [salaryMap]);
-*/
+  */
   /*   REGISTRO BASE POR EMPLEADO */
   /* REGISTRO BASE POR EMPLEADO */
   useEffect(() => {

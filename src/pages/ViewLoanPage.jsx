@@ -35,9 +35,7 @@ const ViewLoanPage = () => {
       setLoan(response.data);
       // Payments
       const resPayments = await paymentApi.getPaymentByLoan(id);
-
       setPayments(resPayments.data);
-      console.log(resPayments.data);
     }
 
     getData();

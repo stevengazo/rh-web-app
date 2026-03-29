@@ -49,10 +49,8 @@ const Add_User_Question = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newUserQuestion);
     try {
       await user_questionApi.createUser_Question(newUserQuestion);
-      console.log('Pregunta asignada al usuario correctamente');
       notify();
       // Reset form
       setNewUserQuestion({

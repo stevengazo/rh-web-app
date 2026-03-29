@@ -70,7 +70,6 @@ const AbsenceAdd = ({ userId }) => {
 
     try {
       const resp = await absencesApi.createAbsence(absenceForm);
-      console.log('server res', resp);
 
       toast.success('Ausencia agregada');
 

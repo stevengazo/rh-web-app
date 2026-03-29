@@ -77,7 +77,6 @@ const VacationsAdd = ({ id }) => {
       deleted: false,
     };
 
-    console.log('Enviar al API:', payload);
     // POST api/Vacations
     await VacationsApi.createVacation(payload);
     toast.success('✅ Solicitud de vacaciones registrada correctamente');

@@ -82,8 +82,6 @@ const Section = ({ title, children }) => (
 const Employee_PayrollDetails = ({ data }) => {
   const pdfRef = useRef(null);
 
-  console.log(data);
-
   if (!data) {
     return (
       <div className="p-4 text-sm text-red-600">

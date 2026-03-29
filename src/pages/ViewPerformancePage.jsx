@@ -21,7 +21,6 @@ const ViewPerformancePage = () => {
     async function GetData() {
       const Resp = await EmployeeApi.getEmployeeById(id);
       setEmployee(Resp.data);
-      console.log(Resp.data);
     }
     GetData();
   }, []);

@@ -65,9 +65,7 @@ const Add_User_Objetive = () => {
     try {
       setLoading(true);
       setError(null);
-
-      console.log(newUser_Objetive);
-
+      
       await user_objetiveApi.createUser_Objetive(newUser_Objetive);
 
       setNewUser_Objetive({

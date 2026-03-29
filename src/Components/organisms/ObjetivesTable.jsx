@@ -1,5 +1,4 @@
 const ObjetivesTable = ({ objetives }) => {
-  console.log(objetives);
   return (
     <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200">
       <table className="min-w-full divide-y divide-gray-200 bg-white">

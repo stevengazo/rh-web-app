@@ -117,7 +117,6 @@ const MyProfilePage = () => {
       try {
         const resp = await VacationsApi.getVacationsByUser(user.id);
         setVacations(resp.data);
-        console.log('Vacaciones:', resp.data);
       } catch (error) {
         console.error('Error vacaciones:', error);
       }

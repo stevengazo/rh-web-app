@@ -59,10 +59,7 @@ const EmployeesPage = () => {
   const fetchEmployees = async () => {
     try {
       const response = await EmployeeApi.getAllEmployees();
-
       setEmployees(response.data);
-
-      console.log('Employees response:', response.data);
     } catch (err) {
       console.error('Error loading employees', err);
     }

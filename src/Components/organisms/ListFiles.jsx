@@ -1,7 +1,6 @@
 import { Trash2, Download } from 'lucide-react';
 
 const ListFiles = ({ files = [], onDelete }) => {
-  console.log(files);
   if (!files || files.length === 0) {
     return (
       <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">

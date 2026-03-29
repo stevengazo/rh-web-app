@@ -16,7 +16,6 @@ const AddExtra = () => {
       setTypes(Resp.data);
     }
     GetData();
-    console.log(types);
   }, []);
   return <form></form>;
 };

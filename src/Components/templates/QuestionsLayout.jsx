@@ -7,7 +7,6 @@ import AnswersAdd from '../organisms/AnswersAdd';
 import answersApi from '../../api/answersApi';
 
 const QuestionsLayout = ({ User_Question }) => {
-  console.log('User_Question en QuestionsLayout:', User_Question);
   const [showAddAnswer, setShowAddAnswer] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(false);
