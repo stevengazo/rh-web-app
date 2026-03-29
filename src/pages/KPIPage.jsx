@@ -1,27 +1,22 @@
 import { useEffect, useState } from 'react';
-
+import { motion, AnimatePresence } from 'framer-motion';
 import ObjetivesTable from '../Components/organisms/ObjetivesTable';
 import AddObjetive from '../Components/organisms/AddObjetive';
 import AddObjetiveCategory from '../Components/organisms/AddObjetiveCategory';
 import ObjetivesByUser from '../Components/organisms/ObjetivesByUser';
 import Add_User_Objetive from '../Components/organisms/Add_User_Objetive';
-
+import OffCanvasLarge from '../Components/OffCanvasLarge';
 import user_objetiveApi from '../api/user_objetiveApi';
+import useOffCanvas from '../hooks/useOffCanvas';
 import EmployeeApi from '../api/employeesApi';
 import kpiApi from '../api/kpiApi';
 
-const TABS = {
-  OBJECTIVES: 'objectives',
-  BY_USER: 'byUser',
-  ASSIGN: 'assign',
-  SETTINGS: 'settings',
-};
-
 const KPIPage = () => {
-  const [activeTab, setActiveTab] = useState(TABS.OBJECTIVES);
   const [kpis, setKpis] = useState([]);
   const [kpisByUser, setKpisByUser] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const { open, canvasTitle, canvasContent, openCanvas, closeCanvas } =
+    useOffCanvas();
 
   useEffect(() => {
     async function getDataAsync() {
@@ -43,109 +38,71 @@ const KPIPage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 space-y-6">
-      {/* HEADER */}
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
-        <p className="text-sm text-gray-600">
-          Gestión y administración de los indicadores de rendimiento de los
-          empleados.
-        </p>
-      </header>
-
-      {/* TABS */}
-      <div className="border-b border-gray-200">
-        <nav className="flex gap-6">
-          <TabButton
-            active={activeTab === TABS.OBJECTIVES}
-            onClick={() => setActiveTab(TABS.OBJECTIVES)}
+    <>
+      {/* OffCanvas */}
+      <AnimatePresence>
+        {open && (
+          <OffCanvasLarge
+            isOpen={open}
+            onClose={closeCanvas}
+            title={canvasTitle}
           >
-            Objetivos
-          </TabButton>
+            <motion.div
+              initial={{ x: 40, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 40, opacity: 0 }}
+            >
+              {canvasContent}
+            </motion.div>
+          </OffCanvasLarge>
+        )}
+      </AnimatePresence>
+      <>
+        <div className="max-w-7xl mx-auto px-4 space-y-6">
+          {/* HEADER */}
+          <header className="space-y-1">
+            <h1 className="text-2xl font-semibold">
+              Indicadores de Rendimiento
+            </h1>
+            <p className="text-sm text-gray-600">
+              Gestión y administración de los indicadores de rendimiento de los
+              empleados.
+            </p>
+          </header>
 
-          <TabButton
-            active={activeTab === TABS.BY_USER}
-            onClick={() => setActiveTab(TABS.BY_USER)}
+          <button
+            className="border rounded p-1 text-white bg-blue-500 hover:bg-blue-800 duration-200"
+            onClick={() => openCanvas('Agregar Objetivo', <AddObjetive />)}
           >
-            Objetivos por Usuario
-          </TabButton>
+            Agregar Objetivo
+          </button>
 
-          <TabButton
-            active={activeTab === TABS.ASSIGN}
-            onClick={() => setActiveTab(TABS.ASSIGN)}
+          <button
+            className="border rounded p-1 text-white bg-blue-500 hover:bg-blue-800 duration-200"
+            onClick={() =>
+              openCanvas('Agregar Categorías', <AddObjetiveCategory />)
+            }
           >
-            Asignar Objetivo
-          </TabButton>
+            Agregar Categorías
+          </button>
 
-          <TabButton
-            active={activeTab === TABS.SETTINGS}
-            onClick={() => setActiveTab(TABS.SETTINGS)}
+          <button
+            className="border rounded p-1 text-white bg-blue-500 hover:bg-blue-800 duration-200"
+            onClick={() =>
+              openCanvas('Agregar Objetivo a Usuario', <Add_User_Objetive />)
+            }
           >
-            Configuración
-          </TabButton>
-        </nav>
-      </div>
+            Agregar Objetivo a Usuario
+          </button>
 
-      {/* CONTENT */}
-      <div>
-        {/* TAB 1 */}
-        {activeTab === TABS.OBJECTIVES && (
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* FORM */}
-            <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-              <h2 className="font-semibold mb-4">Agregar Objetivo</h2>
-              <AddObjetive />
-            </div>
+          <h2 className="font-semibold mb-4">Objetivos (KPIs)</h2>
+          <ObjetivesTable objetives={kpis} />
 
-            {/* TABLE */}
-            <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-              <h2 className="font-semibold mb-4">Objetivos (KPIs)</h2>
-              <ObjetivesTable objetives={kpis} />
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2 */}
-        {activeTab === TABS.BY_USER && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-            <ObjetivesByUser
-              ObjetivesByUser={kpisByUser}
-              Employees={employees}
-            />
-          </div>
-        )}
-
-        {/* TAB 3 */}
-        {activeTab === TABS.ASSIGN && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm max-w-xl">
-            <Add_User_Objetive />
-          </div>
-        )}
-
-        {/* TAB 4 */}
-        {activeTab === TABS.SETTINGS && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm max-w-xl">
-            <AddObjetiveCategory />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const TabButton = ({ active, children, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`pb-3 text-sm font-medium border-b-2 transition-colors
-      ${
-        active
-          ? 'border-blue-600 text-blue-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-      }`}
-    >
-      {children}
-    </button>
+        
+          <ObjetivesByUser ObjetivesByUser={kpisByUser} Employees={employees} />
+        </div>
+      </>
+    </>
   );
 };
 
