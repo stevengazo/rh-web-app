@@ -11,6 +11,7 @@ import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
 import comissionsApi from '../api/comissionsApi';
 import ContactEmergencies from '../api/contactEmergenciesApi';
+import toast from 'react-hot-toast';
 
 export const TABS = {
   TRAINING: 'Certificaciones',
@@ -45,18 +46,36 @@ const useEmployeeView = (id, open) => {
   const fetchFiles = async () => {
     try {
       const allFiles = await FileApi.getByReference('Users', id);
-      if (allFiles.length > 0) {
+
+      if (Array.isArray(allFiles) && allFiles.length > 0) {
         setEmployeePhoto(allFiles[0]);
+      } else {
+        setEmployeePhoto(null);
       }
     } catch (err) {
-      console.error('Error cargando foto de usuario', err);
+      if (err?.response?.status === 404) {
+        setEmployeePhoto(null);
+      } else {
+        console.error('Error cargando foto de usuario', err);
+        toast.error('No se pudo cargar la foto del empleado');
+      }
     }
 
     try {
       const files = await FileApi.getByReference('Documents', id);
-      setOtherFiles(files);
+
+      if (Array.isArray(files)) {
+        setOtherFiles(files);
+      } else {
+        setOtherFiles([]);
+      }
     } catch (err) {
-      console.error('Error cargando otros archivos', err);
+      if (err?.response?.status === 404) {
+        setOtherFiles([]);
+      } else {
+        console.error('Error cargando otros archivos', err);
+        toast.error('No se pudieron cargar los archivos del empleado');
+      }
     }
   };
 
@@ -66,71 +85,158 @@ const useEmployeeView = (id, open) => {
   const fetchData = async () => {
     try {
       const res = await EmployeeApi.getEmployeeById(id);
-      setEmployee(res.data);
+
+      if (res?.data && typeof res.data === 'object') {
+        setEmployee(res.data);
+      } else {
+        setEmployee({});
+      }
     } catch (err) {
-      console.error('Error employee', err);
+      if (err?.response?.status === 404) {
+        setEmployee({});
+      } else {
+        console.error('Error employee', err);
+        toast.error('Error al cargar la información del empleado');
+      }
     }
 
     try {
       const res = await salaryApi.getSalariesByUser(id);
-      setSalaries(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setSalaries(res.data);
+      } else {
+        setSalaries([]);
+      }
     } catch (err) {
-      console.error('Error salaries', err);
+      if (err?.response?.status === 404) {
+        setSalaries([]);
+      } else {
+        console.error('Error salaries', err);
+        toast.error('Error al cargar los salarios');
+      }
     }
 
     try {
       const res = await actionApi.getActionsByUser(id);
-      setActions(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setActions(res.data);
+      } else {
+        setActions([]);
+      }
     } catch (err) {
-      console.error('Error actions', err);
+      if (err?.response?.status === 404) {
+        setActions([]);
+      } else {
+        console.error('Error actions', err);
+        toast.error('Error al cargar las acciones');
+      }
     }
 
     try {
       const res = await awardApi.getAwardsByUser(id);
-      setAwards(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setAwards(res.data);
+      } else {
+        setAwards([]);
+      }
     } catch (err) {
-      console.error('Error awards', err);
+      if (err?.response?.status === 404) {
+        setAwards([]);
+      } else {
+        console.error('Error awards', err);
+        toast.error('Error al cargar los reconocimientos');
+      }
     }
 
     try {
       const res = await certificationApi.getCertificationsByUser(id);
-      setCertifications(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setCertifications(res.data);
+      } else {
+        setCertifications([]);
+      }
     } catch (err) {
-      console.error('Error certifications', err);
+      if (err?.response?.status === 404) {
+        setCertifications([]);
+      } else {
+        console.error('Error certifications', err);
+        toast.error('Error al cargar las certificaciones');
+      }
     }
 
     try {
       const res = await courseApi.getCoursesByUser(id);
-      setCourses(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setCourses(res.data);
+      } else {
+        setCourses([]);
+      }
     } catch (err) {
-      console.error('Error courses', err);
+      if (err?.response?.status === 404) {
+        setCourses([]);
+      } else {
+        console.error('Error courses', err);
+        toast.error('Error al cargar los cursos');
+      }
     }
 
     try {
       const res = await extrasApi.getExtrasByUser(id);
-      setExtras(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setExtras(res.data);
+      } else {
+        setExtras([]);
+      }
     } catch (err) {
-      console.error('Error extras', err);
+      if (err?.response?.status === 404) {
+        setExtras([]);
+      } else {
+        console.error('Error extras', err);
+        toast.error('Error al cargar los extras');
+      }
     }
 
     try {
       const res = await comissionsApi.getComissionsByUser(id);
-      setComission(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setComission(res.data);
+      } else {
+        setComission([]);
+      }
     } catch (err) {
-      console.error('Error comissions', err);
+      if (err?.response?.status === 404) {
+        setComission([]);
+      } else {
+        console.error('Error comissions', err);
+        toast.error('Error al cargar las comisiones');
+      }
     }
 
     try {
       const res = await ContactEmergencies.getContactEmergenciesByUser(id);
-      setContacts(res.data);
+
+      if (Array.isArray(res?.data)) {
+        setContacts(res.data);
+      } else {
+        setContacts([]);
+      }
     } catch (err) {
-      console.error('Error contacts', err);
+      if (err?.response?.status === 404) {
+        setContacts([]);
+      } else {
+        console.error('Error contacts', err);
+        toast.error('Error al cargar los contactos de emergencia');
+      }
     }
   };
 
-  /* =========================
-     EFFECT
-  ========================= */
   useEffect(() => {
     if (!id) return;
 
@@ -139,7 +245,6 @@ const useEmployeeView = (id, open) => {
   }, [id, open]);
 
   return {
-    // state
     activeTab,
     employee,
     courses,
@@ -153,11 +258,9 @@ const useEmployeeView = (id, open) => {
     employeePhoto,
     otherFiles,
 
-    // setters
     setActiveTab,
     setEmployee,
 
-    // utils (por si quieres refrescar manualmente)
     refetch: () => {
       fetchFiles();
       fetchData();

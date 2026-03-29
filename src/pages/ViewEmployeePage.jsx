@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
-/* HOOK */
+/* HOOKS */
 import useEmployeeView, { TABS } from '../hooks/useEmployeeView';
+import useOffCanvas from '../hooks/useOffCanvas.js';
 
 /* COMPONENTS */
 import PageTitle from '../Components/PageTitle';
@@ -57,15 +57,13 @@ const ViewEmployeePage = () => {
   const { id } = useParams();
   const { user } = useAppContext();
 
-  const [open, setOpen] = useState(false);
-  const [canvasTitle, setCanvasTitle] = useState('');
-  const [canvasContent, setCanvasContent] = useState(null);
-
-  const openCanvas = (title, content) => {
-    setCanvasTitle(title);
-    setCanvasContent(content);
-    setOpen(true);
-  };
+  const {
+    open,
+    canvasTitle,
+    canvasContent,
+    openCanvas,
+    closeCanvas,
+  } = useOffCanvas();
 
   const {
     activeTab,
@@ -89,11 +87,7 @@ const ViewEmployeePage = () => {
       {/* OffCanvas */}
       <AnimatePresence>
         {open && (
-          <OffCanvas
-            isOpen={open}
-            onClose={() => setOpen(false)}
-            title={canvasTitle}
-          >
+          <OffCanvas isOpen={open} onClose={closeCanvas} title={canvasTitle}>
             <motion.div
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -106,10 +100,8 @@ const ViewEmployeePage = () => {
       </AnimatePresence>
 
       <div className="space-y-6">
-        {/* Título Página */}
         <PageTitle>Información del Empleado</PageTitle>
 
-        {/* Detalles del empleado + Foto + Botón Editar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             <Header title="Detalles del Empleado" />
@@ -123,7 +115,7 @@ const ViewEmployeePage = () => {
                 <EmployeeEdit
                   employee={employee}
                   setEmployee={setEmployee}
-                  onClose={() => setOpen(false)}
+                  onClose={closeCanvas}
                 />
               )
             }
@@ -132,7 +124,6 @@ const ViewEmployeePage = () => {
           </PrimaryButton>
         </div>
 
-        {/* Información general del empleado */}
         <div className="d-flex flex-row">
           <ViewEmployeePhoto
             img={employeePhoto?.filePath}
@@ -141,24 +132,12 @@ const ViewEmployeePage = () => {
           <EmployeeInfoCard employee={employee} />
         </div>
 
-        {/* Panel de acciones */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
           <SectionTitle>Acciones</SectionTitle>
 
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
             <button
-              className="
-        w-full sm:w-auto
-        flex items-center justify-center gap-2
-        bg-blue-600 hover:bg-blue-700
-        text-white
-        px-4 py-2.5
-        rounded-xl
-        text-sm font-medium
-        transition-all duration-200
-        active:scale-[0.97]
-        shadow-md hover:shadow-lg
-      "
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg"
               onClick={() =>
                 openCanvas(
                   'Agregar Imagen de Perfil',
@@ -181,7 +160,6 @@ const ViewEmployeePage = () => {
           </div>
         </div>
 
-        {/* TABS */}
         <div className="border-b border-gray-200">
           <div className="sm:hidden mt-2">
             <select
@@ -210,7 +188,6 @@ const ViewEmployeePage = () => {
           </nav>
         </div>
 
-        {/* CONTENT */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
           {activeTab === TABS.TRAINING && (
             <>
@@ -228,7 +205,7 @@ const ViewEmployeePage = () => {
                 OnEdit={(e) =>
                   openCanvas(
                     'Editar',
-                    <CourseEdit item={e} OnClose={() => setOpen(false)} />
+                    <CourseEdit item={e} OnClose={closeCanvas} />
                   )
                 }
               />
@@ -251,7 +228,7 @@ const ViewEmployeePage = () => {
                     'Editar Certificación',
                     <CertificationEdit
                       item={e}
-                      OnUpdate={() => setOpen(false)}
+                      OnUpdate={closeCanvas}
                     />
                   )
                 }
@@ -290,14 +267,11 @@ const ViewEmployeePage = () => {
                 OnEdit={(e) =>
                   openCanvas(
                     'Editar',
-                    <ActionEdit action={e} OnEdited={() => setOpen(false)} />
+                    <ActionEdit action={e} OnEdited={closeCanvas} />
                   )
                 }
                 OnSelect={(e) =>
-                  openCanvas(
-                    'Acción de Personal',
-                    <ActionView action={e} />
-                  )
+                  openCanvas('Acción de Personal', <ActionView action={e} />)
                 }
               />
             </>
@@ -382,7 +356,7 @@ const ViewEmployeePage = () => {
   );
 };
 
-/* Helpers (sin cambios) */
+/* Helpers */
 
 const TabButton = ({ active, children, onClick }) => (
   <button
