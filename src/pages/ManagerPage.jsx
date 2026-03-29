@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, UserPlus, CalendarCheck, BarChart3 } from 'lucide-react';
 
 import { useAppContext } from '../context/AppContext';
-import EmployeeApi from '../api/employeesApi';
-import actionApi from '../api/actionApi';
-import extrasApi from '../api/extrasApi';
-import absencesApi from '../api/absencesApi';
-import DepartamentApi from '../api/departamentApi';
+import { useManagerDashboard } from '../hooks/useManagerDashboard';
 
 import {
   LineChart,
@@ -26,21 +21,6 @@ import {
 
 import SectionTitle from '../Components/SectionTitle';
 
-const months = [
-  'Ene',
-  'Feb',
-  'Mar',
-  'Abr',
-  'May',
-  'Jun',
-  'Jul',
-  'Ago',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dic',
-];
-
 const COLORS = [
   '#6366f1',
   '#22c55e',
@@ -53,121 +33,16 @@ const COLORS = [
 const ManagerPage = () => {
   const { user } = useAppContext();
 
-  const [countEmployees, setCountEmployees] = useState(0);
-  const [countActions, setCountActions] = useState(0);
-
-  const [activityChart, setActivityChart] = useState([]);
-  const [birthdayChart, setBirthdayChart] = useState([]);
-  const [departamentChart, setDepartamentChart] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadDashboardData = async () => {
-      try {
-        const [
-          employeesRes,
-          actionsRes,
-          extrasRes,
-          absencesRes,
-          departamentsRes,
-        ] = await Promise.all([
-          EmployeeApi.getAllEmployees(),
-          actionApi.getAllActions(),
-          extrasApi.getAllExtras(),
-          absencesApi.getAllAbsences(),
-          DepartamentApi.getAllDepartaments(),
-        ]);
-
-        const employees = employeesRes?.data || [];
-        const actions = actionsRes?.data || [];
-        const extras = extrasRes?.data || [];
-        const absences = absencesRes?.data || [];
-        const departaments = departamentsRes?.data || [];
-
-        setCountEmployees(employees.length);
-        setCountActions(actions.length);
-
-        /* =============================
-           ACTIVIDAD MENSUAL
-        ============================= */
-
-        const monthly = months.map((m) => ({
-          name: m,
-          actions: 0,
-          extras: 0,
-          absences: 0,
-        }));
-
-        actions.forEach((a) => {
-          if (!a.actionDate) return;
-          const month = new Date(a.actionDate).getMonth();
-          monthly[month].actions++;
-        });
-
-        extras.forEach((e) => {
-          if (!e.start) return;
-          const month = new Date(e.start).getMonth();
-          monthly[month].extras++;
-        });
-
-        absences.forEach((a) => {
-          if (!a.startDate) return;
-          const month = new Date(a.startDate).getMonth();
-          monthly[month].absences++;
-        });
-
-        setActivityChart(monthly);
-
-        /* =============================
-           CUMPLEAÑOS
-        ============================= */
-
-        const birthdays = months.map((m) => ({
-          name: m,
-          cumpleanos: 0,
-        }));
-
-        employees.forEach((emp) => {
-          if (!emp.birthDate) return;
-
-          const month = new Date(emp.birthDate).getMonth();
-          birthdays[month].cumpleanos++;
-        });
-
-        setBirthdayChart(birthdays);
-
-        /* =============================
-           EMPLEADOS POR DEPARTAMENTO
-        ============================= */
-
-        const deptMap = {};
-
-        employees.forEach((emp) => {
-          const dept = emp?.departament?.name || 'Sin dept.';
-
-          if (!deptMap[dept]) {
-            deptMap[dept] = 0;
-          }
-
-          deptMap[dept]++;
-        });
-
-        const deptChart = Object.keys(deptMap).map((key) => ({
-          name: key,
-          value: deptMap[key],
-        }));
-
-        setDepartamentChart(deptChart);
-      } catch (error) {
-        console.error('Error cargando dashboard', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDashboardData();
-  }, [user]);
+  const {
+    loading,
+    countEmployees,
+    countActions,
+    activityChart,
+    birthdayChart,
+    departamentChart,
+    totalAbsences,
+    totalExtras,
+  } = useManagerDashboard(user);
 
   const cards = [
     {
@@ -184,13 +59,13 @@ const ManagerPage = () => {
     },
     {
       title: 'Ausencias',
-      value: activityChart.reduce((a, b) => a + b.absences, 0),
+      value: totalAbsences,
       icon: CalendarCheck,
       color: 'text-blue-600',
     },
     {
       title: 'Horas Extras',
-      value: activityChart.reduce((a, b) => a + b.extras, 0),
+      value: totalExtras,
       icon: BarChart3,
       color: 'text-purple-600',
     },
@@ -205,7 +80,6 @@ const ManagerPage = () => {
       <SectionTitle>Resumen general del sistema</SectionTitle>
 
       {/* CARDS */}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => {
           const Icon = card.icon;
@@ -216,12 +90,11 @@ const ManagerPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className=" rounded-xl shadow-sm p-6 flex justify-between"
+              className="rounded-xl shadow-sm p-6 flex justify-between"
             >
               <div>
                 <p className="text-sm text-slate-500">{card.title}</p>
-
-                <h3 className="text-2xl font-bold text-slate-800 ">
+                <h3 className="text-2xl font-bold text-slate-800">
                   {loading ? '...' : card.value}
                 </h3>
               </div>
@@ -233,7 +106,6 @@ const ManagerPage = () => {
       </div>
 
       {/* ACTIVIDAD */}
-
       <div className="bg-white p-6 rounded-xl shadow-sm">
         <h3 className="font-semibold mb-4">Actividad mensual</h3>
 
@@ -241,7 +113,6 @@ const ManagerPage = () => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={activityChart}>
               <CartesianGrid strokeDasharray="3 3" />
-
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
@@ -254,11 +125,10 @@ const ManagerPage = () => {
         </div>
       </div>
 
-      {/* GRAFICOS EXTRA */}
-
+      {/* GRAFICOS */}
       <div className="grid md:grid-cols-2 gap-6">
+        
         {/* CUMPLEAÑOS */}
-
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h3 className="font-semibold mb-4">Cumpleaños del personal</h3>
 
@@ -266,11 +136,9 @@ const ManagerPage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={birthdayChart}>
                 <CartesianGrid strokeDasharray="3 3" />
-
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-
                 <Bar dataKey="cumpleanos" fill="#6366f1" />
               </BarChart>
             </ResponsiveContainer>
@@ -278,7 +146,6 @@ const ManagerPage = () => {
         </div>
 
         {/* DEPARTAMENTOS */}
-
         <div className="bg-white p-6 rounded-xl shadow-sm">
           <h3 className="font-semibold mb-4">Empleados por departamento</h3>
 
