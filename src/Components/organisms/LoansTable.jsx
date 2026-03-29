@@ -41,17 +41,20 @@ const LoansTable = ({ loans = [] }) => {
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 sticky top-0 z-10">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+          {/* =========================
+          HEADER
+      ========================= */}
+          <thead className="bg-slate-800">
             <tr>
               {['ID', 'Título', 'Estado', 'Fecha', 'Monto'].map((h) => (
                 <th
                   key={h}
                   className={`
-                    px-4 py-3 text-sm font-semibold text-gray-600
-                    ${h === 'Monto' ? 'text-right' : 'text-left'}
-                  `}
+                px-4 py-3 text-sm font-semibold text-white
+                ${h === 'Monto' ? 'text-right' : 'text-left'}
+              `}
                 >
                   {h}
                 </th>
@@ -59,12 +62,15 @@ const LoansTable = ({ loans = [] }) => {
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          {/* =========================
+          BODY
+      ========================= */}
+          <tbody className="divide-y divide-gray-200">
             {filteredLoans.length === 0 ? (
               <tr>
                 <td
                   colSpan={5}
-                  className="px-4 py-8 text-center text-sm text-gray-500"
+                  className="px-4 py-6 text-center text-sm text-gray-500"
                 >
                   No se encontraron préstamos
                 </td>
@@ -74,36 +80,38 @@ const LoansTable = ({ loans = [] }) => {
                 <tr
                   key={loan.loanId}
                   onClick={() => navigate(`/manager/loan/${loan.loanId}`)}
-                  className="
-                    cursor-pointer transition
-                    hover:bg-blue-50
-                  "
+                  className="cursor-pointer transition hover:bg-slate-50"
                 >
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  {/* ID */}
+                  <td className="px-4 py-3 text-sm text-slate-700">
                     {loan.loanId}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  {/* TITULO */}
+                  <td className="px-4 py-3 text-sm text-slate-700">
                     {loan.title}
                   </td>
 
+                  {/* ESTADO */}
                   <td className="px-4 py-3 text-sm">
                     <span
                       className={`
-                        inline-flex items-center
-                        px-3 py-1 rounded-full text-xs font-medium
-                        ${STATUS_STYLES[loan.state] ?? 'bg-gray-100 text-gray-600'}
-                      `}
+                    inline-flex items-center
+                    px-3 py-1 rounded-full text-xs font-medium
+                    ${STATUS_STYLES[loan.state] ?? 'bg-gray-100 text-gray-600'}
+                  `}
                     >
                       {loan.state}
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-gray-600">
+                  {/* FECHA */}
+                  <td className="px-4 py-3 text-sm text-slate-600">
                     {new Date(loan.createdAt).toLocaleDateString()}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-right font-semibold text-gray-800">
+                  {/* MONTO */}
+                  <td className="px-4 py-3 text-sm text-right font-semibold text-emerald-600">
                     ₡{Number(loan.amount).toLocaleString()}
                   </td>
                 </tr>

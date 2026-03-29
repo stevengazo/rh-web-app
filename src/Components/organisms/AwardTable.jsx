@@ -41,7 +41,7 @@ const AwardTable = ({ awards = [] }) => {
       variants={tableVariants}
       initial="hidden"
       animate="visible"
-      className="mx-auto w-full max-w-5xl border-collapse rounded-xl overflow-hidden shadow"
+      className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
     >
       <thead className="bg-slate-800 text-white text-sm">
         <tr>

@@ -44,7 +44,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
 
           <tbody className="divide-y">
             {employees.map((emp) => (
-              <tr
+              <motion.tr
                 key={emp.id}
                 whileHover={{ backgroundColor: '#f8fafc' }}
                 className="transition"
@@ -85,7 +85,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
                     </button>
                   </div>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </motion.table>

@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 
-import FileApi from '../api/FileApi';
+/* HOOK */
+import useEmployeeView, { TABS } from '../hooks/useEmployeeView';
+
 /* COMPONENTS */
 import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
@@ -45,50 +47,16 @@ import ExtraAdd from '../Components/organisms/ExtraAdd';
 import ExtraTable from '../Components/organisms/ExtraTable';
 import ExtraView from '../Components/organisms/ExtraView';
 
-/* API */
-import EmployeeApi from '../api/employeesApi';
-import courseApi from '../api/courseApi';
-import certificationApi from '../api/certificationApi';
-import salaryApi from '../api/salaryApi';
-import actionApi from '../api/actionApi';
-import awardApi from '../api/awardsApi';
-import extrasApi from '../api/extrasApi';
-import comissionsApi from '../api/comissionsApi';
 import CertificationEdit from '../Components/organisms/CertificationEdit';
-import ContactEmergencies from '../api/contactEmergenciesApi';
 import EmployeeInfoCard from '../Components/organisms/EmployeeInfoCard';
 import ListFiles from '../Components/organisms/ListFiles';
 import { KeyIcon, UserX } from 'lucide-react';
 import UploadFile from '../Components/organisms/UploadFile';
 
-const TABS = {
-  TRAINING: 'Certificaciones',
-  SALARY: 'Salarios',
-  ACTIONS: 'Acciones',
-  EXTRAS: 'Extras',
-  COMISSIONS: 'Comisiones',
-  AWARDS: 'Reconocimientos',
-  CONTACTS: 'Contactos',
-  FILES: 'Archivos',
-};
-
 const ViewEmployeePage = () => {
   const { id } = useParams();
   const { user } = useAppContext();
 
-  const [activeTab, setActiveTab] = useState(TABS.TRAINING);
-  const [employee, setEmployee] = useState({});
-  const [courses, setCourses] = useState([]);
-  const [certifications, setCertifications] = useState([]);
-  const [salaries, setSalaries] = useState([]);
-  const [actions, setActions] = useState([]);
-  const [awards, setAwards] = useState([]);
-  const [comission, setComission] = useState([]);
-  const [contacts, setContacts] = useState([]);
-  const [employeePhoto, setEmployeePhoto] = useState(null);
-  const [extras, setExtras] = useState([]);
-
-  const [otherFiles, setOtherFiles] = useState([]);
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
   const [canvasContent, setCanvasContent] = useState(null);
@@ -99,95 +67,22 @@ const ViewEmployeePage = () => {
     setOpen(true);
   };
 
-  useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const allFiles = await FileApi.getByReference('Users', id);
-
-        if (allFiles.length > 0) {
-          // Solo tomamos la primera imagen como foto de perfil
-          setEmployeePhoto(allFiles[0]);
-        }
-      } catch (err) {
-        console.error('Error cargando foto de usuario', err);
-      }
-
-      try {
-        const otherFiles = await FileApi.getByReference('Documents', id); // Cambia 'Documents' por tu otra tabla si es necesario
-        setOtherFiles(otherFiles);
-      } catch (err) {
-        console.error('Error cargando otros archivos', err);
-      }
-    };
-
-    fetchFiles();
-
-    const fetchData = async () => {
-      try {
-        const res = await EmployeeApi.getEmployeeById(id);
-        setEmployee(res.data);
-      } catch (err) {
-        console.error('Error employee', err);
-      }
-
-      try {
-        const res = await salaryApi.getSalariesByUser(id);
-        setSalaries(res.data);
-      } catch (err) {
-        console.error('Error salaries', err);
-      }
-
-      try {
-        const res = await actionApi.getActionsByUser(id);
-        setActions(res.data);
-      } catch (err) {
-        console.error('Error actions', err);
-      }
-
-      try {
-        const res = await awardApi.getAwardsByUser(id);
-        setAwards(res.data);
-      } catch (err) {
-        console.error('Error awards', err);
-      }
-
-      try {
-        const res = await certificationApi.getCertificationsByUser(id);
-        setCertifications(res.data);
-      } catch (err) {
-        console.error('Error certifications', err);
-      }
-
-      try {
-        const res = await courseApi.getCoursesByUser(id);
-        setCourses(res.data);
-      } catch (err) {
-        console.error('Error courses', err);
-      }
-
-      try {
-        const res = await extrasApi.getExtrasByUser(id);
-        setExtras(res.data);
-      } catch (err) {
-        console.error('Error extras', err);
-      }
-
-      try {
-        const res = await comissionsApi.getComissionsByUser(id);
-        setComission(res.data);
-      } catch (err) {
-        console.error('Error comissions', err);
-      }
-      try {
-        const res = await ContactEmergencies.getContactEmergenciesByUser(id);
-        setContacts(res.data);
-      } catch (err) {
-        console.error('Error contacts', err);
-      }
-    };
-
-    fetchData();
-  }, [open]);
+  const {
+    activeTab,
+    setActiveTab,
+    employee,
+    setEmployee,
+    courses,
+    certifications,
+    salaries,
+    actions,
+    awards,
+    comission,
+    contacts,
+    extras,
+    employeePhoto,
+    otherFiles,
+  } = useEmployeeView(id, open);
 
   return (
     <>
@@ -250,7 +145,6 @@ const ViewEmployeePage = () => {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
           <SectionTitle>Acciones</SectionTitle>
 
-          {/* Cambiar Contraseña y Desactivar */}
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
             <button
               className="
@@ -287,9 +181,8 @@ const ViewEmployeePage = () => {
           </div>
         </div>
 
-        {/* TABS RESPONSIVE */}
+        {/* TABS */}
         <div className="border-b border-gray-200">
-          {/* MOBILE DROPDOWN */}
           <div className="sm:hidden mt-2">
             <select
               value={activeTab}
@@ -304,7 +197,6 @@ const ViewEmployeePage = () => {
             </select>
           </div>
 
-          {/* DESKTOP TABS */}
           <nav className="hidden sm:flex gap-6 min-w-max px-1 mt-2">
             {Object.entries(TABS).map(([key, value]) => (
               <TabButton
@@ -318,9 +210,8 @@ const ViewEmployeePage = () => {
           </nav>
         </div>
 
-        {/* CONTENT TABS */}
+        {/* CONTENT */}
         <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          {/* TRAINING */}
           {activeTab === TABS.TRAINING && (
             <>
               <Header
@@ -334,10 +225,10 @@ const ViewEmployeePage = () => {
               />
               <CourseTable
                 courses={courses}
-                OnEdit={(element) =>
+                OnEdit={(e) =>
                   openCanvas(
                     'Editar',
-                    <CourseEdit item={element} OnClose={setOpen(false)} />
+                    <CourseEdit item={e} OnClose={() => setOpen(false)} />
                   )
                 }
               />
@@ -355,12 +246,12 @@ const ViewEmployeePage = () => {
               />
               <CertificationTable
                 certifications={certifications}
-                OnEdit={(element) =>
+                OnEdit={(e) =>
                   openCanvas(
                     'Editar Certificación',
                     <CertificationEdit
-                      item={element}
-                      OnUpdate={setOpen(false)}
+                      item={e}
+                      OnUpdate={() => setOpen(false)}
                     />
                   )
                 }
@@ -368,7 +259,6 @@ const ViewEmployeePage = () => {
             </>
           )}
 
-          {/* SALARY */}
           {activeTab === TABS.SALARY && (
             <>
               <Header
@@ -384,7 +274,6 @@ const ViewEmployeePage = () => {
             </>
           )}
 
-          {/* ACTIONS */}
           {activeTab === TABS.ACTIONS && (
             <>
               <Header
@@ -398,23 +287,22 @@ const ViewEmployeePage = () => {
               />
               <ActionTable
                 actions={actions}
-                OnEdit={(element) =>
+                OnEdit={(e) =>
                   openCanvas(
                     'Editar',
-                    <ActionEdit action={element} OnEdited={setOpen(false)} />
+                    <ActionEdit action={e} OnEdited={() => setOpen(false)} />
                   )
                 }
-                OnSelect={(element) =>
+                OnSelect={(e) =>
                   openCanvas(
                     'Acción de Personal',
-                    <ActionView action={element} />
+                    <ActionView action={e} />
                   )
                 }
               />
             </>
           )}
 
-          {/* EXTRAS */}
           {activeTab === TABS.EXTRAS && (
             <>
               <Header
@@ -428,14 +316,13 @@ const ViewEmployeePage = () => {
               />
               <ExtraTable
                 extras={extras}
-                onSelect={(element) =>
-                  openCanvas('Ver', <ExtraView extra={element} />)
+                onSelect={(e) =>
+                  openCanvas('Ver', <ExtraView extra={e} />)
                 }
               />
             </>
           )}
 
-          {/* COMISSIONS */}
           {activeTab === TABS.COMISSIONS && (
             <>
               <Header
@@ -451,36 +338,40 @@ const ViewEmployeePage = () => {
             </>
           )}
 
-          {/* AWARDS */}
           {activeTab === TABS.AWARDS && (
             <>
               <Header
                 title="Reconocimiento"
-                action={() => openCanvas('Registrar', <AddAward userId={id} />)}
+                action={() =>
+                  openCanvas('Registrar', <AddAward userId={id} />)
+                }
               />
               <AwardTable awards={awards} />
             </>
           )}
 
-          {/* CONTACTS */}
           {activeTab === TABS.CONTACTS && (
             <>
               <Header
                 title="Contactos"
                 action={() =>
-                  openCanvas('Agregar', <ContactsEmergenciesAdd userId={id} />)
+                  openCanvas(
+                    'Agregar',
+                    <ContactsEmergenciesAdd userId={id} />
+                  )
                 }
               />
               <ContactsEmergencyTable items={contacts} />
             </>
           )}
 
-          {/* Files */}
           {activeTab === TABS.FILES && (
             <>
               <Header
                 title="Archivos"
-                action={() => openCanvas('Agregar', <UploadFile userId={id} />)}
+                action={() =>
+                  openCanvas('Agregar', <UploadFile userId={id} />)
+                }
               />
               <ListFiles files={otherFiles} />
             </>
@@ -490,6 +381,8 @@ const ViewEmployeePage = () => {
     </>
   );
 };
+
+/* Helpers (sin cambios) */
 
 const TabButton = ({ active, children, onClick }) => (
   <button

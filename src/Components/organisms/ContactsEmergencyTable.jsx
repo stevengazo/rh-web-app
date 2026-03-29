@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="mx-auto w-full max-w-6xl border-collapse rounded-xl overflow-hidden shadow">
       <table className="w-full border border-gray-200 rounded-lg">
         <thead className="bg-slate-800">
           <tr>

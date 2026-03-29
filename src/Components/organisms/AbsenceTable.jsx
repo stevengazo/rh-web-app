@@ -78,60 +78,79 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -12 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="w-full overflow-x-auto"
       >
-        <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 sticky top-0 z-10">
+        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+          {/* =========================
+          HEADER
+      ========================= */}
+          <thead className="bg-slate-800">
             <tr>
               <th
                 onClick={() => requestSort('employee')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-left cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Empleado{sortIcon('employee')}
+                <div className="flex items-center gap-2">
+                  Empleado {sortIcon('employee')}
+                </div>
               </th>
 
               <th
                 onClick={() => requestSort('title')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-left cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Título{sortIcon('title')}
+                <div className="flex items-center gap-2">
+                  Título {sortIcon('title')}
+                </div>
               </th>
 
               <th
                 onClick={() => requestSort('startDate')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-left cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Inicio{sortIcon('startDate')}
+                <div className="flex items-center gap-2">
+                  Inicio {sortIcon('startDate')}
+                </div>
               </th>
 
               <th
                 onClick={() => requestSort('endDate')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-left cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Fin{sortIcon('endDate')}
+                <div className="flex items-center gap-2">
+                  Fin {sortIcon('endDate')}
+                </div>
               </th>
 
               <th
                 onClick={() => requestSort('days')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-center cursor-pointer select-none"
+                className="px-4 py-3 text-center text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Días{sortIcon('days')}
+                <div className="flex items-center justify-center gap-2">
+                  Días {sortIcon('days')}
+                </div>
               </th>
 
               <th
                 onClick={() => requestSort('justified')}
-                className="px-4 py-3 text-sm font-semibold text-gray-600 text-left cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
               >
-                Justificada{sortIcon('justified')}
+                <div className="flex items-center gap-2">
+                  Justificada {sortIcon('justified')}
+                </div>
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          {/* =========================
+          BODY
+      ========================= */}
+          <tbody className="divide-y divide-gray-200">
             {sortedItems.length === 0 ? (
               <tr>
                 <td
                   colSpan={6}
-                  className="px-4 py-8 text-center text-sm text-gray-500"
+                  className="px-4 py-6 text-center text-sm text-gray-500"
                 >
                   No hay ausencias registradas
                 </td>
@@ -141,39 +160,45 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
                 <tr
                   key={item.absenceId}
                   onClick={() => OnSelectedView?.(item)}
-                  className="cursor-pointer transition hover:bg-blue-50"
+                  className="cursor-pointer transition hover:bg-slate-50"
                 >
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  {/* EMPLEADO */}
+                  <td className="px-4 py-3 text-sm text-slate-700">
                     {item.user?.firstName} {item.user?.lastName}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-gray-700">
+                  {/* TITULO */}
+                  <td className="px-4 py-3 text-sm text-slate-700">
                     {item.title}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(item.startDate).toLocaleString()}
+                  {/* INICIO */}
+                  <td className="px-4 py-3 text-sm text-slate-600">
+                    {new Date(item.startDate).toLocaleDateString()}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(item.endDate).toLocaleString()}
+                  {/* FIN */}
+                  <td className="px-4 py-3 text-sm text-slate-600">
+                    {new Date(item.endDate).toLocaleDateString()}
                   </td>
 
-                  <td className="px-4 py-3 text-sm text-center font-medium text-gray-800">
+                  {/* DIAS */}
+                  <td className="px-4 py-3 text-sm text-center font-medium text-slate-800">
                     {calcDays(item.startDate, item.endDate).toFixed(2)}
                   </td>
 
+                  {/* JUSTIFICADA */}
                   <td className="px-4 py-3 text-sm">
                     <span
                       className={`
-                        inline-flex items-center
-                        px-3 py-1 rounded-full text-xs font-medium
-                        ${
-                          item.justified
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-600'
-                        }
-                      `}
+                    inline-flex items-center
+                    px-3 py-1 rounded-full text-xs font-medium
+                    ${
+                      item.justified
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-gray-100 text-gray-600'
+                    }
+                  `}
                     >
                       {item.justified ? 'Sí' : 'No'}
                     </span>

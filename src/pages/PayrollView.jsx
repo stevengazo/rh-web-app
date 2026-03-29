@@ -71,7 +71,6 @@ const PayrollView = () => {
   return (
     <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto">
       <SectionTitle>Detalle de Nómina - ID: {payroll.payrollId}</SectionTitle>
-
       {/* Información General */}
       <div className="bg-white shadow-sm rounded-2xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <InfoItem label="Tipo" value={payroll.payrollType} />
@@ -82,42 +81,78 @@ const PayrollView = () => {
         <InfoItem label="Fecha Final" value={formatDate(payroll.finalDate)} />
         <InfoItem label="Empleados" value={payroll.payrolls.length} />
       </div>
-
       {/* Tabla Desktop */}
-      <div className="hidden md:block bg-white shadow-sm rounded-2xl overflow-x-auto">
-        <table className="w-full text-sm min-w-[600px]">
-          <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+
+      <div className="hidden md:block w-full overflow-x-auto">
+        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+          {/* =========================
+          HEADER
+      ========================= */}
+          <thead className="bg-slate-800">
             <tr>
-              <th className="p-4 text-left">Empleado</th>
-              <th className="p-4 text-right">Salario Bruto</th>
-              <th className="p-4 text-right">Deducciones</th>
-              <th className="p-4 text-right">Salario Neto</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+                Empleado
+              </th>
+
+              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+                Salario Bruto
+              </th>
+
+              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+                Deducciones
+              </th>
+
+              <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+                Salario Neto
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {payroll.payrolls.map((item) => (
-              <tr
-                key={item.employee_PayrollId}
-                className="border-t hover:bg-gray-50 transition"
-              >
-                <td className="p-4">
-                  <GetEmployeeName id={item.userId} />
-                </td>
-                <td className="p-4 text-right font-medium">
-                  {formatCurrency(item.grossSalary)}
-                </td>
-                <td className="p-4 text-right text-red-500">
-                  {formatCurrency(item.totalDeductions)}
-                </td>
-                <td className="p-4 text-right text-green-600 font-semibold">
-                  {formatCurrency(item.netAmount)}
+
+          {/* =========================
+          BODY
+      ========================= */}
+          <tbody className="divide-y divide-gray-200">
+            {payroll.payrolls.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-4 py-6 text-center text-sm text-gray-500"
+                >
+                  No hay registros de planilla
                 </td>
               </tr>
-            ))}
+            ) : (
+              payroll.payrolls.map((item) => (
+                <tr
+                  key={item.employee_PayrollId}
+                  className="hover:bg-slate-50 transition"
+                >
+                  {/* EMPLEADO */}
+                  <td className="px-4 py-3 text-sm text-slate-700">
+                    <GetEmployeeName id={item.userId} />
+                  </td>
+
+                  {/* BRUTO */}
+                  <td className="px-4 py-3 text-sm text-right font-medium text-slate-700">
+                    {formatCurrency(item.grossSalary)}
+                  </td>
+
+                  {/* DEDUCCIONES */}
+                  <td className="px-4 py-3 text-sm text-right text-red-500 font-medium">
+                    {formatCurrency(item.totalDeductions)}
+                  </td>
+
+                  {/* NETO */}
+                  <td className="px-4 py-3 text-sm text-right text-emerald-600 font-semibold">
+                    {formatCurrency(item.netAmount)}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-
+    
       {/* Vista Mobile tipo Cards */}
       <div className="md:hidden space-y-4">
         {payroll.payrolls.map((item) => (
@@ -152,7 +187,6 @@ const PayrollView = () => {
           </div>
         ))}
       </div>
-
       {/* Totales */}
       {totals && (
         <div className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
