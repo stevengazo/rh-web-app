@@ -1,72 +1,138 @@
+/**
+ * @file contactEmergenciesApi.js
+ * @description Cliente API para la gestión de contactos de emergencia con manejo seguro de errores y fallback.
+ */
+
 import apiClient from './apiClient';
 
 /**
- * API para la gestión de contactos de emergencia.
- * Proporciona métodos para consultar, crear, actualizar y eliminar
- * contactos de emergencia asociados a usuarios.
+ * Devuelve de forma segura la respuesta del API o un valor por defecto.
+ * @param {import("axios").AxiosResponse} response - Respuesta de axios
+ * @param {*} fallback - Valor por defecto si no hay datos
+ * @returns {*} data o fallback
  */
+const safeResponse = (response, fallback) => {
+  if (!response || !response.data) return fallback;
+  return response.data;
+};
+
+/**
+ * Maneja errores de API.
+ * Para errores 404 devuelve el fallback silenciosamente.
+ * Muestra advertencia en consola solo en modo desarrollo.
+ * @param {any} error - Error capturado
+ * @param {*} fallback - Valor por defecto
+ * @returns {*} fallback
+ */
+const handleError = (error, fallback) => {
+  if (error.response?.status === 404) {
+    if (import.meta.env.MODE === 'development') {
+      console.warn('API Warning: Recurso no encontrado (404)');
+    }
+    return fallback;
+  }
+
+  if (import.meta.env.MODE === 'development') {
+    console.warn('API Error:', error.response?.data || error.message);
+  }
+  return fallback;
+};
+
 const ContactEmergencies = {
   /**
-   * Obtiene todos los contactos de emergencia registrados.
-   *
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener todos los contactos de emergencia
+   * @returns {Promise<Array>} Lista de contactos o vacía
    */
-  getAllContactEmergencies: () => {
-    return apiClient.get(`/ContactEmergencies`);
-  },
-  getContactEmergenciesByUser: (id) => {
-    return apiClient.get(`/ContactEmergencies/user/${id}`);
-  },
-
-  /**
-   * Obtiene un contacto de emergencia por su identificador.
-   *
-   * @param {number|string} id - Identificador del contacto de emergencia.
-   * @returns {Promise} Promesa con la respuesta del servidor.
-   */
-  getContactEmergenciesById: (id) => {
-    return apiClient.get(`/ContactEmergencies/${id}`);
+  getAllContactEmergencies: async () => {
+    try {
+      const res = await apiClient.get('/ContactEmergencies');
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * Obtiene los contactos de emergencia asociados a un usuario específico.
-   *
-   * @param {number|string} id - Identificador del usuario.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener contactos de emergencia por usuario
+   * @param {number|string} id - ID del usuario
+   * @returns {Promise<Array>} Lista de contactos o vacía
    */
-  getContactEmergenciesByUser: (id) => {
-    return apiClient.get(`/ContactEmergencies/user/${id}`);
+  getContactEmergenciesByUser: async (id) => {
+    if (!id) return [];
+
+    try {
+      const res = await apiClient.get(`/ContactEmergencies/user/${id}`);
+   
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * Crea un nuevo contacto de emergencia.
-   *
-   * @param {Object} contact - Objeto que contiene los datos del contacto de emergencia.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener contacto de emergencia por ID
+   * @param {number|string} id - ID del contacto
+   * @returns {Promise<Object|null>} Contacto o null
    */
-  createContactEmergency: (contact) => {
-    return apiClient.post(`/ContactEmergencies`, contact);
+  getContactEmergenciesById: async (id) => {
+    if (!id) return null;
+
+    try {
+      const res = await apiClient.get(`/ContactEmergencies/${id}`);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * Actualiza un contacto de emergencia existente.
-   *
-   * @param {number|string} id - Identificador del contacto de emergencia.
-   * @param {Object} contact - Objeto con los datos actualizados del contacto de emergencia.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Crear nuevo contacto de emergencia
+   * @param {Object} contact - Datos del contacto
+   * @returns {Promise<Object|null>} Contacto creado o null
    */
-  updateContactEmergency: (id, contact) => {
-    return apiClient.put(`/ContactEmergencies/${id}`, contact);
+  createContactEmergency: async (contact) => {
+    if (!contact) return null;
+
+    try {
+      const res = await apiClient.post('/ContactEmergencies', contact);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * Elimina un contacto de emergencia.
-   *
-   * @param {number|string} id - Identificador del contacto de emergencia.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Actualizar contacto de emergencia existente
+   * @param {number|string} id - ID del contacto
+   * @param {Object} contact - Datos actualizados
+   * @returns {Promise<Object|null>} Contacto actualizado o null
    */
-  deleteContactEmergency: (id) => {
-    return apiClient.delete(`/ContactEmergencies/${id}`);
+  updateContactEmergency: async (id, contact) => {
+    if (!id || !contact) return null;
+
+    try {
+      const res = await apiClient.put(`/ContactEmergencies/${id}`, contact);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
+  },
+
+  /**
+   * Eliminar contacto de emergencia
+   * @param {number|string} id - ID del contacto
+   * @returns {Promise<boolean>} true si se eliminó, false si hubo error
+   */
+  deleteContactEmergency: async (id) => {
+    if (!id) return false;
+
+    try {
+      await apiClient.delete(`/ContactEmergencies/${id}`);
+      return true;
+    } catch (error) {
+      handleError(error, false);
+      return false;
+    }
   },
 };
 

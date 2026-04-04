@@ -7,24 +7,49 @@ import DepartamentApi from '../../api/departamentApi';
 import toast from 'react-hot-toast';
 
 const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
+
+  console.log(employee)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [departaments, setDepartaments] = useState([]);
 
+  // 🔧 Normalizar fechas para inputs
+  const formatDate = (date) => {
+    if (!date || date.startsWith('0001-01-01')) return '';
+    return date.substring(0, 10);
+  };
+
   const [localEmployee, setLocalEmployee] = useState({
     ...employee,
+    birthDate: formatDate(employee.birthDate),
+    hiredDate: formatDate(employee.hiredDate),
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLocalEmployee((prev) => ({ ...prev, [name]: value }));
+
+    let newValue = value;
+
+    // 🔧 Convertir fechas a ISO antes de guardar
+    if (name === 'birthDate' || name === 'hiredDate') {
+      newValue = value ? new Date(value).toISOString() : null;
+    }
+
+    setLocalEmployee((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
   };
 
   useEffect(() => {
     const GetData = async () => {
-      const response = await DepartamentApi.getAllDepartaments();
-      setDepartaments(response.data);
+      try {
+        const response = await DepartamentApi.getAllDepartaments();
+        setDepartaments(response.data);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     GetData();
@@ -57,22 +82,12 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Nombre</Label>
-          <TextInput
-            name="firstName"
-            value={localEmployee.firstName || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="firstName" value={localEmployee.firstName || ''} onChange={handleChange} />
         </div>
 
         <div className="flex flex-col gap-1">
           <Label>Segundo Nombre</Label>
-          <TextInput
-            name="middleName"
-            value={localEmployee.middleName || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="middleName" value={localEmployee.middleName || ''} onChange={handleChange} />
         </div>
       </div>
 
@@ -80,22 +95,12 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Apellido</Label>
-          <TextInput
-            name="lastName"
-            value={localEmployee.lastName || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="lastName" value={localEmployee.lastName || ''} onChange={handleChange} />
         </div>
 
         <div className="flex flex-col gap-1">
           <Label>Segundo Apellido</Label>
-          <TextInput
-            name="secondLastName"
-            value={localEmployee.secondLastName || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="secondLastName" value={localEmployee.secondLastName || ''} onChange={handleChange} />
         </div>
       </div>
 
@@ -103,22 +108,12 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Email</Label>
-          <TextInput
-            name="email"
-            value={localEmployee.email || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="email" value={localEmployee.email || ''} onChange={handleChange} />
         </div>
 
         <div className="flex flex-col gap-1">
           <Label>Teléfono</Label>
-          <TextInput
-            name="phoneNumber"
-            value={localEmployee.phoneNumber || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="phoneNumber" value={localEmployee.phoneNumber || ''} onChange={handleChange} />
         </div>
       </div>
 
@@ -126,22 +121,12 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Cédula</Label>
-          <TextInput
-            name="dni"
-            value={localEmployee.dni || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="dni" value={localEmployee.dni || ''} onChange={handleChange} />
         </div>
 
         <div className="flex flex-col gap-1">
           <Label>Dirección</Label>
-          <TextInput
-            name="address"
-            value={localEmployee.address || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
-          />
+          <TextInput name="address" value={localEmployee.address || ''} onChange={handleChange} />
         </div>
       </div>
 
@@ -152,9 +137,8 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
           <TextInput
             type="date"
             name="birthDate"
-            value={localEmployee.birthDate?.substring(0, 10) || ''}
+            value={formatDate(localEmployee.birthDate)}
             onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
         </div>
 
@@ -163,9 +147,8 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
           <TextInput
             type="date"
             name="hiredDate"
-            value={localEmployee.hiredDate?.substring(0, 10) || ''}
+            value={formatDate(localEmployee.hiredDate)}
             onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
           />
         </div>
       </div>
@@ -174,12 +157,7 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Jornada</Label>
-          <select
-            name="jorney"
-            value={localEmployee.jorney || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-gray-700"
-          >
+          <select name="jorney" value={localEmployee.jorney || ''} onChange={handleChange}>
             <option value="">Seleccione una jornada</option>
             <option value="Diurna">Diurna</option>
             <option value="Mixta">Mixta</option>
@@ -189,19 +167,10 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
 
         <div className="flex flex-col gap-1">
           <Label>Departamento</Label>
-          <select
-            name="departamentId"
-            value={localEmployee.departamentId || ''}
-            onChange={handleChange}
-            className="bg-white/90 border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-gray-700"
-          >
+          <select name="departamentId" value={localEmployee.departamentId || ''} onChange={handleChange}>
             <option value="">Seleccione un departamento</option>
             {departaments.map((dept) => (
-              <option
-                key={dept.departamentId}
-                value={dept.departamentId}
-                className="text-black"
-              >
+              <option key={dept.departamentId} value={dept.departamentId}>
                 {dept.name}
               </option>
             ))}
@@ -210,22 +179,10 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       </div>
 
       {/* Mensajes */}
-      {error && (
-        <p className="text-red-500 text-xs bg-red-50 border border-red-200 rounded-md px-2 py-1">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="text-green-600 text-xs bg-green-50 border border-green-200 rounded-md px-2 py-1">
-          {success}
-        </p>
-      )}
+      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {success && <p className="text-green-600 text-xs">{success}</p>}
 
-      <PrimaryButton
-        type="submit"
-        disabled={loading}
-        className="mt-2 w-full py-2 rounded-lg text-sm font-medium"
-      >
+      <PrimaryButton type="submit" disabled={loading}>
         {loading ? 'Actualizando...' : 'Actualizar'}
       </PrimaryButton>
     </form>

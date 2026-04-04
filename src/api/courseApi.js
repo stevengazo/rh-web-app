@@ -1,111 +1,137 @@
+/**
+ * @file courseApi.js
+ * @description Cliente API para gestión de cursos con manejo seguro de errores y fallback.
+ */
+
 import apiClient from './apiClient';
 
 /**
- * CourseApi
- *
- * Módulo de acceso a la API para la gestión de cursos.
- *
- * Permite:
- *  - Listar cursos
- *  - Obtener un curso por ID
- *  - Obtener cursos por usuario
- *  - Crear cursos
- *  - Actualizar cursos
- *  - Eliminar cursos
- *
- * Endpoints base:
- *  /api/Courses
+ * Devuelve de forma segura la respuesta del API o un valor por defecto.
+ * @param {import("axios").AxiosResponse} response - Respuesta de axios
+ * @param {*} fallback - Valor por defecto si no hay datos
+ * @returns {*} data o fallback
  */
+const safeResponse = (response, fallback) => {
+  if (!response || !response.data) return fallback;
+  return response.data;
+};
+
+/**
+ * Maneja errores de API.
+ * Para errores 404 devuelve el fallback silenciosamente.
+ * Muestra advertencia en consola solo en modo desarrollo.
+ * @param {any} error - Error capturado
+ * @param {*} fallback - Valor por defecto
+ * @returns {*} fallback
+ */
+const handleError = (error, fallback) => {
+  if (error.response?.status === 404) {
+    if (import.meta.env.MODE === 'development') {
+      console.warn('API Warning: Recurso no encontrado (404)');
+    }
+    return fallback;
+  }
+
+  if (import.meta.env.MODE === 'development') {
+    console.warn('API Error:', error.response?.data || error.message);
+  }
+  return fallback;
+};
+
 const courseApi = {
   /**
-   * getAllCourses
-   *
-   * Obtiene todos los cursos registrados.
-   *
-   * Endpoint:
-   *  GET /api/Courses
-   *
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * Obtener todos los cursos
+   * @returns {Promise<Array>} Lista de cursos o vacía
    */
-  getAllCourses: () => {
-    return apiClient.get('/courses');
+  getAllCourses: async () => {
+    try {
+      const res = await apiClient.get('/courses');
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * getCourseById
-   * =======
-   * Obtiene un curso específico por su ID.
-   *
-   * Endpoint:
-   *  GET /api/Courses/{id}
-   *
-   * @param {number|string} id - Identificador del curso
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * Obtener curso por ID
+   * @param {number|string} id - ID del curso
+   * @returns {Promise<Object|null>} Curso o null
    */
-  getCourseById: (id) => {
-    return apiClient.get(`/courses/${id}`);
+  getCourseById: async (id) => {
+    if (!id) return null;
+
+    try {
+      const res = await apiClient.get(`/courses/${id}`);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * getCoursesByUser
-   * =====================================================
-   * Obtiene todos los cursos asociados a un usuario.
-   *
-   * Endpoint:
-   *  GET /api/Courses/user/{userId}
-   *
-   * @param {string} userId - Identificador del usuario
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * Obtener cursos de un usuario
+   * @param {number|string} userId - ID del usuario
+   * @returns {Promise<Array>} Lista de cursos o vacía
    */
-  getCoursesByUser: (userId) => {
-    return apiClient.get(`/Courses/user/${userId}`);
+  getCoursesByUser: async (userId) => {
+    if (!userId) return [];
+
+    try {
+      const res = await apiClient.get(`/courses/user/${userId}`);
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * createCourse
-   * =====================================================
-   * Crea un nuevo curso.
-   *
-   * Endpoint:
-   *  POST /api/Courses
-   *
+   * Crear nuevo curso
    * @param {Object} course - Datos del curso
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * @returns {Promise<Object|null>} Curso creado o null
    */
-  createCourse: (course) => {
-    return apiClient.post('/courses', course);
+  createCourse: async (course) => {
+    if (!course) return null;
+
+    try {
+      const res = await apiClient.post('/courses', course);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * updateCourse
-   * =====================================================
-   * Actualiza un curso existente.
-   *
-   * Endpoint:
-   *  PUT /api/Courses/{id}
-   *
-   * @param {number|string} id - Identificador del curso
+   * Actualizar curso existente
+   * @param {number|string} id - ID del curso
    * @param {Object} course - Datos actualizados
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * @returns {Promise<Object|null>} Curso actualizado o null
    */
-  updateCourse: (id, course) => {
-    return apiClient.put(`/courses/${id}`, course);
+  updateCourse: async (id, course) => {
+    if (!id || !course) return null;
+
+    try {
+      const res = await apiClient.put(`/courses/${id}`, course);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-
-   * deleteCourse
-   * =====================================================
-   * Elimina un curso por su ID.
-   *
-   * Endpoint:
-   *  DELETE /api/Courses/{id}
-   *
-   * @param {number|string} id - Identificador del curso
-   * @returns {Promise<import("axios").AxiosResponse>}
+   * Eliminar curso
+   * @param {number|string} id - ID del curso
+   * @returns {Promise<boolean>} true si se eliminó, false si hubo error
    */
-  deleteCourse: (id) => {
-    return apiClient.delete(`/courses/${id}`);
+  deleteCourse: async (id) => {
+    if (!id) return false;
+
+    try {
+      await apiClient.delete(`/courses/${id}`);
+      return true;
+    } catch (error) {
+      handleError(error, false);
+      return false;
+    }
   },
 };
 

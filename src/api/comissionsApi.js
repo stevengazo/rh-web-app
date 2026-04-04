@@ -1,69 +1,137 @@
+/**
+ * @file comissionsApi.js
+ * @description Cliente API para gestión de comisiones con manejo seguro de errores y fallback.
+ */
+
 import apiClient from './apiClient';
 
 /**
- * API para la gestión de comisiones (Comissions).
- * Proporciona métodos para consultar, crear, actualizar y eliminar
- * comisiones asociadas a usuarios.
+ * Devuelve de forma segura la respuesta del API o un valor por defecto.
+ * @param {import("axios").AxiosResponse} response - Respuesta de axios
+ * @param {*} fallback - Valor por defecto si no hay datos
+ * @returns {*} data o fallback
  */
+const safeResponse = (response, fallback) => {
+  if (!response || !response.data) return fallback;
+  return response.data;
+};
+
+/**
+ * Maneja errores de API.
+ * Para errores 404 devuelve el fallback silenciosamente.
+ * Muestra advertencia en consola solo en modo desarrollo.
+ * @param {any} error - Error capturado
+ * @param {*} fallback - Valor por defecto
+ * @returns {*} fallback
+ */
+const handleError = (error, fallback) => {
+  if (error.response?.status === 404) {
+    if (import.meta.env.MODE === 'development') {
+      console.warn('API Warning: Recurso no encontrado (404)');
+    }
+    return fallback;
+  }
+
+  if (import.meta.env.MODE === 'development') {
+    console.warn('API Error:', error.response?.data || error.message);
+  }
+  return fallback;
+};
+
 const comissionsApi = {
   /**
-   * Obtiene todas las comisiones registradas.
-   *
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener todas las comisiones
+   * @returns {Promise<Array>} Lista de comisiones o vacía
    */
-  getAllComisions: () => {
-    return apiClient.get(`/comissions`);
+  getAllComisions: async () => {
+    try {
+      const res = await apiClient.get('/comissions');
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * Obtiene una comisión por su identificador.
-   *
-   * @param {number|string} id - Identificador de la comisión.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener comisión por ID
+   * @param {number|string} id - ID de la comisión
+   * @returns {Promise<Object|null>} Comisión o null
    */
-  getComissionById: (id) => {
-    return apiClient.get(`/comissions/${id}`);
+  getComissionById: async (id) => {
+    if (!id) return null;
+
+    try {
+      const res = await apiClient.get(`/comissions/${id}`);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * Obtiene todas las comisiones asociadas a un usuario específico.
-   *
-   * @param {number|string} id - Identificador del usuario.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Obtener comisiones de un usuario
+   * @param {number|string} id - ID del usuario
+   * @returns {Promise<Array>} Lista de comisiones o vacía
    */
-  getComissionsByUser: (id) => {
-    return apiClient.get(`/Comissions/user/${id}`);
+  getComissionsByUser: async (id) => {
+    if (!id) return [];
+
+    try {
+      const res = await apiClient.get(`/comissions/user/${id}`);
+      return safeResponse(res, []);
+    } catch (error) {
+      return handleError(error, []);
+    }
   },
 
   /**
-   * Crea una nueva comisión.
-   *
-   * @param {Object} comission - Objeto que contiene los datos de la comisión.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Crear nueva comisión
+   * @param {Object} comission - Datos de la comisión
+   * @returns {Promise<Object|null>} Comisión creada o null
    */
-  createComission: (comission) => {
-    return apiClient.post(`/comissions`, comission);
+  createComission: async (comission) => {
+    if (!comission) return null;
+
+    try {
+      const res = await apiClient.post('/comissions', comission);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * Actualiza una comisión existente.
-   *
-   * @param {number|string} id - Identificador de la comisión.
-   * @param {Object} comission - Objeto con los datos actualizados de la comisión.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Actualizar comisión existente
+   * @param {number|string} id - ID de la comisión
+   * @param {Object} comission - Datos actualizados
+   * @returns {Promise<Object|null>} Comisión actualizada o null
    */
-  updateComission: (id, comission) => {
-    return apiClient.put(`/comissions/${id}`, comission);
+  updateComission: async (id, comission) => {
+    if (!id || !comission) return null;
+
+    try {
+      const res = await apiClient.put(`/comissions/${id}`, comission);
+      return safeResponse(res, null);
+    } catch (error) {
+      return handleError(error, null);
+    }
   },
 
   /**
-   * Elimina una comisión.
-   *
-   * @param {number|string} id - Identificador de la comisión.
-   * @returns {Promise} Promesa con la respuesta del servidor.
+   * Eliminar comisión
+   * @param {number|string} id - ID de la comisión
+   * @returns {Promise<boolean>} true si se eliminó, false si hubo error
    */
-  deleteComission: (id) => {
-    return apiClient.delete(`/comissions/${id}`);
+  deleteComission: async (id) => {
+    if (!id) return false;
+
+    try {
+      await apiClient.delete(`/comissions/${id}`);
+      return true;
+    } catch (error) {
+      handleError(error, false);
+      return false;
+    }
   },
 };
 
