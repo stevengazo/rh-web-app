@@ -10,7 +10,6 @@ import {
 } from "recharts";
 
 const KPISChart = ({ objetive, results }) => {
-  // Normalizar y limpiar datos
   const data = useMemo(() => {
     if (!results || !Array.isArray(results)) return [];
 
@@ -19,7 +18,6 @@ const KPISChart = ({ objetive, results }) => {
       .map((r) => {
         const date = new Date(r.resultDate);
 
-        // filtrar fechas inválidas (como año 0001 o 0007)
         if (date.getFullYear() < 2000) return null;
 
         return {
@@ -32,21 +30,46 @@ const KPISChart = ({ objetive, results }) => {
   }, [results]);
 
   return (
-    <div className="w-full h-[400px] p-4 rounded-2xl shadow-md bg-white dark:bg-gray-900">
-      <h2 className="text-lg font-semibold mb-4">
+    <div className="w-full h-[400px] p-6 rounded-2xl shadow-lg bg-white border border-gray-200">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">
         {objetive?.objetive?.title || "KPI"}
       </h2>
 
       {data.length === 0 ? (
-        <p className="text-sm opacity-70">No hay datos válidos</p>
+        <p className="text-sm text-gray-500">No hay datos válidos</p>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
-            <CartesianGrid />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="value" strokeWidth={2} />
+            <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+
+            <XAxis
+              dataKey="date"
+              tick={{ fill: "#6b7280", fontSize: 12 }}
+              axisLine={{ stroke: "#d1d5db" }}
+            />
+
+            <YAxis
+              tick={{ fill: "#6b7280", fontSize: 12 }}
+              axisLine={{ stroke: "#d1d5db" }}
+            />
+
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#ffffff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "10px",
+                color: "#111827",
+              }}
+            />
+
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#2563eb"
+              strokeWidth={3}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       )}
