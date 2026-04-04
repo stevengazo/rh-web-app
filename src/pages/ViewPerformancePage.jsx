@@ -7,6 +7,7 @@ import user_objetiveApi from '../api/user_objetiveApi';
 import answersApi from '../api/answersApi';
 import resultsApi from '../api/resultsApi';
 import user_questionApi from '../api/user_questionApi';
+import KPISChart from '../Components/KPISChart';
 
 const TABS = {
   MAIN: 'Datos',
@@ -55,9 +56,10 @@ const ViewPerformancePage = () => {
         user_ObjetiveId: userObjetiveId,
       });
 
-      setResults((prev) => [...prev, resp.data]);
+      return resp.data; // ← importante
     } catch (error) {
       console.error(error);
+      return [];
     }
   };
 
@@ -87,9 +89,21 @@ const ViewPerformancePage = () => {
   useEffect(() => {
     if (!objectives.length) return;
 
-    objectives.forEach((obj) => {
-      GetResultsAsync(obj.id);
-    });
+    const loadResults = async () => {
+      try {
+        const responses = await Promise.all(
+          objectives.map((obj) => GetResultsAsync(obj.id))
+        );
+
+        // flatten
+        const flatResults = responses.flat();
+        setResults(flatResults);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadResults();
   }, [objectives]);
 
   return (
@@ -100,9 +114,7 @@ const ViewPerformancePage = () => {
 
       <Divider />
 
-      {loading && (
-        <p className="text-sm text-gray-400 mb-4">Cargando...</p>
-      )}
+      {loading && <p className="text-sm text-gray-400 mb-4">Cargando...</p>}
 
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-5">
@@ -124,15 +136,11 @@ const ViewPerformancePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* OBJETIVOS */}
           <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold text-gray-700 mb-2">
-              Objetivos
-            </h3>
+            <h3 className="font-semibold text-gray-700 mb-2">Objetivos</h3>
             <Divider />
 
             {objectives.length === 0 ? (
-              <p className="text-sm text-gray-400 mt-3">
-                Sin objetivos
-              </p>
+              <p className="text-sm text-gray-400 mt-3">Sin objetivos</p>
             ) : (
               objectives.map((obj) => {
                 const relatedResults = results.filter(
@@ -163,15 +171,11 @@ const ViewPerformancePage = () => {
 
           {/* PREGUNTAS */}
           <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold text-gray-700 mb-2">
-              Preguntas
-            </h3>
+            <h3 className="font-semibold text-gray-700 mb-2">Preguntas</h3>
             <Divider />
 
             {questions.length === 0 ? (
-              <p className="text-sm text-gray-400 mt-3">
-                Sin preguntas
-              </p>
+              <p className="text-sm text-gray-400 mt-3">Sin preguntas</p>
             ) : (
               questions.map((q) => {
                 const relatedAnswers = answers.filter(
@@ -179,10 +183,7 @@ const ViewPerformancePage = () => {
                 );
 
                 return (
-                  <div
-                    key={q.id}
-                    className="mt-3 p-3 border rounded-lg"
-                  >
+                  <div key={q.id} className="mt-3 p-3 border rounded-lg">
                     <p className="text-sm font-medium text-gray-700">
                       {q.question?.text}
                     </p>
@@ -202,9 +203,23 @@ const ViewPerformancePage = () => {
       {activeTab === TABS.CHARTS && (
         <div>
           <Header title="Gráficas" />
-          <p className="text-sm text-gray-400">
-            Aquí van tus gráficas
-          </p>
+
+          {objectives.length === 0 ? (
+            <p className="text-sm text-gray-400">Sin datos para graficar</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {objectives.map((o) => {
+                const res = results.filter(
+                  (e) => e.user_ObjetiveId === o.user_ObjetiveId
+                );
+
+                return (
+                 <KPISChart objetive={o} results={ res} />
+
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
@@ -212,9 +227,7 @@ const ViewPerformancePage = () => {
       {activeTab === TABS.SEARCH && (
         <div>
           <Header title="Busqueda" />
-          <p className="text-sm text-gray-400">
-            Implementar búsqueda
-          </p>
+          <p className="text-sm text-gray-400">Implementar búsqueda</p>
         </div>
       )}
     </div>
@@ -240,9 +253,7 @@ const TabButton = ({ active, children, onClick }) => (
 
 const Header = ({ title }) => (
   <div className="mb-4">
-    <h2 className="text-lg font-semibold text-gray-700">
-      {title}
-    </h2>
+    <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
   </div>
 );
 
