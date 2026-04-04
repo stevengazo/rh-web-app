@@ -3,37 +3,109 @@ import EmployeeApi from '../api/employeesApi';
 import SectionTitle from '../Components/SectionTitle';
 import { useParams } from 'react-router-dom';
 import Divider from '../Components/Divider';
-import PrimaryButton from '../Components/PrimaryButton';
+import user_objetiveApi from '../api/user_objetiveApi';
+import answersApi from '../api/answersApi';
+import resultsApi from '../api/resultsApi';
+import user_questionApi from '../api/user_questionApi';
 
 const TABS = {
   MAIN: 'Datos',
   CHARTS: 'Graficas',
-
   SEARCH: 'Buscar',
 };
 
 const ViewPerformancePage = () => {
-  const [employee, setEmployee] = useState({});
+  const [employee, setEmployee] = useState(null);
+  const [objectives, setObjectives] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState(TABS.MAIN);
 
-  useEffect(() => {
-    async function GetData() {
-      const Resp = await EmployeeApi.getEmployeeById(id);
-      setEmployee(Resp.data);
+  const GetUserAsync = async () => {
+    if (!id) return;
+    const resp = await EmployeeApi.getEmployeeById(id);
+    setEmployee(resp.data);
+  };
+
+  const GetUserObjectivesAsync = async () => {
+    if (!id) return;
+    const resp = await user_objetiveApi.getAllByUser(id);
+    setObjectives(resp.data);
+  };
+
+  const GetUserQuestionAsync = async () => {
+    if (!id) return;
+    const resp = await user_questionApi.getUser_QuestionByUser(id);
+    setQuestions(resp.data);
+  };
+
+  const GetAnswersAsync = async () => {
+    if (!id) return;
+    const resp = await answersApi.getAllByUser(id);
+    setAnswers(resp.data);
+  };
+
+  const GetResultsAsync = async (userObjetiveId) => {
+    try {
+      const resp = await resultsApi.searchResults({
+        user_ObjetiveId: userObjetiveId,
+      });
+
+      setResults((prev) => [...prev, resp.data]);
+    } catch (error) {
+      console.error(error);
     }
-    GetData();
-  }, []);
+  };
+
+  useEffect(() => {
+    if (!id) return;
+
+    const loadData = async () => {
+      setLoading(true);
+
+      try {
+        await Promise.all([
+          GetUserAsync(),
+          GetUserObjectivesAsync(),
+          GetUserQuestionAsync(),
+          GetAnswersAsync(),
+        ]);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [id]);
+
+  useEffect(() => {
+    if (!objectives.length) return;
+
+    objectives.forEach((obj) => {
+      GetResultsAsync(obj.id);
+    });
+  }, [objectives]);
 
   return (
-    <>
+    <div className="max-w-6xl mx-auto p-5">
       <SectionTitle>
-        Indicadores de Rendimiento - {employee.firstName} {employee.lastName}
+        Indicadores de Rendimiento - {employee?.firstName} {employee?.lastName}
       </SectionTitle>
+
       <Divider />
 
+      {loading && (
+        <p className="text-sm text-gray-400 mb-4">Cargando...</p>
+      )}
+
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 mb-5">
         <nav className="flex gap-6">
           {Object.entries(TABS).map(([key, value]) => (
             <TabButton
@@ -47,49 +119,109 @@ const ViewPerformancePage = () => {
         </nav>
       </div>
 
-      {/* INFO */}
+      {/* MAIN */}
       {activeTab === TABS.MAIN && (
-        <div className="p-2 py-3">
-          <Header
-            title="Detalles del Empleado"
-            action={() =>
-              openCanvas(
-                'Editar Información',
-                <EmployeeEdit employee={employee} setEmployee={setEmployee} />
-              )
-            }
-          />
-          <div className="flex flex-row w-full justify-items-center gap-3">
-            {/*Objetivos*/}
-            <div className="p-3 border rounded w-1/2 border-gray-200 shadow ">
-              <h3 className=" text-2xl font-bold text-gray-500">Objetivos</h3>
-              <Divider />
-            </div>
-            {/*Preguntas*/}
-            <div className="p-3 border rounded w-1/2 border-gray-200 shadow ">
-              <h3 className=" text-2xl font-bold text-gray-500">Preguntas</h3>
-              <Divider />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* OBJETIVOS */}
+          <div className="bg-white border rounded-xl p-4 shadow-sm">
+            <h3 className="font-semibold text-gray-700 mb-2">
+              Objetivos
+            </h3>
+            <Divider />
+
+            {objectives.length === 0 ? (
+              <p className="text-sm text-gray-400 mt-3">
+                Sin objetivos
+              </p>
+            ) : (
+              objectives.map((obj) => {
+                const relatedResults = results.filter(
+                  (r) => r.user_ObjetiveId === obj.id
+                );
+
+                return (
+                  <div
+                    key={obj.id}
+                    className="mt-3 p-3 border rounded-lg hover:shadow transition"
+                  >
+                    <h4 className="font-medium text-gray-800">
+                      {obj.objetive?.title}
+                    </h4>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                      {obj.objetive?.description}
+                    </p>
+
+                    <div className="mt-2 text-xs text-blue-600">
+                      Resultados: {relatedResults.length}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* PREGUNTAS */}
+          <div className="bg-white border rounded-xl p-4 shadow-sm">
+            <h3 className="font-semibold text-gray-700 mb-2">
+              Preguntas
+            </h3>
+            <Divider />
+
+            {questions.length === 0 ? (
+              <p className="text-sm text-gray-400 mt-3">
+                Sin preguntas
+              </p>
+            ) : (
+              questions.map((q) => {
+                const relatedAnswers = answers.filter(
+                  (a) => a.user_QuestionId === q.id
+                );
+
+                return (
+                  <div
+                    key={q.id}
+                    className="mt-3 p-3 border rounded-lg"
+                  >
+                    <p className="text-sm font-medium text-gray-700">
+                      {q.question?.text}
+                    </p>
+
+                    <div className="mt-2 text-xs text-gray-500">
+                      Respuestas: {relatedAnswers.length}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       )}
 
-      {/* chars*/}
+      {/* CHARTS */}
       {activeTab === TABS.CHARTS && (
-        <div className="p-2 py-3">
+        <div>
           <Header title="Gráficas" />
+          <p className="text-sm text-gray-400">
+            Aquí van tus gráficas
+          </p>
         </div>
       )}
 
-      {/* chars*/}
+      {/* SEARCH */}
       {activeTab === TABS.SEARCH && (
-        <div className="p-2 py-3">
+        <div>
           <Header title="Busqueda" />
+          <p className="text-sm text-gray-400">
+            Implementar búsqueda
+          </p>
         </div>
       )}
-    </>
+    </div>
   );
 };
+
+/* UI */
 
 const TabButton = ({ active, children, onClick }) => (
   <button
@@ -106,9 +238,11 @@ const TabButton = ({ active, children, onClick }) => (
   </button>
 );
 
-const Header = ({ title, action }) => (
-  <div className="flex justify-between items-center mb-4">
-    <SectionTitle>{title}</SectionTitle>
+const Header = ({ title }) => (
+  <div className="mb-4">
+    <h2 className="text-lg font-semibold text-gray-700">
+      {title}
+    </h2>
   </div>
 );
 
