@@ -56,7 +56,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-md mx-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm p-6 space-y-6"
+      className="border  p-3 rounded rounded-2xl border-gray-800 "
     >
       {/* Title */}
       <div>
@@ -137,7 +137,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
           disabled={loading}
           className="
             inline-flex items-center gap-2
-            bg-primary
+            bg-blue-950 my-2
             text-white
             px-5 py-2.5
             text-sm

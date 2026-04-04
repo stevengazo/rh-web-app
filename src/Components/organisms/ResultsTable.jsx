@@ -37,9 +37,9 @@ const ResultsTable = ({ results = [] }) => {
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto bg-white border rounded-xl shadow-sm">
+      <div className="overflow-x-auto text-white border rounded-xl shadow-sm">
         <table className="min-w-full text-sm">
-          <thead className="bg-slate-800 text-white">
+          <thead className="bg-slate-800 ">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">Fecha</th>
               <th className="px-4 py-3 text-center font-semibold">
@@ -50,8 +50,8 @@ const ResultsTable = ({ results = [] }) => {
 
           <tbody className="divide-y">
             {results.map((item) => (
-              <tr key={item.resultId}>
-                <td className="px-4 py-3 text-gray-700">
+              <tr key={item.resultId} className='hover:bg-blue-900 hover:shadow-2xl hover:shadow-blue-950 duration-300 transition'>
+                <td className="px-4 py-3 text-gray-50">
                   {formatDate(item.resultDate)}
                 </td>
                 <td className="px-4 py-3 text-center">
@@ -73,9 +73,9 @@ const ResultsTable = ({ results = [] }) => {
 };
 
 const StatCard = ({ label, value }) => (
-  <div className="bg-white border rounded-xl p-4 text-center shadow-sm">
-    <p className="text-sm text-gray-500">{label}</p>
-    <p className="text-2xl font-semibold text-gray-800">{value}</p>
+  <div className=" border rounded-xl hover:bg-blue-900 hover:shadow-2xl hover:shadow-blue-950 duration-300 transition p-4 text-center shadow-sm">
+    <p className="text-sm text-gray-500  ">{label}</p>
+    <p className="text-2xl font-semibold text-white">{value}</p>
   </div>
 );
 

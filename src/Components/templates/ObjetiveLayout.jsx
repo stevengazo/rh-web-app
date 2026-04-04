@@ -33,12 +33,14 @@ const ObjetiveLayout = ({ User_Objetive }) => {
   }, [User_Objetive]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-gray-200">
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h2>Resultados</h2>
-          <span className="text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-600">
+          <h2 className="text-lg font-semibold text-white">
+            Resultados
+          </h2>
+          <span className="text-xs px-2 py-1 rounded-md bg-gray-800 text-gray-300 border border-gray-700">
             {results.length} registros
           </span>
         </div>
@@ -52,10 +54,8 @@ const ObjetiveLayout = ({ User_Objetive }) => {
 
       {/* FORM CARD */}
       {showAddResult && (
-        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm transition-all">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">
-            Nuevo Resultado
-          </h3>
+        <div className="bg-gray-900 border-gray-700 rounded-xl  shadow-sm transition-all">
+     
 
           <ResultAdd
             user_ObjetiveId={User_Objetive.user_ObjetiveId}
@@ -68,9 +68,9 @@ const ObjetiveLayout = ({ User_Objetive }) => {
       )}
 
       {/* TABLE CARD */}
-      <div className=" border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-gray-900 overflow-hidden">
         {results.length === 0 ? (
-          <div className="text-center py-12 text-sm text-gray-500">
+          <div className="text-center py-12 text-sm text-gray-400">
             No hay resultados registrados para este objetivo.
           </div>
         ) : (
