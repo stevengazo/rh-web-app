@@ -24,7 +24,7 @@ const KPIPage = () => {
   const [kpis, setKpis] = useState([]);
   const [kpisByUser, setKpisByUser] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [activeTab, setActiveTab] = useState(TABS.KPIS);
+  const [activeTab, setActiveTab] = useState(TABS.KPIS_BY_USER);
 
   const { open, canvasTitle, canvasContent, openCanvas, closeCanvas } =
     useOffCanvas();

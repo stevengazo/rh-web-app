@@ -26,7 +26,7 @@ const ViewPerformancePage = () => {
   const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
-  const [activeTab, setActiveTab] = useState(TABS.MAIN);
+  const [activeTab, setActiveTab] = useState(TABS.CHARTS);
 
   const GetUserAsync = async () => {
     if (!id) return;
