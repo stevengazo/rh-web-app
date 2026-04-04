@@ -21,8 +21,7 @@ const AddQuestion = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response =
-          await questionCategoryApi.getAllQuestionCategories();
+        const response = await questionCategoryApi.getAllQuestionCategories();
         setCategories(response.data);
       } catch (error) {
         console.error('Error cargando categorías', error);
@@ -53,19 +52,12 @@ const AddQuestion = () => {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 "
-      >
-        <h3 className="text-sm font-semibold text-gray-200">
-          Nueva Pregunta
-        </h3>
+      <form onSubmit={handleSubmit} className="space-y-4 ">
+        <h3 className="text-sm font-semibold text-gray-200">Nueva Pregunta</h3>
 
         {/* Pregunta */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">
-            Pregunta
-          </label>
+          <label className="text-xs text-gray-400">Pregunta</label>
           <input
             type="text"
             name="text"
@@ -81,9 +73,7 @@ const AddQuestion = () => {
 
         {/* Categoría */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">
-            Categoría
-          </label>
+          <label className="text-xs text-gray-400">Categoría</label>
           <select
             name="questionCategoryId"
             value={question.questionCategoryId}
@@ -117,9 +107,7 @@ const AddQuestion = () => {
             className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
               focus:ring-2 focus:ring-blue-500"
           />
-          <span className="text-xs text-gray-400">
-            Activo
-          </span>
+          <span className="text-xs text-gray-400">Activo</span>
         </div>
 
         {/* Botón */}

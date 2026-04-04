@@ -3,7 +3,7 @@ import contactEmergenciesApi from '../../api/contactEmergenciesApi';
 import toast from 'react-hot-toast';
 import PrimaryButton from '../PrimaryButton';
 
-const ContactsEmergenciesAdd = ({ userId, onEdited , onAdded}) => {
+const ContactsEmergenciesAdd = ({ userId, onEdited, onAdded }) => {
   const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({

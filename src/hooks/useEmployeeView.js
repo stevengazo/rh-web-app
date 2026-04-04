@@ -44,7 +44,6 @@ const useEmployeeView = (id, open) => {
      DELETE FILE
   ========================= */
   const handleDeleteFile = async (id) => {
-
     const confirm = window.confirm('¿Desea eliminar este archivo?');
     if (!confirm) return;
 

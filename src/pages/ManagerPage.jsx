@@ -99,18 +99,12 @@ const ManagerPage = () => {
 
       {/* GRIDSTACK CONTAINER */}
       <div className="grid-stack" ref={gridRef}>
-        
         {/* CARDS */}
         {cards.map((card, index) => {
           const Icon = card.icon;
 
           return (
-            <div
-              key={card.title}
-              className="grid-stack-item"
-              gs-w="3"
-              gs-h="2"
-            >
+            <div key={card.title} className="grid-stack-item" gs-w="3" gs-h="2">
               <div className="grid-stack-item-content bg-white rounded-xl shadow-sm p-6 flex justify-between">
                 <div>
                   <p className="text-sm text-slate-500">{card.title}</p>
@@ -167,9 +161,7 @@ const ManagerPage = () => {
         {/* DEPARTAMENTOS */}
         <div className="grid-stack-item" gs-w="6" gs-h="4">
           <div className="grid-stack-item-content bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="font-semibold mb-4">
-              Empleados por departamento
-            </h3>
+            <h3 className="font-semibold mb-4">Empleados por departamento</h3>
 
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -181,10 +173,7 @@ const ManagerPage = () => {
                   label
                 >
                   {departamentChart.map((entry, index) => (
-                    <Cell
-                      key={index}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
 
@@ -193,7 +182,6 @@ const ManagerPage = () => {
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
     </motion.div>
   );

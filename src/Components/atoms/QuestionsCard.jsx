@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import Divider from "../Divider";
-import { useMemo } from "react";
+import { motion } from 'framer-motion';
+import Divider from '../Divider';
+import { useMemo } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,12 +20,7 @@ const itemVariants = {
 const QuestionsCard = ({ questions = [], answers = [] }) => {
   // 🔥 Detectar ID correcto dinámicamente
   const getQuestionId = (q) => {
-    return (
-      q?.id ||
-      q?.user_QuestionId ||
-      q?.userQuestionId ||
-      q?.questionId
-    );
+    return q?.id || q?.user_QuestionId || q?.userQuestionId || q?.questionId;
   };
 
   // 🔥 Mapa optimizado O(n)
@@ -33,10 +28,7 @@ const QuestionsCard = ({ questions = [], answers = [] }) => {
     const map = {};
 
     answers.forEach((a) => {
-      const key =
-        a?.user_QuestionId ||
-        a?.userQuestionId ||
-        a?.questionId;
+      const key = a?.user_QuestionId || a?.userQuestionId || a?.questionId;
 
       if (!key) return;
 

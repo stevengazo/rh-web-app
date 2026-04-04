@@ -85,10 +85,7 @@ const Add_User_Question = () => {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-gray-900 p-4 "
-      >
+      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-900 p-4 ">
         <h3 className="text-sm font-semibold text-gray-200">
           Asignar Pregunta
         </h3>
@@ -102,9 +99,7 @@ const Add_User_Question = () => {
 
         {/* Empleado */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">
-            Empleado
-          </label>
+          <label className="text-xs text-gray-400">Empleado</label>
           <select
             name="userId"
             value={newUserQuestion.userId}
@@ -119,11 +114,7 @@ const Add_User_Question = () => {
               Seleccione un empleado
             </option>
             {employees.map((emp) => (
-              <option
-                key={emp.id}
-                value={emp.id}
-                className="bg-gray-800"
-              >
+              <option key={emp.id} value={emp.id} className="bg-gray-800">
                 {emp.fullName ?? `${emp.firstName} ${emp.lastName}`}
               </option>
             ))}
@@ -132,9 +123,7 @@ const Add_User_Question = () => {
 
         {/* Pregunta */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">
-            Pregunta
-          </label>
+          <label className="text-xs text-gray-400">Pregunta</label>
           <select
             name="questionId"
             value={newUserQuestion.questionId}
@@ -170,9 +159,7 @@ const Add_User_Question = () => {
             className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
               focus:ring-2 focus:ring-blue-500"
           />
-          <span className="text-xs text-gray-400">
-            Eliminado
-          </span>
+          <span className="text-xs text-gray-400">Eliminado</span>
         </div>
 
         {/* Botón */}

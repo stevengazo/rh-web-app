@@ -133,12 +133,10 @@ const QuestionPage = () => {
 
           {/* TAB 2 */}
           {activeTab === TABS.BY_USER && (
-
-              <QuestionsByUser
-                QuestionsByUser={questionsByUser}
-                Employees={employees}
-              />
-  
+            <QuestionsByUser
+              QuestionsByUser={questionsByUser}
+              Employees={employees}
+            />
           )}
         </div>
       </div>

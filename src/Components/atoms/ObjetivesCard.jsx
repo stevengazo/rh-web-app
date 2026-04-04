@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import Divider from "./Divider";
+import { motion } from 'framer-motion';
+import Divider from './Divider';
 
 const containerVariants = {
   hidden: { opacity: 0 },

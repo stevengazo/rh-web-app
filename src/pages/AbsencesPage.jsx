@@ -74,11 +74,7 @@ const AbsencesPage = () => {
       ========================= */}
       <AnimatePresence>
         {open && (
-          <OffCanvas
-            isOpen={open}
-            onClose={closeCanvas}
-            title={canvasTitle}
-          >
+          <OffCanvas isOpen={open} onClose={closeCanvas} title={canvasTitle}>
             <motion.div
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -178,9 +174,7 @@ const AbsencesPage = () => {
           CONTENT
       ========================= */}
       <div className="mt-6">
-        {view === 'table' && (
-          <AbsenceTable items={filteredAbsences} />
-        )}
+        {view === 'table' && <AbsenceTable items={filteredAbsences} />}
 
         {view === 'calendar' && (
           <AbsenceCalendar

@@ -152,7 +152,7 @@ const PayrollView = () => {
           </tbody>
         </table>
       </div>
-    
+
       {/* Vista Mobile tipo Cards */}
       <div className="md:hidden space-y-4">
         {payroll.payrolls.map((item) => (

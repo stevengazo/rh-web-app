@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LineChart,
   Line,
@@ -8,7 +8,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
-} from "recharts";
+} from 'recharts';
 
 const KPISChart = ({ objetive, results }) => {
   const data = useMemo(() => {
@@ -34,7 +34,7 @@ const KPISChart = ({ objetive, results }) => {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="w-full h-[400px] p-6 rounded-2xl shadow-lg bg-white border border-gray-200"
     >
       <motion.h2
@@ -43,7 +43,7 @@ const KPISChart = ({ objetive, results }) => {
         transition={{ delay: 0.2 }}
         className="text-xl font-semibold mb-4 text-gray-800"
       >
-        {objetive?.objetive?.title || "KPI"}
+        {objetive?.objetive?.title || 'KPI'}
       </motion.h2>
 
       <AnimatePresence mode="wait">
@@ -72,21 +72,21 @@ const KPISChart = ({ objetive, results }) => {
 
                 <XAxis
                   dataKey="date"
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
-                  axisLine={{ stroke: "#d1d5db" }}
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  axisLine={{ stroke: '#d1d5db' }}
                 />
 
                 <YAxis
-                  tick={{ fill: "#6b7280", fontSize: 12 }}
-                  axisLine={{ stroke: "#d1d5db" }}
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  axisLine={{ stroke: '#d1d5db' }}
                 />
 
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "10px",
-                    color: "#111827",
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '10px',
+                    color: '#111827',
                   }}
                 />
 

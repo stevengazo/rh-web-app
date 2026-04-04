@@ -39,8 +39,8 @@ const AddObjetive = ({ onAdded }) => {
         type === 'checkbox'
           ? checked
           : name === 'objetiveCategoryId'
-          ? Number(value)
-          : value,
+            ? Number(value)
+            : value,
     }));
   };
 
@@ -52,7 +52,7 @@ const AddObjetive = ({ onAdded }) => {
       onAdded && onAdded();
     } catch (error) {
       toast.error('Error al agregar el objetivo');
-      console.error(error)
+      console.error(error);
     }
   };
 

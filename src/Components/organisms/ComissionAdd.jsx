@@ -9,7 +9,7 @@ const formatDateYYYYMMDD = (date) => {
   return new Date(date).toISOString().split('T')[0];
 };
 
-const ComissionAdd = ({ userId, author , onAdded}) => {
+const ComissionAdd = ({ userId, author, onAdded }) => {
   const [form, setForm] = useState({
     comissionId: 0,
     date: '',

@@ -28,9 +28,7 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
 
     if (!employee) return 'Empleado no encontrado';
 
-    return (
-      `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
-    );
+    return `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim();
   };
 
   return (
@@ -44,7 +42,6 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
           {/* Usuario */}
           <h4 className="mb-3  text-sm font-semibold text-gray-700 ">
             {getEmployeeName(userId)}
-    
           </h4>
 
           {/* Preguntas */}

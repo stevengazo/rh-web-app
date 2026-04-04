@@ -7,8 +7,18 @@ import absencesApi from '../api/absencesApi';
 import DepartamentApi from '../api/departamentApi';
 
 const months = [
-  'Ene','Feb','Mar','Abr','May','Jun',
-  'Jul','Ago','Sep','Oct','Nov','Dic',
+  'Ene',
+  'Feb',
+  'Mar',
+  'Abr',
+  'May',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dic',
 ];
 
 export const useManagerDashboard = (user) => {
@@ -112,7 +122,6 @@ export const useManagerDashboard = (user) => {
         }));
 
         setDepartamentChart(deptChart);
-
       } catch (error) {
         console.error('Error cargando dashboard', error);
       } finally {

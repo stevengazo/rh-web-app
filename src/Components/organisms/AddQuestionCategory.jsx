@@ -50,19 +50,12 @@ const AddQuestionCategory = () => {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4   "
-      >
-        <h3 className="text-sm font-semibold text-gray-200">
-          Nueva Categoría
-        </h3>
+      <form onSubmit={handleSubmit} className="space-y-4   ">
+        <h3 className="text-sm font-semibold text-gray-200">Nueva Categoría</h3>
 
         {/* Nombre */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">
-            Nombre
-          </label>
+          <label className="text-xs text-gray-400">Nombre</label>
           <input
             type="text"
             name="name"
@@ -86,9 +79,7 @@ const AddQuestionCategory = () => {
             className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
               focus:ring-2 focus:ring-blue-500"
           />
-          <span className="text-xs text-gray-400">
-            Activa
-          </span>
+          <span className="text-xs text-gray-400">Activa</span>
         </div>
 
         {/* Error */}

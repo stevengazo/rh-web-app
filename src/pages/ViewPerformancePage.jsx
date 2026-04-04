@@ -137,10 +137,10 @@ const ViewPerformancePage = () => {
       {activeTab === TABS.MAIN && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* OBJETIVOS */}
-<ObjectivesCard objectives={objectives} results={results} />
+          <ObjectivesCard objectives={objectives} results={results} />
 
           {/* PREGUNTAS */}
- <QuestionsCard questions={questions} answers={answers} />
+          <QuestionsCard questions={questions} answers={answers} />
         </div>
       )}
 
@@ -158,10 +158,7 @@ const ViewPerformancePage = () => {
                   (e) => e.user_ObjetiveId === o.user_ObjetiveId
                 );
 
-                return (
-                 <KPISChart objetive={o} results={ res} />
-
-                );
+                return <KPISChart objetive={o} results={res} />;
               })}
             </div>
           )}

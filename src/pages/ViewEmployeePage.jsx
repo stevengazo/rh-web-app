@@ -198,7 +198,11 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Curso',
-                    <CourseAdd userId={id} author={user} onAdded={handleAdded} />
+                    <CourseAdd
+                      userId={id}
+                      author={user}
+                      onAdded={handleAdded}
+                    />
                   )
                 }
               />
@@ -219,7 +223,11 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Certificación',
-                    <CertificationAdd userId={id} author={user} onAdded={handleAdded} />
+                    <CertificationAdd
+                      userId={id}
+                      author={user}
+                      onAdded={handleAdded}
+                    />
                   )
                 }
               />
@@ -242,7 +250,11 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Registrar Salario',
-                    <SalaryAdd userId={id} author={user} onAdded={handleAdded} />
+                    <SalaryAdd
+                      userId={id}
+                      author={user}
+                      onAdded={handleAdded}
+                    />
                   )
                 }
               />
@@ -257,7 +269,11 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Acción',
-                    <ActionAdd userId={id} author={user} onAdded={handleAdded} />
+                    <ActionAdd
+                      userId={id}
+                      author={user}
+                      onAdded={handleAdded}
+                    />
                   )
                 }
               />
@@ -301,7 +317,11 @@ const ViewEmployeePage = () => {
                 action={() =>
                   openCanvas(
                     'Agregar Comisión',
-                    <ComissionAdd userId={id} author={user} onAdded={handleAdded} />
+                    <ComissionAdd
+                      userId={id}
+                      author={user}
+                      onAdded={handleAdded}
+                    />
                   )
                 }
               />
@@ -313,7 +333,12 @@ const ViewEmployeePage = () => {
             <>
               <Header
                 title="Reconocimiento"
-                action={() => openCanvas('Registrar', <AddAward userId={id} onAdded={handleAdded} />)}
+                action={() =>
+                  openCanvas(
+                    'Registrar',
+                    <AddAward userId={id} onAdded={handleAdded} />
+                  )
+                }
               />
               <AwardTable awards={awards} />
             </>
@@ -324,7 +349,10 @@ const ViewEmployeePage = () => {
               <Header
                 title="Contactos"
                 action={() =>
-                  openCanvas('Agregar', <ContactsEmergenciesAdd userId={id}  onAdded={handleAdded}/>)
+                  openCanvas(
+                    'Agregar',
+                    <ContactsEmergenciesAdd userId={id} onAdded={handleAdded} />
+                  )
                 }
               />
               <ContactsEmergencyTable items={contacts} />
@@ -335,7 +363,12 @@ const ViewEmployeePage = () => {
             <>
               <Header
                 title="Archivos"
-                action={() => openCanvas('Agregar', <UploadFile userId={id} onAdded={handleAdded} />)}
+                action={() =>
+                  openCanvas(
+                    'Agregar',
+                    <UploadFile userId={id} onAdded={handleAdded} />
+                  )
+                }
               />
               <ListFiles files={otherFiles} onDelete={handleDeleteFile} />
             </>
