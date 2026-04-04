@@ -14,43 +14,54 @@ const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
 
   const getEmployeeName = (userId) => {
     const employee = Employees.find((e) => e.id === userId);
-    return employee ? employee.userName : 'Empleado no encontrado';
+
+    return employee
+      ? `${employee.firstName} ${employee.lastName} `
+      : 'Empleado no encontrado';
   };
 
   return (
     <div className="space-y-4">
-      <SectionTitle>Objetivos por Empleado</SectionTitle>
-
       {Object.entries(groupedByUser).map(([userId, objectives]) => (
         <div
           key={userId}
-          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+          onClick={() => navigate(`/manager/perfornance/${userId}`)}
+          className="rounded-xl hover:shadow-2xl hover:border-gray-200 px-2 transition duration-150 border border-gray-200  shadow-sm"
         >
           {/* Usuario */}
-          <h4
-            className="mb-3 text-sm font-semibold hover:text-lg hover:text-blue-600 duration-200  text-gray-700"
-            onClick={() => navigate(`/manager/perfornance/${userId}`)}
-          >
+          <h4 className=" font-semibold text-2xl  p-2 text-gray-700">
             {getEmployeeName(userId)}
-            <span className="ml-2 font-mono text-xs text-gray-400">
-              ({userId})
-            </span>
           </h4>
 
-          {/* Objetivos */}
-          <ul className="space-y-2">
-            {objectives.map((o) => (
-              <li
-                key={o.user_ObjetiveId}
-                className="rounded-lg bg-gray-50 p-3 text-sm"
-              >
-                <p className="font-medium text-gray-800">{o.objetive?.title}</p>
-                <p className="text-xs text-gray-500">
-                  {o.objetive?.description}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <div className="overflow-x-auto my-2">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-gray-50 text-gray-600 uppercase text-xs tracking-wide">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Objetivo</th>
+                  <th className="px-4 py-3 font-medium">Descripción</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-200">
+                {objectives.map((o) => (
+                  <tr
+                    key={o.user_ObjetiveId}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-4 py-3 font-medium text-gray-800">
+                      {o.objetive?.title || 'Sin título'}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-500 max-w-md">
+                      <p className="truncate">
+                        {o.objetive?.description || '-'}
+                      </p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ))}
     </div>

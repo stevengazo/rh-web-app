@@ -164,9 +164,7 @@ const KPIPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-              <h2 className="font-semibold mb-4">
-                Objetivos por Usuario
-              </h2>
+     
               <ObjetivesByUser
                 ObjetivesByUser={kpisByUser}
                 Employees={employees}
