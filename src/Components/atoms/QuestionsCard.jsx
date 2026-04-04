@@ -43,7 +43,7 @@ const QuestionsCard = ({ questions = [], answers = [] }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="bg-white border rounded-xl p-4 shadow-sm"
+      className=""
     >
       <h3 className="font-semibold text-gray-700 mb-2">Preguntas</h3>
 
@@ -61,7 +61,7 @@ const QuestionsCard = ({ questions = [], answers = [] }) => {
               key={qId}
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="mt-3 p-3 border rounded-lg"
+              className="mt-3 p-2 bg-blue-50 rounded hover:bg-blue-200 transition duration-200"
             >
               <p className="text-sm font-medium text-gray-700">
                 {q?.question?.text}

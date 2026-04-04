@@ -35,7 +35,7 @@ const KPISChart = ({ objetive, results }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full h-[400px] p-6 rounded-2xl shadow-lg bg-white border border-gray-200"
+      className="w-full h-[400px] p-2 border border-gray-50 shadow-sm"
     >
       <motion.h2
         initial={{ opacity: 0, x: -20 }}

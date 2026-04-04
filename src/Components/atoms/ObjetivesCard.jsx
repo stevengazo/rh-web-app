@@ -22,7 +22,7 @@ const ObjectivesCard = ({ objectives = [], results = [] }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="bg-white border rounded-xl p-4 shadow-sm"
+      className=""
     >
       <h3 className="font-semibold text-gray-700 mb-2">Objetivos</h3>
 
@@ -41,7 +41,7 @@ const ObjectivesCard = ({ objectives = [], results = [] }) => {
               key={obj.id}
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="mt-3 p-3 border rounded-lg"
+              className="mt-3 px-1 py-0.5 border bg-blue-50 hover:bg-blue-200 transition duration-200 border-blue-50  rounded-lg"
             >
               <h4 className="font-medium text-gray-800">
                 {obj.objetive?.title}

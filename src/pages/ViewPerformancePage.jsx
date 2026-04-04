@@ -13,8 +13,7 @@ import QuestionsCard from '../Components/atoms/QuestionsCard';
 
 const TABS = {
   MAIN: 'Datos',
-  CHARTS: 'Graficas',
-  SEARCH: 'Buscar',
+  CHARTS: 'Graficas'
 };
 
 const ViewPerformancePage = () => {
@@ -165,13 +164,7 @@ const ViewPerformancePage = () => {
         </div>
       )}
 
-      {/* SEARCH */}
-      {activeTab === TABS.SEARCH && (
-        <div>
-          <Header title="Busqueda" />
-          <p className="text-sm text-gray-400">Implementar búsqueda</p>
-        </div>
-      )}
+     
     </div>
   );
 };
