@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MessageSquare, Save } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import answersApi from '../../api/answersApi';
 import toast from 'react-hot-toast';
 
@@ -39,66 +40,94 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
   };
 
   return (
-    <div className="max-w-xl">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-5"
-      >
-        {/* Header */}
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            Agregar respuesta
-          </h3>
-          <p className="text-sm text-gray-500">
-            Registra la respuesta asociada a la pregunta
-          </p>
-        </div>
-
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 10 }}
+      transition={{ duration: 0.25 }}
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        
         {/* Respuesta */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Respuesta
           </label>
 
           <div className="relative">
             <MessageSquare
               size={18}
-              className="absolute left-3 top-3 text-gray-400"
+              className="absolute left-3 top-3 text-gray-500"
             />
-            <textarea
+
+            <motion.textarea
               rows={4}
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Escribe la respuesta aquí..."
-              className="w-full pl-10 pr-3 py-2 border rounded-lg text-sm resize-none
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              whileFocus={{ scale: 1.01 }}
+              className="
+                w-full
+                pl-10 pr-3 py-2
+                border border-gray-700
+                bg-gray-950
+                text-gray-200
+                rounded-lg text-sm resize-none
+                placeholder:text-gray-500
+                focus:outline-none
+                focus:ring-2 focus:ring-blue-500
+                focus:border-blue-500
+                transition
+              "
             />
           </div>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-2">
-            {error}
-          </div>
-        )}
+        {/* Error animado */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -5, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -5, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Actions */}
         <div className="flex justify-end">
-          <button
+          <motion.button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 bg-blue-600 text-white
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="
+              inline-flex items-center gap-2
+              bg-blue-600 text-white
               px-6 py-2 rounded-lg text-sm font-medium
               hover:bg-blue-700 transition
-              disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
           >
             <Save size={16} />
+
+            {loading && (
+              <motion.span
+                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+              />
+            )}
+
             {loading ? 'Guardando...' : 'Guardar respuesta'}
-          </button>
+          </motion.button>
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

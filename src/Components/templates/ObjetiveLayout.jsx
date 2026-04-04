@@ -40,6 +40,7 @@ const ObjetiveLayout = ({ User_Objetive }) => {
           <h2 className="text-lg font-semibold text-white">
             Resultados
           </h2>
+
           <span className="text-xs px-2 py-1 rounded-md bg-gray-800 text-gray-300 border border-gray-700">
             {results.length} registros
           </span>
@@ -50,12 +51,20 @@ const ObjetiveLayout = ({ User_Objetive }) => {
         </PrimaryButton>
       </div>
 
-      <Divider />
+      {/* Divider más suave para dark */}
+      <div className="border-t border-gray-700/60" />
 
       {/* FORM CARD */}
       {showAddResult && (
-        <div className="bg-gray-900 border-gray-700 rounded-xl  shadow-sm transition-all">
-     
+        <div className="bg-gray-900 border border-gray-700 rounded-xl shadow-sm p-5">
+          <div className="mb-4">
+            <h3 className="text-sm font-semibold text-gray-300">
+              Nuevo resultado
+            </h3>
+            <p className="text-xs text-gray-500">
+              Registra una nueva evaluación
+            </p>
+          </div>
 
           <ResultAdd
             user_ObjetiveId={User_Objetive.user_ObjetiveId}
@@ -68,9 +77,9 @@ const ObjetiveLayout = ({ User_Objetive }) => {
       )}
 
       {/* TABLE CARD */}
-      <div className="bg-gray-900 overflow-hidden">
+      <div className="bg-gray-900 border border-gray-700 rounded-xl shadow-sm overflow-hidden">
         {results.length === 0 ? (
-          <div className="text-center py-12 text-sm text-gray-400">
+          <div className="text-center py-14 text-sm text-gray-400">
             No hay resultados registrados para este objetivo.
           </div>
         ) : (
