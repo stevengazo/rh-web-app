@@ -8,6 +8,8 @@ import answersApi from '../api/answersApi';
 import resultsApi from '../api/resultsApi';
 import user_questionApi from '../api/user_questionApi';
 import KPISChart from '../Components/KPISChart';
+import ObjectivesCard from '../Components/atoms/ObjetivesCard';
+import QuestionsCard from '../Components/atoms/QuestionsCard';
 
 const TABS = {
   MAIN: 'Datos',
@@ -135,67 +137,10 @@ const ViewPerformancePage = () => {
       {activeTab === TABS.MAIN && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* OBJETIVOS */}
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold text-gray-700 mb-2">Objetivos</h3>
-            <Divider />
-
-            {objectives.length === 0 ? (
-              <p className="text-sm text-gray-400 mt-3">Sin objetivos</p>
-            ) : (
-              objectives.map((obj) => {
-                const relatedResults = results.filter(
-                  (r) => r.user_ObjetiveId === obj.id
-                );
-
-                return (
-                  <div
-                    key={obj.id}
-                    className="mt-3 p-3 border rounded-lg hover:shadow transition"
-                  >
-                    <h4 className="font-medium text-gray-800">
-                      {obj.objetive?.title}
-                    </h4>
-
-                    <p className="text-sm text-gray-500 mt-1">
-                      {obj.objetive?.description}
-                    </p>
-
-                    <div className="mt-2 text-xs text-blue-600">
-                      Resultados: {relatedResults.length}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+<ObjectivesCard objectives={objectives} results={results} />
 
           {/* PREGUNTAS */}
-          <div className="bg-white border rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold text-gray-700 mb-2">Preguntas</h3>
-            <Divider />
-
-            {questions.length === 0 ? (
-              <p className="text-sm text-gray-400 mt-3">Sin preguntas</p>
-            ) : (
-              questions.map((q) => {
-                const relatedAnswers = answers.filter(
-                  (a) => a.user_QuestionId === q.id
-                );
-
-                return (
-                  <div key={q.id} className="mt-3 p-3 border rounded-lg">
-                    <p className="text-sm font-medium text-gray-700">
-                      {q.question?.text}
-                    </p>
-
-                    <div className="mt-2 text-xs text-gray-500">
-                      Respuestas: {relatedAnswers.length}
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+ <QuestionsCard questions={questions} answers={answers} />
         </div>
       )}
 
