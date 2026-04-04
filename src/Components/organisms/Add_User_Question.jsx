@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 const Add_User_Question = () => {
   const [employees, setEmployees] = useState([]);
   const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const notify = () => toast.success('Agregado');
 
@@ -23,15 +25,16 @@ const Add_User_Question = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        // Employees
-        const respEmployees = await employeesApi.getAllEmployees();
-        setEmployees(respEmployees.data);
+        const [respEmployees, respQuestions] = await Promise.all([
+          employeesApi.getAllEmployees(),
+          questionApi.getAllQuestions(),
+        ]);
 
-        // Questions
-        const respQuestions = await questionApi.getAllQuestions();
+        setEmployees(respEmployees.data);
         setQuestions(respQuestions.data);
       } catch (error) {
         console.error('Error cargando datos', error);
+        setError('Error cargando datos');
       }
     };
 
@@ -49,10 +52,20 @@ const Add_User_Question = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!newUserQuestion.userId || !newUserQuestion.questionId) {
+      setError('Debe seleccionar empleado y pregunta');
+      return;
+    }
+
     try {
+      setLoading(true);
+      setError(null);
+
       await user_questionApi.createUser_Question(newUserQuestion);
+
       notify();
-      // Reset form
+
       setNewUserQuestion({
         user_QuestionId: 0,
         userId: '',
@@ -64,68 +77,119 @@ const Add_User_Question = () => {
       });
     } catch (error) {
       console.error('Error al asignar la pregunta', error);
+      setError('Error al asignar la pregunta');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Usuario */}
-      <div>
-        <label className="block mb-1">Empleado</label>
-        <select
-          name="userId"
-          value={newUserQuestion.userId}
-          onChange={handleChange}
-          className="border border-gray-300 px-2 py-1 w-full"
-          required
-        >
-          <option value="">Seleccione un empleado</option>
-          {employees.map((emp) => (
-            <option key={emp.userId} value={emp.id}>
-              {emp.fullName ?? `${emp.firstName} ${emp.lastName}`}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Pregunta */}
-      <div>
-        <label className="block mb-1">Pregunta</label>
-        <select
-          name="questionId"
-          value={newUserQuestion.questionId}
-          onChange={handleChange}
-          className="border border-gray-300 rounded px-2 py-1 w-full"
-          required
-        >
-          <option value="">Seleccione una pregunta</option>
-          {questions.map((q) => (
-            <option key={q.questionId} value={q.questionId}>
-              {q.text}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Eliminado */}
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="deleted"
-          checked={newUserQuestion.deleted}
-          onChange={handleChange}
-        />
-        <label>Eliminado</label>
-      </div>
-
-      {/* Submit */}
-      <button
-        type="submit"
-        className="bg-green-600 text-white px-4 py-2 rounded"
+    <div className="w-full">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-gray-900 p-4 rounded-xl border border-gray-700"
       >
-        Asignar Pregunta
-      </button>
-    </form>
+        <h3 className="text-sm font-semibold text-gray-200">
+          Asignar Pregunta
+        </h3>
+
+        {/* Error */}
+        {error && (
+          <p className="rounded-md bg-red-900/40 border border-red-700 px-3 py-2 text-xs text-red-300">
+            {error}
+          </p>
+        )}
+
+        {/* Empleado */}
+        <div className="space-y-1">
+          <label className="text-xs text-gray-400">
+            Empleado
+          </label>
+          <select
+            name="userId"
+            value={newUserQuestion.userId}
+            onChange={handleChange}
+            disabled={loading}
+            required
+            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100
+              disabled:opacity-50
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="" className="bg-gray-800">
+              Seleccione un empleado
+            </option>
+            {employees.map((emp) => (
+              <option
+                key={emp.id}
+                value={emp.id}
+                className="bg-gray-800"
+              >
+                {emp.fullName ?? `${emp.firstName} ${emp.lastName}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Pregunta */}
+        <div className="space-y-1">
+          <label className="text-xs text-gray-400">
+            Pregunta
+          </label>
+          <select
+            name="questionId"
+            value={newUserQuestion.questionId}
+            onChange={handleChange}
+            disabled={loading}
+            required
+            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100
+              disabled:opacity-50
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="" className="bg-gray-800">
+              Seleccione una pregunta
+            </option>
+            {questions.map((q) => (
+              <option
+                key={q.questionId}
+                value={q.questionId}
+                className="bg-gray-800"
+              >
+                {q.text}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Eliminado */}
+        <div className="flex items-center gap-2 pt-1">
+          <input
+            type="checkbox"
+            name="deleted"
+            checked={newUserQuestion.deleted}
+            onChange={handleChange}
+            className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
+              focus:ring-2 focus:ring-blue-500"
+          />
+          <span className="text-xs text-gray-400">
+            Eliminado
+          </span>
+        </div>
+
+        {/* Botón */}
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white
+              hover:bg-blue-600 transition
+              disabled:opacity-50
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            {loading ? 'Guardando...' : 'Asignar'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

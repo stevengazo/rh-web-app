@@ -10,10 +10,10 @@ const AddQuestionCategory = () => {
     questions: [],
   });
 
-  const notify = () => toast.success('Agregado');
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const notify = () => toast.success('Agregado');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,59 +32,87 @@ const AddQuestionCategory = () => {
     try {
       await questionCategoryApi.createQuestionCategory(newQuestion);
 
-      // Reset form
       setNewQuestion({
         questionCategoryId: 0,
         name: '',
         isActive: true,
         questions: [],
       });
+
       notify();
     } catch (err) {
-      setError('Error al crear la categoría');
       console.error(err);
+      setError('Error al crear la categoría');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md space-y-4 rounded-lg border  border-gray-300 p-4"
-    >
-      <div>
-        <label className="block text-sm font-medium">Nombre</label>
-        <input
-          type="text"
-          name="name"
-          value={newQuestion.name}
-          onChange={handleChange}
-          className="w-full rounded border border-gray-200  px-3 py-2"
-          required
-        />
-      </div>
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="isActive"
-          checked={newQuestion.isActive}
-          onChange={handleChange}
-        />
-        <label className="text-sm">Activo</label>
-      </div>
-
-      {error && <p className="text-sm text-red-600">{error}</p>}
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+    <div className="w-full">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4   "
       >
-        {loading ? 'Guardando...' : 'Guardar categoría'}
-      </button>
-    </form>
+        <h3 className="text-sm font-semibold text-gray-200">
+          Nueva Categoría
+        </h3>
+
+        {/* Nombre */}
+        <div className="space-y-1">
+          <label className="text-xs text-gray-400">
+            Nombre
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={newQuestion.name}
+            onChange={handleChange}
+            required
+            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100
+              placeholder-gray-500
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="Nombre de la categoría..."
+          />
+        </div>
+
+        {/* Activo */}
+        <div className="flex items-center gap-2 pt-1">
+          <input
+            type="checkbox"
+            name="isActive"
+            checked={newQuestion.isActive}
+            onChange={handleChange}
+            className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
+              focus:ring-2 focus:ring-blue-500"
+          />
+          <span className="text-xs text-gray-400">
+            Activa
+          </span>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <p className="rounded-md bg-red-900/40 border border-red-700 px-3 py-2 text-xs text-red-300">
+            {error}
+          </p>
+        )}
+
+        {/* Botón */}
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white
+              hover:bg-blue-600 transition
+              disabled:opacity-50
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            {loading ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

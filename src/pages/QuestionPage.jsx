@@ -1,5 +1,5 @@
 import PageTitle from '../Components/PageTitle';
-
+import { AnimatePresence, motion } from 'framer-motion';
 import questionApi from '../api/questionsApi';
 import QuestionsTable from '../Components/organisms/QuestionsTable';
 import AddQuestion from '../Components/organisms/AddQuestion';
@@ -10,18 +10,29 @@ import EmployeeApi from '../api/employeesApi';
 import QuestionsByUser from '../Components/organisms/QuestionsByUser';
 import user_questionApi from '../api/user_questionApi';
 
+import OffCanvas from '../Components/OffCanvas';
+import useOffCanvas from '../hooks/useOffCanvas';
+
 const TABS = {
   QUESTIONS: 'questions',
   BY_USER: 'byUser',
   ASSIGN: 'assign',
   SETTINGS: 'settings',
 };
+const baseBtn =
+  'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm';
+
+const primaryBtn =
+  'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md active:scale-[0.97]';
 
 const QuestionPage = () => {
   const [activeTab, setActiveTab] = useState(TABS.OBJECTIVES);
   const [questions, setQuestions] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [questionsByUser, setQuestionsByUser] = useState([]);
+
+  const { open, canvasTitle, canvasContent, openCanvas, closeCanvas } =
+    useOffCanvas();
 
   useEffect(() => {
     async function GetData() {
@@ -39,77 +50,101 @@ const QuestionPage = () => {
   }, []);
 
   return (
-    <div className="space-y-1">
-      <PageTitle>Preguntas</PageTitle>
+    <>
+      <div>
+        {/* OffCanvas */}
+        <AnimatePresence>
+          {open && (
+            <OffCanvas isOpen={open} onClose={closeCanvas} title={canvasTitle}>
+              <motion.div
+                initial={{ x: 40, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 40, opacity: 0 }}
+              >
+                {canvasContent}
+              </motion.div>
+            </OffCanvas>
+          )}
+        </AnimatePresence>
+      </div>
 
-      {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="flex gap-6">
-          <TabButton
-            active={activeTab === TABS.QUESTIONS}
-            onClick={() => setActiveTab(TABS.QUESTIONS)}
+      <div className="max-w-7xl mx-auto px-4 space-y-6">
+        {/* HEADER */}
+        <header className="space-y-1">
+          <PageTitle>Preguntas</PageTitle>
+          <p className="text-sm text-gray-600">
+            Gestión y administración de las preguntas del personal.
+          </p>
+        </header>
+
+        {/* ACTIONS */}
+        <div className="flex flex-wrap gap-3">
+          <button
+            className={`${baseBtn} ${primaryBtn}`}
+            onClick={() => openCanvas('Agregar Preguntas', <AddQuestion />)}
           >
-            Preguntas
-          </TabButton>
+            Agregar Pregunta
+          </button>
 
-          <TabButton
-            active={activeTab === TABS.BY_USER}
-            onClick={() => setActiveTab(TABS.BY_USER)}
+          <button
+            className={`${baseBtn} ${primaryBtn}`}
+            onClick={() =>
+              openCanvas('Agregar Categoria', <AddQuestionCategory />)
+            }
           >
-            Preguntas por Usuario
-          </TabButton>
+            Agregar Catergoria
+          </button>
 
-          <TabButton
-            active={activeTab === TABS.ASSIGN}
-            onClick={() => setActiveTab(TABS.ASSIGN)}
+          <button
+            className={`${baseBtn} ${primaryBtn}`}
+            onClick={() =>
+              openCanvas('Asignar Categoria', <Add_User_Question />)
+            }
           >
             Asignar Pregunta
-          </TabButton>
-          <TabButton
-            active={activeTab === TABS.SETTINGS}
-            onClick={() => setActiveTab(TABS.SETTINGS)}
-          >
-            Configuración
-          </TabButton>
-        </nav>
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="border-b border-gray-200">
+          <nav className="flex gap-6">
+            <TabButton
+              active={activeTab === TABS.QUESTIONS}
+              onClick={() => setActiveTab(TABS.QUESTIONS)}
+            >
+              Preguntas
+            </TabButton>
+
+            <TabButton
+              active={activeTab === TABS.BY_USER}
+              onClick={() => setActiveTab(TABS.BY_USER)}
+            >
+              Preguntas por Usuario
+            </TabButton>
+          </nav>
+        </div>
+
+        {/* Content */}
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          {/* TAB 1 */}
+          {activeTab === TABS.QUESTIONS && (
+            <div className="space-y-6">
+              <QuestionsTable Questions={questions} />
+            </div>
+          )}
+
+          {/* TAB 2 */}
+          {activeTab === TABS.BY_USER && (
+            <div className="space-y-4">
+              <QuestionsByUser
+                QuestionsByUser={questionsByUser}
+                Employees={employees}
+              />
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Content */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        {/* TAB 1 */}
-        {activeTab === TABS.QUESTIONS && (
-          <div className="space-y-6">
-            <AddQuestion />
-            <hr />
-            <QuestionsTable Questions={questions} />
-          </div>
-        )}
-
-        {/* TAB 2 */}
-        {activeTab === TABS.BY_USER && (
-          <div className="space-y-4">
-            <QuestionsByUser
-              QuestionsByUser={questionsByUser}
-              Employees={employees}
-            />
-          </div>
-        )}
-
-        {/* TAB 3 */}
-        {activeTab === TABS.ASSIGN && (
-          <div className="space-y-4">
-            <Add_User_Question />
-          </div>
-        )}
-
-        {/* TAB 4 */}
-        {activeTab === TABS.SETTINGS && (
-          <div className="space-y-4">
-            <AddQuestionCategory />
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 

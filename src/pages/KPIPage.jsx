@@ -59,11 +59,7 @@ const KPIPage = () => {
       {/* OffCanvas */}
       <AnimatePresence>
         {open && (
-          <OffCanvas
-            isOpen={open}
-            onClose={closeCanvas}
-            title={canvasTitle}
-          >
+          <OffCanvas isOpen={open} onClose={closeCanvas} title={canvasTitle}>
             <motion.div
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -78,9 +74,7 @@ const KPIPage = () => {
       <div className="max-w-7xl mx-auto px-4 space-y-6">
         {/* HEADER */}
         <header className="space-y-1">
-          <h1 className="text-2xl font-semibold">
-            Indicadores de Rendimiento
-          </h1>
+          <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
           <p className="text-sm text-gray-600">
             Gestión y administración de los indicadores de rendimiento de los
             empleados.
@@ -108,10 +102,7 @@ const KPIPage = () => {
           <button
             className={`${baseBtn} ${primaryBtn}`}
             onClick={() =>
-              openCanvas(
-                'Agregar Objetivo a Usuario',
-                <Add_User_Objetive />
-              )
+              openCanvas('Agregar Objetivo a Usuario', <Add_User_Objetive />)
             }
           >
             Agregar Objetivo a Usuario
@@ -164,7 +155,6 @@ const KPIPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
             >
-     
               <ObjetivesByUser
                 ObjetivesByUser={kpisByUser}
                 Employees={employees}
