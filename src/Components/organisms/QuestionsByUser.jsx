@@ -29,28 +29,22 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
     if (!employee) return 'Empleado no encontrado';
 
     return (
-      employee.fullName ??
-      employee.userName ??
-      `${employee.name ?? ''} ${employee.lastName ?? ''}`.trim()
+      `${employee.firstName ?? ''} ${employee.lastName ?? ''}`.trim()
     );
   };
 
   return (
-    <div className="space-y-4">
+    <div className="">
       {Object.entries(groupedByUser).map(([userId, questions]) => (
         <div
           key={userId}
-          className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+          className="rounded-xl cursor-pointer border border-gray-100 p-3 shadow-sm"
+          onClick={() => navigate(`/manager/perfornance/${userId}`)}
         >
           {/* Usuario */}
-          <h4
-            className="mb-3 cursor-pointer text-sm font-semibold text-gray-700 transition hover:text-blue-600"
-            onClick={() => navigate(`/manager/perfornance/${userId}`)}
-          >
+          <h4 className="mb-3  text-sm font-semibold text-gray-700 ">
             {getEmployeeName(userId)}
-            <span className="ml-2 font-mono text-xs text-gray-400">
-              ({userId})
-            </span>
+    
           </h4>
 
           {/* Preguntas */}

@@ -87,7 +87,7 @@ const Add_User_Question = () => {
     <div className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-gray-900 p-4 rounded-xl border border-gray-700"
+        className="space-y-4 bg-gray-900 p-4 "
       >
         <h3 className="text-sm font-semibold text-gray-200">
           Asignar Pregunta

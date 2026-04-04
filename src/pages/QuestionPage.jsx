@@ -125,22 +125,20 @@ const QuestionPage = () => {
         </div>
 
         {/* Content */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className=" py-2 ">
           {/* TAB 1 */}
           {activeTab === TABS.QUESTIONS && (
-            <div className="space-y-6">
-              <QuestionsTable Questions={questions} />
-            </div>
+            <QuestionsTable Questions={questions} />
           )}
 
           {/* TAB 2 */}
           {activeTab === TABS.BY_USER && (
-            <div className="space-y-4">
+
               <QuestionsByUser
                 QuestionsByUser={questionsByUser}
                 Employees={employees}
               />
-            </div>
+  
           )}
         </div>
       </div>

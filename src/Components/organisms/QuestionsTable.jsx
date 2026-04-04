@@ -10,9 +10,9 @@ const QuestionsTable = ({ Questions }) => {
   return (
     <div className="overflow-x-auto rounded-xl shadow-md border border-gray-200">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gradient-to-r from-blue-600 to-blue-500">
+        <thead className=" ">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white tracking-wide">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-400 tracking-wide">
               Pregunta
             </th>
           </tr>
