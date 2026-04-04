@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import resultsApi from '../../api/resultsApi';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   const [formData, setFormData] = useState({
     evalution: '',
-    resultDate: '',
+    resultDate: null, // ahora es Date
   });
 
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,13 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleDateChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      resultDate: date,
     }));
   };
 
@@ -33,7 +42,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
       const payload = {
         evalution: Number(formData.evalution),
-        resultDate: formData.resultDate,
+        resultDate: formData.resultDate.toISOString(), // 🔑 importante
         user_ObjetiveId,
       };
 
@@ -41,7 +50,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
       setFormData({
         evalution: '',
-        resultDate: '',
+        resultDate: null,
       });
 
       onSuccess?.();
@@ -56,7 +65,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border  p-3 rounded rounded-2xl border-gray-800 "
+      className="border p-3 rounded-2xl border-gray-800"
     >
       {/* Title */}
       <div>
@@ -96,17 +105,17 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
         />
       </div>
 
-      {/* Fecha */}
+      {/* DatePicker */}
       <div className="space-y-1">
         <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
           Fecha del resultado
         </label>
 
-        <input
-          type="date"
-          name="resultDate"
-          value={formData.resultDate}
-          onChange={handleChange}
+        <DatePicker
+          selected={formData.resultDate}
+          onChange={handleDateChange}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Selecciona una fecha"
           className="
             w-full
             border border-gray-300 dark:border-gray-700
@@ -114,12 +123,13 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
             rounded-lg
             px-3 py-2
             text-sm
+            text-gray-800 dark:text-gray-200
             focus:outline-none
             focus:ring-2
             focus:ring-primary
             focus:border-primary
-            transition
           "
+          calendarClassName="bg-gray-900 text-white border border-gray-700 rounded-xl"
         />
       </div>
 
