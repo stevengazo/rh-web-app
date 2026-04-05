@@ -3,27 +3,17 @@ import toast from 'react-hot-toast';
 import EmployeeApi from '../api/employeesApi';
 import salaryApi from '../api/salaryApi';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
-import useLatestSalaryMap from './useLatestSalaryMap';
 import payrollApi from '../api/payrollApi';
+import useLatestSalaryMap from './useLatestSalaryMap';
 
 const usePayrollData = (payrollId) => {
   const [employees, setEmployees] = useState([]);
   const [salaries, setSalaries] = useState([]);
-  const [payroll, setPayroll] = useState();
+  const [payroll, setPayroll] = useState({});
   const [payrollByEmployee, setPayrollByEmployee] = useState({});
 
   const salaryMap = useLatestSalaryMap(salaries);
 
-  const GetPayrollAsync = async () => {
-    try {
-      const rest = await payrollApi.getPayrollById(payrollId);
-      setPayroll(rest.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  /** Carga inicial de empleados y salarios */
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -32,84 +22,96 @@ const usePayrollData = (payrollId) => {
           salaryApi.getLatests(),
         ]);
 
-        await GetPayrollAsync();
+        const payrollRes = await payrollApi.getPayrollById(payrollId);
 
         setEmployees(empRes.data);
         setSalaries(salRes.data);
+        setPayroll(payrollRes.data);
       } catch (error) {
-        console.error('Error cargando datos de nómina:', error);
-        toast.error('Error cargando empleados o salarios');
+        console.error(error);
+        toast.error('Error cargando la nómina o salarios');
       }
     };
+
     loadData();
-  }, []);
+  }, [payrollId]);
 
-  /** Genera base de nómina por empleado */
-  useEffect(() => {
-    if (!employees.length || !salaryMap) return;
+  const createPayrollEntry = (emp, salaryEntry) => {
+    const monthlySalary = salaryEntry.salaryAmount;
+    const dailySalary = monthlySalary / 30;
+    const hourlySalary = dailySalary / 8;
 
-    const createPayrollEntry = (emp, salaryEntry) => {
-      const monthlySalary = salaryEntry.salaryAmount;
-      const dailySalary = monthlySalary / 30;
-      const hourlySalary = dailySalary / 8;
-
-      return {
-        userId: emp.id,
-        workShift: emp.workShift ?? '',
-        daysWorked: 15,
-        effectiveness: 100,
-        payrollId,
-        payrollData: null,
-        monthlySalary,
-        biweeklySalary: monthlySalary / 2,
-        dailySalary,
-        hourlySalary,
-        regularHourRate: hourlySalary,
-        overTimeHourRate: hourlySalary * 1.5,
-        overTimeHours: 0,
-        overtimeAmount: 0,
-        holiDayRate: hourlySalary * 2,
-        holidayDaysWorked: 0,
-        holidayAmount: 0,
-        holidayHourRate: hourlySalary * 2.5,
-        holidayOvertimeHours: 0,
-        holidayOvertimeAmount: 0,
-        retroactivePay: 0,
-        bonus: 0,
-        comissions: 0,
-        ccssDays: 0,
-        insDays: 0,
-        unPaidLeaveHours: 0,
-        unPaidLeaveAmount: 0,
-        medicalLeaveHours: 0,
-        medicalLeaveAmount: 0,
-        absenseTime: 0,
-        absenceAmount: 0,
-        grossSalary: monthlySalary,
-        totalDeductions: 0,
-        netAmount: monthlySalary,
-      };
+    return {
+      userId: emp.id,
+      workShift: emp.workShift ?? '',
+      daysWorked: 15,
+      effectiveness: 100,
+      payrollId,
+      payrollData: null,
+      monthlySalary,
+      biweeklySalary: monthlySalary / 2,
+      dailySalary,
+      hourlySalary,
+      regularHourRate: hourlySalary,
+      overTimeHourRate: hourlySalary * 1.5,
+      overTimeHours: 0,
+      overtimeAmount: 0,
+      holiDayRate: hourlySalary * 2,
+      holidayDaysWorked: 0,
+      holidayAmount: 0,
+      holidayHourRate: hourlySalary * 2.5,
+      holidayOvertimeHours: 0,
+      holidayOvertimeAmount: 0,
+      retroactivePay: 0,
+      bonus: 0,
+      comissions: 0,
+      ccssDays: 0,
+      insDays: 0,
+      unPaidLeaveHours: 0,
+      unPaidLeaveAmount: 0,
+      medicalLeaveHours: 0,
+      medicalLeaveAmount: 0,
+      absenseTime: 0,
+      absenceAmount: 0,
+      grossSalary: monthlySalary,
+      totalDeductions: 0,
+      netAmount: monthlySalary,
     };
+  };
 
-    const base = employees.reduce((acc, emp) => {
+  // Inicialización segura usando useMemo
+  const memoizedPayrollByEmployee = useMemo(() => {
+    if (!employees.length || !salaryMap) return {};
+    return employees.reduce((acc, emp) => {
       const salaryEntry = salaryMap[emp.id];
       if (!salaryEntry) return acc;
       acc[emp.id] = createPayrollEntry(emp, salaryEntry);
       return acc;
     }, {});
-
-    setPayrollByEmployee(base);
   }, [employees, salaryMap, payrollId]);
 
-  /** Actualiza fila individual */
+  // Solo establecemos estado si aún no hay datos
+  useEffect(() => {
+    if (Object.keys(payrollByEmployee).length === 0 && Object.keys(memoizedPayrollByEmployee).length > 0) {
+      setPayrollByEmployee(memoizedPayrollByEmployee);
+    }
+  }, [memoizedPayrollByEmployee, payrollByEmployee]);
+
   const handleRowChange = (employeeId, rowData) => {
-    setPayrollByEmployee((prev) => ({
-      ...prev,
-      [employeeId]: { ...prev[employeeId], ...rowData },
-    }));
+    setPayrollByEmployee((prev) => {
+      const prevRow = prev[employeeId] || {};
+      const hasChanged = Object.keys(rowData).some(
+        (key) => prevRow[key] !== rowData[key]
+      );
+      if (!hasChanged) return prev;
+
+      return {
+        ...prev,
+        [employeeId]: { ...prevRow, ...rowData },
+      };
+    });
   };
 
-  /** Guardar nómina al API */
   const handleSave = async () => {
     try {
       const payrollList = Object.values(payrollByEmployee);
@@ -118,12 +120,11 @@ const usePayrollData = (payrollId) => {
       );
       toast.success('Nómina guardada exitosamente');
     } catch (error) {
-      console.error('Error guardando nómina:', error);
+      console.error(error);
       toast.error('Error al guardar la nómina');
     }
   };
 
-  /** Resumen global de nómina */
   const payrollResume = useMemo(() => {
     return Object.values(payrollByEmployee).reduce(
       (acc, emp) => {

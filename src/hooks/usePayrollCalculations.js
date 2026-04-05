@@ -1,13 +1,15 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
+/**
+ * Hook para cálculos de nómina de un empleado
+ */
 export const usePayrollCalculations = ({
   employee,
   payrollData,
   isStatic = false,
   onChanged,
-  type = 'Mensual',
+  typePayroll,
 }) => {
-  // --- Estados de ajustes y deducciones ---
   const [extras, setExtras] = useState(0);
   const [feriados, setFeriados] = useState(0);
   const [extrasFeriado, setExtrasFeriado] = useState(0);
@@ -18,36 +20,39 @@ export const usePayrollCalculations = ({
   const [incINS, setIncINS] = useState(0);
   const [ausencias, setAusencias] = useState(0);
 
-  // --- Salario mensual por defecto ---
   const salarioMensual = payrollData?.monthlySalary || 0;
 
-  // --- Salario base según tipo ---
   const salarioBase = useMemo(() => {
-    switch (type) {
-      case 'Semanal': return salarioMensual / 4;
-      case 'Quincenal': return salarioMensual / 2;
-      default: return salarioMensual;
+    switch (typePayroll) {
+      case 'Semanal':
+    //    console.log(typePayroll);
+        return salarioMensual / 4;
+      case 'Quincenal':
+    //    console.log(typePayroll);
+        return salarioMensual / 2;
+      default:
+    //    console.log(typePayroll);
+        return salarioMensual;
     }
-  }, [salarioMensual, type]);
+  }, [salarioMensual, typePayroll]);
 
   const diasPeriodo = useMemo(() => {
-    switch (type) {
-      case 'Semanal': return 7;
-      case 'Quincenal': return 15;
-      default: return 30;
+    switch (typePayroll) {
+      case 'Semanal':
+        return 7;
+      case 'Quincenal':
+        return 15;
+      default:
+        return 30;
     }
-  }, [type]);
-
- 
+  }, [typePayroll]);
 
   const salarioDia = salarioBase / diasPeriodo;
   const salarioHora = salarioDia / 8;
 
-  // --- Montos adicionales ---
   const montoExtras = extras * salarioHora * 1.5;
   const montoFeriados = feriados * salarioHora * 8 * 2;
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
-
   const deducciones = (incCCSS + incINS + ausencias) * salarioDia;
 
   const salarioBruto = useMemo(
@@ -59,61 +64,105 @@ export const usePayrollCalculations = ({
       retroactivo +
       bonos +
       comisiones,
-    [salarioBase, montoExtras, montoFeriados, montoExtrasFeriado, retroactivo, bonos, comisiones]
+    [
+      salarioBase,
+      montoExtras,
+      montoFeriados,
+      montoExtrasFeriado,
+      retroactivo,
+      bonos,
+      comisiones,
+    ]
   );
 
   const netoPagar = salarioBruto - deducciones;
 
-  const buildRowData = () => ({
-    payrollType: type,
-    salarioBase,
-    weeklySalary: salarioMensual / 4,
-    biweeklySalary: salarioMensual / 2,
-    monthlySalary: salarioMensual,
-    dailySalary: salarioDia,
-    hourlySalary: salarioHora,
-    overTimeHours: extras,
-    overtimeAmount: montoExtras,
-    holidayDaysWorked: feriados,
-    holidayAmount: montoFeriados,
-    holidayOvertimeHours: extrasFeriado,
-    holidayOvertimeAmount: montoExtrasFeriado,
-    retroactivePay: retroactivo,
-    bonus: bonos,
-    comissions: comisiones,
-    ccssDays: incCCSS,
-    insDays: incINS,
-    absenseTime: ausencias,
-    grossSalary: salarioBruto,
-    totalDeductions: deducciones,
-    netAmount: netoPagar,
-  });
+  const buildRowData = useCallback(
+    () => ({
+      payrollType: typePayroll,
+      salarioBase,
+      weeklySalary: salarioMensual / 4,
+      biweeklySalary: salarioMensual / 2,
+      monthlySalary: salarioMensual,
+      dailySalary: salarioDia,
+      hourlySalary: salarioHora,
+      overTimeHours: extras,
+      overtimeAmount: montoExtras,
+      holidayDaysWorked: feriados,
+      holidayAmount: montoFeriados,
+      holidayOvertimeHours: extrasFeriado,
+      holidayOvertimeAmount: montoExtrasFeriado,
+      retroactivePay: retroactivo,
+      bonus: bonos,
+      comissions: comisiones,
+      ccssDays: incCCSS,
+      insDays: incINS,
+      absenseTime: ausencias,
+      grossSalary: salarioBruto,
+      totalDeductions: deducciones,
+      netAmount: netoPagar,
+    }),
+    [
+      typePayroll,
+      salarioBase,
+      salarioMensual,
+      salarioDia,
+      salarioHora,
+      extras,
+      montoExtras,
+      feriados,
+      montoFeriados,
+      extrasFeriado,
+      montoExtrasFeriado,
+      retroactivo,
+      bonos,
+      comisiones,
+      incCCSS,
+      incINS,
+      ausencias,
+      salarioBruto,
+      deducciones,
+      netoPagar,
+    ]
+  );
 
-  // --- Efecto para actualizar fila ---
+  // --- Guardamos el último valor enviado para evitar bucle infinito ---
+  const lastSentRef = useRef(null);
+
+  const currentData = useMemo(() => buildRowData(), [buildRowData]);
+
   useEffect(() => {
     if (!isStatic && payrollData) {
-      onChanged(employee.id, buildRowData());
-    }
-  }, [
-    extras,
-    feriados,
-    extrasFeriado,
-    retroactivo,
-    bonos,
-    comisiones,
-    incCCSS,
-    incINS,
-    ausencias,
-    salarioBruto,
-    deducciones,
-    netoPagar,
-    type,
-    payrollData,
-  ]);
+      const lastData = lastSentRef.current;
+      const keysToCompare = [
+        'grossSalary',
+        'netAmount',
+        'overtimeAmount',
+        'holidayAmount',
+        'holidayOvertimeAmount',
+        'retroactivePay',
+        'bonus',
+        'comissions',
+        'ccssDays',
+        'insDays',
+        'absenseTime',
+      ];
 
-  // --- Retorno ---
+      const hasChanged = keysToCompare.some(
+        (k) => lastData?.[k] !== currentData[k]
+      );
+
+      if (hasChanged) {
+        onChanged(employee.id, currentData);
+        lastSentRef.current = currentData;
+      }
+    }
+  }, [currentData, employee.id, isStatic, payrollData, onChanged]);
+
   if (!payrollData) {
-    return { error: `${employee.firstName} ${employee.lastName} no tiene salario asignado` };
+    return {
+      error: `${employee.firstName} ${employee.lastName} no tiene salario asignado`,
+    };
   }
 
   return {
@@ -121,15 +170,24 @@ export const usePayrollCalculations = ({
     salarioBase,
     salarioDia,
     salarioHora,
-    extras, setExtras,
-    feriados, setFeriados,
-    extrasFeriado, setExtrasFeriado,
-    retroactivo, setRetroactivo,
-    bonos, setBonos,
-    comisiones, setComisiones,
-    incCCSS, setIncCCSS,
-    incINS, setIncINS,
-    ausencias, setAusencias,
+    extras,
+    setExtras,
+    feriados,
+    setFeriados,
+    extrasFeriado,
+    setExtrasFeriado,
+    retroactivo,
+    setRetroactivo,
+    bonos,
+    setBonos,
+    comisiones,
+    setComisiones,
+    incCCSS,
+    setIncCCSS,
+    incINS,
+    setIncINS,
+    ausencias,
+    setAusencias,
     montoExtras,
     montoFeriados,
     montoExtrasFeriado,

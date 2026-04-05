@@ -10,11 +10,11 @@ import PayrollResumeTable from '../Components/organisms/PayrollResumeTable';
 import TablePayrollHeader from '../Components/molecules/tablePayrollHeader';
 
 import usePayrollData from '../hooks/usePayrollData';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const NewPayrollPage = () => {
   const { id } = useParams();
-
+  const [typePayroll, setTypePayroll] = useState('')
   const {
     employees,
     payrollByEmployee,
@@ -24,8 +24,10 @@ const NewPayrollPage = () => {
     payrollResume,
   } = usePayrollData(id);
 
+
+
   useEffect(() => {
-    console.log(payroll);
+    setTypePayroll(payroll.payrollType)
   }, [payroll]);
 
   return (
@@ -45,7 +47,7 @@ const NewPayrollPage = () => {
                     key={payroll.userId ?? index}
                     PayrollData={payroll}
                     onChanged={handleRowChange}
-                    type={payroll.payrollType}
+                    typePayroll ={typePayroll}
                     StartDate={payroll.initialDate}
                     finalDate={payroll.finalDate}
                   />

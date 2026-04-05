@@ -20,13 +20,15 @@ const EditableCell = ({ value, setter, isStatic, title }) => {
   );
 };
 
-const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, type, StartDate, EndDate }) => {
+const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, StartDate, EndDate }) => {
+  
+    console.log("payroll type", typePayroll)
   const payroll = usePayrollCalculations({
     employee,
     payrollData: PayrollData,
     onChanged,
     isStatic,
-    type,
+    typePayroll,
     StartDate,
     EndDate
   });
