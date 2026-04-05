@@ -1,23 +1,13 @@
 import { useState, useMemo, useEffect } from 'react';
 
-/**
- * Hook para calcular nómina de un empleado
- * @param {object} employee - Datos del empleado
- * @param {object} payrollData - Datos de salario base
- * @param {boolean} isStatic - Si es de solo lectura
- * @param {function} onChanged - Callback cuando cambian los cálculos
- */
-export const usePayrollCalculations = ({ employee, payrollData, isStatic = false, onChanged }) => {
-  if (!payrollData) {
-    return { error: `${employee.firstName} ${employee.lastName} no tiene salario asignado` };
-  }
-
-  const salarioMensual = payrollData.monthlySalary;
-  const salarioQuincenal = salarioMensual / 2;
-  const salarioDia = salarioMensual / 30;
-  const salarioHora = salarioDia / 8;
-
-  // Estados de los campos variables
+export const usePayrollCalculations = ({
+  employee,
+  payrollData,
+  isStatic = false,
+  onChanged,
+  type = 'Mensual',
+}) => {
+  // --- Estados de ajustes y deducciones ---
   const [extras, setExtras] = useState(0);
   const [feriados, setFeriados] = useState(0);
   const [extrasFeriado, setExtrasFeriado] = useState(0);
@@ -28,22 +18,58 @@ export const usePayrollCalculations = ({ employee, payrollData, isStatic = false
   const [incINS, setIncINS] = useState(0);
   const [ausencias, setAusencias] = useState(0);
 
-  // Cálculos derivados
-  const montoExtras = extras * (salarioHora * 1.5);
+  // --- Salario mensual por defecto ---
+  const salarioMensual = payrollData?.monthlySalary || 0;
+
+  // --- Salario base según tipo ---
+  const salarioBase = useMemo(() => {
+    switch (type) {
+      case 'Semanal': return salarioMensual / 4;
+      case 'Quincenal': return salarioMensual / 2;
+      default: return salarioMensual;
+    }
+  }, [salarioMensual, type]);
+
+  const diasPeriodo = useMemo(() => {
+    switch (type) {
+      case 'Semanal': return 7;
+      case 'Quincenal': return 15;
+      default: return 30;
+    }
+  }, [type]);
+
+ 
+
+  const salarioDia = salarioBase / diasPeriodo;
+  const salarioHora = salarioDia / 8;
+
+  // --- Montos adicionales ---
+  const montoExtras = extras * salarioHora * 1.5;
   const montoFeriados = feriados * salarioHora * 8 * 2;
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
+
   const deducciones = (incCCSS + incINS + ausencias) * salarioDia;
 
-  const salarioBruto = useMemo(() => 
-    salarioMensual + montoExtras + montoFeriados + montoExtrasFeriado + retroactivo + bonos + comisiones,
-    [salarioMensual, montoExtras, montoFeriados, montoExtrasFeriado, retroactivo, bonos, comisiones]
+  const salarioBruto = useMemo(
+    () =>
+      salarioBase +
+      montoExtras +
+      montoFeriados +
+      montoExtrasFeriado +
+      retroactivo +
+      bonos +
+      comisiones,
+    [salarioBase, montoExtras, montoFeriados, montoExtrasFeriado, retroactivo, bonos, comisiones]
   );
 
   const netoPagar = salarioBruto - deducciones;
 
   const buildRowData = () => ({
+    payrollType: type,
+    salarioBase,
+    weeklySalary: salarioMensual / 4,
+    biweeklySalary: salarioMensual / 2,
     monthlySalary: salarioMensual,
-    biweeklySalary: salarioQuincenal,
     dailySalary: salarioDia,
     hourlySalary: salarioHora,
     overTimeHours: extras,
@@ -63,16 +89,36 @@ export const usePayrollCalculations = ({ employee, payrollData, isStatic = false
     netAmount: netoPagar,
   });
 
-  // Efecto para notificar cambios
+  // --- Efecto para actualizar fila ---
   useEffect(() => {
-    if (!isStatic) {
+    if (!isStatic && payrollData) {
       onChanged(employee.id, buildRowData());
     }
-  }, [extras, feriados, extrasFeriado, retroactivo, bonos, comisiones, incCCSS, incINS, ausencias, salarioBruto, deducciones, netoPagar]);
+  }, [
+    extras,
+    feriados,
+    extrasFeriado,
+    retroactivo,
+    bonos,
+    comisiones,
+    incCCSS,
+    incINS,
+    ausencias,
+    salarioBruto,
+    deducciones,
+    netoPagar,
+    type,
+    payrollData,
+  ]);
+
+  // --- Retorno ---
+  if (!payrollData) {
+    return { error: `${employee.firstName} ${employee.lastName} no tiene salario asignado` };
+  }
 
   return {
     salarioMensual,
-    salarioQuincenal,
+    salarioBase,
     salarioDia,
     salarioHora,
     extras, setExtras,
