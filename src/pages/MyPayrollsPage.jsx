@@ -193,9 +193,9 @@ const MyPayrollsPage = () => {
                 }
               />
               <Legend />
-              <Bar dataKey="netAmount" stackId="a" fill="#22c55e" />
-              <Bar dataKey="extras" stackId="a" fill="#facc15" />
-              <Bar dataKey="deductions" stackId="a" fill="#ef4444" />
+              <Bar dataKey="netAmount" name='Monto' stackId="a" fill="#22c55e" />
+              <Bar dataKey="extras" name='Extras' stackId="a" fill="#facc15" />
+              <Bar dataKey="deductions" name='Deducciones' stackId="a" fill="#ef4444" />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
@@ -223,9 +223,9 @@ const MyPayrollsPage = () => {
                 }
               />
               <Legend />
-              <Line type="monotone" dataKey="grossSalary" stroke="#3b82f6" />
-              <Line type="monotone" dataKey="extras" stroke="#facc15" />
-              <Line type="monotone" dataKey="deductions" stroke="#ef4444" />
+              <Line type="monotone" dataKey="grossSalary" name='Salario' stroke="#3b82f6" />
+              <Line type="monotone" dataKey="extras" name='Extras' stroke="#facc15" />
+              <Line type="monotone" dataKey="deductions" name='Deducciones' stroke="#ef4444" />
             </LineChart>
           </ResponsiveContainer>
         </motion.div>
