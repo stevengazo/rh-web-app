@@ -10,6 +10,7 @@ export const usePayrollCalculations = ({
   onChanged,
   typePayroll,
 }) => {
+  // --- Estados de campos editables ---
   const [extras, setExtras] = useState(0);
   const [feriados, setFeriados] = useState(0);
   const [extrasFeriado, setExtrasFeriado] = useState(0);
@@ -19,19 +20,19 @@ export const usePayrollCalculations = ({
   const [incCCSS, setIncCCSS] = useState(0);
   const [incINS, setIncINS] = useState(0);
   const [ausencias, setAusencias] = useState(0);
+  const [pension, setPension] = useState(0);
+  const [garnishment, setGarnishment] = useState(0);
 
+  // --- Salario base del empleado ---
   const salarioMensual = payrollData?.monthlySalary || 0;
 
   const salarioBase = useMemo(() => {
     switch (typePayroll) {
       case 'Semanal':
-    //    console.log(typePayroll);
         return salarioMensual / 4;
       case 'Quincenal':
-    //    console.log(typePayroll);
         return salarioMensual / 2;
       default:
-    //    console.log(typePayroll);
         return salarioMensual;
     }
   }, [salarioMensual, typePayroll]);
@@ -50,11 +51,12 @@ export const usePayrollCalculations = ({
   const salarioDia = salarioBase / diasPeriodo;
   const salarioHora = salarioDia / 8;
 
+  // --- Cálculos de montos adicionales ---
   const montoExtras = extras * salarioHora * 1.5;
   const montoFeriados = feriados * salarioHora * 8 * 2;
   const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
-  const deducciones = (incCCSS + incINS + ausencias) * salarioDia;
 
+  // --- Salario bruto ---
   const salarioBruto = useMemo(
     () =>
       salarioBase +
@@ -75,8 +77,34 @@ export const usePayrollCalculations = ({
     ]
   );
 
+  // --- Deducciones calculadas automáticamente ---
+  const cCSSDeductionAmount = useMemo(() => salarioBruto * 0.1067, [salarioBruto]); // 10.67%
+  const associationContributionAmount = useMemo(() => salarioBruto * 0.03, [salarioBruto]); // 3%
+
+  // --- Total deducciones ---
+  const deducciones = useMemo(
+    () =>
+      (incCCSS + incINS + ausencias) * salarioDia +
+      cCSSDeductionAmount +
+      pension +
+      garnishment +
+      associationContributionAmount,
+    [
+      incCCSS,
+      incINS,
+      ausencias,
+      salarioDia,
+      cCSSDeductionAmount,
+      pension,
+      garnishment,
+      associationContributionAmount,
+    ]
+  );
+
+  // --- Neto a pagar ---
   const netoPagar = salarioBruto - deducciones;
 
+  // --- Construcción de datos para fila ---
   const buildRowData = useCallback(
     () => ({
       payrollType: typePayroll,
@@ -100,6 +128,10 @@ export const usePayrollCalculations = ({
       absenseTime: ausencias,
       grossSalary: salarioBruto,
       totalDeductions: deducciones,
+      cCSSDeductionAmount,
+      pension,
+      garnishment,
+      associationContribution: associationContributionAmount,
       netAmount: netoPagar,
     }),
     [
@@ -123,12 +155,15 @@ export const usePayrollCalculations = ({
       salarioBruto,
       deducciones,
       netoPagar,
+      cCSSDeductionAmount,
+      pension,
+      garnishment,
+      associationContributionAmount,
     ]
   );
 
-  // --- Guardamos el último valor enviado para evitar bucle infinito ---
+  // --- Previene bucles infinitos al enviar cambios ---
   const lastSentRef = useRef(null);
-
   const currentData = useMemo(() => buildRowData(), [buildRowData]);
 
   useEffect(() => {
@@ -146,6 +181,9 @@ export const usePayrollCalculations = ({
         'ccssDays',
         'insDays',
         'absenseTime',
+        'pension',
+        'garnishment',
+        'associationContribution',
       ];
 
       const hasChanged = keysToCompare.some(
@@ -188,6 +226,12 @@ export const usePayrollCalculations = ({
     setIncINS,
     ausencias,
     setAusencias,
+    pension,
+    setPension,
+    garnishment,
+    setGarnishment,
+    cCSSDeductionAmount,
+    associationContributionAmount,
     montoExtras,
     montoFeriados,
     montoExtrasFeriado,

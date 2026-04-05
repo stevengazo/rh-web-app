@@ -83,6 +83,31 @@ const TablePayrollHeader = () => {
           Salario Bruto
         </th>
 
+        <th
+          className="p-2 text-md"
+          title="Deducción fija de la CCSS (Caja Costarricense de Seguro Social)"
+        >
+          CCSS
+        </th>
+
+        <th
+          className="p-2 text-md"
+          title="Embargo aplicado al salario del empleado"
+        >
+          Garnishment
+        </th>
+
+        <th
+          className="p-2 text-md"
+          title="Contribución al plan de pensión del empleado"
+        >
+          Pension
+        </th>
+
+        <th className="p-2 text-md" title="Aporte a la asociación del empleado">
+          Association
+        </th>
+
         <th className="p-2 text-md" title="INC CCSS + INC INS + Tiempo Ausente">
           Total Deducciones
         </th>
