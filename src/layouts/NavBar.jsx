@@ -29,7 +29,7 @@ const NavBar = () => {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gray-800 border-b border-gray-700 px-4 sm:px-6 py-3 flex items-center justify-between shadow-lg"
+        className="bg-gray-900 sm:px-6 py-2 flex items-center justify-between shadow-lg"
       >
         {/* Logo */}
         <h2 className="text-lg font-semibold text-white tracking-wide">

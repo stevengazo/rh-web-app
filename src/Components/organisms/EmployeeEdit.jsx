@@ -35,6 +35,7 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
     if (name === 'birthDate' || name === 'hiredDate') {
       newValue = value ? new Date(value).toISOString() : null;
     }
+    console
 
     setLocalEmployee((prev) => ({
       ...prev,
@@ -158,19 +159,19 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
         <div className="flex flex-col gap-1">
           <Label>Jornada</Label>
           <select name="jorney" value={localEmployee.jorney || ''} onChange={handleChange}>
-            <option value="">Seleccione una jornada</option>
-            <option value="Diurna">Diurna</option>
-            <option value="Mixta">Mixta</option>
-            <option value="Nocturna">Nocturna</option>
+            <option className='text-gray-600' value="">Seleccione una jornada</option>
+            <option className='text-gray-600' value="Diurna">Diurna</option>
+            <option className='text-gray-600' value="Mixta">Mixta</option>
+            <option className='text-gray-600' value="Nocturna">Nocturna</option>
           </select>
         </div>
 
         <div className="flex flex-col gap-1">
           <Label>Departamento</Label>
           <select name="departamentId" value={localEmployee.departamentId || ''} onChange={handleChange}>
-            <option value="">Seleccione un departamento</option>
+            <option className='text-gray-600 hover:text-gray-700 hover:bg-gray-200'  value="">Seleccione un departamento</option>
             {departaments.map((dept) => (
-              <option key={dept.departamentId} value={dept.departamentId}>
+              <option className='text-gray-600 hover:text-gray-700 hover:bg-gray-200' key={dept.departamentId} value={dept.departamentId}>
                 {dept.name}
               </option>
             ))}
