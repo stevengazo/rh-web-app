@@ -53,7 +53,7 @@ const ComissionTable = ({ comissions = [] }) => {
 
       <motion.tbody variants={tableVariants} className="text-sm">
         {comissions.map((c) => (
-          <motion.tr
+          <tr
             key={c.comissionId}
             variants={rowVariants}
             whileHover={{ backgroundColor: '#f8fafc' }}
@@ -83,7 +83,7 @@ const ComissionTable = ({ comissions = [] }) => {
             <td className="p-3">{c.createdBy || '—'}</td>
 
             <td className="p-3">{formatDate(c.lastEditedAt)}</td>
-          </motion.tr>
+          </tr>
         ))}
       </motion.tbody>
     </motion.table>

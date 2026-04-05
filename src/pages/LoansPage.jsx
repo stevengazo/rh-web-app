@@ -34,6 +34,7 @@ const LoansPage = () => {
 
   const fetchLoans = async () => {
     try {
+      closeCanvas()
       setLoading(true);
       const response = await loansApi.getAllsLoans();
       setLoans(response.data ?? []);

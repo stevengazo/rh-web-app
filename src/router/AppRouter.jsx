@@ -27,6 +27,7 @@ import LoansPage from '../pages/LoansPage';
 import ViewLoanPage from '../pages/ViewLoanPage';
 import AbsencesPage from '../pages/AbsencesPage';
 import RolesPage from '../pages/RolesPage';
+import MyLoansPage from '../pages/MyLoansPage';
 
 const AppRouter = () => {
   return (
@@ -42,6 +43,7 @@ const AppRouter = () => {
           <Route path="/my-kpis" element={<MyKPIs />} />
           <Route path="/my-comissions" element={<MyCommissionsPage />} />
           <Route path="/my-payrolls" element={<MyPayrollsPage />} />
+          <Route path="/my-loans" element={<MyLoansPage />} />
         </Route>
         {/* Rutas de Administrador y RH */}
 

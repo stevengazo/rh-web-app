@@ -28,6 +28,13 @@ const ViewLoanPage = () => {
     setOpen(true);
   };
 
+  const handlePaymentAdded = async () => {
+    setOpen(false);
+    // Payments
+    const resPayments = await paymentApi.getPaymentByLoan(id);
+    setPayments(resPayments.data);
+  };
+
   useEffect(() => {
     async function getData() {
       // Loan
@@ -137,7 +144,10 @@ const ViewLoanPage = () => {
             <SectionTitle>Pagos</SectionTitle>
             <PrimaryButton
               onClick={() =>
-                openCanvas('Agregar Pago', <PaymentAdd loanId={id} />)
+                openCanvas(
+                  'Agregar Pago',
+                  <PaymentAdd loanId={id} onAdded={handlePaymentAdded} />
+                )
               }
             >
               Agregar Pago

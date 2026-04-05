@@ -35,7 +35,7 @@ const KPISChart = ({ objetive, results }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full h-[400px] p-2 border border-gray-50 shadow-sm"
+      className="w-full h-[400px] p-2 border rounded border-blue-200 shadow-sm"
     >
       <motion.h2
         initial={{ opacity: 0, x: -20 }}
@@ -64,9 +64,9 @@ const KPISChart = ({ objetive, results }) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="w-full h-full"
+            className="w-full h-full m-2 py-5"
           >
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer  width="100%" height="100%">
               <LineChart data={data}>
                 <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
 

@@ -77,8 +77,8 @@ const comissionsApi = {
     if (!id) return [];
 
     try {
-      const res = await apiClient.get(`/comissions/user/${id}`);
-      return safeResponse(res, []);
+      const res = await apiClient.get(`/Comissions/user/${id}`);
+        return res
     } catch (error) {
       return handleError(error, []);
     }

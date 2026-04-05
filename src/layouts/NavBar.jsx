@@ -59,6 +59,10 @@ const NavBar = () => {
             <User size={18} />
             Comisiones
           </NavLink>
+          <NavLink to="/my-loans" className={linkClass}>
+            <User size={18} />
+            Prestamos
+          </NavLink>
 
           <NavLink to="/my-payrolls" className={linkClass}>
             <User size={18} />

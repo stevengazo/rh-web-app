@@ -4,7 +4,7 @@ import paymentApi from '../../api/paymentsApi';
 import { useAppContext } from '../../context/AppContext';
 import PrimaryButton from '../PrimaryButton';
 
-const PaymentAdd = ({ loanId = 0 }) => {
+const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
   const today = new Date().toISOString().split('T')[0];
   const { user } = useAppContext();
 
@@ -51,6 +51,7 @@ const PaymentAdd = ({ loanId = 0 }) => {
       });
 
       toast.success('Pago registrado correctamente');
+      onAdded?.()
 
       setNewPayment((prev) => ({
         ...prev,
