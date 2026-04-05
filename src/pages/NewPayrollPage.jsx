@@ -10,16 +10,23 @@ import PayrollResumeTable from '../Components/organisms/PayrollResumeTable';
 import TablePayrollHeader from '../Components/molecules/tablePayrollHeader';
 
 import usePayrollData from '../hooks/usePayrollData';
+import { useEffect } from 'react';
 
 const NewPayrollPage = () => {
   const { id } = useParams();
+
   const {
     employees,
     payrollByEmployee,
     handleRowChange,
+    payroll,
     handleSave,
     payrollResume,
   } = usePayrollData(id);
+
+  useEffect(() => {
+    console.log(payroll);
+  }, [payroll]);
 
   return (
     <motion.div className="space-y-10">
@@ -44,11 +51,46 @@ const NewPayrollPage = () => {
           </table>
         </div>
 
-        <SectionTitle>Resumen</SectionTitle>
-        <PayrollResumeTable resume={payrollResume} />
+        <div className="flex flex-row my-2 gap-2">
+          <div className="bg-white w-1/2 shadow-md rounded-xl p-6  border border-gray-300  space-y-3">
+            <h2 className="text-xl font-bold text-gray-800 border-b pb-2 mb-3">
+              Detalles de Nómina
+            </h2>
+
+            <div className="flex justify-between text-gray-700">
+              <span className="font-medium">Tipo:</span>
+              <span>{payroll.payrollType}</span>
+            </div>
+
+            <div className="flex justify-between text-gray-700">
+              <span className="font-medium">Descripción:</span>
+              <span>{payroll.payrollDescription}</span>
+            </div>
+
+            <div className="flex justify-between text-gray-700">
+              <span className="font-medium">Fecha Inicio:</span>
+              <span>{new Date(payroll.initialDate).toLocaleDateString()}</span>
+            </div>
+
+            <div className="flex justify-between text-gray-700">
+              <span className="font-medium">Fecha Final:</span>
+              <span>{new Date(payroll.finalDate).toLocaleDateString()}</span>
+            </div>
+
+            <div className="flex justify-between text-gray-700">
+              <span className="font-medium">Registros de Nómina:</span>
+              <span>{payroll.payrolls?.length || 0}</span>
+            </div>
+          </div>
+
+          <div className="bg-white w-1/2 shadow-md rounded-xl p-6  border border-gray-300  space-y-3">
+            <SectionTitle>Resumen</SectionTitle>
+            <PayrollResumeTable resume={payrollResume} />
+          </div>
+        </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 border ">
         <PrimaryButton onClick={handleSave}>Guardar Planilla</PrimaryButton>
         <SecondaryButton>Cancelar</SecondaryButton>
       </div>

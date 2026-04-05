@@ -4,13 +4,24 @@ import EmployeeApi from '../api/employeesApi';
 import salaryApi from '../api/salaryApi';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
 import useLatestSalaryMap from './useLatestSalaryMap';
+import payrollApi from '../api/payrollApi';
 
 const usePayrollData = (payrollId) => {
   const [employees, setEmployees] = useState([]);
   const [salaries, setSalaries] = useState([]);
+  const [payroll, setPayroll] = useState();
   const [payrollByEmployee, setPayrollByEmployee] = useState({});
 
   const salaryMap = useLatestSalaryMap(salaries);
+
+  const GetPayrollAsync = async () => {
+    try {
+      const rest = await payrollApi.getPayrollById(payrollId);
+      setPayroll(rest.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   /** Carga inicial de empleados y salarios */
   useEffect(() => {
@@ -20,6 +31,9 @@ const usePayrollData = (payrollId) => {
           EmployeeApi.getAllEmployees(),
           salaryApi.getLatests(),
         ]);
+
+        await GetPayrollAsync();
+
         setEmployees(empRes.data);
         setSalaries(salRes.data);
       } catch (error) {
@@ -99,7 +113,9 @@ const usePayrollData = (payrollId) => {
   const handleSave = async () => {
     try {
       const payrollList = Object.values(payrollByEmployee);
-      await Promise.all(payrollList.map((payroll) => Employee_PayrollApi.create(payroll)));
+      await Promise.all(
+        payrollList.map((payroll) => Employee_PayrollApi.create(payroll))
+      );
       toast.success('Nómina guardada exitosamente');
     } catch (error) {
       console.error('Error guardando nómina:', error);
@@ -111,14 +127,27 @@ const usePayrollData = (payrollId) => {
   const payrollResume = useMemo(() => {
     return Object.values(payrollByEmployee).reduce(
       (acc, emp) => {
-        acc.totalExtras += (emp.overtimeAmount || 0) + (emp.holidayAmount || 0) + (emp.holidayOvertimeAmount || 0);
-        acc.totalDeductions += (emp.totalDeductions || 0) + (emp.unPaidLeaveAmount || 0) + (emp.medicalLeaveAmount || 0) + (emp.absenceAmount || 0);
+        acc.totalExtras +=
+          (emp.overtimeAmount || 0) +
+          (emp.holidayAmount || 0) +
+          (emp.holidayOvertimeAmount || 0);
+        acc.totalDeductions +=
+          (emp.totalDeductions || 0) +
+          (emp.unPaidLeaveAmount || 0) +
+          (emp.medicalLeaveAmount || 0) +
+          (emp.absenceAmount || 0);
         acc.association += emp.associationAmount || 0;
         acc.ccss += emp.ccssAmount || 0;
         acc.totalToPay += emp.netAmount || 0;
         return acc;
       },
-      { totalExtras: 0, totalDeductions: 0, association: 0, ccss: 0, totalToPay: 0 }
+      {
+        totalExtras: 0,
+        totalDeductions: 0,
+        association: 0,
+        ccss: 0,
+        totalToPay: 0,
+      }
     );
   }, [payrollByEmployee]);
 
@@ -126,6 +155,7 @@ const usePayrollData = (payrollId) => {
     employees,
     payrollByEmployee,
     handleRowChange,
+    payroll,
     handleSave,
     payrollResume,
   };

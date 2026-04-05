@@ -6,7 +6,7 @@ const PayrollResumeTable = ({ resume }) => {
     }).format(value || 0);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden   bg-white ">
       <table className="w-full border-collapse text-sm">
         <tbody>
           <tr className="border-b">
