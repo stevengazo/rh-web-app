@@ -1,26 +1,27 @@
 import { useEffect, useState, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import EmployeeApi from '../api/employeesApi';
 import salaryApi from '../api/salaryApi';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
 import useLatestSalaryMap from './useLatestSalaryMap';
-import toast from 'react-hot-toast';
 
 const usePayrollData = (payrollId) => {
   const [employees, setEmployees] = useState([]);
   const [salaries, setSalaries] = useState([]);
   const [payrollByEmployee, setPayrollByEmployee] = useState({});
 
-  // Mapa de salarios por empleado
   const salaryMap = useLatestSalaryMap(salaries);
 
   /** Carga inicial de empleados y salarios */
   useEffect(() => {
     const loadData = async () => {
       try {
-        const emp = await EmployeeApi.getAllEmployees();
-        const sal = await salaryApi.getLatests();
-        setEmployees(emp.data);
-        setSalaries(sal.data);
+        const [empRes, salRes] = await Promise.all([
+          EmployeeApi.getAllEmployees(),
+          salaryApi.getLatests(),
+        ]);
+        setEmployees(empRes.data);
+        setSalaries(salRes.data);
       } catch (error) {
         console.error('Error cargando datos de nómina:', error);
         toast.error('Error cargando empleados o salarios');
@@ -31,18 +32,14 @@ const usePayrollData = (payrollId) => {
 
   /** Genera base de nómina por empleado */
   useEffect(() => {
-    if (!employees?.length || !salaryMap) return;
+    if (!employees.length || !salaryMap) return;
 
-    const base = {};
-    employees.forEach((emp) => {
-      const salaryEntry = salaryMap[emp.id];
-      if (!salaryEntry) return;
-
+    const createPayrollEntry = (emp, salaryEntry) => {
       const monthlySalary = salaryEntry.salaryAmount;
       const dailySalary = monthlySalary / 30;
       const hourlySalary = dailySalary / 8;
 
-      base[emp.id] = {
+      return {
         userId: emp.id,
         workShift: emp.workShift ?? '',
         daysWorked: 15,
@@ -78,7 +75,14 @@ const usePayrollData = (payrollId) => {
         totalDeductions: 0,
         netAmount: monthlySalary,
       };
-    });
+    };
+
+    const base = employees.reduce((acc, emp) => {
+      const salaryEntry = salaryMap[emp.id];
+      if (!salaryEntry) return acc;
+      acc[emp.id] = createPayrollEntry(emp, salaryEntry);
+      return acc;
+    }, {});
 
     setPayrollByEmployee(base);
   }, [employees, salaryMap, payrollId]);
@@ -95,9 +99,7 @@ const usePayrollData = (payrollId) => {
   const handleSave = async () => {
     try {
       const payrollList = Object.values(payrollByEmployee);
-      for (const payroll of payrollList) {
-        await Employee_PayrollApi.create(payroll);
-      }
+      await Promise.all(payrollList.map((payroll) => Employee_PayrollApi.create(payroll)));
       toast.success('Nómina guardada exitosamente');
     } catch (error) {
       console.error('Error guardando nómina:', error);
@@ -107,24 +109,13 @@ const usePayrollData = (payrollId) => {
 
   /** Resumen global de nómina */
   const payrollResume = useMemo(() => {
-    const payrollList = Object.values(payrollByEmployee);
-    return payrollList.reduce(
+    return Object.values(payrollByEmployee).reduce(
       (acc, emp) => {
-        acc.totalExtras +=
-          (emp.overtimeAmount || 0) +
-          (emp.holidayAmount || 0) +
-          (emp.holidayOvertimeAmount || 0);
-
-        acc.totalDeductions +=
-          (emp.totalDeductions || 0) +
-          (emp.unPaidLeaveAmount || 0) +
-          (emp.medicalLeaveAmount || 0) +
-          (emp.absenceAmount || 0);
-
+        acc.totalExtras += (emp.overtimeAmount || 0) + (emp.holidayAmount || 0) + (emp.holidayOvertimeAmount || 0);
+        acc.totalDeductions += (emp.totalDeductions || 0) + (emp.unPaidLeaveAmount || 0) + (emp.medicalLeaveAmount || 0) + (emp.absenceAmount || 0);
         acc.association += emp.associationAmount || 0;
         acc.ccss += emp.ccssAmount || 0;
         acc.totalToPay += emp.netAmount || 0;
-
         return acc;
       },
       { totalExtras: 0, totalDeductions: 0, association: 0, ccss: 0, totalToPay: 0 }
