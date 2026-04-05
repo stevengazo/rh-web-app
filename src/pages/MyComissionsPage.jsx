@@ -16,6 +16,7 @@ const MyCommissionsPage = () => {
     const fetchData = async () => {
       try {
         const res = await comissionsApi.getComissionsByUser(user.id);
+        console.log(res.data)
         setComission(res.data);
       } catch (err) {
         console.error('Error comissions', err);
