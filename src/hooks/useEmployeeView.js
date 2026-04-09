@@ -160,6 +160,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await certificationApi.getCertificationsByUser(id);
+      console.log(res.data)
       setCertifications(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
@@ -172,6 +173,7 @@ const useEmployeeView = (id, open) => {
 
     try {
       const res = await courseApi.getCoursesByUser(id);
+      console.log(res.data)
       setCourses(Array.isArray(res?.data) ? res.data : []);
     } catch (err) {
       if (err?.response?.status === 404) {
