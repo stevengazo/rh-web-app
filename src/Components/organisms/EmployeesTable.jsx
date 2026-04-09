@@ -80,9 +80,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
                       <Edit size={16} />
                     </button>
 
-                    <button className="p-1.5 rounded text-red-500 hover:bg-red-100">
-                      <Trash2 size={16} />
-                    </button>
+            
                   </div>
                 </td>
               </motion.tr>

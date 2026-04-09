@@ -16,6 +16,7 @@ import UploadImage from '../Components/organisms/UploadImage';
 
 import EmployeeEdit from '../Components/organisms/EmployeeEdit';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
+import DesactivateUser from '../Components/DesactivateUser.jsx';
 
 import CourseAdd from '../Components/organisms/CourseAdd';
 import CourseTable from '../Components/organisms/CourseTable';
@@ -75,6 +76,7 @@ const ViewEmployeePage = () => {
     extras,
     handleDeleteFile,
     employeePhoto,
+    DeleteUser,
     otherFiles,
     refetch,
   } = useEmployeeView(id, open);
@@ -148,16 +150,6 @@ const ViewEmployeePage = () => {
               }
             >
               Agregar Imagen
-            </button>
-
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg">
-              <KeyIcon size={18} />
-              Cambiar Contraseña
-            </button>
-
-            <button className="w-full sm:w-auto flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg">
-              <UserX size={18} />
-              Desactivar
             </button>
           </div>
         </div>

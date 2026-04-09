@@ -220,12 +220,23 @@ const useEmployeeView = (id, open) => {
     }
   };
 
+
   useEffect(() => {
     if (!id) return;
 
     fetchFiles();
     fetchData();
   }, [id, open]);
+
+
+  function DeleteUser(userId) {
+    try {
+      console.log('borrar', userId);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   return {
     activeTab,
@@ -241,7 +252,6 @@ const useEmployeeView = (id, open) => {
     extras,
     employeePhoto,
     otherFiles,
-
     setActiveTab,
     setEmployee,
 

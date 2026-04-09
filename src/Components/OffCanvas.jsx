@@ -30,8 +30,8 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
           top-0 right-0
           h-full
           w-full sm:w-[420px]
-          bg-white text-gray-800
-          dark:bg-gray-900 dark:text-gray-100
+          bg-gray-800
+          text-white
           shadow-2xl
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
@@ -43,7 +43,7 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
             flex items-center justify-between
             px-5 py-4
             border-b
-            border-gray-200 dark:border-gray-700
+            border-gray-700
           "
         >
           <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
