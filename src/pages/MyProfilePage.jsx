@@ -83,8 +83,10 @@ const MyProfilePage = () => {
 
       // CURSOS
       try {
+
         const resp = await courseApi.getCoursesByUser(user.id);
-        setCourses(resp.data);
+        
+        setCourses(resp);
       } catch (error) {
         console.error('Error cursos:', error);
       }
@@ -92,7 +94,7 @@ const MyProfilePage = () => {
       // CERTIFICACIONES
       try {
         const resp = await certificationApi.getCertificationsByUser(user.id);
-        setCertifications(resp.data);
+        setCertifications(resp);
       } catch (error) {
         console.error('Error certificaciones:', error);
       }
@@ -209,7 +211,7 @@ const MyProfilePage = () => {
                   Agregar
                 </PrimaryButton>
               </div>
-              <CourseTable courses={courses} />
+              <CourseTable courses={ courses} />
               <Divider />
               <div className="flex flex-row justify-between">
                 <SectionTitle>Certificaciones</SectionTitle>

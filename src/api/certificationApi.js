@@ -74,10 +74,11 @@ const certificationApi = {
    * @returns {Promise<Array>} Lista de certificaciones o vacía
    */
   getCertificationsByUser: async (userId) => {
-    if (!userId) return [];
+    console.log("USERID",userId)
+  
 
     try {
-      const res = await apiClient.get(`/certifications/user/${userId}`);
+      const res = await apiClient.get(`/Certifications/user/${userId}`);
       return safeResponse(res, []);
     } catch (error) {
       return handleError(error, []);

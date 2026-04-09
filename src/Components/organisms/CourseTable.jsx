@@ -17,6 +17,8 @@ const tableVariants = {
 };
 
 const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
+
+ // console.log(courses)
   return (
     <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
       <motion.table

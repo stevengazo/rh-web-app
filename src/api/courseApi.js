@@ -74,7 +74,8 @@ const courseApi = {
    * @returns {Promise<Array>} Lista de cursos o vacía
    */
   getCoursesByUser: async (userId) => {
-    if (!userId) return [];
+  
+    console.log("userId",userId)
 
     try {
       const res = await apiClient.get(`/courses/user/${userId}`);
