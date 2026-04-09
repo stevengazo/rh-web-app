@@ -82,6 +82,7 @@ const MyProfilePage = () => {
       }
 
       // CURSOS
+      
       try {
 
         const resp = await courseApi.getCoursesByUser(user.id);
