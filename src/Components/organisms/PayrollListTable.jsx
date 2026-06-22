@@ -29,29 +29,29 @@ const PayrollListTable = ({ payrolls = [] }) => {
         {/* =========================
           HEADER
       ========================= */}
-        <thead className="bg-slate-800">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               <div className="flex items-center gap-2">ID</div>
             </th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               <div className="flex items-center gap-2">Periodo</div>
             </th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               Estado
             </th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               Tipo
             </th>
 
-            <th className="px-4 py-3 text-right text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-right text-sm font-semibold">
               Monto
             </th>
 
-            <th className="px-4 py-3 text-center text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-center text-sm font-semibold">
               Acciones
             </th>
           </tr>

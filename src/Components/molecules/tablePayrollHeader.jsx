@@ -1,6 +1,6 @@
 const TablePayrollHeader = () => {
   return (
-    <thead className="bg-canvas sticky top-0 z-10">
+    <thead className="bg-surface-alt text-ink-secondary sticky top-0 z-10">
       <tr>
         <th className="p-2 text-md" title="Nombre completo del empleado">
           Empleado

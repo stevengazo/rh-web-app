@@ -6,7 +6,7 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
   return (
     <div className="mx-auto w-full max-w-6xl border-collapse rounded-xl overflow-hidden shadow">
       <table className="w-full border border-stroke-soft rounded-md">
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
@@ -32,7 +32,7 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
           </tr>
         </thead>
 
-        <motion.tbody className="divide-y">
+        <motion.tbody className="divide-y divide-stroke-soft">
           {items.length === 0 && (
             <tr>
               <td
@@ -45,7 +45,7 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
           )}
 
           {items.map((item) => (
-            <tr key={item.contactEmergencyId} className="text-sm">
+            <tr key={item.contactEmergencyId} className="text-sm hover:bg-canvas transition-colors">
               <td className="px-4 py-3 font-medium text-ink">
                 {item.name || '-'}
               </td>

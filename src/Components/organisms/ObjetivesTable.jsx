@@ -2,7 +2,7 @@ const ObjetivesTable = ({ objetives }) => {
   return (
     <div className="overflow-x-auto rounded-xl shadow-md border border-stroke-soft">
       <table className="min-w-full divide-y divide-stroke-soft bg-surface">
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-semibold text-ink-secondary uppercase tracking-wider">
               ID

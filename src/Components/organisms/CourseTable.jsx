@@ -28,7 +28,7 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
         animate="visible"
         className="min-w-[600px] w-full bg-surface"
       >
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
@@ -57,7 +57,7 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-stroke-soft">
           {courses.length === 0 && (
             <tr>
               <td
@@ -72,7 +72,7 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
           {courses.map((item, index) => (
             <motion.tr
               key={index}
-              className="text-sm hover:bg-canvas transition"
+              className="text-sm hover:bg-canvas transition-colors"
             >
               <td className="px-4 py-3 font-medium text-ink">
                 {item.name}

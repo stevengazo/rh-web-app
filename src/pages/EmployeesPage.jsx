@@ -1,6 +1,14 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, Table } from 'lucide-react';
+import {
+  LayoutGrid,
+  Table,
+  Plus,
+  Users,
+  UserCheck,
+  UserX,
+  Building2,
+} from 'lucide-react';
 
 import SearchEmployee from '../Components/molecules/SearchEmployee';
 import EmployeesTable from '../Components/organisms/EmployeesTable';
@@ -26,6 +34,18 @@ const itemVariants = {
     transition: { duration: 0.35 },
   },
 };
+
+const StatPill = ({ icon: Icon, label, value, chip, fg }) => (
+  <div className="flex items-center gap-3 rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+    <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg ${chip}`}>
+      <Icon size={18} className={fg} />
+    </div>
+    <div>
+      <p className="text-xl font-semibold leading-none text-ink">{value}</p>
+      <p className="mt-1 text-xs text-ink-muted">{label}</p>
+    </div>
+  </div>
+);
 
 const EmployeesPage = () => {
   const [search, setSearch] = useState('');
@@ -55,6 +75,19 @@ const EmployeesPage = () => {
         e.email.toLowerCase().includes(term)
     );
   }, [search, employees]);
+
+  const stats = useMemo(() => {
+    const active = employees.filter((e) => e.isActive).length;
+    const departments = new Set(
+      employees.map((e) => e.departament?.name).filter(Boolean)
+    ).size;
+    return {
+      total: employees.length,
+      active,
+      inactive: employees.length - active,
+      departments,
+    };
+  }, [employees]);
 
   const fetchEmployees = async () => {
     try {
@@ -117,40 +150,80 @@ const EmployeesPage = () => {
 
           <div className="flex items-center gap-3">
             {/* toggle vista */}
-            <div className="flex bg-surface-alt rounded-lg p-1">
-              <button
-                onClick={() => setView('table')}
-                className={`p-2 rounded-md transition ${
-                  view === 'table' ? 'bg-surface shadow' : 'text-ink-muted'
-                }`}
-              >
-                <Table size={18} />
-              </button>
-
+            <div className="flex gap-1 rounded-lg border border-stroke-soft bg-surface-alt p-1">
               <button
                 onClick={() => setView('cards')}
-                className={`p-2 rounded-md transition ${
-                  view === 'cards' ? 'bg-surface shadow' : 'text-ink-muted'
+                title="Vista de tarjetas"
+                className={`rounded-md p-2 transition-colors ${
+                  view === 'cards'
+                    ? 'bg-surface text-brand shadow-sm'
+                    : 'text-ink-muted hover:text-ink'
                 }`}
               >
                 <LayoutGrid size={18} />
               </button>
+
+              <button
+                onClick={() => setView('table')}
+                title="Vista de tabla"
+                className={`rounded-md p-2 transition-colors ${
+                  view === 'table'
+                    ? 'bg-surface text-brand shadow-sm'
+                    : 'text-ink-muted hover:text-ink'
+                }`}
+              >
+                <Table size={18} />
+              </button>
             </div>
 
             {/* botón agregar */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <PrimaryButton
-                onClick={() =>
-                  openCanvas(
-                    'Agregar Empleado',
-                    <EmployeesAdd OnClose={() => setOpen(false)} />
-                  )
-                }
-              >
-                Agregar Empleado
-              </PrimaryButton>
-            </motion.div>
+            <PrimaryButton
+              onClick={() =>
+                openCanvas(
+                  'Agregar Empleado',
+                  <EmployeesAdd OnClose={() => setOpen(false)} />
+                )
+              }
+            >
+              <Plus size={16} />
+              Agregar Empleado
+            </PrimaryButton>
           </div>
+        </motion.div>
+
+        {/* STATS */}
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-2 gap-4 lg:grid-cols-4"
+        >
+          <StatPill
+            icon={Users}
+            label="Total"
+            value={stats.total}
+            chip="bg-brand-tint"
+            fg="text-brand"
+          />
+          <StatPill
+            icon={UserCheck}
+            label="Activos"
+            value={stats.active}
+            chip="bg-green-50"
+            fg="text-green-600"
+          />
+          <StatPill
+            icon={UserX}
+            label="Inactivos"
+            value={stats.inactive}
+            chip="bg-red-50"
+            fg="text-red-600"
+          />
+          <StatPill
+            icon={Building2}
+            label="Departamentos"
+            value={stats.departments}
+            chip="bg-violet-50"
+            fg="text-violet-600"
+          />
         </motion.div>
 
         {/* SEARCH */}

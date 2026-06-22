@@ -28,7 +28,7 @@ const PaymentTable = ({ payments = [] }) => {
     <div className="space-y-3">
       <div className="overflow-x-auto">
         <table className="min-w-full border border-stroke-soft rounded-md">
-          <thead className="bg-surface-alt">
+          <thead className="bg-surface-alt text-ink-secondary">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 ID
@@ -50,7 +50,7 @@ const PaymentTable = ({ payments = [] }) => {
 
           <tbody className="divide-y divide-stroke-soft">
             {payments.map((payment) => (
-              <tr key={payment.paymentId} className="hover:bg-canvas">
+              <tr key={payment.paymentId} className="hover:bg-canvas transition-colors">
                 <td className="px-4 py-2 text-sm">{payment.paymentId}</td>
 
                 <td className="px-4 py-2 text-sm">

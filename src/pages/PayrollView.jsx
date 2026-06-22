@@ -101,15 +101,15 @@ const PayrollView = () => {
       {/* Tabla Desktop */}
       <div className="hidden md:block w-full overflow-x-auto">
         <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
-          <thead className="bg-slate-800">
+          <thead className="bg-surface-alt text-ink-secondary">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-white">Empleado</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold text-white">Salario Bruto</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold text-white">Deducciones</th>
-              <th className="px-4 py-3 text-right text-sm font-semibold text-white">Salario Neto</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold">Empleado</th>
+              <th className="px-4 py-3 text-right text-sm font-semibold">Salario Bruto</th>
+              <th className="px-4 py-3 text-right text-sm font-semibold">Deducciones</th>
+              <th className="px-4 py-3 text-right text-sm font-semibold">Salario Neto</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-stroke-soft">
             {payroll.payrolls.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-center text-sm text-ink-muted">
@@ -118,9 +118,9 @@ const PayrollView = () => {
               </tr>
             ) : (
               payroll.payrolls.map((item) => (
-                <tr key={item.employee_PayrollId} className="hover:bg-slate-50 transition">
-                  <td className="px-4 py-3 text-sm text-slate-700"><GetEmployeeName id={item.userId} /></td>
-                  <td className="px-4 py-3 text-sm text-right font-medium text-slate-700">{formatCurrency(item.grossSalary)}</td>
+                <tr key={item.employee_PayrollId} className="hover:bg-canvas transition-colors">
+                  <td className="px-4 py-3 text-sm text-ink"><GetEmployeeName id={item.userId} /></td>
+                  <td className="px-4 py-3 text-sm text-right font-medium text-ink">{formatCurrency(item.grossSalary)}</td>
                   <td className="px-4 py-3 text-sm text-right text-red-500 font-medium">{formatCurrency(item.totalDeductions + (item.cCSSDeductionAmount || item.grossSalary*0.1067) + (item.associationContribution || item.grossSalary*0.03))}</td>
                   <td className="px-4 py-3 text-sm text-right text-emerald-600 font-semibold">{formatCurrency(item.netAmount)}</td>
                 </tr>

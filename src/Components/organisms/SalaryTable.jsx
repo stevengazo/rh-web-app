@@ -22,31 +22,31 @@ const formatAmount = (amount, currency) => {
 const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm">
-        <thead className="bg-slate-800">
+      <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               <div className="flex items-center gap-2">
                 <Calendar size={16} /> Fecha
               </div>
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               <div className="flex items-center gap-2">
                 <DollarSign size={16} /> Monto
               </div>
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold">
               <div className="flex items-center gap-2">
                 <Coins size={16} /> Moneda
               </div>
             </th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-center text-sm font-semibold">
               Acciones
             </th>
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-stroke-soft">
           {salaries.length === 0 && (
             <tr>
               <td

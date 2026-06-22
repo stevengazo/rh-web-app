@@ -37,9 +37,9 @@ const ResultsTable = ({ results = [] }) => {
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto text-white border rounded-xl shadow-sm">
+      <div className="overflow-x-auto border border-stroke-soft rounded-xl shadow-sm bg-surface">
         <table className="min-w-full text-sm">
-          <thead className="bg-slate-800 ">
+          <thead className="bg-surface-alt text-ink-secondary">
             <tr>
               <th className="px-4 py-3 text-left font-semibold">Fecha</th>
               <th className="px-4 py-3 text-center font-semibold">
@@ -48,10 +48,10 @@ const ResultsTable = ({ results = [] }) => {
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-stroke-soft">
             {results.map((item) => (
-              <tr key={item.resultId} className='hover:bg-brand-900 hover:shadow-2xl hover:shadow-brand-900 duration-300 transition'>
-                <td className="px-4 py-3 text-gray-50">
+              <tr key={item.resultId} className="hover:bg-canvas transition-colors">
+                <td className="px-4 py-3 text-ink-muted">
                   {formatDate(item.resultDate)}
                 </td>
                 <td className="px-4 py-3 text-center">
@@ -73,9 +73,9 @@ const ResultsTable = ({ results = [] }) => {
 };
 
 const StatCard = ({ label, value }) => (
-  <div className=" border border-stroke-soft rounded-xl hover:bg-brand-900 hover:shadow-2xl hover:shadow-brand-900 duration-300 transition p-4 text-center shadow-sm">
-    <p className="text-sm text-ink-muted  ">{label}</p>
-    <p className="text-2xl font-semibold text-white">{value}</p>
+  <div className="border border-stroke-soft bg-surface rounded-xl hover:shadow-md transition-shadow duration-300 p-4 text-center shadow-sm">
+    <p className="text-sm text-ink-muted">{label}</p>
+    <p className="text-2xl font-semibold text-ink">{value}</p>
   </div>
 );
 

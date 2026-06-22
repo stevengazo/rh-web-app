@@ -1,47 +1,47 @@
 import { motion } from 'framer-motion';
-import { UserX } from 'lucide-react';
+import {
+  UserX,
+  Mail,
+  Phone,
+  Building2,
+  Fingerprint,
+  MapPin,
+  Clock,
+  Cake,
+  CalendarDays,
+  History,
+} from 'lucide-react';
 
 const formatDate = (date) => {
   if (!date || date.startsWith('0001-01-01')) return '—';
   return new Date(date).toLocaleDateString('es-CR');
 };
 
-const tableVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      staggerChildren: 0.04,
-    },
-  },
-};
+const getInitials = (employee) =>
+  `${employee.firstName?.[0] ?? ''}${employee.lastName?.[0] ?? ''}`.toUpperCase() ||
+  '—';
 
-const rowVariants = {
-  hidden: { opacity: 0, y: 6 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const Row = ({ label, value }) => (
-  <motion.tr
-    variants={rowVariants}
-    whileHover={{ backgroundColor: '#f8fafc' }}
-    className="border-t border-stroke-soft"
-  >
-    <td className="px-3 py-2 font-medium text-ink-muted">{label}</td>
-    <td className="px-3 py-2 text-ink">{value ?? '—'}</td>
-  </motion.tr>
+const InfoItem = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3 rounded-lg border border-stroke-soft bg-surface-alt p-3">
+    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-tint text-brand">
+      <Icon size={16} />
+    </div>
+    <div className="min-w-0">
+      <p className="text-xs text-ink-muted">{label}</p>
+      <p className="truncate text-sm font-medium text-ink">{value || '—'}</p>
+    </div>
+  </div>
 );
 
 const EmployeeTableInfo = ({ employee }) => {
-  if (!employee) {
+  if (!employee || !employee.firstName) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center
                    border border-dashed border-stroke
-                   rounded-md p-8 text-ink-muted bg-surface"
+                   rounded-xl p-8 text-ink-muted bg-surface"
       >
         <UserX size={40} className="mb-3 text-ink-muted" />
         <p className="font-medium">No hay información del empleado</p>
@@ -50,61 +50,96 @@ const EmployeeTableInfo = ({ employee }) => {
     );
   }
 
+  const fullName = `${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`
+    .replace(/\s+/g, ' ')
+    .trim();
+
   return (
-    <motion.table
-      variants={tableVariants}
-      initial="hidden"
-      animate="visible"
-      className="w-full border-collapse rounded-xl overflow-hidden shadow-sm bg-surface"
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm"
     >
-      <thead className="bg-surface-alt text-ink-secondary text-sm">
-        <tr>
-          <th className="text-left px-3 py-2">Campo</th>
-          <th className="text-left px-3 py-2">Valor</th>
-        </tr>
-      </thead>
+      {/* Banner */}
+      <div className="h-24 bg-linear-to-r from-brand to-brand-pressed" />
 
-      <motion.tbody variants={tableVariants} className="text-sm">
-        <Row
-          label="Nombre completo"
-          value={`${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`.trim()}
-        />
+      {/* Cabecera */}
+      <div className="px-6 pb-5">
+        <div className="-mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-end gap-4">
+            <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full border-4 border-surface bg-brand-tint text-2xl font-semibold text-brand shadow-sm">
+              {getInitials(employee)}
+            </div>
+            <div className="pb-1">
+              <h3 className="text-lg font-semibold text-ink">{fullName}</h3>
+              <p className="text-sm text-ink-muted">
+                @{employee.userName ?? '—'}
+                {employee.departament?.name && (
+                  <> · {employee.departament.name}</>
+                )}
+              </p>
+            </div>
+          </div>
 
-        <Row label="Usuario" value={employee.userName} />
-        <Row label="Correo" value={employee.email} />
-        <Row label="Teléfono" value={employee.phoneNumber} />
-        <Row label="Cédula" value={employee.dni} />
-        <Row label="Dirección" value={employee.address} />
+          <span
+            className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+              employee.isActive
+                ? 'bg-green-50 text-green-700'
+                : 'bg-red-50 text-red-600'
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                employee.isActive ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            />
+            {employee.isActive ? 'Activo' : 'Inactivo'}
+          </span>
+        </div>
 
-        <Row label="Departamento" value={employee.departament?.name} />
-        <Row label="Jornada" value={employee.jorney} />
+        {/* Chips de contacto */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          {employee.email && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3 py-1 text-xs text-ink-secondary">
+              <Mail size={13} /> {employee.email}
+            </span>
+          )}
+          {employee.phoneNumber && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3 py-1 text-xs text-ink-secondary">
+              <Phone size={13} /> {employee.phoneNumber}
+            </span>
+          )}
+        </div>
 
-        <Row
-          label="Fecha de nacimiento"
-          value={formatDate(employee.birthDate)}
-        />
-        <Row
-          label="Fecha de contratación"
-          value={formatDate(employee.hiredDate)}
-        />
-
-        <Row
-          label="Estado"
-          value={
-            employee.isActive ? (
-              <span className="text-green-600 font-medium">Activo</span>
-            ) : (
-              <span className="text-red-600 font-medium">Inactivo</span>
-            )
-          }
-        />
-
-        <Row
-          label="Última edición"
-          value={formatDate(employee.lastEditedDate)}
-        />
-      </motion.tbody>
-    </motion.table>
+        {/* Grilla de datos */}
+        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <InfoItem
+            icon={Building2}
+            label="Departamento"
+            value={employee.departament?.name}
+          />
+          <InfoItem icon={Clock} label="Jornada" value={employee.jorney} />
+          <InfoItem icon={Fingerprint} label="Cédula" value={employee.dni} />
+          <InfoItem icon={MapPin} label="Dirección" value={employee.address} />
+          <InfoItem
+            icon={Cake}
+            label="Fecha de nacimiento"
+            value={formatDate(employee.birthDate)}
+          />
+          <InfoItem
+            icon={CalendarDays}
+            label="Fecha de contratación"
+            value={formatDate(employee.hiredDate)}
+          />
+          <InfoItem
+            icon={History}
+            label="Última edición"
+            value={formatDate(employee.lastEditedDate)}
+          />
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

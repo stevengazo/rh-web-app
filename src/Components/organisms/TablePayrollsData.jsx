@@ -13,7 +13,7 @@ const TablePayrollsData = ({ items = [], HandleShowEdit }) => {
   return (
     <div className="overflow-x-auto border border-stroke-soft shadow-sm rounded-xl">
       <table className="min-w-full text-sm">
-        <thead className="text-slate-500 uppercase text-xs">
+        <thead className="bg-surface-alt text-ink-secondary uppercase text-xs">
           <tr>
             <th className="px-4 py-3 text-left">Tipo planilla</th>
             <th className="px-4 py-3 text-left">Periodo</th>
@@ -29,12 +29,12 @@ const TablePayrollsData = ({ items = [], HandleShowEdit }) => {
           </tr>
         </thead>
 
-        <tbody className="divide-y divide-slate-700">
+        <tbody className="divide-y divide-stroke-soft">
           {items.length > 0 ? (
             items.map((item) => (
               <tr
                 key={item.employee_PayrollId}
-                className="hover:bg-slate-700 cursor-pointer transition"
+                className="hover:bg-canvas cursor-pointer transition-colors"
                 onClick={() =>
                   HandleShowEdit(
                     'Datos del empleado',
@@ -86,7 +86,7 @@ const TablePayrollsData = ({ items = [], HandleShowEdit }) => {
             <tr>
               <td
                 colSpan={11}
-                className="px-4 py-6 text-center text-slate-400"
+                className="px-4 py-6 text-center text-ink-muted"
               >
                 No hay datos de planilla para mostrar
               </td>

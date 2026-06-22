@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { User, ClipboardList, Plane, FileText, Plus } from 'lucide-react';
 
 import SectionTitle from '../Components/SectionTitle';
 import PageTitle from '../Components/PageTitle';
@@ -162,14 +163,16 @@ const MyProfilePage = () => {
 
         {/* Tabs */}
         <div className="border-b border-stroke-soft">
-          <nav className="flex gap-6">
+          <nav className="flex gap-6 overflow-x-auto">
             <TabButton
+              icon={User}
               active={activeTab === TABS.INFO}
               onClick={() => setActiveTab(TABS.INFO)}
             >
               Perfil
             </TabButton>
             <TabButton
+              icon={ClipboardList}
               active={activeTab === TABS.ACTIONS}
               onClick={() => setActiveTab(TABS.ACTIONS)}
             >
@@ -177,6 +180,7 @@ const MyProfilePage = () => {
             </TabButton>
 
             <TabButton
+              icon={Plane}
               active={activeTab === TABS.VACATIONS}
               onClick={() => setActiveTab(TABS.VACATIONS)}
             >
@@ -184,6 +188,7 @@ const MyProfilePage = () => {
             </TabButton>
 
             <TabButton
+              icon={FileText}
               active={activeTab === TABS.SETTINGS}
               onClick={() => setActiveTab(TABS.SETTINGS)}
             >
@@ -209,6 +214,7 @@ const MyProfilePage = () => {
                     );
                   }}
                 >
+                  <Plus size={16} />
                   Agregar
                 </PrimaryButton>
               </div>
@@ -224,6 +230,7 @@ const MyProfilePage = () => {
                     );
                   }}
                 >
+                  <Plus size={16} />
                   Agregar
                 </PrimaryButton>
               </div>
@@ -272,6 +279,12 @@ const MyProfilePage = () => {
           {activeTab === TABS.SETTINGS && (
             <div className="space-y-4">
               <SectionTitle>Comprobantes de Pago</SectionTitle>
+              <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-16 text-ink-muted">
+                <FileText size={32} />
+                <p className="text-sm">
+                  Tus comprobantes de pago aparecerán aquí.
+                </p>
+              </div>
             </div>
           )}
         </div>
@@ -282,11 +295,11 @@ const MyProfilePage = () => {
   );
 };
 
-const TabButton = ({ active, children, onClick }) => {
+const TabButton = ({ active, children, onClick, icon: Icon }) => {
   return (
     <button
       onClick={onClick}
-      className={`pb-3 text-sm font-medium transition-colors border-b-2
+      className={`flex items-center gap-2 whitespace-nowrap pb-3 text-sm font-semibold transition-colors border-b-2
         ${
           active
             ? 'border-brand text-brand'
@@ -294,6 +307,7 @@ const TabButton = ({ active, children, onClick }) => {
         }
       `}
     >
+      {Icon && <Icon size={16} />}
       {children}
     </button>
   );

@@ -10,7 +10,7 @@ const QuestionsTable = ({ Questions }) => {
   return (
     <div className="overflow-x-auto rounded-xl shadow-md border border-stroke-soft">
       <table className="min-w-full divide-y divide-stroke-soft">
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary tracking-wide">
               Pregunta
@@ -22,7 +22,7 @@ const QuestionsTable = ({ Questions }) => {
           {Questions.map((q) => (
             <tr
               key={q.questionId}
-              className="hover:bg-brand-tint transition-colors"
+              className="hover:bg-canvas transition-colors"
             >
               <td className="px-4 py-3 text-sm text-ink-secondary">{q.text}</td>
             </tr>

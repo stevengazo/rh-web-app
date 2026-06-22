@@ -23,11 +23,11 @@ const MyCommissionsPage = () => {
       try {
         if (!user?.id) return;
 
-        const res = await comissionsApi.getComissionsByUser(user.id);
-        setComissions(res.data);
-        console.log(res.data)
+        const data = await comissionsApi.getComissionsByUser(user.id);
+        setComissions(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Error comissions', err);
+        setComissions([]);
       } finally {
         setLoading(false);
       }
@@ -50,7 +50,7 @@ const MyCommissionsPage = () => {
 
   // estadísticas
   const stats = useMemo(() => {
-    const total = filteredComissions.reduce((acc, c) => acc + c.amount, 0);
+    const total = filteredComissions.reduce((acc, c) => acc + (c.amount || 0), 0);
     const count = filteredComissions.length;
     const average = count > 0 ? total / count : 0;
 

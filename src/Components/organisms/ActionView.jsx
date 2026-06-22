@@ -22,10 +22,10 @@ const ActionView = ({ action }) => {
   return (
     <div className="text-ink rounded-lg shadow-sm border  overflow-hidden">
       <table className="w-full">
-        <thead className="">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
-            <th className="px-4 py-2 text-left ">Campo</th>
-            <th className="px-4 py-2 text-left ">Valor</th>
+            <th className="px-4 py-2 text-left font-semibold">Campo</th>
+            <th className="px-4 py-2 text-left font-semibold">Valor</th>
           </tr>
         </thead>
 

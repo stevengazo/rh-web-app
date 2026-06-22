@@ -84,7 +84,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
           {/* =========================
           HEADER
       ========================= */}
-          <thead className="bg-surface-alt">
+          <thead className="bg-surface-alt text-ink-secondary">
             <tr>
               <th
                 onClick={() => requestSort('employee')}

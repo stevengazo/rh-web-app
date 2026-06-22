@@ -26,7 +26,7 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
         animate="visible"
         className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm"
       >
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary flex items-center gap-2">
               <Award size={16} /> Certificación
@@ -45,7 +45,7 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-stroke-soft">
           {certifications.length === 0 && (
             <tr>
               <td
@@ -58,7 +58,7 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
           )}
 
           {certifications.map((item, index) => (
-            <tr key={index} className="text-sm">
+            <tr key={index} className="text-sm hover:bg-canvas transition-colors">
               <td className="px-4 py-3 font-medium text-ink">
                 {item.name}
               </td>

@@ -20,7 +20,7 @@ const VacationsTable = ({ vacationsList = [], showUser = false }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border border-stroke-soft rounded-md">
-        <thead className="bg-surface-alt">
+        <thead className="bg-surface-alt text-ink-secondary">
           <tr>
             {showUser && (
               <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
@@ -42,9 +42,9 @@ const VacationsTable = ({ vacationsList = [], showUser = false }) => {
           </tr>
         </thead>
 
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-stroke-soft">
           {vacationsList.map((vacation) => (
-            <tr key={vacation.vacationId} className="hover:bg-canvas">
+            <tr key={vacation.vacationId} className="hover:bg-canvas transition-colors">
               {showUser && (
                 <td className="px-4 py-2 text-sm text-ink">
                   {vacation.userId}

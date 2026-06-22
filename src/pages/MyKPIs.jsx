@@ -149,15 +149,15 @@ const MyKPIs = () => {
         {viewMode === 'table' && (
           <div className="overflow-x-auto border border-stroke-soft rounded-xl">
             <table className="min-w-full text-sm">
-              <thead className="bg-canvas text-ink-muted">
+              <thead className="bg-surface-alt text-ink-secondary">
                 <tr>
-                  <th className="text-left px-4 py-3">Objetivo</th>
-                  <th className="text-left px-4 py-3">Descripción</th>
-                  <th className="text-left px-4 py-3">Preguntas</th>
+                  <th className="text-left px-4 py-3 font-semibold">Objetivo</th>
+                  <th className="text-left px-4 py-3 font-semibold">Descripción</th>
+                  <th className="text-left px-4 py-3 font-semibold">Preguntas</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-stroke-soft">
                 {userObjetives.map((obj) => (
                   <tr
                     key={obj.user_ObjetiveId}
@@ -167,7 +167,7 @@ const MyKPIs = () => {
                         <ObjetiveLayout User_Objetive={obj} />
                       )
                     }
-                    className="hover:bg-canvas cursor-pointer"
+                    className="hover:bg-canvas transition-colors cursor-pointer"
                   >
                     <td className="px-4 py-3 font-medium text-ink">
                       {obj.objetive?.title}

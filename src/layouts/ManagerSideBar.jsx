@@ -44,7 +44,7 @@ const ManagerSideBar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-4 text-sm overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-4 text-sm overflow-y-auto scrollbar-slim-dark">
         <div>
           <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Gestión
