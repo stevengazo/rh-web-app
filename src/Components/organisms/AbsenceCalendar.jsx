@@ -51,24 +51,24 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
   const monthName = currentDate.toLocaleString('default', { month: 'long' });
 
   return (
-    <div className="bg-white border border-gray-50  rounded-lg shadow-sm p-4">
+    <div className="bg-surface border border-stroke-soft  rounded-xl shadow-sm p-4">
       {/* header */}
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="p-2 rounded hover:bg-gray-100">
+        <button onClick={prevMonth} className="p-2 rounded-md hover:bg-canvas">
           <ChevronLeft size={18} />
         </button>
 
-        <h3 className="font-semibold text-slate-800 capitalize">
+        <h3 className="font-semibold text-ink capitalize">
           {monthName} {year}
         </h3>
 
-        <button onClick={nextMonth} className="p-2 rounded hover:bg-gray-100">
+        <button onClick={nextMonth} className="p-2 rounded-md hover:bg-canvas">
           <ChevronRight size={18} />
         </button>
       </div>
 
       {/* week days */}
-      <div className="grid grid-cols-7 text-xs text-gray-500 mb-2">
+      <div className="grid grid-cols-7 text-xs text-ink-muted mb-2">
         <div>Lun</div>
         <div>Mar</div>
         <div>Mié</div>
@@ -91,9 +91,9 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
           return (
             <div
               key={index}
-              className="min-h-[90px] border  rounded-md p-2 text-xs bg-gray-50"
+              className="min-h-[90px] border border-stroke-soft  rounded-md p-2 text-xs bg-canvas"
             >
-              <div className="font-medium text-slate-700">{day.getDate()}</div>
+              <div className="font-medium text-ink-secondary">{day.getDate()}</div>
 
               <div className="space-y-1 mt-1">
                 {dayAbsences.slice(0, 2).map((a) => {
@@ -105,8 +105,8 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
                       className={`px-1 py-[2px] rounded text-[10px] truncate cursor-pointer
                         ${
                           isSelected
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-brand text-white'
+                            : 'bg-brand-tint text-brand'
                         }`}
                     >
                       {a.user?.firstName} {a.user?.lastName}
@@ -115,7 +115,7 @@ const AbsenceCalendar = ({ items = [], selectedItem }) => {
                 })}
 
                 {dayAbsences.length > 2 && (
-                  <div className="text-[10px] text-gray-500">
+                  <div className="text-[10px] text-ink-muted">
                     +{dayAbsences.length - 2} más
                   </div>
                 )}

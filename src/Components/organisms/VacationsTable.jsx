@@ -1,7 +1,7 @@
 const VacationsTable = ({ vacationsList = [], showUser = false }) => {
   if (!vacationsList.length) {
     return (
-      <p className="text-gray-500 italic">
+      <p className="text-ink-muted italic">
         No hay solicitudes de vacaciones registradas.
       </p>
     );
@@ -19,24 +19,24 @@ const VacationsTable = ({ vacationsList = [], showUser = false }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-lg">
-        <thead className="bg-gray-100">
+      <table className="min-w-full border border-stroke-soft rounded-md">
+        <thead className="bg-surface-alt">
           <tr>
             {showUser && (
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 Usuario
               </th>
             )}
-            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
               Fecha de inicio
             </th>
-            <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
               Fecha de finalización
             </th>
-            <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
+            <th className="px-4 py-2 text-center text-sm font-semibold text-ink-secondary">
               Días solicitados
             </th>
-            <th className="px-4 py-2 text-center text-sm font-semibold text-gray-700">
+            <th className="px-4 py-2 text-center text-sm font-semibold text-ink-secondary">
               Estado
             </th>
           </tr>
@@ -44,22 +44,22 @@ const VacationsTable = ({ vacationsList = [], showUser = false }) => {
 
         <tbody className="divide-y">
           {vacationsList.map((vacation) => (
-            <tr key={vacation.vacationId} className="hover:bg-gray-50">
+            <tr key={vacation.vacationId} className="hover:bg-canvas">
               {showUser && (
-                <td className="px-4 py-2 text-sm text-gray-800">
+                <td className="px-4 py-2 text-sm text-ink">
                   {vacation.userId}
                 </td>
               )}
 
-              <td className="px-4 py-2 text-sm text-gray-800">
+              <td className="px-4 py-2 text-sm text-ink">
                 {formatDate(vacation.startDate)}
               </td>
 
-              <td className="px-4 py-2 text-sm text-gray-800">
+              <td className="px-4 py-2 text-sm text-ink">
                 {formatDate(vacation.endDate)}
               </td>
 
-              <td className="px-4 py-2 text-sm text-center text-gray-800">
+              <td className="px-4 py-2 text-sm text-center text-ink">
                 {calculateDays(vacation.startDate, vacation.endDate)}
               </td>
 

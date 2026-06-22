@@ -8,6 +8,7 @@ import ObjetivesByUser from '../Components/organisms/ObjetivesByUser';
 import Add_User_Objetive from '../Components/organisms/Add_User_Objetive';
 
 import OffCanvas from '../Components/OffCanvas';
+import PrimaryButton from '../Components/PrimaryButton';
 
 import user_objetiveApi from '../api/user_objetiveApi';
 import EmployeeApi from '../api/employeesApi';
@@ -48,12 +49,6 @@ const KPIPage = () => {
     getDataAsync();
   }, []);
 
-  const baseBtn =
-    'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm';
-
-  const primaryBtn =
-    'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md active:scale-[0.97]';
-
   return (
     <>
       {/* OffCanvas */}
@@ -75,7 +70,7 @@ const KPIPage = () => {
         {/* HEADER */}
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold">Indicadores de Rendimiento</h1>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-ink-muted">
             Gestión y administración de los indicadores de rendimiento de los
             empleados.
           </p>
@@ -83,30 +78,27 @@ const KPIPage = () => {
 
         {/* ACTIONS */}
         <div className="flex flex-wrap gap-3">
-          <button
-            className={`${baseBtn} ${primaryBtn}`}
+          <PrimaryButton
             onClick={() => openCanvas('Agregar Objetivo', <AddObjetive />)}
           >
             Agregar Objetivo
-          </button>
+          </PrimaryButton>
 
-          <button
-            className={`${baseBtn} ${primaryBtn}`}
+          <PrimaryButton
             onClick={() =>
               openCanvas('Agregar Categorías', <AddObjetiveCategory />)
             }
           >
             Agregar Categorías
-          </button>
+          </PrimaryButton>
 
-          <button
-            className={`${baseBtn} ${primaryBtn}`}
+          <PrimaryButton
             onClick={() =>
               openCanvas('Agregar Objetivo a Usuario', <Add_User_Objetive />)
             }
           >
             Agregar Objetivo a Usuario
-          </button>
+          </PrimaryButton>
         </div>
 
         {/* TABS */}
@@ -115,8 +107,8 @@ const KPIPage = () => {
             onClick={() => setActiveTab(TABS.KPIS)}
             className={`pb-2 text-sm font-medium transition ${
               activeTab === TABS.KPIS
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'border-b-2 border-brand text-brand'
+                : 'text-ink-muted hover:text-ink'
             }`}
           >
             KPIs
@@ -126,8 +118,8 @@ const KPIPage = () => {
             onClick={() => setActiveTab(TABS.KPIS_BY_USER)}
             className={`pb-2 text-sm font-medium transition ${
               activeTab === TABS.KPIS_BY_USER
-                ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'border-b-2 border-brand text-brand'
+                : 'text-ink-muted hover:text-ink'
             }`}
           >
             KPIs por Usuario

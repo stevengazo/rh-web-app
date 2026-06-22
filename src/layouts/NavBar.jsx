@@ -15,11 +15,11 @@ const NavBar = () => {
   };
 
   const linkClass = ({ isActive }) =>
-    `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+    `flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150
      ${
        isActive
-         ? 'bg-indigo-600 text-white shadow-md'
-         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+         ? 'bg-brand text-white shadow-sm'
+         : 'text-gray-300 hover:bg-white/10 hover:text-white'
      }`;
 
   const closeMenu = () => setIsOpen(false);
@@ -29,7 +29,7 @@ const NavBar = () => {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-gray-900 sm:px-6 py-2 flex items-center justify-between shadow-lg"
+        className="bg-ink px-4 sm:px-6 py-2 flex items-center justify-between shadow-lg"
       >
         {/* Logo */}
         <h2 className="text-lg font-semibold text-white tracking-wide">
@@ -106,7 +106,7 @@ const NavBar = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-72 bg-gray-900 z-50 shadow-xl p-6 flex flex-col gap-3"
+              className="fixed top-0 right-0 h-full w-72 bg-ink z-50 shadow-xl p-6 flex flex-col gap-3"
             >
               {/* Header */}
               <div className="flex justify-between items-center mb-4">

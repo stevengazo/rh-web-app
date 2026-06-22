@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import actionApi from '../../api/actionApi';
 import actionTypeApi from '../../api/actionTypeApi';
 import toast from 'react-hot-toast';
+import PrimaryButton from '../PrimaryButton';
 
 const ActionEdit = ({ action, OnEdited }) => {
   const [types, setTypes] = useState([]);
@@ -71,14 +72,14 @@ const ActionEdit = ({ action, OnEdited }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Tipo */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-ink-secondary mb-1">
           Tipo de acción
         </label>
         <select
           name="actionTypeId"
           value={form.actionTypeId}
           onChange={handleChange}
-          className="w-full border rounded-md px-3 py-2 text-sm"
+          className="w-full border border-stroke rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
         >
           <option value="">Seleccione un tipo</option>
           {types.map((t) => (
@@ -91,7 +92,7 @@ const ActionEdit = ({ action, OnEdited }) => {
 
       {/* Fecha */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-ink-secondary mb-1">
           Fecha de la acción
         </label>
         <input
@@ -99,13 +100,13 @@ const ActionEdit = ({ action, OnEdited }) => {
           name="actionDate"
           value={form.actionDate}
           onChange={handleChange}
-          className="w-full border rounded-md px-3 py-2 text-sm"
+          className="w-full border border-stroke rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
         />
       </div>
 
       {/* Descripción */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-ink-secondary mb-1">
           Descripción
         </label>
         <textarea
@@ -113,19 +114,15 @@ const ActionEdit = ({ action, OnEdited }) => {
           value={form.description}
           onChange={handleChange}
           rows={4}
-          className="w-full border rounded-md px-3 py-2 text-sm resize-none"
+          className="w-full border border-stroke rounded-md px-3 py-2 text-sm resize-none focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
         />
       </div>
 
       {/* Actions */}
       <div className="flex justify-end gap-2 pt-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 text-sm bg-slate-900 text-white rounded-md hover:bg-slate-800 disabled:opacity-50"
-        >
+        <PrimaryButton type="submit" disabled={loading}>
           Guardar cambios
-        </button>
+        </PrimaryButton>
       </div>
     </form>
   );

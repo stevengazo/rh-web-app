@@ -112,26 +112,26 @@ const LoansPage = () => {
 
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
-          <Wallet className="text-blue-500" />
+        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
+          <Wallet className="text-brand" />
           <div>
-            <p className="text-sm text-gray-500">Total préstamos</p>
+            <p className="text-sm text-ink-muted">Total préstamos</p>
             <p className="text-xl font-semibold">{stats.total}</p>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
           <CheckCircle2 className="text-green-500" />
           <div>
-            <p className="text-sm text-gray-500">Aprobados</p>
+            <p className="text-sm text-ink-muted">Aprobados</p>
             <p className="text-xl font-semibold">{stats.approved}</p>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
           <Clock className="text-orange-500" />
           <div>
-            <p className="text-sm text-gray-500">Pendientes</p>
+            <p className="text-sm text-ink-muted">Pendientes</p>
             <p className="text-xl font-semibold">{stats.pending}</p>
           </div>
         </div>
@@ -146,17 +146,17 @@ const LoansPage = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="
             w-full md:max-w-md
-            border border-gray-300 rounded-lg
+            border border-stroke rounded-lg
             px-4 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-blue-400
+            focus:outline-none focus:ring-2 focus:ring-brand
           "
         />
       </div>
 
       {/* TABLE */}
-      <div className="bg-white border border-gray-200 rounded-xl mt-6">
+      <div className="bg-surface border border-stroke rounded-xl mt-6">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-ink-muted">
             Cargando préstamos...
           </div>
         ) : (

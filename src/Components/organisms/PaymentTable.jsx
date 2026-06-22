@@ -1,7 +1,7 @@
 const PaymentTable = ({ payments = [] }) => {
   if (!payments.length) {
     return (
-      <p className="text-center text-gray-500 py-6">
+      <p className="text-center text-ink-muted py-6">
         No hay pagos registrados.
       </p>
     );
@@ -27,30 +27,30 @@ const PaymentTable = ({ payments = [] }) => {
   return (
     <div className="space-y-3">
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200 rounded-lg">
-          <thead className="bg-gray-100">
+        <table className="min-w-full border border-stroke-soft rounded-md">
+          <thead className="bg-surface-alt">
             <tr>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 ID
               </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 Fecha
               </th>
-              <th className="px-4 py-2 text-right text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-right text-sm font-semibold text-ink-secondary">
                 Monto
               </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 Creado por
               </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-2 text-left text-sm font-semibold text-ink-secondary">
                 Última edición
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-stroke-soft">
             {payments.map((payment) => (
-              <tr key={payment.paymentId} className="hover:bg-gray-50">
+              <tr key={payment.paymentId} className="hover:bg-canvas">
                 <td className="px-4 py-2 text-sm">{payment.paymentId}</td>
 
                 <td className="px-4 py-2 text-sm">
@@ -63,7 +63,7 @@ const PaymentTable = ({ payments = [] }) => {
 
                 <td className="px-4 py-2 text-sm">{payment.createdBy}</td>
 
-                <td className="px-4 py-2 text-sm text-gray-500">
+                <td className="px-4 py-2 text-sm text-ink-muted">
                   {formatDate(payment.editedAt)}
                 </td>
               </tr>
@@ -74,7 +74,7 @@ const PaymentTable = ({ payments = [] }) => {
 
       {/* TOTAL */}
       <div className="flex justify-end">
-        <div className="bg-gray-100 px-4 py-2 rounded-lg text-sm font-semibold">
+        <div className="bg-surface-alt px-4 py-2 rounded-md text-sm font-semibold">
           Total pagado:{' '}
           <span className="ml-2 text-green-600">
             {formatAmount(totalAmount)}

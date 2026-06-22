@@ -1,12 +1,14 @@
-const Card = ({ children, className = '' }) => {
+// Fluent 2 — surface card
+const Card = ({ children, className = '', ...props }) => {
   return (
     <div
       className={`
-        bg-white rounded-xl shadow-sm
-        border border-gray-100
+        bg-surface rounded-xl shadow-sm
+        border border-stroke-soft
         p-6
         ${className}
       `}
+      {...props}
     >
       {children}
     </div>

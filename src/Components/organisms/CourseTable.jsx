@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { BookOpen, Clock, School, Pencil, Trash2 } from 'lucide-react';
+import IconButton from '../IconButton';
 
 const formatDate = (date) => {
   if (!date) return '';
@@ -20,37 +21,37 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
 
  // console.log(courses)
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+    <div className="w-full overflow-x-auto rounded-xl border border-stroke-soft shadow-sm">
       <motion.table
         variants={tableVariants}
         initial="hidden"
         animate="visible"
-        className="min-w-[600px] w-full bg-white"
+        className="min-w-[600px] w-full bg-surface"
       >
-        <thead className="bg-slate-800">
+        <thead className="bg-surface-alt">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
                 <BookOpen size={16} />
                 Curso
               </div>
             </th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
                 <School size={16} />
                 Plataforma
               </div>
             </th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
                 <Clock size={16} />
                 Duración
               </div>
             </th>
 
-            <th className="px-4 py-3 text-center text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-center text-sm font-semibold text-ink-secondary">
               Acciones
             </th>
           </tr>
@@ -61,7 +62,7 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
             <tr>
               <td
                 colSpan={4}
-                className="px-4 py-6 text-center text-sm text-gray-500"
+                className="px-4 py-6 text-center text-sm text-ink-muted"
               >
                 No hay cursos registrados
               </td>
@@ -71,33 +72,33 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
           {courses.map((item, index) => (
             <motion.tr
               key={index}
-              className="text-sm hover:bg-gray-50 transition"
+              className="text-sm hover:bg-canvas transition"
             >
-              <td className="px-4 py-3 font-medium text-gray-800">
+              <td className="px-4 py-3 font-medium text-ink">
                 {item.name}
               </td>
 
-              <td className="px-4 py-3 text-gray-600">{item.institution}</td>
+              <td className="px-4 py-3 text-ink-muted">{item.institution}</td>
 
-              <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
+              <td className="px-4 py-3 text-ink-muted whitespace-nowrap">
                 {formatDate(item.start)} – {formatDate(item.end)}
               </td>
 
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
-                  <button
+                  <IconButton
+                    icon={Pencil}
                     onClick={() => OnEdit?.(item)}
-                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
-                  >
-                    <Pencil size={16} />
-                  </button>
+                    variant="primary"
+                    size={16}
+                  />
 
-                  <button
+                  <IconButton
+                    icon={Trash2}
                     onClick={() => onDelete?.(item)}
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-600"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                    variant="danger"
+                    size={16}
+                  />
                 </div>
               </td>
             </motion.tr>

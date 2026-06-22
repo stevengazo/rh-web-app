@@ -19,7 +19,7 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-200 text-gray-800 flex flex-col">
+    <div className="h-screen bg-canvas text-ink flex flex-col">
       {/* Header fijo */}
       <header className="fixed top-0 left-0 right-0 w-full z-50">
         <NavBar />
@@ -27,14 +27,14 @@ const MainLayout = () => {
 
       {/* Contenido */}
       <motion.main
-        className="flex-1 bg-gray-200 pt-16 my-3 overflow-y-auto p-6"
+        className="flex-1 bg-canvas pt-16 my-3 overflow-y-auto p-6"
         initial="hidden"
         animate="visible"
         exit="exit"
         variants={contentVariants}
       >
         <motion.div
-          className="bg-white max-w-7xl mx-auto rounded-xl shadow-sm p-6"
+          className="bg-surface max-w-7xl mx-auto rounded-xl border border-stroke-soft shadow-sm p-6"
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1, transition: { duration: 0.4 } }}
           exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.3 } }}
@@ -45,7 +45,7 @@ const MainLayout = () => {
 
       {/* Footer */}
       <motion.footer
-        className="border-t px-6 py-3 bg-gray-900 text-center text-sm text-white shrink-0"
+        className="border-t border-white/10 px-6 py-3 bg-ink text-center text-sm text-white shrink-0"
         initial="hidden"
         animate="visible"
         variants={footerVariants}

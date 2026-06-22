@@ -105,26 +105,26 @@ const AbsencesPage = () => {
           STATS
       ========================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="bg-white border border-gray-100 rounded-lg p-4 flex items-center gap-3 shadow-sm">
-          <Users className="text-blue-500" />
+        <div className="bg-surface border border-stroke-soft rounded-lg p-4 flex items-center gap-3 shadow-sm">
+          <Users className="text-brand" />
           <div>
-            <p className="text-sm text-gray-500">Total ausencias</p>
+            <p className="text-sm text-ink-muted">Total ausencias</p>
             <p className="text-xl font-semibold">{stats.total}</p>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+        <div className="bg-surface border border-stroke-soft rounded-lg p-4 flex items-center gap-3 shadow-sm">
           <CalendarDays className="text-green-500" />
           <div>
-            <p className="text-sm text-gray-500">Aprobadas</p>
+            <p className="text-sm text-ink-muted">Aprobadas</p>
             <p className="text-xl font-semibold">{stats.approved}</p>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-100 rounded-lg p-4 flex items-center gap-3 shadow-sm">
+        <div className="bg-surface border border-stroke-soft rounded-lg p-4 flex items-center gap-3 shadow-sm">
           <AlertCircle className="text-orange-500" />
           <div>
-            <p className="text-sm text-gray-500">Pendientes</p>
+            <p className="text-sm text-ink-muted">Pendientes</p>
             <p className="text-xl font-semibold">{stats.pending}</p>
           </div>
         </div>
@@ -141,17 +141,17 @@ const AbsencesPage = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="
             w-full md:max-w-md
-            border border-gray-300 rounded-lg
+            border border-stroke rounded-lg
             px-4 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-blue-400
+            focus:outline-none focus:ring-2 focus:ring-brand
           "
         />
 
         <div className="flex gap-2">
           <button
             onClick={() => setView('table')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border border-gray-100
-              ${view === 'table' ? 'bg-gray-900 text-white' : 'bg-white'}
+            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border border-stroke-soft
+              ${view === 'table' ? 'bg-brand text-white' : 'bg-surface'}
             `}
           >
             <List size={16} />
@@ -160,8 +160,8 @@ const AbsencesPage = () => {
 
           <button
             onClick={() => setView('calendar')}
-            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border border-gray-100
-              ${view === 'calendar' ? 'bg-gray-900 text-white' : 'bg-white'}
+            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm border border-stroke-soft
+              ${view === 'calendar' ? 'bg-brand text-white' : 'bg-surface'}
             `}
           >
             <CalendarDays size={16} />

@@ -45,21 +45,21 @@ const CourseAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Agregar curso</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-ink-secondary mt-1">
           Información básica del curso
         </p>
       </div>
 
       {/* Nombre */}
       <div>
-        <label className="text-sm text-gray-200">Nombre del curso</label>
+        <label className="text-sm text-ink-secondary">Nombre del curso</label>
         <input
           type="text"
           name="name"
@@ -72,7 +72,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
 
       {/* Institución */}
       <div>
-        <label className="text-sm text-gray-200">Institución</label>
+        <label className="text-sm text-ink-secondary">Institución</label>
         <input
           type="text"
           name="institution"
@@ -86,7 +86,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
       {/* Fechas */}
       <div className="flex flex-col gap-4">
         <div>
-          <label className="text-sm text-gray-200">Inicio</label>
+          <label className="text-sm text-ink-secondary">Inicio</label>
           <input
             type="date"
             name="start"
@@ -97,7 +97,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
         </div>
 
         <div>
-          <label className="text-sm text-gray-200">Fin</label>
+          <label className="text-sm text-ink-secondary">Fin</label>
           <input
             type="date"
             name="end"
@@ -110,7 +110,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
 
       {/* Duración */}
       <div>
-        <label className="text-sm text-gray-200">Duración (horas)</label>
+        <label className="text-sm text-ink-secondary">Duración (horas)</label>
         <input
           type="number"
           name="durationInHours"
@@ -123,7 +123,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
       {/* Selects */}
       <div className="flex flex-col gap-4">
         <div>
-          <label className="text-sm text-gray-200">Modalidad</label>
+          <label className="text-sm text-ink-secondary">Modalidad</label>
           <select
             name="modality"
             value={newCourse.modality}
@@ -138,7 +138,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
         </div>
 
         <div>
-          <label className="text-sm text-gray-200">Estado</label>
+          <label className="text-sm text-ink-secondary">Estado</label>
           <select
             name="state"
             value={newCourse.state}
@@ -154,7 +154,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           value={newCourse.description}
@@ -168,7 +168,7 @@ const CourseAdd = ({ userId, author, onAdded }) => {
       {/* Botón */}
       <PrimaryButton
         type="submit"
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+        className="w-full py-2 text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
         Agregar curso
       </PrimaryButton>

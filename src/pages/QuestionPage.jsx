@@ -20,10 +20,10 @@ const TABS = {
   SETTINGS: 'settings',
 };
 const baseBtn =
-  'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm';
+  'px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm';
 
 const primaryBtn =
-  'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md active:scale-[0.97]';
+  'bg-brand text-white hover:bg-brand-hover hover:shadow-md active:bg-brand-pressed';
 
 const QuestionPage = () => {
   const [activeTab, setActiveTab] = useState(TABS.OBJECTIVES);
@@ -72,7 +72,7 @@ const QuestionPage = () => {
         {/* HEADER */}
         <header className="space-y-1">
           <PageTitle>Preguntas</PageTitle>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-ink-muted">
             Gestión y administración de las preguntas del personal.
           </p>
         </header>
@@ -106,7 +106,7 @@ const QuestionPage = () => {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-stroke-soft">
           <nav className="flex gap-6">
             <TabButton
               active={activeTab === TABS.QUESTIONS}
@@ -151,8 +151,8 @@ const TabButton = ({ active, children, onClick }) => {
       className={`pb-3 text-sm font-medium transition-colors border-b-2
         ${
           active
-            ? 'border-blue-600 text-blue-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            ? 'border-brand text-brand'
+            : 'border-transparent text-ink-muted hover:text-ink hover:border-stroke'
         }
       `}
     >

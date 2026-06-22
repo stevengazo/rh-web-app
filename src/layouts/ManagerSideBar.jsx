@@ -15,11 +15,11 @@ import {
 } from 'lucide-react';
 
 const navItemClass = ({ isActive }) =>
-  `flex items-center gap-3 px-3 py-2 rounded-lg transition
+  `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150
    ${
      isActive
-       ? 'bg-slate-700 text-white'
-       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+       ? 'bg-brand text-white'
+       : 'text-gray-300 hover:bg-white/10 hover:text-white'
    }`;
 
 const ManagerSideBar = () => {
@@ -33,10 +33,10 @@ const ManagerSideBar = () => {
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="h-16 flex items-center justify-between px-4 text-lg font-semibold border-b border-slate-700">
+      <div className="h-16 flex items-center justify-between px-4 text-lg font-semibold border-b border-white/10">
         RH Manager
         <button
-          className="md:hidden text-slate-400"
+          className="md:hidden text-gray-400"
           onClick={() => setOpen(false)}
         >
           <X size={22} />
@@ -46,7 +46,7 @@ const ManagerSideBar = () => {
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-4 text-sm overflow-y-auto">
         <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Gestión
           </p>
           <NavLink to="/manager" end className={navItemClass}>
@@ -67,7 +67,7 @@ const ManagerSideBar = () => {
         </div>
 
         <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Retenciones
           </p>
           <NavLink to="/manager/loans" className={navItemClass}>
@@ -76,7 +76,7 @@ const ManagerSideBar = () => {
         </div>
 
         <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Indicadores
           </p>
           <NavLink to="/manager/kpis" className={navItemClass}>
@@ -88,7 +88,7 @@ const ManagerSideBar = () => {
         </div>
 
         <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Usuario
           </p>
           <NavLink to="/my-profile" className={navItemClass}>
@@ -97,7 +97,7 @@ const ManagerSideBar = () => {
         </div>
 
         <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-slate-500">
+          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
             Configuración
           </p>
           <NavLink to="/manager/roles" className={navItemClass}>
@@ -109,8 +109,8 @@ const ManagerSideBar = () => {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="m-4 flex items-center gap-3 px-3 py-2 rounded-lg
-                   bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
+        className="m-4 flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+                   bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
       >
         <LogOut size={18} />
         Cerrar Sesión
@@ -123,13 +123,13 @@ const ManagerSideBar = () => {
       {/* Botón hamburguesa (móvil) */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 bg-slate-900 text-white p-2 rounded-lg shadow"
+        className="md:hidden fixed top-4 left-4 z-40 bg-ink text-white p-2 rounded-md shadow"
       >
         <Menu size={22} />
       </button>
 
       {/* Sidebar desktop */}
-      <aside className="hidden md:flex w-64 bg-slate-900 text-white flex-col">
+      <aside className="hidden md:flex w-64 bg-ink text-white flex-col">
         <SidebarContent />
       </aside>
 
@@ -148,7 +148,7 @@ const ManagerSideBar = () => {
 
             {/* Drawer */}
             <motion.aside
-              className="fixed inset-y-0 left-0 w-64 bg-slate-900 text-white z-50 flex flex-col"
+              className="fixed inset-y-0 left-0 w-64 bg-ink text-white z-50 flex flex-col"
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}

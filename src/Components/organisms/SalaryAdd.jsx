@@ -38,21 +38,21 @@ const SalaryAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Agregar salario</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-ink-secondary mt-1">
           Información salarial del empleado
         </p>
       </div>
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">Monto</label>
+        <label className="text-sm text-ink-secondary">Monto</label>
         <input
           type="number"
           name="salaryAmount"
@@ -65,7 +65,7 @@ const SalaryAdd = ({ userId, author, onAdded }) => {
 
       {/* Fecha efectiva */}
       <div>
-        <label className="text-sm text-gray-200">Fecha efectiva</label>
+        <label className="text-sm text-ink-secondary">Fecha efectiva</label>
         <input
           type="date"
           name="effectiveDate"
@@ -78,7 +78,7 @@ const SalaryAdd = ({ userId, author, onAdded }) => {
       {/* Tipo y Moneda */}
       <div className="flex flex-col gap-4">
         <div>
-          <label className="text-sm text-gray-200">Tipo de salario</label>
+          <label className="text-sm text-ink-secondary">Tipo de salario</label>
           <select
             name="type"
             value={newSalary.type}
@@ -93,7 +93,7 @@ const SalaryAdd = ({ userId, author, onAdded }) => {
         </div>
 
         <div>
-          <label className="text-sm text-gray-200">Moneda</label>
+          <label className="text-sm text-ink-secondary">Moneda</label>
           <select
             name="currency"
             value={newSalary.currency}
@@ -111,7 +111,7 @@ const SalaryAdd = ({ userId, author, onAdded }) => {
       {/* Botón */}
       <PrimaryButton
         type="submit"
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+        className="w-full"
       >
         Agregar salario
       </PrimaryButton>

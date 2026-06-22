@@ -67,27 +67,27 @@ const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Registrar pago</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-ink-secondary mt-1">
           Registro de abono a préstamo
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Fecha */}
       <div>
-        <label className="text-sm text-gray-200">Fecha de pago</label>
+        <label className="text-sm text-ink-secondary">Fecha de pago</label>
         <input
           type="date"
           name="createdDate"
@@ -100,7 +100,7 @@ const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">Monto</label>
+        <label className="text-sm text-ink-secondary">Monto</label>
         <input
           type="number"
           name="amount"
@@ -116,7 +116,7 @@ const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
       <PrimaryButton
         type="submit"
         disabled={loading || !loanId}
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-50"
+        className="w-full"
       >
         {loading ? 'Guardando...' : 'Guardar pago'}
       </PrimaryButton>

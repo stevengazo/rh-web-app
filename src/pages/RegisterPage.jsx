@@ -52,9 +52,9 @@ const RegisterPage = () => {
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
-            <UserPlus size={40} className="text-sky-400" />
+            <UserPlus size={40} className="text-brand" />
           </div>
-          <h3 className="text-2xl font-bold">Crear cuenta</h3>
+          <h3 className="text-2xl font-semibold">Crear cuenta</h3>
           <p className="text-slate-400 text-sm">
             Regístrate para acceder al sistema
           </p>
@@ -79,7 +79,7 @@ const RegisterPage = () => {
                 onChange={handleChange}
                 placeholder="correo@empresa.com"
                 required
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-brand"
               />
             </div>
           </div>
@@ -101,7 +101,7 @@ const RegisterPage = () => {
                 onChange={handleChange}
                 placeholder="••••••••"
                 required
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-brand"
               />
             </div>
           </div>
@@ -111,7 +111,7 @@ const RegisterPage = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
             type="submit"
-            className="w-full mt-2 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-lg font-medium transition"
+            className="w-full mt-2 flex items-center justify-center gap-2 bg-brand hover:bg-brand-hover text-white py-2 rounded-lg font-medium transition"
           >
             <UserPlus size={18} />
             Registrarse
@@ -121,7 +121,7 @@ const RegisterPage = () => {
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-slate-400">
           ¿Ya tienes cuenta?{' '}
-          <NavLink to="/login" className="text-sky-400 hover:underline">
+          <NavLink to="/login" className="text-brand hover:underline">
             Inicia sesión
           </NavLink>
         </p>

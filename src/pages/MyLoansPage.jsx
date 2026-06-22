@@ -26,7 +26,7 @@ const MyLoansPage = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Préstamos</h1>
+      <h1 className="text-2xl font-semibold mb-6">Préstamos</h1>
 
       {loading ? (
         <p>Cargando...</p>
@@ -48,14 +48,14 @@ const MyLoansPage = () => {
             return (
               <div
                 key={loan.loanId}
-                className="bg-white border-2 border-slate-300 rounded-xl p-6 shadow-md hover:shadow-lg hover:border-indigo-500 transition-all duration-300"
+                className="bg-surface border border-stroke rounded-xl p-6 shadow-md hover:shadow-lg hover:border-brand transition-all duration-300"
               >
                 {/* HEADER */}
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-slate-800">
+                  <h2 className="text-lg font-semibold text-ink">
                     {loan.title}
                   </h2>
-                  <span className="text-sm px-3 py-1 rounded-full bg-slate-100">
+                  <span className="text-sm px-3 py-1 rounded-full bg-canvas">
                     {loan.state}
                   </span>
                 </div>
@@ -63,29 +63,29 @@ const MyLoansPage = () => {
                 {/* INFO PRINCIPAL */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
-                    <p className="text-slate-500">Monto</p>
-                    <p className="font-bold text-slate-800">
+                    <p className="text-ink-muted">Monto</p>
+                    <p className="font-semibold text-ink">
                       ₡{loan.amount.toLocaleString()}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-slate-500">Pagado</p>
-                    <p className="font-bold text-green-600">
+                    <p className="text-ink-muted">Pagado</p>
+                    <p className="font-semibold text-green-600">
                       ₡{totalPaid.toLocaleString()}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-slate-500">Pendiente</p>
-                    <p className="font-bold text-red-500">
+                    <p className="text-ink-muted">Pendiente</p>
+                    <p className="font-semibold text-red-500">
                       ₡{pending.toLocaleString()}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-slate-500">Cuota mensual</p>
-                    <p className="font-bold text-indigo-600">
+                    <p className="text-ink-muted">Cuota mensual</p>
+                    <p className="font-semibold text-brand">
                       ₡{monthlyFee.toLocaleString()}
                     </p>
                   </div>
@@ -93,9 +93,9 @@ const MyLoansPage = () => {
 
                 {/* PROGRESS BAR */}
                 <div className="mt-4">
-                  <div className="w-full bg-slate-200 rounded-full h-3">
+                  <div className="w-full bg-canvas rounded-full h-3">
                     <div
-                      className="bg-indigo-500 h-3 rounded-full"
+                      className="bg-brand h-3 rounded-full"
                       style={{
                         width: `${
                           loan.amount > 0
@@ -108,7 +108,7 @@ const MyLoansPage = () => {
                 </div>
 
                 {/* FECHA */}
-                <p className="text-xs text-slate-400 mt-3">
+                <p className="text-xs text-ink-muted mt-3">
                   Solicitud:{' '}
                   {new Date(loan.requestAt).toLocaleDateString('es-CR')}
                 </p>

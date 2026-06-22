@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import IconButton from './IconButton';
 
 const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
   return (
@@ -14,20 +15,16 @@ const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
       {/* Panel */}
       <aside
         className={`fixed top-0 right-0 h-full w-2/4 z-50
-        bg-gray-800 text-white
-        shadow-2xl
+        bg-surface text-ink
+        rounded-l-xl
+        shadow-xl
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-stroke-soft">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1 rounded bg-red-500 hover:bg-red-700 duration-200"
-          >
-            <X size={20} />
-          </button>
+          <IconButton icon={X} onClick={onClose} variant="default" size={20} />
         </div>
 
         {/* Content */}

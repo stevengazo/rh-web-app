@@ -1,34 +1,72 @@
+import { Calendar, ChevronRight } from 'lucide-react';
+
+const getInitials = (first = '', last = '') => {
+  const a = first?.trim?.()[0] ?? '';
+  const b = last?.trim?.()[0] ?? '';
+  return (a + b).toUpperCase() || '—';
+};
+
 const CardAction = ({ action, status, OnHandleClick }) => {
+  const isPending = status === 'pending';
+
   return (
     <div
       onClick={OnHandleClick}
-      className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          OnHandleClick?.();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className={`group cursor-pointer rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm
+        border-l-4 ${isPending ? 'border-l-amber-400' : 'border-l-green-500'}
+        transition-all hover:shadow-md hover:border-brand
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1`}
     >
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="font-semibold text-slate-800">
-            {action.user?.firstName} {action.user?.lastName}
-          </p>
-          <p className="text-sm text-slate-500">{action.actionType?.name}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Avatar con iniciales */}
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-tint text-sm font-semibold text-brand">
+            {getInitials(action.user?.firstName, action.user?.lastName)}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-ink">
+              {action.user?.firstName} {action.user?.lastName}
+            </p>
+            <p className="truncate text-sm text-ink-muted">
+              {action.actionType?.name || 'Sin tipo'}
+            </p>
+          </div>
         </div>
 
         <span
-          className={`text-xs px-2 py-1 rounded-full font-medium
-          ${
-            status === 'pending'
-              ? 'bg-yellow-100 text-yellow-700'
-              : 'bg-green-100 text-green-700'
-          }`}
+          className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold
+          ${isPending ? 'bg-amber-50 text-amber-800' : 'bg-green-50 text-green-700'}`}
         >
-          {status === 'pending' ? 'Pendiente' : 'Aprobada'}
+          {isPending ? 'Pendiente' : 'Aprobada'}
         </span>
       </div>
 
-      <p className="mt-3 text-sm text-slate-600">{action.description}</p>
+      {action.description && (
+        <p className="mt-3 line-clamp-2 text-sm text-ink-secondary">
+          {action.description}
+        </p>
+      )}
 
-      <p className="mt-3 text-xs text-slate-400">
-        {new Date(action.actionDate).toLocaleDateString()}
-      </p>
+      <div className="mt-3 flex items-center justify-between">
+        <p className="flex items-center gap-1.5 text-xs text-ink-muted">
+          <Calendar size={14} />
+          {action.actionDate
+            ? new Date(action.actionDate).toLocaleDateString('es-CR')
+            : '—'}
+        </p>
+        <span className="flex items-center gap-1 text-xs font-medium text-brand opacity-0 transition-opacity group-hover:opacity-100">
+          Ver detalle
+          <ChevronRight size={14} />
+        </span>
+      </div>
     </div>
   );
 };

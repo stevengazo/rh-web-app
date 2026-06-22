@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import html2pdf from 'html2pdf.js';
 import { formatMoney } from '../../utils/formatMoney';
+import PrimaryButton from '../PrimaryButton';
 
 /* =========================
    Colores seguros (HEX)
@@ -114,14 +115,11 @@ const Employee_PayrollDetails = ({ data }) => {
     <div className="space-y-4">
       {/* Header UI (normal Tailwind, no PDF) */}
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-slate-800">Acciones</h2>
+        <h2 className="text-lg font-semibold text-ink">Acciones</h2>
 
-        <button
-          onClick={handleDownloadPDF}
-          className="px-4 py-2 text-sm rounded-lg bg-sky-600 text-white hover:bg-sky-700 transition"
-        >
+        <PrimaryButton onClick={handleDownloadPDF}>
           Descargar PDF
-        </button>
+        </PrimaryButton>
       </div>
 
       {/* =========================

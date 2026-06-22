@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import Label from '../Label';
 import TextInput from '../TextInput';
 import PrimaryButton from '../PrimaryButton';
+import SecondaryButton from '../SecondaryButton';
 
 const CertificationEdit = ({ item, OnClose }) => {
   const [loading, setLoading] = useState(false);
@@ -113,13 +114,9 @@ const CertificationEdit = ({ item, OnClose }) => {
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <button
-          type="button"
-          onClick={OnClose}
-          className="px-4 py-2 text-sm rounded-md border border-slate-300 hover:bg-slate-100"
-        >
+        <SecondaryButton type="button" onClick={OnClose}>
           Cancelar
-        </button>
+        </SecondaryButton>
 
         <PrimaryButton type="submit" disabled={loading}>
           {loading ? 'Guardando...' : 'Guardar cambios'}

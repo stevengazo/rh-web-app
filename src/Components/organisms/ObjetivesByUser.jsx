@@ -26,33 +26,33 @@ const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
         <div
           key={userId}
           onClick={() => navigate(`/manager/perfornance/${userId}`)}
-          className="rounded-xl hover:shadow-2xl hover:border-gray-200 px-2 transition duration-150 border border-gray-200  shadow-sm"
+          className="rounded-xl hover:shadow-2xl hover:border-stroke-soft px-2 transition duration-150 border border-stroke-soft  shadow-sm"
         >
           {/* Usuario */}
-          <h4 className=" font-semibold text-2xl  p-2 text-gray-700">
+          <h4 className=" font-semibold text-2xl  p-2 text-ink">
             {getEmployeeName(userId)}
           </h4>
 
           <div className="overflow-x-auto my-2">
             <table className="min-w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-600 uppercase text-xs tracking-wide">
+              <thead className="bg-surface-alt text-ink-secondary uppercase text-xs tracking-wide">
                 <tr>
                   <th className="px-4 py-3 font-medium">Objetivo</th>
                   <th className="px-4 py-3 font-medium">Descripción</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-stroke-soft">
                 {objectives.map((o) => (
                   <tr
                     key={o.user_ObjetiveId}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="hover:bg-canvas transition-colors"
                   >
-                    <td className="px-4 py-3 font-medium text-gray-800">
+                    <td className="px-4 py-3 font-medium text-ink">
                       {o.objetive?.title || 'Sin título'}
                     </td>
 
-                    <td className="px-4 py-3 text-gray-500 max-w-md">
+                    <td className="px-4 py-3 text-ink-muted max-w-md">
                       <p className="truncate">
                         {o.objetive?.description || '-'}
                       </p>

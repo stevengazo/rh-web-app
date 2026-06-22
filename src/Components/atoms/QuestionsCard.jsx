@@ -45,12 +45,12 @@ const QuestionsCard = ({ questions = [], answers = [] }) => {
       animate="visible"
       className=""
     >
-      <h3 className="font-semibold text-gray-700 mb-2">Preguntas</h3>
+      <h3 className="font-semibold text-ink-secondary mb-2">Preguntas</h3>
 
       <Divider />
 
       {questions.length === 0 ? (
-        <p className="text-sm text-gray-400 mt-3">Sin preguntas</p>
+        <p className="text-sm text-ink-muted mt-3">Sin preguntas</p>
       ) : (
         questions.map((q) => {
           const qId = getQuestionId(q);
@@ -61,13 +61,13 @@ const QuestionsCard = ({ questions = [], answers = [] }) => {
               key={qId}
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="mt-3 p-2 bg-blue-50 rounded hover:bg-blue-200 transition duration-200"
+              className="mt-3 p-2 bg-brand-tint rounded-md hover:bg-brand-100 transition duration-200"
             >
-              <p className="text-sm font-medium text-gray-700">
+              <p className="text-sm font-medium text-ink-secondary">
                 {q?.question?.text}
               </p>
 
-              <div className="mt-2 text-xs text-gray-500">
+              <div className="mt-2 text-xs text-ink-muted">
                 Respuestas: {count}
               </div>
             </motion.div>

@@ -85,18 +85,18 @@ const RolesPage = () => {
   }, [search, employees]);
 
   return (
-    <div className="p-6 space-y-8 bg-gray-50 min-h-screen">
+    <div className="p-6 space-y-8 bg-canvas min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="bg-blue-100 p-3 rounded-2xl">
-          <Shield className="w-6 h-6 text-blue-600" />
+        <div className="bg-brand-tint p-3 rounded-xl">
+          <Shield className="w-6 h-6 text-brand" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-800">Gestión de Roles</h1>
+        <h1 className="text-3xl font-semibold text-ink">Gestión de Roles</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* ================= EMPLEADOS ================= */}
-        <div className="bg-white rounded-3xl shadow-lg p-6 flex flex-col">
+        <div className="bg-surface rounded-xl shadow-lg p-6 flex flex-col">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <User size={18} />
             Empleados
@@ -104,13 +104,13 @@ const RolesPage = () => {
 
           {/* Buscador */}
           <div className="relative mb-4">
-            <Search size={16} className="absolute left-3 top-3 text-gray-400" />
+            <Search size={16} className="absolute left-3 top-3 text-ink-muted" />
             <input
               type="text"
               placeholder="Buscar empleado..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition"
+              className="w-full pl-10 pr-4 py-2 rounded-md border border-stroke-soft focus:ring-2 focus:ring-brand outline-none transition"
             />
           </div>
 
@@ -120,25 +120,25 @@ const RolesPage = () => {
               <div
                 key={emp.id}
                 onClick={() => handleSelectUser(emp)}
-                className={`p-4 rounded-2xl cursor-pointer border border-gray-300 transition-all duration-200 transform hover:scale-[1.02] ${
+                className={`p-4 rounded-xl cursor-pointer border border-stroke transition-all duration-200 transform hover:scale-[1.02] ${
                   selectedUser?.id === emp.id
-                    ? 'bg-blue-50 border-blue-500 shadow-md'
-                    : 'hover:bg-gray-50'
+                    ? 'bg-brand-tint border-brand shadow-md'
+                    : 'hover:bg-canvas'
                 }`}
               >
-                <p className="font-semibold text-gray-800">{emp.userName}</p>
-                <p className="text-sm text-gray-500">{emp.email}</p>
+                <p className="font-semibold text-ink">{emp.userName}</p>
+                <p className="text-sm text-ink-muted">{emp.email}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* ================= ROLES ================= */}
-        <div className="bg-white rounded-3xl shadow-lg p-6">
+        <div className="bg-surface rounded-xl shadow-lg p-6">
           <h2 className="text-lg font-semibold mb-6">Roles del Usuario</h2>
 
           {!selectedUser && (
-            <div className="text-center text-gray-400 py-20">
+            <div className="text-center text-ink-muted py-20">
               Selecciona un empleado para comenzar
             </div>
           )}
@@ -146,23 +146,23 @@ const RolesPage = () => {
           {selectedUser && (
             <>
               {/* Info Usuario */}
-              <div className="mb-6 p-4 bg-blue-50 rounded-2xl">
-                <p className="font-semibold text-blue-700">
+              <div className="mb-6 p-4 bg-brand-tint rounded-xl">
+                <p className="font-semibold text-brand">
                   {selectedUser.userName}
                 </p>
-                <p className="text-sm text-blue-500">{selectedUser.email}</p>
+                <p className="text-sm text-brand">{selectedUser.email}</p>
               </div>
 
               {loading ? (
                 <div className="flex justify-center py-10">
-                  <Loader2 className="animate-spin text-blue-600" />
+                  <Loader2 className="animate-spin text-brand" />
                 </div>
               ) : (
                 <>
                   {/* Roles actuales */}
                   <div className="flex flex-wrap gap-3 mb-6">
                     {userRoles.length === 0 && (
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-ink-muted">
                         No tiene roles asignados.
                       </p>
                     )}
@@ -170,7 +170,7 @@ const RolesPage = () => {
                     {userRoles.map((role) => (
                       <div
                         key={role}
-                        className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm shadow-sm hover:bg-gray-200 transition"
+                        className="flex items-center gap-2 bg-canvas px-4 py-2 rounded-full text-sm shadow-sm hover:bg-surface-alt transition"
                       >
                         <span>{role}</span>
                         <button
@@ -188,7 +188,7 @@ const RolesPage = () => {
                     <select
                       value={selectedRole}
                       onChange={(e) => setSelectedRole(e.target.value)}
-                      className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="flex-1 border border-stroke rounded-md px-3 py-2 focus:ring-2 focus:ring-brand outline-none transition"
                     >
                       <option value="">Seleccionar rol</option>
                       {roles.map((role) => (
@@ -201,7 +201,7 @@ const RolesPage = () => {
                     <button
                       onClick={assignRole}
                       disabled={assigning}
-                      className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 active:scale-95 transition disabled:opacity-50"
+                      className="flex items-center gap-2 bg-brand text-white px-5 py-2 rounded-md hover:bg-brand-hover active:bg-brand-pressed transition disabled:opacity-50"
                     >
                       {assigning ? (
                         <Loader2 size={16} className="animate-spin" />

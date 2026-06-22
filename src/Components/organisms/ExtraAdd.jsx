@@ -101,27 +101,27 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition';
+    'w-full mt-2 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 text-gray-200">
+    <form onSubmit={handleSubmit} className="space-y-6 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Registrar extra</h2>
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           Registro de horas o compensaciones adicionales
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-500/40 text-red-300 px-3 py-2 rounded text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Tipo */}
       <div>
-        <label className="text-xs uppercase tracking-wide text-gray-400">
+        <label className="text-xs uppercase tracking-wide text-ink-muted">
           Tipo de extra
         </label>
         <select
@@ -142,7 +142,7 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
       {/* Fechas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="text-xs uppercase tracking-wide text-gray-400">
+          <label className="text-xs uppercase tracking-wide text-ink-muted">
             Fecha y hora inicio
           </label>
           <input
@@ -155,7 +155,7 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-wide text-gray-400">
+          <label className="text-xs uppercase tracking-wide text-ink-muted">
             Fecha y hora fin
           </label>
           <input
@@ -171,14 +171,14 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
 
       {/* Duración */}
       {duration && (
-        <div className="bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-lg px-3 py-2 text-sm">
+        <div className="bg-brand-tint border border-brand/30 text-brand rounded-md px-3 py-2 text-sm">
           Duración calculada: <span className="font-semibold">{duration}</span>
         </div>
       )}
 
       {/* Monto */}
       <div>
-        <label className="text-xs uppercase tracking-wide text-gray-400">
+        <label className="text-xs uppercase tracking-wide text-ink-muted">
           Monto
         </label>
         <input
@@ -193,7 +193,7 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
 
       {/* Notas */}
       <div>
-        <label className="text-xs uppercase tracking-wide text-gray-400">
+        <label className="text-xs uppercase tracking-wide text-ink-muted">
           Notas
         </label>
         <textarea
@@ -208,7 +208,7 @@ const ExtraAdd = ({ userId, author, onAdded }) => {
       <PrimaryButton
         type="submit"
         disabled={loading}
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+        className="w-full py-2 rounded-md text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
         {loading ? 'Guardando...' : 'Guardar extra'}
       </PrimaryButton>

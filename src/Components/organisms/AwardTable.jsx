@@ -30,7 +30,7 @@ const rowVariants = {
 const AwardTable = ({ awards = [] }) => {
   if (!awards.length) {
     return (
-      <p className="text-center text-gray-500 py-6">
+      <p className="text-center text-ink-muted py-6">
         No hay reconocimientos registrados.
       </p>
     );
@@ -41,9 +41,9 @@ const AwardTable = ({ awards = [] }) => {
       variants={tableVariants}
       initial="hidden"
       animate="visible"
-      className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
+      className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm"
     >
-      <thead className="bg-slate-800 text-white text-sm">
+      <thead className="bg-surface-alt text-ink-secondary text-sm">
         <tr>
           <th className="p-3 text-left">Título</th>
           <th className="p-3 text-left">Descripción</th>
@@ -60,16 +60,16 @@ const AwardTable = ({ awards = [] }) => {
             whileHover={{ backgroundColor: '#f8fafc' }}
             className="border-b"
           >
-            <td className="p-3 font-medium text-slate-800">{award.title}</td>
+            <td className="p-3 font-medium text-ink">{award.title}</td>
 
-            <td className="p-3 text-slate-600">{award.description || '—'}</td>
+            <td className="p-3 text-ink-muted">{award.description || '—'}</td>
 
-            <td className="p-3 flex items-center gap-2 text-slate-600 whitespace-nowrap">
+            <td className="p-3 flex items-center gap-2 text-ink-muted whitespace-nowrap">
               <Calendar size={14} />
               {formatDate(award.createdAt)}
             </td>
 
-            <td className="p-3 text-slate-600">{award.createdBy || '—'}</td>
+            <td className="p-3 text-ink-muted">{award.createdBy || '—'}</td>
           </motion.tr>
         ))}
       </motion.tbody>

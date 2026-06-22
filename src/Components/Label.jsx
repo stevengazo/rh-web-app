@@ -1,8 +1,8 @@
-const Label = ({ children, htmlFor }) => {
+const Label = ({ children, htmlFor, className = '' }) => {
   return (
     <label
       htmlFor={htmlFor}
-      className="block text-sm font-medium text-gray-600 mb-1"
+      className={`block text-sm font-semibold text-ink-secondary mb-1 ${className}`}
     >
       {children}
     </label>

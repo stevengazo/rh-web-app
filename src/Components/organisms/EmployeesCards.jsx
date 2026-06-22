@@ -10,7 +10,7 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
         return (
           <div
             key={emp.id}
-            className="bg-white rounded-xl shadow-sm p-5 border border-slate-200 hover:shadow-md transition cursor-pointer"
+            className="bg-surface rounded-xl shadow-sm p-5 border border-stroke-soft hover:shadow-md transition cursor-pointer"
             onClick={() =>
               HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} />)
             }
@@ -18,18 +18,18 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
               {/* Avatar */}
-              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold text-sm">
+              <div className="h-10 w-10 flex items-center justify-center rounded-full bg-brand-tint text-brand font-semibold text-sm">
                 {initials}
               </div>
 
               {/* Nombre */}
               <div>
-                <h3 className="text-sm font-semibold text-slate-800 leading-none">
+                <h3 className="text-sm font-semibold text-ink leading-none">
                   {emp.firstName} {emp.lastName}
                 </h3>
 
                 {emp?.departament?.name && (
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-ink-muted mt-1">
                     {emp.departament.name}
                   </p>
                 )}
@@ -37,14 +37,14 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
             </div>
 
             {/* Email */}
-            <div className="flex items-center gap-2 text-sm text-slate-600">
+            <div className="flex items-center gap-2 text-sm text-ink-muted">
               <Mail size={16} />
               <span className="truncate">{emp.email}</span>
             </div>
 
             {/* Teléfono */}
             {emp.phoneNumber && (
-              <div className="flex items-center gap-2 mt-2 text-sm text-slate-600">
+              <div className="flex items-center gap-2 mt-2 text-sm text-ink-muted">
                 <Phone size={16} />
                 {emp.phoneNumber}
               </div>
@@ -52,7 +52,7 @@ const EmployeesCards = ({ employees, HandleShowEdit }) => {
 
             {/* Departamento */}
             {emp?.departament?.name && (
-              <div className="flex items-center gap-2 mt-2 text-sm text-slate-600">
+              <div className="flex items-center gap-2 mt-2 text-sm text-ink-muted">
                 <Building2 size={16} />
                 {emp.departament.name}
               </div>

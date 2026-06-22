@@ -85,15 +85,15 @@ const ViewAction = ({ action, onUpdated }) => {
   };
 
   return (
-    <div className="space-y-6 text-gray-200">
+    <div className="space-y-6 text-ink">
       {/* Header */}
       <div className="flex justify-between items-start">
         <div>
-          <SectionTitle className="text-white">
+          <SectionTitle>
             {action.actionType?.name || 'Acción'}
           </SectionTitle>
 
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-ink-muted mt-1">
             {action.user?.firstName} {action.user?.lastName}
           </p>
         </div>
@@ -102,8 +102,8 @@ const ViewAction = ({ action, onUpdated }) => {
           className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide
           ${
             isApproved
-              ? 'bg-green-600/20 text-green-400 border border-green-500/30'
-              : 'bg-yellow-600/20 text-yellow-400 border border-yellow-500/30'
+              ? 'bg-green-50 text-green-700 border border-transparent'
+              : 'bg-amber-50 text-amber-800 border border-transparent'
           }
         `}
         >
@@ -114,11 +114,11 @@ const ViewAction = ({ action, onUpdated }) => {
       <Divider />
 
       {/* Info Card */}
-      <div className="bg-gray-700/60 rounded-xl p-4 space-y-4 border border-gray-600">
+      <div className="bg-surface-alt rounded-xl p-4 space-y-4 border border-stroke-soft">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           {/* Fecha */}
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <p className="text-ink-muted text-xs uppercase tracking-wide mb-1">
               Fecha
             </p>
 
@@ -128,10 +128,10 @@ const ViewAction = ({ action, onUpdated }) => {
                 name="actionDate"
                 value={form.actionDate}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full bg-surface border border-stroke text-ink rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
               />
             ) : (
-              <p className="font-medium text-gray-100">
+              <p className="font-medium text-ink">
                 {new Date(action.actionDate).toLocaleDateString()}
               </p>
             )}
@@ -139,7 +139,7 @@ const ViewAction = ({ action, onUpdated }) => {
 
           {/* Tipo */}
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <p className="text-ink-muted text-xs uppercase tracking-wide mb-1">
               Tipo de acción
             </p>
 
@@ -148,7 +148,7 @@ const ViewAction = ({ action, onUpdated }) => {
                 name="actionTypeId"
                 value={form.actionTypeId}
                 onChange={handleChange}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full bg-surface border border-stroke text-ink rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
               >
                 {types.map((t) => (
                   <option key={t.actionTypeId} value={t.actionTypeId}>
@@ -157,7 +157,7 @@ const ViewAction = ({ action, onUpdated }) => {
                 ))}
               </select>
             ) : (
-              <p className="font-medium text-gray-100">
+              <p className="font-medium text-ink">
                 {action.actionType?.name}
               </p>
             )}
@@ -165,17 +165,17 @@ const ViewAction = ({ action, onUpdated }) => {
 
           {/* Creado por */}
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+            <p className="text-ink-muted text-xs uppercase tracking-wide mb-1">
               Creado por
             </p>
-            <p className="font-medium text-gray-100">{action.createdBy}</p>
+            <p className="font-medium text-ink">{action.createdBy}</p>
           </div>
         </div>
       </div>
 
       {/* Descripción */}
-      <div className="bg-gray-700/60 rounded-xl p-4 border border-gray-600">
-        <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
+      <div className="bg-surface-alt rounded-xl p-4 border border-stroke-soft">
+        <p className="text-ink-muted text-xs uppercase tracking-wide mb-2">
           Descripción
         </p>
 
@@ -185,10 +185,10 @@ const ViewAction = ({ action, onUpdated }) => {
             value={form.description}
             onChange={handleChange}
             rows={3}
-            className="w-full bg-gray-800 border border-gray-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+            className="w-full bg-surface border border-stroke text-ink rounded-md p-3 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none resize-none"
           />
         ) : (
-          <p className="text-sm text-gray-100 leading-relaxed">
+          <p className="text-sm text-ink leading-relaxed">
             {action.description || 'Sin descripción'}
           </p>
         )}
@@ -199,33 +199,24 @@ const ViewAction = ({ action, onUpdated }) => {
         <div className="flex justify-end gap-3 pt-2">
           {editMode ? (
             <>
-              <button
-                onClick={() => setEditMode(false)}
-                className="px-4 py-2 text-sm rounded-lg border border-gray-600 hover:bg-gray-700 transition"
-              >
+              <SecondaryButton onClick={() => setEditMode(false)}>
                 Cancelar
-              </button>
+              </SecondaryButton>
 
-              <PrimaryButton
-                onClick={handleSave}
-                className="px-5 py-2 rounded-lg"
-              >
+              <PrimaryButton onClick={handleSave}>
                 Guardar cambios
               </PrimaryButton>
             </>
           ) : (
             <>
-              <PrimaryButton
-                onClick={() => setEditMode(true)}
-                className="px-5 py-2 rounded-lg"
-              >
+              <PrimaryButton onClick={() => setEditMode(true)}>
                 Editar
               </PrimaryButton>
 
               <SecondaryButton
                 onClick={handleApprove}
                 disabled={loadingApprove}
-                className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg"
+                className="bg-green-600 hover:bg-green-700 text-white border-transparent"
               >
                 {loadingApprove ? 'Aprobando...' : 'Aprobar'}
               </SecondaryButton>

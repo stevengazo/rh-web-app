@@ -2,6 +2,7 @@ import { useState } from 'react';
 import resultsApi from '../../api/resultsApi';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import PrimaryButton from '../PrimaryButton';
 
 const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -65,21 +66,21 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border p-3 rounded-2xl border-gray-800"
+      className="border p-3 rounded-xl border-stroke"
     >
       {/* Title */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        <h2 className="text-lg font-semibold text-ink dark:text-gray-100">
           Agregar Resultado
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-ink-muted dark:text-gray-400">
           Registra una nueva evaluación del objetivo.
         </p>
       </div>
 
       {/* Evaluación */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="text-sm font-medium text-ink-secondary dark:text-gray-300">
           Evaluación
         </label>
 
@@ -91,15 +92,15 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
           placeholder="Ej: 85"
           className="
             w-full
-            border border-gray-300 dark:border-gray-700
-            bg-white dark:bg-gray-950
-            rounded-lg
+            border border-stroke dark:border-gray-700
+            bg-surface dark:bg-gray-950
+            rounded-md
             px-3 py-2
             text-sm
             focus:outline-none
             focus:ring-2
-            focus:ring-primary
-            focus:border-primary
+            focus:ring-brand
+            focus:border-brand
             transition
           "
         />
@@ -107,7 +108,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
       {/* DatePicker */}
       <div className="space-y-1">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="text-sm font-medium text-ink-secondary dark:text-gray-300">
           Fecha del resultado
         </label>
 
@@ -118,52 +119,37 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
           placeholderText="Selecciona una fecha"
           className="
             w-full
-            border border-gray-300 dark:border-gray-700
-            bg-white dark:bg-gray-950
-            rounded-lg
+            border border-stroke dark:border-gray-700
+            bg-surface dark:bg-gray-950
+            rounded-md
             px-3 py-2
             text-sm
-            text-gray-800 dark:text-gray-200
+            text-ink dark:text-gray-200
             focus:outline-none
             focus:ring-2
-            focus:ring-primary
-            focus:border-primary
+            focus:ring-brand
+            focus:border-brand
           "
-          calendarClassName="bg-gray-900 text-white border border-gray-700 rounded-xl"
+          calendarClassName="bg-surface text-ink border border-stroke rounded-xl"
         />
       </div>
 
       {/* Error */}
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
           {error}
         </div>
       )}
 
       {/* Button */}
       <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={loading}
-          className="
-            inline-flex items-center gap-2
-            bg-blue-950 my-2
-            text-white
-            px-5 py-2.5
-            text-sm
-            font-medium
-            rounded-lg
-            hover:opacity-90
-            transition
-            disabled:opacity-50
-          "
-        >
+        <PrimaryButton type="submit" disabled={loading} className="my-2">
           {loading && (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
           )}
 
           {loading ? 'Guardando...' : 'Guardar'}
-        </button>
+        </PrimaryButton>
       </div>
     </form>
   );

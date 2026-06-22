@@ -115,10 +115,10 @@ const ViewPerformancePage = () => {
 
       <Divider />
 
-      {loading && <p className="text-sm text-gray-400 mb-4">Cargando...</p>}
+      {loading && <p className="text-sm text-ink-muted mb-4">Cargando...</p>}
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-5">
+      <div className="border-b border-stroke-soft mb-5">
         <nav className="flex gap-6">
           {Object.entries(TABS).map(([key, value]) => (
             <TabButton
@@ -149,7 +149,7 @@ const ViewPerformancePage = () => {
           <Header title="Gráficas" />
 
           {objectives.length === 0 ? (
-            <p className="text-sm text-gray-400">Sin datos para graficar</p>
+            <p className="text-sm text-ink-muted">Sin datos para graficar</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {objectives.map((o) => {
@@ -177,8 +177,8 @@ const TabButton = ({ active, children, onClick }) => (
     className={`pb-3 text-sm font-medium border-b-2 transition
       ${
         active
-          ? 'border-blue-600 text-blue-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          ? 'border-brand text-brand'
+          : 'border-transparent text-ink-muted hover:text-ink hover:border-stroke'
       }
     `}
   >
@@ -188,7 +188,7 @@ const TabButton = ({ active, children, onClick }) => (
 
 const Header = ({ title }) => (
   <div className="mb-4">
-    <h2 className="text-lg font-semibold text-gray-700">{title}</h2>
+    <h2 className="text-lg font-semibold text-ink">{title}</h2>
   </div>
 );
 

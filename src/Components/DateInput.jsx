@@ -1,22 +1,21 @@
-const DateInput = ({ value, onChange, disabled = false, error = false }) => {
+import { fieldClasses } from './atoms/fieldClasses';
+
+const DateInput = ({
+  value,
+  onChange,
+  disabled = false,
+  error = false,
+  className = '',
+  ...props
+}) => {
   return (
     <input
       type="date"
       value={value}
       disabled={disabled}
       onChange={onChange}
-      className={`
-        w-full rounded-lg px-4 py-2
-        border text-sm
-        text-gray-600
-        focus:outline-none focus:ring-2 transition
-        ${
-          error
-            ? 'border-red-500 focus:ring-red-500'
-            : 'border-gray-300 focus:ring-indigo-500'
-        }
-        ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
-      `}
+      className={fieldClasses({ error, className })}
+      {...props}
     />
   );
 };

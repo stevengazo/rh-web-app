@@ -124,7 +124,7 @@ const PayrollPage = () => {
             placeholder="Buscar por código, periodo o estado..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-80 px-4 py-2 border border-stroke rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
           />
 
           <PrimaryButton

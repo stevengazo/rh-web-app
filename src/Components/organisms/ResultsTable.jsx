@@ -16,7 +16,7 @@ const getBadge = (value) => {
 const ResultsTable = ({ results = [] }) => {
   if (!results.length) {
     return (
-      <div className="bg-white border rounded-xl p-6 text-center text-gray-500">
+      <div className="bg-surface border border-stroke-soft rounded-xl p-6 text-center text-ink-muted">
         No hay resultados registrados
       </div>
     );
@@ -50,7 +50,7 @@ const ResultsTable = ({ results = [] }) => {
 
           <tbody className="divide-y">
             {results.map((item) => (
-              <tr key={item.resultId} className='hover:bg-blue-900 hover:shadow-2xl hover:shadow-blue-950 duration-300 transition'>
+              <tr key={item.resultId} className='hover:bg-brand-900 hover:shadow-2xl hover:shadow-brand-900 duration-300 transition'>
                 <td className="px-4 py-3 text-gray-50">
                   {formatDate(item.resultDate)}
                 </td>
@@ -73,8 +73,8 @@ const ResultsTable = ({ results = [] }) => {
 };
 
 const StatCard = ({ label, value }) => (
-  <div className=" border rounded-xl hover:bg-blue-900 hover:shadow-2xl hover:shadow-blue-950 duration-300 transition p-4 text-center shadow-sm">
-    <p className="text-sm text-gray-500  ">{label}</p>
+  <div className=" border border-stroke-soft rounded-xl hover:bg-brand-900 hover:shadow-2xl hover:shadow-brand-900 duration-300 transition p-4 text-center shadow-sm">
+    <p className="text-sm text-ink-muted  ">{label}</p>
     <p className="text-2xl font-semibold text-white">{value}</p>
   </div>
 );

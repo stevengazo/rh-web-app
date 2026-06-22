@@ -26,10 +26,10 @@ const Row = ({ label, value }) => (
   <motion.tr
     variants={rowVariants}
     whileHover={{ backgroundColor: '#f8fafc' }}
-    className="border-t"
+    className="border-t border-stroke-soft"
   >
-    <td className="px-3 py-2 font-medium text-slate-600">{label}</td>
-    <td className="px-3 py-2 text-slate-800">{value ?? '—'}</td>
+    <td className="px-3 py-2 font-medium text-ink-muted">{label}</td>
+    <td className="px-3 py-2 text-ink">{value ?? '—'}</td>
   </motion.tr>
 );
 
@@ -40,10 +40,10 @@ const EmployeeTableInfo = ({ employee }) => {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center
-                   border border-dashed border-slate-300
-                   rounded-lg p-8 text-slate-500 bg-white"
+                   border border-dashed border-stroke
+                   rounded-md p-8 text-ink-muted bg-surface"
       >
-        <UserX size={40} className="mb-3 text-slate-400" />
+        <UserX size={40} className="mb-3 text-ink-muted" />
         <p className="font-medium">No hay información del empleado</p>
         <p className="text-sm">Selecciona un empleado para ver sus datos</p>
       </motion.div>
@@ -55,9 +55,9 @@ const EmployeeTableInfo = ({ employee }) => {
       variants={tableVariants}
       initial="hidden"
       animate="visible"
-      className="w-full border-collapse rounded-xl overflow-hidden shadow-sm bg-white"
+      className="w-full border-collapse rounded-xl overflow-hidden shadow-sm bg-surface"
     >
-      <thead className="bg-slate-800 text-white text-sm">
+      <thead className="bg-surface-alt text-ink-secondary text-sm">
         <tr>
           <th className="text-left px-3 py-2">Campo</th>
           <th className="text-left px-3 py-2">Valor</th>

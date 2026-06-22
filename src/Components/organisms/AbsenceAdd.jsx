@@ -3,6 +3,7 @@ import absencesApi from '../../api/absencesApi';
 import EmployeeApi from '../../api/employeesApi';
 import toast from 'react-hot-toast';
 import { useAppContext } from '../../context/AppContext';
+import PrimaryButton from '../PrimaryButton';
 
 const AbsenceAdd = ({ userId }) => {
   const [employees, setEmployees] = useState([]);
@@ -87,13 +88,13 @@ const AbsenceAdd = ({ userId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 text-gray-200">
+    <form onSubmit={handleSubmit} className="space-y-6 text-ink">
       {/* Card principal */}
-      <div className="bg-gray-700/60 rounded-xl p-5 border border-gray-600 space-y-5">
+      <div className="bg-surface-alt rounded-xl p-5 border border-stroke-soft space-y-5">
         {/* Empleado */}
         {!userId && (
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400">
+            <label className="text-xs uppercase tracking-wide text-ink-muted">
               Empleado
             </label>
             <select
@@ -101,7 +102,7 @@ const AbsenceAdd = ({ userId }) => {
               value={absenceForm.userId}
               onChange={handleChange}
               required
-              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-2 bg-surface border border-stroke text-ink rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
             >
               <option value="">Seleccione un empleado</option>
               {employees.map((emp) => (
@@ -115,7 +116,7 @@ const AbsenceAdd = ({ userId }) => {
 
         {/* Título */}
         <div>
-          <label className="text-xs uppercase tracking-wide text-gray-400">
+          <label className="text-xs uppercase tracking-wide text-ink-muted">
             Título
           </label>
           <input
@@ -123,7 +124,7 @@ const AbsenceAdd = ({ userId }) => {
             name="title"
             value={absenceForm.title}
             onChange={handleChange}
-            className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full mt-2 bg-surface border border-stroke text-ink placeholder:text-ink-muted rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
             placeholder="Ej: Incapacidad médica"
           />
         </div>
@@ -131,7 +132,7 @@ const AbsenceAdd = ({ userId }) => {
         {/* Fechas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400">
+            <label className="text-xs uppercase tracking-wide text-ink-muted">
               Fecha inicio
             </label>
             <input
@@ -140,12 +141,12 @@ const AbsenceAdd = ({ userId }) => {
               value={absenceForm.startDate}
               onChange={handleChange}
               required
-              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-2 bg-surface border border-stroke text-ink rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-xs uppercase tracking-wide text-gray-400">
+            <label className="text-xs uppercase tracking-wide text-ink-muted">
               Fecha fin
             </label>
             <input
@@ -155,14 +156,14 @@ const AbsenceAdd = ({ userId }) => {
               onChange={handleChange}
               min={absenceForm.startDate}
               required
-              className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-2 bg-surface border border-stroke text-ink rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none"
             />
           </div>
         </div>
 
         {/* Duración */}
         {durationDays && (
-          <div className="bg-blue-600/20 border border-blue-500/30 text-blue-300 rounded-lg px-3 py-2 text-sm">
+          <div className="bg-brand/10 border border-brand/30 text-brand rounded-md px-3 py-2 text-sm">
             Duración estimada:{' '}
             <span className="font-semibold">{durationDays}</span> días
           </div>
@@ -170,7 +171,7 @@ const AbsenceAdd = ({ userId }) => {
 
         {/* Motivo */}
         <div>
-          <label className="text-xs uppercase tracking-wide text-gray-400">
+          <label className="text-xs uppercase tracking-wide text-ink-muted">
             Motivo
           </label>
           <textarea
@@ -178,7 +179,7 @@ const AbsenceAdd = ({ userId }) => {
             value={absenceForm.reason}
             onChange={handleChange}
             rows={3}
-            className="w-full mt-2 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+            className="w-full mt-2 bg-surface border border-stroke text-ink placeholder:text-ink-muted rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none resize-none"
             placeholder="Descripción de la ausencia"
           />
         </div>
@@ -190,19 +191,16 @@ const AbsenceAdd = ({ userId }) => {
             name="justified"
             checked={absenceForm.justified}
             onChange={handleChange}
-            className="w-4 h-4 accent-blue-500"
+            className="w-4 h-4 accent-brand"
           />
-          <label className="text-sm text-gray-300">Ausencia justificada</label>
+          <label className="text-sm text-ink-secondary">Ausencia justificada</label>
         </div>
       </div>
 
       {/* Botón */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition rounded-lg py-2 text-sm font-semibold"
-      >
+      <PrimaryButton type="submit" className="w-full">
         Guardar ausencia
-      </button>
+      </PrimaryButton>
     </form>
   );
 };

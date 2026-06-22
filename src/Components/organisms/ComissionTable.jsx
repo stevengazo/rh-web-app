@@ -26,7 +26,7 @@ const rowVariants = {
 const ComissionTable = ({ comissions = [] }) => {
   if (!comissions.length) {
     return (
-      <p className="text-gray-500 text-sm text-center">
+      <p className="text-ink-muted text-sm text-center">
         No hay comisiones registradas.
       </p>
     );
@@ -39,7 +39,7 @@ const ComissionTable = ({ comissions = [] }) => {
       animate="visible"
       className="mx-auto w-full max-w-6xl border-collapse rounded-xl overflow-hidden shadow"
     >
-      <thead className="bg-slate-800 text-white text-sm">
+      <thead className="bg-surface-alt text-ink-secondary text-sm">
         <tr>
           <th className="p-3 text-left">ID</th>
           <th className="p-3 text-left">Fecha</th>

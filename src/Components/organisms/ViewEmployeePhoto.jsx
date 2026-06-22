@@ -10,7 +10,7 @@ const ViewEmployeePhoto = ({ img }) => {
           w-24 h-24 sm:w-32 sm:h-32
           object-cover
           rounded-full
-          border border-gray-200
+          border border-stroke-soft
           shadow-sm
         "
       />

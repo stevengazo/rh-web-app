@@ -131,9 +131,9 @@ const MyPayrollsPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <label className="text-gray-700 font-medium">Filtrar por tipo:</label>
+        <label className="text-ink font-medium">Filtrar por tipo:</label>
         <select
-          className="border border-gray-300 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+          className="border border-stroke rounded-md px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all"
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
         >
@@ -147,21 +147,21 @@ const MyPayrollsPage = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
           { label: 'Total Neto', value: totals.net, color: 'text-green-600' },
-          { label: 'Total Bruto', value: totals.gross, color: 'text-blue-600' },
+          { label: 'Total Bruto', value: totals.gross, color: 'text-brand' },
           { label: 'Total Extras', value: totals.extras, color: 'text-yellow-600' },
           { label: 'Total Deducciones', value: totals.deductions, color: 'text-red-600' },
         ].map((card, idx) => (
           <motion.div
             key={idx}
-            className="bg-white shadow-2xl rounded p-4 cursor-pointer"
+            className="bg-surface shadow-lg rounded-xl p-4 cursor-pointer"
             variants={cardVariants}
             initial="hidden"
             animate="visible"
             whileHover="hover"
             transition={{ duration: 0.3, delay: idx * 0.1 }}
           >
-            <div className="text-sm text-gray-500">{card.label}</div>
-            <div className={`text-xl font-bold ${card.color}`}>
+            <div className="text-sm text-ink-muted">{card.label}</div>
+            <div className={`text-xl font-semibold ${card.color}`}>
               {card.value.toLocaleString('es-CR', { style: 'currency', currency: 'CRC' })}
             </div>
           </motion.div>
@@ -172,12 +172,12 @@ const MyPayrollsPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Neto por Fecha - Barras Apiladas */}
         <motion.div
-          className="bg-white shadow-2xl rounded p-4"
+          className="bg-surface shadow-lg rounded-xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h3 className="text-lg font-bold mb-2">Neto por Fecha</h3>
+          <h3 className="text-lg font-semibold mb-2">Neto por Fecha</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -202,12 +202,12 @@ const MyPayrollsPage = () => {
 
         {/* Bruto por Fecha */}
         <motion.div
-          className="bg-white shadow-2xl rounded p-4"
+          className="bg-surface shadow-lg rounded-xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h3 className="text-lg font-bold mb-2">Bruto por Fecha</h3>
+          <h3 className="text-lg font-semibold mb-2">Bruto por Fecha</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />

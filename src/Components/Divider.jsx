@@ -1,5 +1,5 @@
-const Divider = () => {
-  return <hr className="border-gray-200 my-6" />;
+const Divider = ({ className = '' }) => {
+  return <hr className={`border-stroke-soft my-6 ${className}`} />;
 };
 
 export default Divider;

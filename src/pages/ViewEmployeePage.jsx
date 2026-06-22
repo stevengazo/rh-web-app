@@ -131,17 +131,17 @@ const ViewEmployeePage = () => {
         <div className="d-flex flex-row">
           <ViewEmployeePhoto
             img={employeePhoto?.filePath}
-            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border border-gray-200"
+            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border border-stroke-soft"
           />
           <EmployeeInfoCard employee={employee} />
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div className="bg-surface rounded-xl border border-stroke-soft p-5 sm:p-6 shadow-sm space-y-4">
           <SectionTitle>Acciones</SectionTitle>
 
           <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            <button
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 active:scale-[0.97] shadow-md hover:shadow-lg"
+            <PrimaryButton
+              className="w-full sm:w-auto"
               onClick={() =>
                 openCanvas(
                   'Agregar Imagen de Perfil',
@@ -150,16 +150,16 @@ const ViewEmployeePage = () => {
               }
             >
               Agregar Imagen
-            </button>
+            </PrimaryButton>
           </div>
         </div>
 
-        <div className="border-b border-gray-200">
+        <div className="border-b border-stroke-soft">
           <div className="sm:hidden mt-2">
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2.5 rounded-md border border-stroke bg-surface text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-brand"
             >
               {Object.entries(TABS).map(([key, value]) => (
                 <option key={key} value={value}>
@@ -182,7 +182,7 @@ const ViewEmployeePage = () => {
           </nav>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <div className="bg-surface rounded-xl border border-stroke-soft p-6 shadow-sm">
           {activeTab === TABS.TRAINING && (
             <>
               <Header
@@ -379,8 +379,8 @@ const TabButton = ({ active, children, onClick }) => (
     className={`pb-3 text-sm font-medium border-b-2 transition
       ${
         active
-          ? 'border-blue-600 text-blue-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+          ? 'border-brand text-brand'
+          : 'border-transparent text-ink-muted hover:text-ink hover:border-stroke'
       }
     `}
   >
@@ -395,6 +395,6 @@ const Header = ({ title, action }) => (
   </div>
 );
 
-const Divider = () => <hr className="my-6 border-gray-200" />;
+const Divider = () => <hr className="my-6 border-stroke-soft" />;
 
 export default ViewEmployeePage;

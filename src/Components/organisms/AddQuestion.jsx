@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import questionApi from '../../api/questionsApi';
 import questionCategoryApi from '../../api/QuestionCategories';
+import PrimaryButton from '../PrimaryButton';
 
 const AddQuestion = () => {
   const [question, setQuestion] = useState({
@@ -53,43 +54,43 @@ const AddQuestion = () => {
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="space-y-4 ">
-        <h3 className="text-sm font-semibold text-gray-200">Nueva Pregunta</h3>
+        <h3 className="text-sm font-semibold text-ink">Nueva Pregunta</h3>
 
         {/* Pregunta */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">Pregunta</label>
+          <label className="text-xs text-ink-muted">Pregunta</label>
           <input
             type="text"
             name="text"
             value={question.text}
             onChange={handleChange}
             required
-            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100
-              placeholder-gray-500
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-stroke bg-surface px-3 py-2 text-sm text-ink
+              placeholder:text-ink-muted
+              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
             placeholder="Escribe la pregunta..."
           />
         </div>
 
         {/* Categoría */}
         <div className="space-y-1">
-          <label className="text-xs text-gray-400">Categoría</label>
+          <label className="text-xs text-ink-muted">Categoría</label>
           <select
             name="questionCategoryId"
             value={question.questionCategoryId}
             onChange={handleChange}
             required
-            className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-gray-100
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-stroke bg-surface px-3 py-2 text-sm text-ink
+              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
           >
-            <option value="" className="bg-gray-800">
+            <option value="" className="bg-surface">
               Seleccione una categoría
             </option>
             {categories.map((c) => (
               <option
                 key={c.questionCategoryId}
                 value={c.questionCategoryId}
-                className="bg-gray-800"
+                className="bg-surface"
               >
                 {c.name}
               </option>
@@ -104,22 +105,17 @@ const AddQuestion = () => {
             name="isActive"
             checked={question.isActive}
             onChange={handleChange}
-            className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
-              focus:ring-2 focus:ring-blue-500"
+            className="h-4 w-4 rounded border-stroke bg-surface text-brand
+              focus:ring-2 focus:ring-brand"
           />
-          <span className="text-xs text-gray-400">Activo</span>
+          <span className="text-xs text-ink-muted">Activo</span>
         </div>
 
         {/* Botón */}
         <div className="pt-2 flex justify-end">
-          <button
-            type="submit"
-            className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white
-              hover:bg-blue-600 transition
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-          >
+          <PrimaryButton type="submit">
             Guardar
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </div>

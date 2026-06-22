@@ -71,27 +71,27 @@ const ComissionAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Registrar comisión</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-ink-secondary mt-1">
           Registro de comisiones del empleado
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
+        <div className="bg-red-50 border border-transparent text-red-700 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Fecha */}
       <div>
-        <label className="text-sm text-gray-200">Fecha</label>
+        <label className="text-sm text-ink-secondary">Fecha</label>
         <input
           type="date"
           name="date"
@@ -103,7 +103,7 @@ const ComissionAdd = ({ userId, author, onAdded }) => {
 
       {/* Monto */}
       <div>
-        <label className="text-sm text-gray-200">Monto</label>
+        <label className="text-sm text-ink-secondary">Monto</label>
         <input
           type="number"
           step="0.01"
@@ -116,7 +116,7 @@ const ComissionAdd = ({ userId, author, onAdded }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           rows={3}
@@ -133,16 +133,16 @@ const ComissionAdd = ({ userId, author, onAdded }) => {
           name="draft"
           checked={form.draft}
           onChange={handleChange}
-          className="h-4 w-4 rounded bg-gray-600 border-gray-500 text-blue-400 focus:ring-blue-400"
+          className="h-4 w-4 rounded bg-surface border border-stroke text-brand focus:ring-brand"
         />
-        <span className="text-sm text-gray-200">Guardar como borrador</span>
+        <span className="text-sm text-ink-secondary">Guardar como borrador</span>
       </div>
 
       {/* Botón */}
       <PrimaryButton
         type="submit"
         disabled={loading}
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+        className="w-full py-2 text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
         {loading ? 'Guardando...' : 'Guardar comisión'}
       </PrimaryButton>

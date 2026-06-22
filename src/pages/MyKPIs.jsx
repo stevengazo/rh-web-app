@@ -90,13 +90,13 @@ const MyKPIs = () => {
           <SectionTitle>Objetivos Asignados</SectionTitle>
 
           {/* View toggle */}
-          <div className="flex border rounded-lg overflow-hidden">
+          <div className="flex border border-stroke rounded-md overflow-hidden">
             <button
               onClick={() => setViewMode('cards')}
               className={`px-4 py-1 text-sm ${
                 viewMode === 'cards'
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-600'
+                  ? 'bg-brand text-white'
+                  : 'bg-surface text-ink-muted'
               }`}
             >
               Cards
@@ -106,8 +106,8 @@ const MyKPIs = () => {
               onClick={() => setViewMode('table')}
               className={`px-4 py-1 text-sm ${
                 viewMode === 'table'
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-600'
+                  ? 'bg-brand text-white'
+                  : 'bg-surface text-ink-muted'
               }`}
             >
               Tabla
@@ -127,17 +127,17 @@ const MyKPIs = () => {
                     <ObjetiveLayout User_Objetive={obj} />
                   )
                 }
-                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
+                className="bg-surface rounded-xl border border-stroke-soft shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
               >
-                <h2 className="text-lg font-bold text-gray-800">
+                <h2 className="text-lg font-semibold text-ink">
                   {obj.objetive?.title || 'Sin título'}
                 </h2>
 
-                <p className="text-gray-600 text-sm mt-2">
+                <p className="text-ink-muted text-sm mt-2">
                   {obj.objetive?.description || 'Sin descripción'}
                 </p>
 
-                <div className="mt-4 text-xs text-gray-400">
+                <div className="mt-4 text-xs text-ink-muted">
                   {obj.objetive?.questions?.length || 0} preguntas asociadas
                 </div>
               </div>
@@ -147,9 +147,9 @@ const MyKPIs = () => {
 
         {/* TABLE VIEW */}
         {viewMode === 'table' && (
-          <div className="overflow-x-auto border rounded-xl">
+          <div className="overflow-x-auto border border-stroke-soft rounded-xl">
             <table className="min-w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
+              <thead className="bg-canvas text-ink-muted">
                 <tr>
                   <th className="text-left px-4 py-3">Objetivo</th>
                   <th className="text-left px-4 py-3">Descripción</th>
@@ -167,17 +167,17 @@ const MyKPIs = () => {
                         <ObjetiveLayout User_Objetive={obj} />
                       )
                     }
-                    className="hover:bg-gray-50 cursor-pointer"
+                    className="hover:bg-canvas cursor-pointer"
                   >
-                    <td className="px-4 py-3 font-medium text-gray-800">
+                    <td className="px-4 py-3 font-medium text-ink">
                       {obj.objetive?.title}
                     </td>
 
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3 text-ink-muted">
                       {obj.objetive?.description}
                     </td>
 
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3 text-ink-muted">
                       {obj.objetive?.questions?.length || 0}
                     </td>
                   </tr>
@@ -206,13 +206,13 @@ const MyKPIs = () => {
                   <QuestionsLayout User_Question={uq} />
                 )
               }
-              className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition cursor-pointer"
+              className="bg-surface rounded-xl border border-stroke-soft shadow-sm p-5 hover:shadow-md transition cursor-pointer"
             >
-              <h3 className="text-sm font-semibold text-gray-800 mb-2">
+              <h3 className="text-sm font-semibold text-ink mb-2">
                 {uq.question?.text}
               </h3>
 
-              <div className="flex justify-between text-xs text-gray-400">
+              <div className="flex justify-between text-xs text-ink-muted">
                 <span>{uq.question?.isActive ? 'Activa' : 'Inactiva'}</span>
 
                 <span>ID: {uq.question?.questionId}</span>

@@ -3,6 +3,7 @@ import { Eye, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import EmployeeEdit from './EmployeeEdit';
+import IconButton from '../IconButton';
 
 const tableVariants = {
   hidden: { opacity: 0, y: 12 },
@@ -23,7 +24,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="bg-white rounded-xl shadow-sm border border-slate-200"
+      className="bg-surface rounded-xl shadow-sm border border-stroke-soft"
     >
       <div className="overflow-x-auto">
         <motion.table
@@ -32,7 +33,7 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
           animate="visible"
           className="w-full text-sm"
         >
-          <thead className="bg-slate-800 text-white text-sm">
+          <thead className="bg-surface-alt text-ink-secondary text-sm">
             <tr>
               <th className="px-6 py-3 text-left font-medium">Nombre</th>
               <th className="px-6 py-3 text-left font-medium">Apellido</th>
@@ -53,34 +54,31 @@ const EmployeesTable = ({ employees = [], HandleShowEdit }) => {
 
                 <td className="px-6 py-3">{emp.lastName}</td>
 
-                <td className="px-6 py-3 text-slate-600">{emp.email}</td>
+                <td className="px-6 py-3 text-ink-muted">{emp.email}</td>
 
-                <td className="px-6 py-3 text-slate-600">
+                <td className="px-6 py-3 text-ink-muted">
                   {emp.departament?.name || '—'}
                 </td>
 
                 <td className="px-6 py-3">
                   <div className="flex justify-center gap-2">
-                    <button
-                      className="p-1.5 rounded hover:bg-slate-200"
+                    <IconButton
+                      icon={Eye}
                       onClick={() => navigate(`/manager/employees/${emp.id}`)}
-                    >
-                      <Eye size={16} />
-                    </button>
+                    />
 
-                    <button
-                      className="p-1.5 rounded hover:bg-slate-200"
+                    <IconButton
+                      icon={Edit}
+                      variant="primary"
                       onClick={() =>
                         HandleShowEdit(
                           'Editar Usuario',
                           <EmployeeEdit employee={emp} />
                         )
                       }
-                    >
-                      <Edit size={16} />
-                    </button>
+                    />
 
-            
+
                   </div>
                 </td>
               </motion.tr>

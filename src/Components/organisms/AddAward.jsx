@@ -54,27 +54,27 @@ const AddAward = ({ userId, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Registrar premio</h2>
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           Reconocimiento otorgado al empleado
         </p>
       </div>
 
       {error && (
-        <div className="bg-red-500/20 border border-red-400 text-red-300 px-3 py-2 rounded text-sm">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
           {error}
         </div>
       )}
 
       {/* Título */}
       <div>
-        <label className="text-sm text-gray-200">Título</label>
+        <label className="text-sm text-ink-secondary">Título</label>
         <input
           type="text"
           name="title"
@@ -87,7 +87,7 @@ const AddAward = ({ userId, onAdded }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           rows={4}

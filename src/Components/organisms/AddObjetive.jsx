@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import kpiApi from '../../api/kpiApi';
 import ObjetiveCategories from '../../api/ObjetiveCategories';
+import PrimaryButton from '../PrimaryButton';
 
 const AddObjetive = ({ onAdded }) => {
   const [newObjetive, setNewObjetive] = useState({
@@ -58,14 +59,14 @@ const AddObjetive = ({ onAdded }) => {
 
   return (
     <div className="max-w-2xl mx-auto rounded-xl p-6 ">
-      <h2 className="text-2xl font-semibold text-gray-100 mb-6">
+      <h2 className="text-2xl font-semibold text-ink mb-6">
         Nuevo Objetivo
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Título */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Título
           </label>
           <input
@@ -74,16 +75,16 @@ const AddObjetive = ({ onAdded }) => {
             value={newObjetive.title}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-gray-600 bg-gray-800 text-gray-100 px-3 py-2
-              placeholder-gray-400
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
+              placeholder:text-ink-muted
+              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
             placeholder="Ingrese el título del objetivo"
           />
         </div>
 
         {/* Descripción */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Descripción
           </label>
           <textarea
@@ -91,16 +92,16 @@ const AddObjetive = ({ onAdded }) => {
             value={newObjetive.description}
             onChange={handleChange}
             rows={4}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800 text-gray-100 px-3 py-2
-              placeholder-gray-400
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
+              placeholder:text-ink-muted
+              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
             placeholder="Descripción del objetivo"
           />
         </div>
 
         {/* Categoría */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Categoría
           </label>
           <select
@@ -108,17 +109,17 @@ const AddObjetive = ({ onAdded }) => {
             value={newObjetive.objetiveCategoryId}
             onChange={handleChange}
             required
-            className="w-full rounded-lg border border-gray-600 bg-gray-800 text-gray-100 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
+              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
           >
-            <option value={0} className="bg-gray-800">
+            <option value={0} className="bg-surface">
               Seleccione una categoría
             </option>
             {categories.map((cat) => (
               <option
                 key={cat.objetiveCategoryId}
                 value={cat.objetiveCategoryId}
-                className="bg-gray-800"
+                className="bg-surface"
               >
                 {cat.name}
               </option>
@@ -133,23 +134,17 @@ const AddObjetive = ({ onAdded }) => {
             name="isActive"
             checked={newObjetive.isActive}
             onChange={handleChange}
-            className="h-4 w-4 rounded border-gray-600 bg-gray-800 text-blue-500
-              focus:ring-blue-500 focus:ring-2"
+            className="h-4 w-4 rounded border-stroke bg-surface text-brand
+              focus:ring-brand focus:ring-2"
           />
-          <span className="text-sm text-gray-300">Activo</span>
+          <span className="text-sm text-ink-secondary">Activo</span>
         </div>
 
         {/* Botón */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="inline-flex items-center justify-center
-              rounded-lg bg-blue-500 px-6 py-2 text-white font-medium
-              hover:bg-blue-600 transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-          >
+          <PrimaryButton type="submit">
             Guardar Objetivo
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </div>

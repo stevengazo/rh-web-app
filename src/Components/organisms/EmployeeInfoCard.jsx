@@ -25,14 +25,14 @@ const Field = ({ label, value }) => (
   <motion.div
     variants={itemVariants}
     whileHover={{ scale: 1.02 }}
-    className="bg-slate-50 hover:bg-slate-100 
-               transition-all rounded-xl p-4 
-               border border-slate-200"
+    className="bg-canvas hover:bg-surface-alt
+               transition-all rounded-xl p-4
+               border border-stroke-soft"
   >
-    <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">
+    <p className="text-xs uppercase tracking-wide text-ink-muted mb-1">
       {label}
     </p>
-    <p className="text-sm font-medium text-slate-800 break-words">
+    <p className="text-sm font-medium text-ink break-words">
       {value ?? '—'}
     </p>
   </motion.div>
@@ -45,10 +45,10 @@ const EmployeeInfoCard = ({ employee }) => {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center justify-center
-                   border border-dashed border-slate-300
-                   rounded-xl p-10 text-slate-500 bg-white"
+                   border border-dashed border-stroke
+                   rounded-xl p-10 text-ink-muted bg-surface"
       >
-        <UserX size={40} className="mb-3 text-slate-400" />
+        <UserX size={40} className="mb-3 text-ink-muted" />
         <p className="font-medium">No hay información del empleado</p>
         <p className="text-sm">Selecciona un empleado para ver sus datos</p>
       </motion.div>
@@ -60,7 +60,7 @@ const EmployeeInfoCard = ({ employee }) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="bg-white rounded-2xl shadow-md p-6"
+      className="bg-surface rounded-2xl shadow-md p-6"
     >
       {/* Header */}
       <div className="mb-6"></div>

@@ -1,2 +1,88 @@
 @import 'tailwindcss';
 @import 'gridstack/dist/gridstack.min.css';
+
+/* ============================================================
+   Fluent 2 Design Tokens
+   Brand: Communication Blue (#0F6CBD) · Typography: Segoe UI
+   Implemented as Tailwind v4 @theme tokens so utilities like
+   bg-brand, rounded-md, shadow-md, etc. resolve to Fluent values.
+   ============================================================ */
+@theme {
+  /* ---- Typography ---- */
+  --font-sans:
+    'Segoe UI', 'Segoe UI Web (West European)', -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, Helvetica, Arial, sans-serif;
+
+  /* ---- Brand ramp (Communication Blue) ---- */
+  --color-brand-50: #ebf3fc;
+  --color-brand-100: #cfe4fa;
+  --color-brand-200: #a9d3f2;
+  --color-brand-300: #62abf5;
+  --color-brand-400: #2886de;
+  --color-brand-500: #0f6cbd;
+  --color-brand-600: #115ea3;
+  --color-brand-700: #0f548c;
+  --color-brand-800: #0c3b5e;
+  --color-brand-900: #082338;
+
+  /* Semantic brand aliases (Fluent: background / hover / pressed / selected) */
+  --color-brand: #0f6cbd;
+  --color-brand-hover: #115ea3;
+  --color-brand-pressed: #0f548c;
+  --color-brand-selected: #0c3b5e;
+  --color-brand-tint: #ebf3fc;
+
+  /* ---- Neutral semantic tokens ---- */
+  --color-canvas: #f5f5f5; /* app background  (colorNeutralBackground2) */
+  --color-surface: #ffffff; /* cards / panels  (colorNeutralBackground1) */
+  --color-surface-alt: #fafafa; /* subtle surface */
+  --color-stroke: #d1d1d1; /* default stroke  (colorNeutralStroke1) */
+  --color-stroke-soft: #e0e0e0; /* dividers        (colorNeutralStroke2) */
+  --color-ink: #242424; /* foreground 1 */
+  --color-ink-secondary: #424242; /* foreground 2 */
+  --color-ink-muted: #616161; /* foreground 3 */
+  --color-ink-disabled: #bdbdbd; /* disabled */
+
+  /* ---- Corner radius (Fluent: 2 / 4 / 6 / 8 px) ---- */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
+  --radius-3xl: 12px;
+
+  /* ---- Elevation (Fluent shadow ramp) ---- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.14), 0 0 2px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 14px 28px rgba(0, 0, 0, 0.24), 0 0 8px rgba(0, 0, 0, 0.2);
+
+  /* ---- Transitional safety net ----
+     Remap the legacy `indigo` ramp to the Fluent brand ramp so any
+     not-yet-migrated `indigo-*` utility still renders Fluent blue
+     instead of purple. Remove once the sweep is fully complete. */
+  --color-indigo-50: #ebf3fc;
+  --color-indigo-100: #cfe4fa;
+  --color-indigo-200: #a9d3f2;
+  --color-indigo-300: #62abf5;
+  --color-indigo-400: #2886de;
+  --color-indigo-500: #1a7ad0;
+  --color-indigo-600: #0f6cbd;
+  --color-indigo-700: #115ea3;
+  --color-indigo-800: #0f548c;
+  --color-indigo-900: #0c3b5e;
+  --color-indigo-950: #082338;
+}
+
+/* ---- Base ---- */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+}

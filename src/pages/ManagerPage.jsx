@@ -70,7 +70,7 @@ const ManagerPage = () => {
       title: 'Empleados',
       value: countEmployees,
       icon: Users,
-      color: 'text-indigo-600',
+      color: 'text-brand',
     },
     {
       title: 'Acciones',
@@ -82,13 +82,13 @@ const ManagerPage = () => {
       title: 'Ausencias',
       value: totalAbsences,
       icon: CalendarCheck,
-      color: 'text-blue-600',
+      color: 'text-brand',
     },
     {
       title: 'Horas Extras',
       value: totalExtras,
       icon: BarChart3,
-      color: 'text-purple-600',
+      color: 'text-brand',
     },
   ];
 
@@ -103,10 +103,10 @@ const ManagerPage = () => {
 
           return (
             <div key={card.title} className="grid-stack-item" gs-w="3" gs-h="2">
-              <div className="grid-stack-item-content bg-white rounded-xl border-2 border-slate-300 shadow-md hover:border-indigo-500 hover:shadow-lg transition-all duration-300 p-6 flex justify-between">
+              <div className="grid-stack-item-content bg-surface rounded-xl border-2 border-stroke shadow-md hover:border-brand hover:shadow-lg transition-all duration-300 p-6 flex justify-between">
                 <div>
-                  <p className="text-sm text-slate-500">{card.title}</p>
-                  <h3 className="text-2xl font-bold text-slate-800">
+                  <p className="text-sm text-ink-muted">{card.title}</p>
+                  <h3 className="text-2xl font-semibold text-ink">
                     {loading ? '...' : card.value}
                   </h3>
                 </div>
@@ -119,7 +119,7 @@ const ManagerPage = () => {
 
         {/* ACTIVIDAD */}
         <div className="grid-stack-item" gs-w="12" gs-h="4">
-          <div className="grid-stack-item-content bg-white p-6 rounded-xl border-2 border-slate-300 shadow-md hover:border-indigo-500 hover:shadow-lg transition-all duration-300">
+          <div className="grid-stack-item-content bg-surface p-6 rounded-xl border-2 border-stroke shadow-md hover:border-brand hover:shadow-lg transition-all duration-300">
             <h3 className="font-semibold mb-4">Actividad mensual</h3>
 
             <div className="h-full">
@@ -141,7 +141,7 @@ const ManagerPage = () => {
 
         {/* CUMPLEAÑOS */}
         <div className="grid-stack-item" gs-w="6" gs-h="4">
-          <div className="grid-stack-item-content bg-white p-6 rounded-xl border-2 border-slate-300 shadow-md hover:border-indigo-500 hover:shadow-lg transition-all duration-300">
+          <div className="grid-stack-item-content bg-surface p-6 rounded-xl border-2 border-stroke shadow-md hover:border-brand hover:shadow-lg transition-all duration-300">
             <h3 className="font-semibold mb-4">Cumpleaños del personal</h3>
 
             <ResponsiveContainer width="100%" height="100%">
@@ -158,7 +158,7 @@ const ManagerPage = () => {
 
         {/* DEPARTAMENTOS */}
         <div className="grid-stack-item" gs-w="6" gs-h="4">
-          <div className="grid-stack-item-content bg-white p-6 rounded-xl border-2 border-slate-300 shadow-md hover:border-indigo-500 hover:shadow-lg transition-all duration-300">
+          <div className="grid-stack-item-content bg-surface p-6 rounded-xl border-2 border-stroke shadow-md hover:border-brand hover:shadow-lg transition-all duration-300">
             <h3 className="font-semibold mb-4">Empleados por departamento</h3>
 
             <ResponsiveContainer width="100%" height="100%">

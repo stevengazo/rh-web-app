@@ -1,6 +1,6 @@
 const DashboardTemplate = ({ sidebar, header, content }) => {
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="min-h-screen flex bg-canvas">
       {sidebar}
 
       <div className="flex-1 flex flex-col">

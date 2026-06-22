@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useEffect } from 'react';
+import IconButton from './IconButton';
 
 const OffCanvas = ({ isOpen, onClose, title, children }) => {
   // Bloquear scroll del body cuando está abierto
@@ -30,9 +31,10 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
           top-0 right-0
           h-full
           w-full sm:w-[420px]
-          bg-gray-800
-          text-white
-          shadow-2xl
+          bg-surface
+          text-ink
+          rounded-l-xl
+          shadow-xl
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
@@ -43,22 +45,12 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
             flex items-center justify-between
             px-5 py-4
             border-b
-            border-gray-700
+            border-stroke-soft
           "
         >
           <h3 className="text-lg sm:text-xl font-semibold">{title}</h3>
 
-          <button
-            onClick={onClose}
-            className="
-              p-2 rounded-lg
-              bg-red-500 hover:bg-red-600
-              active:scale-95
-              text-white transition
-            "
-          >
-            <X size={20} />
-          </button>
+          <IconButton icon={X} onClick={onClose} variant="default" size={20} />
         </div>
 
         {/* Content */}

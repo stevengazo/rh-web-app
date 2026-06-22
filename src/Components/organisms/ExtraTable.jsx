@@ -10,7 +10,7 @@ const formatDate = (date) => {
 const ExtraTable = ({ extras = [], onSelect }) => {
   if (!extras.length) {
     return (
-      <p className="text-gray-500 text-sm text-center">
+      <p className="text-ink-muted text-sm text-center">
         No hay extras registrados.
       </p>
     );
@@ -23,7 +23,7 @@ const ExtraTable = ({ extras = [], onSelect }) => {
       transition={{ duration: 0.3 }}
       className="mx-auto w-full max-w-6xl border-collapse rounded-xl overflow-hidden shadow"
     >
-      <thead className="bg-slate-800 text-white text-sm">
+      <thead className="bg-surface-alt text-ink-secondary text-sm">
         <tr>
           <th className="p-3 text-left">ID</th>
           <th className="p-3 text-left">Tipo</th>

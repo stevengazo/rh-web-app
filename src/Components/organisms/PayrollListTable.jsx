@@ -18,14 +18,14 @@ const PayrollListTable = ({ payrolls = [] }) => {
   const nav = useNavigate();
   if (!payrolls.length) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-6 text-center text-slate-500">
+      <div className="bg-surface rounded-xl shadow-sm p-6 text-center text-ink-muted">
         No hay planillas registradas
       </div>
     );
   }
   return (
     <div className="w-full overflow-x-auto">
-      <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm">
         {/* =========================
           HEADER
       ========================= */}
@@ -60,34 +60,34 @@ const PayrollListTable = ({ payrolls = [] }) => {
         {/* =========================
           BODY
       ========================= */}
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className="divide-y divide-stroke-soft bg-surface">
           {payrolls.length === 0 ? (
             <tr>
               <td
                 colSpan={6}
-                className="px-4 py-6 text-center text-sm text-gray-500"
+                className="px-4 py-6 text-center text-sm text-ink-muted"
               >
                 No hay planillas registradas
               </td>
             </tr>
           ) : (
             payrolls.map((p) => (
-              <tr key={p.payrollId} className="hover:bg-slate-50 transition">
+              <tr key={p.payrollId} className="hover:bg-canvas transition">
                 {/* ID */}
-                <td className="px-4 py-3 text-sm text-slate-700">
+                <td className="px-4 py-3 text-sm text-ink">
                   #{p.payrollId}
                 </td>
 
                 {/* PERIODO */}
-                <td className="px-4 py-3 text-sm text-slate-600">
+                <td className="px-4 py-3 text-sm text-ink-muted">
                   {formatDate(p.initialDate)} – {formatDate(p.finalDate)}
                 </td>
 
                 {/* ESTADO */}
-                <td className="px-4 py-3 text-sm text-slate-600">{p.Status}</td>
+                <td className="px-4 py-3 text-sm text-ink-muted">{p.Status}</td>
 
                 {/* TIPO */}
-                <td className="px-4 py-3 text-sm text-slate-600">
+                <td className="px-4 py-3 text-sm text-ink-muted">
                   {p.payrollType}
                 </td>
 
@@ -104,7 +104,7 @@ const PayrollListTable = ({ payrolls = [] }) => {
                       <EyeIcon
                         onClick={() => nav(`/manager/payroll/${p.payrollId}`)}
                         size={18}
-                        className="cursor-pointer hover:text-blue-400 transition"
+                        className="cursor-pointer hover:text-brand transition"
                       />
 
                       <span
@@ -125,7 +125,7 @@ const PayrollListTable = ({ payrolls = [] }) => {
                     <div className="relative group flex items-center">
                       <PencilIcon
                         size={18}
-                        className="cursor-pointer hover:text-blue-400 transition"
+                        className="cursor-pointer hover:text-brand transition"
                         onClick={() => nav(`/payroll/new/${p.payrollId}`)}
                       />
 

@@ -109,19 +109,19 @@ const EmployeesPage = () => {
           className="flex flex-wrap items-center justify-between gap-4"
         >
           <div>
-            <h2 className="text-2xl font-semibold text-slate-800">Empleados</h2>
-            <p className="text-sm text-slate-500">
+            <h2 className="text-2xl font-semibold text-ink">Empleados</h2>
+            <p className="text-sm text-ink-muted">
               Gestión y administración del personal
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             {/* toggle vista */}
-            <div className="flex bg-slate-100 rounded-lg p-1">
+            <div className="flex bg-surface-alt rounded-lg p-1">
               <button
                 onClick={() => setView('table')}
                 className={`p-2 rounded-md transition ${
-                  view === 'table' ? 'bg-white shadow' : 'text-slate-500'
+                  view === 'table' ? 'bg-surface shadow' : 'text-ink-muted'
                 }`}
               >
                 <Table size={18} />
@@ -130,7 +130,7 @@ const EmployeesPage = () => {
               <button
                 onClick={() => setView('cards')}
                 className={`p-2 rounded-md transition ${
-                  view === 'cards' ? 'bg-white shadow' : 'text-slate-500'
+                  view === 'cards' ? 'bg-surface shadow' : 'text-ink-muted'
                 }`}
               >
                 <LayoutGrid size={18} />

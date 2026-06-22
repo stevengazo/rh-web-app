@@ -1,12 +1,7 @@
-const Input = ({ className = '', ...props }) => {
-  return (
-    <input
-      className={`w-full border rounded-lg px-3 py-2 
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500 
-                  ${className}`}
-      {...props}
-    />
-  );
+import { fieldClasses } from './fieldClasses';
+
+const Input = ({ className = '', error = false, ...props }) => {
+  return <input className={fieldClasses({ error, className })} {...props} />;
 };
 
 export default Input;

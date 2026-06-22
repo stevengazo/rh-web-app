@@ -6,7 +6,7 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
   console.log('questionsbyuser', QuestionsByUser);
   if (!QuestionsByUser.length) {
     return (
-      <p className="text-center text-gray-500 py-6">
+      <p className="text-center text-ink-muted py-6">
         No hay preguntas asignadas.
       </p>
     );
@@ -36,11 +36,11 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
       {Object.entries(groupedByUser).map(([userId, questions]) => (
         <div
           key={userId}
-          className="rounded-xl cursor-pointer border border-gray-100 p-3 shadow-sm"
+          className="rounded-xl cursor-pointer border border-stroke-soft p-3 shadow-sm"
           onClick={() => navigate(`/manager/perfornance/${userId}`)}
         >
           {/* Usuario */}
-          <h4 className="mb-3  text-sm font-semibold text-gray-700 ">
+          <h4 className="mb-3  text-sm font-semibold text-ink-secondary ">
             {getEmployeeName(userId)}
           </h4>
 
@@ -49,13 +49,13 @@ const QuestionsByUser = ({ QuestionsByUser = [], Employees = [] }) => {
             {questions.map((q) => (
               <li
                 key={q.user_QuestionId}
-                className="rounded-lg bg-gray-50 p-3 text-sm"
+                className="rounded-md bg-canvas p-3 text-sm"
               >
-                <p className="font-medium text-gray-800">
+                <p className="font-medium text-ink">
                   {q.question?.text ?? 'Pregunta no disponible'}
                 </p>
 
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-ink-muted">
                   {q.deleted ? 'Inactiva' : 'Activa'}
                 </p>
               </li>

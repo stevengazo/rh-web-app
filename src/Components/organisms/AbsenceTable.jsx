@@ -80,15 +80,15 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
         transition={{ duration: 0.35, ease: 'easeOut' }}
         className="w-full overflow-x-auto"
       >
-        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+        <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
           {/* =========================
           HEADER
       ========================= */}
-          <thead className="bg-slate-800">
+          <thead className="bg-surface-alt">
             <tr>
               <th
                 onClick={() => requestSort('employee')}
-                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center gap-2">
                   Empleado {sortIcon('employee')}
@@ -97,7 +97,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
 
               <th
                 onClick={() => requestSort('title')}
-                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center gap-2">
                   Título {sortIcon('title')}
@@ -106,7 +106,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
 
               <th
                 onClick={() => requestSort('startDate')}
-                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center gap-2">
                   Inicio {sortIcon('startDate')}
@@ -115,7 +115,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
 
               <th
                 onClick={() => requestSort('endDate')}
-                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center gap-2">
                   Fin {sortIcon('endDate')}
@@ -124,7 +124,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
 
               <th
                 onClick={() => requestSort('days')}
-                className="px-4 py-3 text-center text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-center text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center justify-center gap-2">
                   Días {sortIcon('days')}
@@ -133,7 +133,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
 
               <th
                 onClick={() => requestSort('justified')}
-                className="px-4 py-3 text-left text-sm font-semibold text-white cursor-pointer select-none"
+                className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary cursor-pointer select-none"
               >
                 <div className="flex items-center gap-2">
                   Justificada {sortIcon('justified')}
@@ -145,12 +145,12 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
           {/* =========================
           BODY
       ========================= */}
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-stroke-soft">
             {sortedItems.length === 0 ? (
               <tr>
                 <td
                   colSpan={6}
-                  className="px-4 py-6 text-center text-sm text-gray-500"
+                  className="px-4 py-6 text-center text-sm text-ink-muted"
                 >
                   No hay ausencias registradas
                 </td>
@@ -160,30 +160,30 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
                 <tr
                   key={item.absenceId}
                   onClick={() => OnSelectedView?.(item)}
-                  className="cursor-pointer transition hover:bg-slate-50"
+                  className="cursor-pointer transition hover:bg-canvas"
                 >
                   {/* EMPLEADO */}
-                  <td className="px-4 py-3 text-sm text-slate-700">
+                  <td className="px-4 py-3 text-sm text-ink-secondary">
                     {item.user?.firstName} {item.user?.lastName}
                   </td>
 
                   {/* TITULO */}
-                  <td className="px-4 py-3 text-sm text-slate-700">
+                  <td className="px-4 py-3 text-sm text-ink-secondary">
                     {item.title}
                   </td>
 
                   {/* INICIO */}
-                  <td className="px-4 py-3 text-sm text-slate-600">
+                  <td className="px-4 py-3 text-sm text-ink-muted">
                     {new Date(item.startDate).toLocaleDateString()}
                   </td>
 
                   {/* FIN */}
-                  <td className="px-4 py-3 text-sm text-slate-600">
+                  <td className="px-4 py-3 text-sm text-ink-muted">
                     {new Date(item.endDate).toLocaleDateString()}
                   </td>
 
                   {/* DIAS */}
-                  <td className="px-4 py-3 text-sm text-center font-medium text-slate-800">
+                  <td className="px-4 py-3 text-sm text-center font-medium text-ink">
                     {calcDays(item.startDate, item.endDate).toFixed(2)}
                   </td>
 

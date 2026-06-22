@@ -8,6 +8,7 @@ import {
   EyeIcon,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import IconButton from '../IconButton';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -22,7 +23,7 @@ const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
       transition={{ duration: 0.3 }}
       className="mx-auto w-full max-w-5xl border-collapse rounded-xl overflow-hidden shadow"
     >
-      <thead className="bg-slate-800 text-white">
+      <thead className="bg-surface-alt text-ink-secondary">
         <tr>
           <th className="p-3 text-left">Fecha</th>
           <th className="p-3 text-left">Tipo</th>
@@ -35,7 +36,7 @@ const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
       <tbody>
         {actions.length === 0 && (
           <tr>
-            <td colSpan={5} className="p-4 text-center text-slate-500">
+            <td colSpan={5} className="p-4 text-center text-ink-muted">
               No hay acciones registradas
             </td>
           </tr>
@@ -66,24 +67,21 @@ const ActionTable = ({ actions = [], OnEdit, onDelete, OnSelect }) => {
 
             <td className="p-3">
               <div className="flex justify-center gap-3">
-                <button
+                <IconButton
+                  icon={EyeIcon}
+                  variant="primary"
                   onClick={() => OnSelect?.(item)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  <EyeIcon size={18} />
-                </button>
-                <button
+                />
+                <IconButton
+                  icon={Pencil}
+                  variant="primary"
                   onClick={() => OnEdit?.(item)}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  <Pencil size={18} />
-                </button>
-                <button
+                />
+                <IconButton
+                  icon={Trash2}
+                  variant="danger"
                   onClick={() => onDelete?.(item)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  <Trash2 size={18} />
-                </button>
+                />
               </div>
             </td>
           </motion.tr>

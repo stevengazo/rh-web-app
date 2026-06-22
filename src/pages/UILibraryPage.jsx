@@ -20,12 +20,12 @@ import { Plus, Trash } from 'lucide-react';
 
 const UILibraryPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-canvas py-10 px-4">
       <div className="mx-auto max-w-5xl space-y-16">
         <PageTitle>Biblioteca de UI</PageTitle>
 
         {/* ================= Buttons ================= */}
-        <section className="rounded-2xl border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Botones</SectionTitle>
 
           <ExampleBlock
@@ -50,7 +50,7 @@ const UILibraryPage = () => {
         </section>
 
         {/* ================= Inputs ================= */}
-        <section className="rounded-2xl border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Inputs</SectionTitle>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -90,7 +90,7 @@ const UILibraryPage = () => {
         </section>
 
         {/* ================= Selection ================= */}
-        <section className="rounded-2xl border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Selección</SectionTitle>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -127,7 +127,7 @@ const UILibraryPage = () => {
         </section>
 
         {/* ================= Badges ================= */}
-        <section className="rounded-2xl border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Badges</SectionTitle>
 
           <ExampleBlock
@@ -145,7 +145,7 @@ const UILibraryPage = () => {
         </section>
 
         {/* ================= Cards ================= */}
-        <section className="rounded-2xl border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Cards</SectionTitle>
 
           <ExampleBlock
@@ -157,7 +157,7 @@ const UILibraryPage = () => {
             <Card>
               <h3 className="font-semibold mb-2">Información del empleado</h3>
 
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-ink-muted mb-4">
                 Datos generales del colaborador
               </p>
 
@@ -170,7 +170,7 @@ const UILibraryPage = () => {
         </section>
 
         {/* ================= Icon Buttons ================= */}
-        <section className="rounded-2xl border-gray-200 border-gray-200 bg-white p-8 shadow-sm space-y-8">
+        <section className="rounded-xl border border-stroke-soft bg-surface p-8 shadow-sm space-y-8">
           <SectionTitle>Icon Buttons</SectionTitle>
 
           <ExampleBlock

@@ -25,7 +25,7 @@ const LoansTable = ({ loans = [] }) => {
   }, [search, loans]);
 
   return (
-    <div className="bg-white rounded-xl p-4">
+    <div className="bg-surface rounded-xl p-4">
       {/* Búsqueda */}
       <div className="mb-4 flex justify-between items-center">
         <input
@@ -35,24 +35,24 @@ const LoansTable = ({ loans = [] }) => {
           onChange={(e) => setSearch(e.target.value)}
           className="
             w-full md:w-1/3 px-4 py-2 text-sm
-            border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-blue-500
+            border border-stroke rounded-md
+            focus:outline-none focus:ring-2 focus:ring-brand
           "
         />
       </div>
 
       <div className="w-full overflow-x-auto">
-        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+        <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
           {/* =========================
           HEADER
       ========================= */}
-          <thead className="bg-slate-800">
+          <thead className="bg-surface-alt">
             <tr>
               {['ID', 'Título', 'Estado', 'Fecha', 'Monto'].map((h) => (
                 <th
                   key={h}
                   className={`
-                px-4 py-3 text-sm font-semibold text-white
+                px-4 py-3 text-sm font-semibold text-ink-secondary
                 ${h === 'Monto' ? 'text-right' : 'text-left'}
               `}
                 >
@@ -65,12 +65,12 @@ const LoansTable = ({ loans = [] }) => {
           {/* =========================
           BODY
       ========================= */}
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-stroke-soft">
             {filteredLoans.length === 0 ? (
               <tr>
                 <td
                   colSpan={5}
-                  className="px-4 py-6 text-center text-sm text-gray-500"
+                  className="px-4 py-6 text-center text-sm text-ink-muted"
                 >
                   No se encontraron préstamos
                 </td>
@@ -80,15 +80,15 @@ const LoansTable = ({ loans = [] }) => {
                 <tr
                   key={loan.loanId}
                   onClick={() => navigate(`/manager/loan/${loan.loanId}`)}
-                  className="cursor-pointer transition hover:bg-slate-50"
+                  className="cursor-pointer transition hover:bg-canvas"
                 >
                   {/* ID */}
-                  <td className="px-4 py-3 text-sm text-slate-700">
+                  <td className="px-4 py-3 text-sm text-ink">
                     {loan.loanId}
                   </td>
 
                   {/* TITULO */}
-                  <td className="px-4 py-3 text-sm text-slate-700">
+                  <td className="px-4 py-3 text-sm text-ink">
                     {loan.title}
                   </td>
 
@@ -106,7 +106,7 @@ const LoansTable = ({ loans = [] }) => {
                   </td>
 
                   {/* FECHA */}
-                  <td className="px-4 py-3 text-sm text-slate-600">
+                  <td className="px-4 py-3 text-sm text-ink-muted">
                     {new Date(loan.createdAt).toLocaleDateString()}
                   </td>
 

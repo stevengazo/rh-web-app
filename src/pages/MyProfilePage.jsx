@@ -161,7 +161,7 @@ const MyProfilePage = () => {
         </motion.div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-stroke-soft">
           <nav className="flex gap-6">
             <TabButton
               active={activeTab === TABS.INFO}
@@ -193,7 +193,7 @@ const MyProfilePage = () => {
         </div>
 
         {/* Content */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm">
           {/* TAB 1 */}
           {activeTab === TABS.INFO && (
             <div className="space-y-6">
@@ -289,8 +289,8 @@ const TabButton = ({ active, children, onClick }) => {
       className={`pb-3 text-sm font-medium transition-colors border-b-2
         ${
           active
-            ? 'border-blue-600 text-blue-600'
-            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            ? 'border-brand text-brand'
+            : 'border-transparent text-ink-muted hover:text-ink hover:border-stroke'
         }
       `}
     >

@@ -20,7 +20,7 @@ const HomePage = () => {
           transition={{ delay: 0.3 }}
           className="flex justify-center mb-4"
         >
-          <Users size={48} className="text-sky-400" />
+          <Users size={48} className="text-brand" />
         </motion.div>
 
         {/* Título */}
@@ -36,7 +36,7 @@ const HomePage = () => {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 transition"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover transition"
             >
               <LogIn size={18} />
               Iniciar Sesión

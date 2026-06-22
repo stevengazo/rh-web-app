@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, Building2 } from 'lucide-react';
+import PrimaryButton from '../PrimaryButton';
 
 const EmployeeView = ({ employee }) => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const EmployeeView = ({ employee }) => {
       {/* Header */}
       <div className="flex items-center gap-4">
         {/* Avatar */}
-        <div className="h-14 w-14 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-semibold text-lg">
+        <div className="h-14 w-14 flex items-center justify-center rounded-full bg-brand-tint text-brand font-semibold text-lg">
           {initials}
         </div>
 
@@ -59,12 +60,12 @@ const EmployeeView = ({ employee }) => {
 
       {/* Actions */}
       <div className="pt-4 flex gap-3">
-        <button
+        <PrimaryButton
           onClick={() => navigate(`/manager/employees/${employee.id}`)}
-          className="flex-1 text-sm font-medium bg-slate-900 text-white py-2 rounded-lg hover:bg-slate-800 transition"
+          className="flex-1"
         >
           Ver perfil completo
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   );

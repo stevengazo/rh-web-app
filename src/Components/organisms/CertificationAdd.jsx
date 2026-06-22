@@ -47,19 +47,19 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-600 border border-gray-500 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Agregar certificación</h2>
-        <p className="text-xs text-gray-300 mt-1">Información básica</p>
+        <p className="text-xs text-ink-secondary mt-1">Información básica</p>
       </div>
 
       {/* Nombre */}
       <div>
-        <label className="text-sm text-gray-200">
+        <label className="text-sm text-ink-secondary">
           Nombre de la certificación
         </label>
         <input
@@ -74,7 +74,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
 
       {/* Institución */}
       <div>
-        <label className="text-sm text-gray-200">Institución</label>
+        <label className="text-sm text-ink-secondary">Institución</label>
         <input
           type="text"
           name="institution"
@@ -88,7 +88,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
       {/* Fechas */}
       <div className="grid grid-cols-1 gap-4">
         <div>
-          <label className="text-sm text-gray-200">Fecha de emisión</label>
+          <label className="text-sm text-ink-secondary">Fecha de emisión</label>
           <input
             type="date"
             name="emissionDate"
@@ -99,7 +99,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
         </div>
 
         <div>
-          <label className="text-sm text-gray-200">Fecha de expiración</label>
+          <label className="text-sm text-ink-secondary">Fecha de expiración</label>
           <input
             type="date"
             name="expirationDate"
@@ -112,7 +112,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
 
       {/* Credential */}
       <div>
-        <label className="text-sm text-gray-200">Credential ID</label>
+        <label className="text-sm text-ink-secondary">Credential ID</label>
         <input
           type="text"
           name="credentialId"
@@ -125,7 +125,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
 
       {/* Estado */}
       <div>
-        <label className="text-sm text-gray-200">Estado</label>
+        <label className="text-sm text-ink-secondary">Estado</label>
         <select
           name="status"
           value={newCertification.status}
@@ -140,7 +140,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
 
       {/* URL */}
       <div>
-        <label className="text-sm text-gray-200">URL del certificado</label>
+        <label className="text-sm text-ink-secondary">URL del certificado</label>
         <input
           type="text"
           name="fileUrl"
@@ -153,7 +153,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm text-gray-200">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           value={newCertification.description}
@@ -167,7 +167,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
       {/* Botón */}
       <PrimaryButton
         type="submit"
-        className="w-full py-2 rounded-lg text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
+        className="w-full py-2 text-sm font-semibold hover:scale-[1.02] active:scale-[0.98] transition"
       >
         Agregar certificación
       </PrimaryButton>

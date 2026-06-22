@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Award, Calendar, MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import IconButton from '../IconButton';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -23,22 +24,22 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
         variants={tableVariants}
         initial="hidden"
         animate="visible"
-        className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm"
+        className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm"
       >
-        <thead className="bg-slate-800">
+        <thead className="bg-surface-alt">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white flex items-center gap-2">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary flex items-center gap-2">
               <Award size={16} /> Certificación
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               Título
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
               <div className="flex items-center gap-2">
                 <Calendar size={16} /> Expira
               </div>
             </th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-white">
+            <th className="px-4 py-3 text-center text-sm font-semibold text-ink-secondary">
               Acciones
             </th>
           </tr>
@@ -49,7 +50,7 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
             <tr>
               <td
                 colSpan={4}
-                className="px-4 py-6 text-center text-sm text-gray-500"
+                className="px-4 py-6 text-center text-sm text-ink-muted"
               >
                 No hay certificaciones registradas
               </td>
@@ -58,29 +59,29 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
 
           {certifications.map((item, index) => (
             <tr key={index} className="text-sm">
-              <td className="px-4 py-3 font-medium text-gray-800">
+              <td className="px-4 py-3 font-medium text-ink">
                 {item.name}
               </td>
-              <td className="px-4 py-3 text-gray-600">{item.title}</td>
-              <td className="px-4 py-3 text-gray-600">
+              <td className="px-4 py-3 text-ink-muted">{item.title}</td>
+              <td className="px-4 py-3 text-ink-muted">
                 {formatDate(item.expirationDate)}
               </td>
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
-                  <button
+                  <IconButton
+                    icon={Pencil}
                     onClick={() => OnEdit?.(item)}
-                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600"
+                    variant="primary"
+                    size={16}
                     title="Editar"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
+                  />
+                  <IconButton
+                    icon={Trash2}
                     onClick={() => onDelete?.(item)}
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-600"
+                    variant="danger"
+                    size={16}
                     title="Eliminar"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  />
                 </div>
               </td>
             </tr>

@@ -50,14 +50,14 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
         
         {/* Respuesta */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Respuesta
           </label>
 
           <div className="relative">
             <MessageSquare
               size={18}
-              className="absolute left-3 top-3 text-gray-500"
+              className="absolute left-3 top-3 text-ink-muted"
             />
 
             <motion.textarea
@@ -69,14 +69,14 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
               className="
                 w-full
                 pl-10 pr-3 py-2
-                border border-gray-700
-                bg-gray-950
-                text-gray-200
-                rounded-lg text-sm resize-none
-                placeholder:text-gray-500
+                border border-stroke
+                bg-surface
+                text-ink
+                rounded-md text-sm resize-none
+                placeholder:text-ink-muted
                 focus:outline-none
-                focus:ring-2 focus:ring-blue-500
-                focus:border-blue-500
+                focus:ring-2 focus:ring-brand
+                focus:border-brand
                 transition
               "
             />
@@ -91,7 +91,7 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -5, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="bg-red-900/30 border border-red-800 text-red-400 text-sm rounded-lg px-4 py-2"
+              className="bg-red-50 border border-transparent text-red-700 text-sm rounded-md px-4 py-2"
             >
               {error}
             </motion.div>
@@ -107,9 +107,9 @@ const AnswersAdd = ({ user_QuestionId, onSuccess }) => {
             whileTap={{ scale: 0.97 }}
             className="
               inline-flex items-center gap-2
-              bg-blue-600 text-white
-              px-6 py-2 rounded-lg text-sm font-medium
-              hover:bg-blue-700 transition
+              bg-brand text-white
+              px-6 py-2 rounded-md text-sm font-semibold
+              hover:bg-brand-hover transition-colors
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >

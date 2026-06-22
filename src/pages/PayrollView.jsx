@@ -91,7 +91,7 @@ const PayrollView = () => {
       <SectionTitle>Detalle de Nómina - ID: {payroll.payrollId}</SectionTitle>
 
       {/* Información general */}
-      <div className="bg-white shadow-sm rounded-2xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="bg-surface shadow-sm rounded-xl p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <InfoItem label="Tipo" value={payroll.payrollType} />
         <InfoItem label="Fecha Inicial" value={formatDate(payroll.initialDate)} />
         <InfoItem label="Fecha Final" value={formatDate(payroll.finalDate)} />
@@ -100,7 +100,7 @@ const PayrollView = () => {
 
       {/* Tabla Desktop */}
       <div className="hidden md:block w-full overflow-x-auto">
-        <table className="min-w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+        <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
           <thead className="bg-slate-800">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold text-white">Empleado</th>
@@ -112,7 +112,7 @@ const PayrollView = () => {
           <tbody className="divide-y divide-gray-200">
             {payroll.payrolls.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-6 text-center text-sm text-gray-500">
+                <td colSpan={4} className="px-4 py-6 text-center text-sm text-ink-muted">
                   No hay registros de planilla
                 </td>
               </tr>
@@ -133,14 +133,14 @@ const PayrollView = () => {
       {/* Totales */}
       {totals && (
         <>
-          <div className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center sm:text-left">
+          <div className="bg-gradient-to-r from-brand to-brand-pressed text-white rounded-xl p-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center sm:text-left">
             <TotalItem label="Total Bruto" value={formatCurrency(totals.gross)} />
             <TotalItem label="Horas Extras / Feriados" value={formatCurrency(totals.totalExtras)} />
             <TotalItem label="Total Deducciones" value={formatCurrency(totals.deductions)} />
             <TotalItem label="Total Neto" value={formatCurrency(totals.net)} />
           </div>
 
-          <div className="bg-white shadow-sm rounded-2xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
+          <div className="bg-surface shadow-sm rounded-xl p-6 grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
             <TotalItem label="Costo Total CCSS (10.67%)" value={formatCurrency(totals.totalCCSS)} />
             <TotalItem label="Costo Total Asociación (3%)" value={formatCurrency(totals.totalAssociation)} />
             <TotalItem label="Costo Total Planilla (Neto + CCSS + Asociación)" value={formatCurrency(totals.totalCost)} />
@@ -153,7 +153,7 @@ const PayrollView = () => {
 
 const InfoItem = ({ label, value }) => (
   <div>
-    <p className="text-sm text-gray-500">{label}</p>
+    <p className="text-sm text-ink-muted">{label}</p>
     <p className="font-semibold text-base">{value}</p>
   </div>
 );
@@ -161,7 +161,7 @@ const InfoItem = ({ label, value }) => (
 const TotalItem = ({ label, value }) => (
   <div>
     <p className="text-sm opacity-80">{label}</p>
-    <p className="text-xl font-bold">{value}</p>
+    <p className="text-xl font-semibold">{value}</p>
   </div>
 );
 

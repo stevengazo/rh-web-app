@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import FileApi from '../../api/FileApi';
+import PrimaryButton from '../PrimaryButton';
 
 const UploadFile = ({ userId, onUploaded, onAdded }) => {
   const [file, setFile] = useState(null);
@@ -68,7 +69,7 @@ const UploadFile = ({ userId, onUploaded, onAdded }) => {
         <img
           src={preview}
           alt="Preview"
-          className="w-32 h-32 object-cover rounded-full border border-gray-200 shadow-sm"
+          className="w-32 h-32 object-cover rounded-full border border-stroke-soft shadow-sm"
         />
       )}
 
@@ -77,33 +78,28 @@ const UploadFile = ({ userId, onUploaded, onAdded }) => {
         type="file"
         accept="image/*,application/pdf"
         onChange={handleSelectFile}
-        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+        className="block w-full text-sm text-ink-muted file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-brand-tint file:text-brand hover:file:bg-brand-100"
       />
 
       {/* Mensaje de estado */}
       {!file && !loading && (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-ink-muted">
           Seleccione un archivo para habilitar el botón
         </p>
       )}
       {loading && (
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-ink-muted">
           Subiendo archivo, por favor espere...
         </p>
       )}
 
       {/* Botón subir */}
-      <button
+      <PrimaryButton
         onClick={handleUpload}
         disabled={!file || loading}
-        className={`px-4 py-2 rounded-xl text-white font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
-          file
-            ? 'bg-blue-600 hover:bg-blue-700 active:scale-[0.97]'
-            : 'bg-gray-300 cursor-not-allowed'
-        }`}
       >
         {loading ? 'Subiendo...' : 'Subir'}
-      </button>
+      </PrimaryButton>
     </div>
   );
 };

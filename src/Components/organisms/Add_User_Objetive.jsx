@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import user_objetiveApi from '../../api/user_objetiveApi';
 import EmployeeApi from '../../api/employeesApi';
 import kpiApi from '../../api/kpiApi';
+import PrimaryButton from '../PrimaryButton';
 
 const Add_User_Objetive = () => {
   const [employees, setEmployees] = useState([]);
@@ -87,35 +88,35 @@ const Add_User_Objetive = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto shadow-xl rounded-xl p-6 bg-gray-900 border border-gray-700">
+    <div className="max-w-2xl mx-auto shadow-xl rounded-xl p-6 bg-surface-alt border border-stroke-soft">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <h3 className="text-lg font-semibold text-gray-100">
+        <h3 className="text-lg font-semibold text-ink">
           Asignar Objetivo a Usuario
         </h3>
 
         {error && (
-          <p className="rounded-md bg-red-900/40 border border-red-700 px-3 py-2 text-sm text-red-300">
+          <p className="rounded-md bg-red-50 border border-transparent px-3 py-2 text-sm text-red-700">
             {error}
           </p>
         )}
 
         {/* Empleado */}
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-300">Empleado</label>
+          <label className="text-sm font-medium text-ink-secondary">Empleado</label>
           <select
             name="userId"
             value={newUser_Objetive.userId}
             onChange={handleChange}
             disabled={loading}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800 text-gray-100 px-3 py-2 text-sm
+            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2 text-sm
               disabled:opacity-50
-              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"
           >
-            <option value="" className="bg-gray-800">
+            <option value="" className="bg-surface">
               Seleccione un empleado
             </option>
             {employees.map((e) => (
-              <option key={e.id} value={e.id} className="bg-gray-800">
+              <option key={e.id} value={e.id} className="bg-surface">
                 {e.userName}
               </option>
             ))}
@@ -124,24 +125,24 @@ const Add_User_Objetive = () => {
 
         {/* Objetivo */}
         <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-300">Objetivo</label>
+          <label className="text-sm font-medium text-ink-secondary">Objetivo</label>
           <select
             name="objetiveId"
             value={newUser_Objetive.objetiveId}
             onChange={handleChange}
             disabled={loading}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800 text-gray-100 px-3 py-2 text-sm
+            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2 text-sm
               disabled:opacity-50
-              focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"
           >
-            <option value={0} className="bg-gray-800">
+            <option value={0} className="bg-surface">
               Seleccione un objetivo
             </option>
             {kpis.map((kpi) => (
               <option
                 key={kpi.objetiveId}
                 value={kpi.objetiveId}
-                className="bg-gray-800"
+                className="bg-surface"
               >
                 {kpi.title}
               </option>
@@ -151,15 +152,9 @@ const Add_User_Objetive = () => {
 
         {/* Submit */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white
-              transition hover:bg-blue-600 disabled:opacity-50
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-          >
+          <PrimaryButton type="submit" disabled={loading}>
             {loading ? 'Guardando...' : 'Asignar Objetivo'}
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </div>

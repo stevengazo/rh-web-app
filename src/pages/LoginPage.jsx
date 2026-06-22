@@ -60,9 +60,9 @@ const LoginPage = () => {
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
-            <LogIn size={40} className="text-sky-400" />
+            <LogIn size={40} className="text-brand" />
           </div>
-          <h3 className="text-2xl font-bold">Iniciar sesión</h3>
+          <h3 className="text-2xl font-semibold">Iniciar sesión</h3>
           <p className="text-slate-400 text-sm">Accede a tu cuenta</p>
         </div>
 
@@ -89,7 +89,7 @@ const LoginPage = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="usuario@empresa.com"
                 required
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-brand"
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-brand"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ const LoginPage = () => {
             whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full mt-2 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 disabled:opacity-60 text-white py-2 rounded-lg font-medium transition"
+            className="w-full mt-2 flex items-center justify-center gap-2 bg-brand hover:bg-brand-hover disabled:opacity-60 text-white py-2 rounded-lg font-medium transition"
           >
             <LogIn size={18} />
             {loading ? 'Ingresando...' : 'Entrar'}
@@ -132,7 +132,7 @@ const LoginPage = () => {
         <div className="mt-6 text-center text-sm text-slate-400 space-y-1">
           <p>
             ¿No tienes cuenta?{' '}
-            <NavLink to="/register" className="text-sky-400 hover:underline">
+            <NavLink to="/register" className="text-brand hover:underline">
               Regístrate
             </NavLink>
           </p>

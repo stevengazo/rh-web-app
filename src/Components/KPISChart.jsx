@@ -35,13 +35,13 @@ const KPISChart = ({ objetive, results }) => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full h-[400px] p-2 border rounded border-blue-200 shadow-sm"
+      className="w-full h-[400px] p-2 border rounded-xl border-stroke-soft shadow-sm"
     >
       <motion.h2
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-xl font-semibold mb-4 text-gray-800"
+        className="text-xl font-semibold mb-4 text-ink"
       >
         {objetive?.objetive?.title || 'KPI'}
       </motion.h2>
@@ -53,7 +53,7 @@ const KPISChart = ({ objetive, results }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-sm text-gray-500"
+            className="text-sm text-ink-muted"
           >
             No hay datos válidos
           </motion.p>

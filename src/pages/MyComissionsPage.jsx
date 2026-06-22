@@ -62,8 +62,8 @@ const MyCommissionsPage = () => {
       <SectionTitle>Comisiones</SectionTitle>
 
       {/* FILTRO */}
-      <div className="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-md flex items-center gap-4">
-        <label className="text-sm text-slate-600 font-medium">
+      <div className="bg-surface border border-stroke rounded-xl p-4 shadow-md flex items-center gap-4">
+        <label className="text-sm text-ink-muted font-medium">
           Seleccionar mes:
         </label>
 
@@ -71,29 +71,29 @@ const MyCommissionsPage = () => {
           type="month"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          className="border-2 border-slate-300 rounded-lg px-3 py-1 focus:outline-none focus:border-indigo-500"
+          className="border border-stroke rounded-md px-3 py-1 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand"
         />
       </div>
 
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-md">
-          <p className="text-sm text-slate-500">Total</p>
-          <p className="text-xl font-bold text-slate-800">
+        <div className="bg-surface border border-stroke rounded-xl p-4 shadow-md">
+          <p className="text-sm text-ink-muted">Total</p>
+          <p className="text-xl font-semibold text-ink">
             ₡{stats.total.toLocaleString()}
           </p>
         </div>
 
-        <div className="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-md">
-          <p className="text-sm text-slate-500">Cantidad</p>
-          <p className="text-xl font-bold text-slate-800">
+        <div className="bg-surface border border-stroke rounded-xl p-4 shadow-md">
+          <p className="text-sm text-ink-muted">Cantidad</p>
+          <p className="text-xl font-semibold text-ink">
             {stats.count}
           </p>
         </div>
 
-        <div className="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-md">
-          <p className="text-sm text-slate-500">Promedio</p>
-          <p className="text-xl font-bold text-slate-800">
+        <div className="bg-surface border border-stroke rounded-xl p-4 shadow-md">
+          <p className="text-sm text-ink-muted">Promedio</p>
+          <p className="text-xl font-semibold text-ink">
             ₡{stats.average.toLocaleString()}
           </p>
         </div>

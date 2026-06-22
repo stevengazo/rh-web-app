@@ -113,21 +113,21 @@ const ActionAdd = ({ userId, author, onAdded }) => {
   };
 
   const inputStyle =
-    'w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:outline-none transition';
+    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-white">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Agregar acción</h2>
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-ink-muted mt-1">
           Registro de acción del empleado
         </p>
       </div>
 
       {/* Fecha */}
       <div>
-        <label className="text-sm">Fecha de la acción</label>
+        <label className="text-sm text-ink-secondary">Fecha de la acción</label>
         <input
           type="date"
           name="actionDate"
@@ -140,7 +140,7 @@ const ActionAdd = ({ userId, author, onAdded }) => {
       {/* Empleado */}
       {shouldSelectEmployee && (
         <div>
-          <label className="text-sm">Empleado</label>
+          <label className="text-sm text-ink-secondary">Empleado</label>
           <select
             name="userId"
             value={newAction.userId}
@@ -160,7 +160,7 @@ const ActionAdd = ({ userId, author, onAdded }) => {
 
       {/* Descripción */}
       <div>
-        <label className="text-sm">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           value={newAction.description}
@@ -173,7 +173,7 @@ const ActionAdd = ({ userId, author, onAdded }) => {
 
       {/* Tipo de acción */}
       <div>
-        <label className="text-sm">Tipo de acción</label>
+        <label className="text-sm text-ink-secondary">Tipo de acción</label>
         <select
           name="actionTypeId"
           value={newAction.actionTypeId}

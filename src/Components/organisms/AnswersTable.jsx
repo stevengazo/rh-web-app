@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { Pencil, Trash2, MessageSquare } from 'lucide-react';
+import IconButton from '../IconButton';
 
 const formatDate = (date) => {
   if (!date) return '—';
@@ -59,21 +60,21 @@ const AnswersTable = ({ answers = [], onEdit, onDelete }) => {
 
               <td className="px-4 py-3">
                 <div className="flex justify-center gap-2">
-                  <button
+                  <IconButton
+                    icon={Pencil}
+                    variant="primary"
+                    size={16}
                     onClick={() => onEdit?.(item)}
-                    className="p-2 rounded-lg hover:bg-blue-900/40 text-blue-400 transition"
                     title="Editar"
-                  >
-                    <Pencil size={16} />
-                  </button>
+                  />
 
-                  <button
+                  <IconButton
+                    icon={Trash2}
+                    variant="danger"
+                    size={16}
                     onClick={() => onDelete?.(item)}
-                    className="p-2 rounded-lg hover:bg-red-900/40 text-red-400 transition"
                     title="Eliminar"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  />
                 </div>
               </td>
             </tr>

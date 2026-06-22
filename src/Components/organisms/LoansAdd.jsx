@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import loansApi from '../../api/loansApi';
 import EmployeeApi from '../../api/employeesApi';
 import { useAppContext } from '../../context/AppContext';
+import PrimaryButton from '../PrimaryButton';
 
 const LoansAdd = ({ userId }) => {
   const { user } = useAppContext();
@@ -81,7 +82,7 @@ const LoansAdd = ({ userId }) => {
     <form
       onSubmit={handleSubmit}
       className="
-      bg-gray-800 text-gray-100
+      bg-surface-alt border border-stroke-soft text-ink
       p-6 rounded-2xl shadow-xl
       space-y-6
       w-full max-w-xl
@@ -91,23 +92,23 @@ const LoansAdd = ({ userId }) => {
         <h2 className="text-xl font-semibold tracking-wide">
           ➕ Solicitud de Préstamo
         </h2>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-ink-muted">
           Completa la información para registrar el préstamo
         </p>
       </div>
 
       {/* Empleado */}
       <div className="space-y-1">
-        <label className="text-sm text-gray-300">Empleado</label>
+        <label className="text-sm text-ink-secondary">Empleado</label>
         <select
           name="userId"
           value={newLoan.userId}
           onChange={handleChange}
           className="
-          w-full bg-gray-700 border border-gray-600
-          rounded-xl px-3 py-2
+          w-full bg-surface border border-stroke text-ink
+          rounded-md px-3 py-2
           text-sm
-          focus:outline-none focus:ring-2 focus:ring-indigo-500
+          focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
           transition
         "
         >
@@ -123,7 +124,7 @@ const LoansAdd = ({ userId }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Título */}
         <div className="space-y-1">
-          <label className="text-sm text-gray-300">Título</label>
+          <label className="text-sm text-ink-secondary">Título</label>
           <input
             type="text"
             name="title"
@@ -131,9 +132,9 @@ const LoansAdd = ({ userId }) => {
             onChange={handleChange}
             required
             className="
-            w-full bg-gray-700 border border-gray-600
-            rounded-xl px-3 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            w-full bg-surface border border-stroke text-ink
+            rounded-md px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
             transition
           "
           />
@@ -141,7 +142,7 @@ const LoansAdd = ({ userId }) => {
 
         {/* Monto */}
         <div className="space-y-1">
-          <label className="text-sm text-gray-300">Monto</label>
+          <label className="text-sm text-ink-secondary">Monto</label>
           <input
             type="number"
             name="amount"
@@ -149,9 +150,9 @@ const LoansAdd = ({ userId }) => {
             onChange={handleChange}
             required
             className="
-            w-full bg-gray-700 border border-gray-600
-            rounded-xl px-3 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            w-full bg-surface border border-stroke text-ink
+            rounded-md px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
             transition
           "
           />
@@ -159,7 +160,7 @@ const LoansAdd = ({ userId }) => {
 
         {/* Plazo */}
         <div className="space-y-1">
-          <label className="text-sm text-gray-300">Meses de pago</label>
+          <label className="text-sm text-ink-secondary">Meses de pago</label>
           <input
             type="number"
             name="paymentMonths"
@@ -167,9 +168,9 @@ const LoansAdd = ({ userId }) => {
             onChange={handleChange}
             required
             className="
-            w-full bg-gray-700 border border-gray-600
-            rounded-xl px-3 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            w-full bg-surface border border-stroke text-ink
+            rounded-md px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
             transition
           "
           />
@@ -177,16 +178,16 @@ const LoansAdd = ({ userId }) => {
 
         {/* Fecha */}
         <div className="space-y-1">
-          <label className="text-sm text-gray-300">Fecha de solicitud</label>
+          <label className="text-sm text-ink-secondary">Fecha de solicitud</label>
           <input
             type="date"
             name="requestAt"
             value={newLoan.requestAt}
             onChange={handleChange}
             className="
-            w-full bg-gray-700 border border-gray-600
-            rounded-xl px-3 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-indigo-500
+            w-full bg-surface border border-stroke text-ink
+            rounded-md px-3 py-2 text-sm
+            focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
             transition
           "
           />
@@ -195,16 +196,16 @@ const LoansAdd = ({ userId }) => {
 
       {/* Descripción */}
       <div className="space-y-1">
-        <label className="text-sm text-gray-300">Descripción</label>
+        <label className="text-sm text-ink-secondary">Descripción</label>
         <textarea
           name="description"
           value={newLoan.description}
           onChange={handleChange}
           rows={3}
           className="
-          w-full bg-gray-700 border border-gray-600
-          rounded-xl px-3 py-2 text-sm
-          focus:outline-none focus:ring-2 focus:ring-indigo-500
+          w-full bg-surface border border-stroke text-ink
+          rounded-md px-3 py-2 text-sm
+          focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand
           transition resize-none
         "
         />
@@ -212,28 +213,19 @@ const LoansAdd = ({ userId }) => {
 
       {/* Error */}
       {error && (
-        <p className="text-red-400 text-sm bg-red-500/10 px-3 py-2 rounded-lg">
+        <p className="text-red-700 text-sm bg-red-50 border border-red-200 px-3 py-2 rounded-lg">
           {error}
         </p>
       )}
 
       {/* Botón */}
-      <button
+      <PrimaryButton
         type="submit"
         disabled={loading}
-        className="
-        w-full sm:w-auto
-        bg-indigo-600 hover:bg-indigo-700
-        px-5 py-2.5
-        rounded-xl
-        text-sm font-medium
-        transition
-        disabled:opacity-50 disabled:cursor-not-allowed
-        active:scale-[0.98]
-      "
+        className="w-full sm:w-auto active:scale-[0.98]"
       >
         {loading ? 'Guardando...' : 'Guardar préstamo'}
-      </button>
+      </PrimaryButton>
     </form>
   );
 };

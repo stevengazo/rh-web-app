@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import VacationsApi from '../../api/vacationsApi';
 import toast from 'react-hot-toast';
+import PrimaryButton from '../PrimaryButton';
 
 const VacationsAdd = ({ id }) => {
   const todayISO = new Date().toISOString().split('T')[0];
@@ -83,15 +84,15 @@ const VacationsAdd = ({ id }) => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+    <div className="max-w-xl mx-auto p-6 bg-surface rounded-xl shadow-md">
+      <h2 className="text-2xl font-semibold mb-6 text-ink">
         Solicitud de Vacaciones
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Usuario */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Usuario
           </label>
           <input
@@ -99,11 +100,11 @@ const VacationsAdd = ({ id }) => {
             name="userId"
             value={form.userId}
             onChange={handleChange}
-            className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
+            className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2
               ${
                 errors.userId
                   ? 'border-red-500 focus:ring-red-300'
-                  : 'border-gray-300 focus:ring-blue-300'
+                  : 'border-stroke focus:ring-brand'
               }`}
           />
           {errors.userId && (
@@ -114,7 +115,7 @@ const VacationsAdd = ({ id }) => {
         {/* Fechas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink-secondary mb-1">
               Fecha de inicio
             </label>
             <input
@@ -123,17 +124,17 @@ const VacationsAdd = ({ id }) => {
               value={form.startDate}
               min={todayISO}
               onChange={handleChange}
-              className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
+              className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2
                 ${
                   errors.dateRange
                     ? 'border-red-500 focus:ring-red-300'
-                    : 'border-gray-300 focus:ring-blue-300'
+                    : 'border-stroke focus:ring-brand'
                 }`}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-ink-secondary mb-1">
               Fecha de finalización
             </label>
             <input
@@ -143,11 +144,11 @@ const VacationsAdd = ({ id }) => {
               min={form.startDate || todayISO}
               disabled={!form.startDate}
               onChange={handleChange}
-              className={`w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2
+              className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2
                 ${
                   errors.dateRange
                     ? 'border-red-500 focus:ring-red-300'
-                    : 'border-gray-300 focus:ring-blue-300'
+                    : 'border-stroke focus:ring-brand'
                 }`}
             />
           </div>
@@ -159,39 +160,35 @@ const VacationsAdd = ({ id }) => {
 
         {/* Días */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Días solicitados
           </label>
           <input
             type="number"
             value={calculateDays()}
             disabled
-            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700"
+            className="w-full rounded-md border border-stroke bg-canvas px-3 py-2 text-ink-secondary"
           />
         </div>
 
         {/* Estado (solo informativo) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-ink-secondary mb-1">
             Estado
           </label>
           <input
             type="text"
             value="Pendiente"
             disabled
-            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700"
+            className="w-full rounded-md border border-stroke bg-canvas px-3 py-2 text-ink-secondary"
           />
         </div>
 
         {/* Botón */}
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="px-6 py-2 rounded-lg bg-blue-600 text-white font-medium
-              hover:bg-blue-700 transition"
-          >
+          <PrimaryButton type="submit">
             Guardar solicitud
-          </button>
+          </PrimaryButton>
         </div>
       </form>
     </div>

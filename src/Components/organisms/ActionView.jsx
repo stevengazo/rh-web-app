@@ -13,14 +13,14 @@ const row = (label, value) => (
 const ActionView = ({ action }) => {
   if (!action) {
     return (
-      <p className="text-center text-gray-500 py-6">
+      <p className="text-center text-ink-muted py-6">
         No hay información de la acción.
       </p>
     );
   }
 
   return (
-    <div className="text-white rounded-lg shadow-sm border  overflow-hidden">
+    <div className="text-ink rounded-lg shadow-sm border  overflow-hidden">
       <table className="w-full">
         <thead className="">
           <tr>

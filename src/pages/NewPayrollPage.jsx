@@ -34,7 +34,7 @@ const NewPayrollPage = () => {
     <motion.div className="space-y-10">
       <PageTitle>Generar Nueva Planilla</PageTitle>^
       {payroll && (
-        <div className="bg-white rounded-xl shadow">
+        <div className="bg-surface rounded-xl shadow">
           <SectionTitle>Detalle Completo de Planilla</SectionTitle>
 
           <div className="max-h-[70vh] overflow-x-auto overflow-y-auto">
@@ -57,40 +57,40 @@ const NewPayrollPage = () => {
           </div>
 
           <div className="flex flex-row my-2 gap-2">
-            <div className="bg-white w-1/2 shadow-md rounded-xl p-6  border border-gray-300  space-y-3">
-              <h2 className="text-xl font-bold text-gray-800 border-b pb-2 mb-3">
+            <div className="bg-surface w-1/2 shadow-md rounded-xl p-6  border border-stroke  space-y-3">
+              <h2 className="text-xl font-semibold text-ink border-b pb-2 mb-3">
                 Detalles de Nómina
               </h2>
 
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-ink-secondary">
                 <span className="font-medium">Tipo:</span>
                 <span>{payroll.payrollType}</span>
               </div>
 
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-ink-secondary">
                 <span className="font-medium">Descripción:</span>
                 <span>{payroll.payrollDescription}</span>
               </div>
 
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-ink-secondary">
                 <span className="font-medium">Fecha Inicio:</span>
                 <span>
                   {new Date(payroll.initialDate).toLocaleDateString()}
                 </span>
               </div>
 
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-ink-secondary">
                 <span className="font-medium">Fecha Final:</span>
                 <span>{new Date(payroll.finalDate).toLocaleDateString()}</span>
               </div>
 
-              <div className="flex justify-between text-gray-700">
+              <div className="flex justify-between text-ink-secondary">
                 <span className="font-medium">Registros de Nómina:</span>
                 <span>{payroll.payrolls?.length || 0}</span>
               </div>
             </div>
 
-            <div className="bg-white w-1/2 shadow-md rounded-xl p-6  border border-gray-300  space-y-3">
+            <div className="bg-surface w-1/2 shadow-md rounded-xl p-6  border border-stroke  space-y-3">
               <SectionTitle>Resumen</SectionTitle>
               <PayrollResumeTable resume={payrollResume} />
             </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import FileApi from '../../api/FileApi';
+import PrimaryButton from '../PrimaryButton';
 
 const UploadImage = ({ userId }) => {
   const [file, setFile] = useState(null);
@@ -38,26 +39,22 @@ const UploadImage = ({ userId }) => {
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 flex flex-col gap-4 w-full max-w-sm">
+    <div className="border border-stroke-soft rounded-xl p-4 flex flex-col gap-4 w-full max-w-sm">
       <h3 className="font-semibold text-lg">Subir Imagen</h3>
 
       {preview && (
         <img
           src={preview}
           alt="preview"
-          className="w-40 h-40 object-cover rounded-md border"
+          className="w-40 h-40 object-cover rounded-md border border-stroke-soft"
         />
       )}
 
       <input type="file" accept="image/*" onChange={handleSelectFile} />
 
-      <button
-        onClick={handleUpload}
-        disabled={loading || !file}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400"
-      >
+      <PrimaryButton onClick={handleUpload} disabled={loading || !file}>
         {loading ? 'Subiendo...' : 'Subir Imagen'}
-      </button>
+      </PrimaryButton>
     </div>
   );
 };

@@ -11,7 +11,7 @@ const TablePayrollsData = ({ items = [], HandleShowEdit }) => {
     date ? new Date(date).toLocaleDateString('es-CR') : '-';
 
   return (
-    <div className="overflow-x-auto border border-gray-200 shadow-sm rounded-xl">
+    <div className="overflow-x-auto border border-stroke-soft shadow-sm rounded-xl">
       <table className="min-w-full text-sm">
         <thead className="text-slate-500 uppercase text-xs">
           <tr>
@@ -69,7 +69,7 @@ const TablePayrollsData = ({ items = [], HandleShowEdit }) => {
                   {formatCurrency(item.comissions)}
                 </td>
 
-                <td className="px-4 py-2 text-right font-medium text-sky-400">
+                <td className="px-4 py-2 text-right font-medium text-brand">
                   {formatCurrency(item.grossSalary)}
                 </td>
 

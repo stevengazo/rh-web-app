@@ -24,12 +24,12 @@ const ObjectivesCard = ({ objectives = [], results = [] }) => {
       animate="visible"
       className=""
     >
-      <h3 className="font-semibold text-gray-700 mb-2">Objetivos</h3>
+      <h3 className="font-semibold text-ink-secondary mb-2">Objetivos</h3>
 
       <Divider />
 
       {objectives.length === 0 ? (
-        <p className="text-sm text-gray-400 mt-3">Sin objetivos</p>
+        <p className="text-sm text-ink-muted mt-3">Sin objetivos</p>
       ) : (
         objectives.map((obj) => {
           const relatedResults = results.filter(
@@ -41,17 +41,17 @@ const ObjectivesCard = ({ objectives = [], results = [] }) => {
               key={obj.id}
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
-              className="mt-3 px-1 py-0.5 border bg-blue-50 hover:bg-blue-200 transition duration-200 border-blue-50  rounded-lg"
+              className="mt-3 px-1 py-0.5 border bg-brand-tint hover:bg-brand-100 transition duration-200 border-brand-tint  rounded-md"
             >
-              <h4 className="font-medium text-gray-800">
+              <h4 className="font-medium text-ink">
                 {obj.objetive?.title}
               </h4>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-ink-muted mt-1">
                 {obj.objetive?.description}
               </p>
 
-              <div className="mt-2 text-xs text-blue-600">
+              <div className="mt-2 text-xs text-brand">
                 Resultados: {relatedResults.length}
               </div>
             </motion.div>
