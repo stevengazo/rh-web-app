@@ -34,11 +34,15 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
           bg-surface
           text-ink
           rounded-l-xl
+          overflow-hidden
           shadow-xl
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
+        {/* Franja de acento */}
+        <div className="h-1.5 bg-linear-to-r from-brand to-accent" />
+
         {/* Header */}
         <div
           className="
@@ -58,7 +62,7 @@ const OffCanvas = ({ isOpen, onClose, title, children }) => {
           className="
             px-5 py-4
             overflow-y-auto
-            h-[calc(100%-72px)]
+            h-[calc(100%-78px)]
           "
         >
           {children}

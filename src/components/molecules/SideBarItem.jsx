@@ -8,7 +8,7 @@ const SidebarItem = ({ to, icon: Icon, label }) => {
         `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150
          ${
            isActive
-             ? 'bg-brand text-white'
+             ? 'bg-linear-to-r from-brand to-accent text-white'
              : 'text-gray-300 hover:text-white hover:bg-white/10'
          }`
       }

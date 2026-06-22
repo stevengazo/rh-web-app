@@ -3,6 +3,7 @@ import { User, LogOut, PanelsTopLeft, Menu, X } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useState } from 'react';
+import ThemeToggle from '../Components/ThemeToggle';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const NavBar = () => {
     `flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150
      ${
        isActive
-         ? 'bg-brand text-white shadow-sm'
+         ? 'bg-linear-to-r from-brand to-accent text-white shadow-sm'
          : 'text-gray-300 hover:bg-white/10 hover:text-white'
      }`;
 
@@ -29,7 +30,7 @@ const NavBar = () => {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-ink px-4 sm:px-6 py-2 flex items-center justify-between shadow-lg"
+        className="bg-linear-to-r from-nav to-violet-950 px-4 sm:px-6 py-2 flex items-center justify-between shadow-lg"
       >
         {/* Logo */}
         <h2 className="text-lg font-semibold text-white tracking-wide">
@@ -69,6 +70,8 @@ const NavBar = () => {
             Comprobantes
           </NavLink>
 
+          <ThemeToggle variant="dark" />
+
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
@@ -106,7 +109,7 @@ const NavBar = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-72 bg-ink z-50 shadow-xl p-6 flex flex-col gap-3"
+              className="fixed top-0 right-0 h-full w-72 bg-linear-to-b from-nav via-nav to-violet-950 z-50 shadow-xl p-6 flex flex-col gap-3"
             >
               {/* Header */}
               <div className="flex justify-between items-center mb-4">
@@ -162,9 +165,14 @@ const NavBar = () => {
                 Comprobantes
               </NavLink>
 
+              <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
+                <ThemeToggle variant="dark" />
+                <span className="text-sm text-gray-300">Tema</span>
+              </div>
+
               <button
                 onClick={handleLogout}
-                className="mt-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
+                className="mt-1 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
               >
                 <LogOut size={18} />
                 Salir

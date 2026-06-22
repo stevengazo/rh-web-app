@@ -104,7 +104,7 @@ const ManagerPage = () => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       {/* Encabezado de bienvenida */}
-      <div className="mb-6 overflow-hidden rounded-xl border border-stroke-soft bg-linear-to-r from-brand to-brand-pressed p-6 text-white shadow-sm">
+      <div className="mb-6 overflow-hidden rounded-xl border border-stroke-soft bg-linear-to-r from-brand to-accent p-6 text-white shadow-sm">
         <h1 className="text-2xl font-semibold">
           Hola, {firstName} 👋
         </h1>

@@ -18,7 +18,7 @@ const SecondaryButton = ({
         text-sm font-semibold
         bg-surface text-ink border border-stroke
         transition-colors duration-150
-        hover:bg-surface-alt hover:border-stroke active:bg-[#f0f0f0]
+        hover:bg-surface-alt hover:border-stroke active:bg-stroke-soft
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1
         disabled:bg-surface disabled:text-ink-disabled disabled:border-stroke-soft disabled:cursor-not-allowed
         ${className}

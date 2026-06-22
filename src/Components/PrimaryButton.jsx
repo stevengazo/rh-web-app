@@ -20,7 +20,7 @@ const PrimaryButton = ({
         transition-colors duration-150
         hover:bg-brand-hover active:bg-brand-pressed
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1
-        disabled:bg-[#f0f0f0] disabled:text-ink-disabled disabled:cursor-not-allowed disabled:border-transparent
+        disabled:bg-surface-alt disabled:text-ink-disabled disabled:cursor-not-allowed disabled:border-transparent
         ${className}
       `}
       {...props}

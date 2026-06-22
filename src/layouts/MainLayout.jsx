@@ -45,7 +45,7 @@ const MainLayout = () => {
 
       {/* Footer */}
       <motion.footer
-        className="border-t border-white/10 px-6 py-3 bg-ink text-center text-sm text-white shrink-0"
+        className="border-t border-white/10 px-6 py-3 bg-linear-to-r from-nav to-violet-950 text-center text-sm text-white shrink-0"
         initial="hidden"
         animate="visible"
         variants={footerVariants}

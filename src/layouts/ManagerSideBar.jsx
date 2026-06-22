@@ -18,7 +18,7 @@ const navItemClass = ({ isActive }) =>
   `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150
    ${
      isActive
-       ? 'bg-brand text-white'
+       ? 'bg-linear-to-r from-brand to-accent text-white shadow-sm'
        : 'text-gray-300 hover:bg-white/10 hover:text-white'
    }`;
 
@@ -123,13 +123,13 @@ const ManagerSideBar = () => {
       {/* Botón hamburguesa (móvil) */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 bg-ink text-white p-2 rounded-md shadow"
+        className="md:hidden fixed top-4 left-4 z-40 bg-nav text-white p-2 rounded-md shadow"
       >
         <Menu size={22} />
       </button>
 
       {/* Sidebar desktop */}
-      <aside className="hidden md:flex w-64 bg-ink text-white flex-col">
+      <aside className="hidden md:flex w-64 bg-linear-to-b from-nav via-nav to-violet-950 text-white flex-col">
         <SidebarContent />
       </aside>
 
@@ -148,7 +148,7 @@ const ManagerSideBar = () => {
 
             {/* Drawer */}
             <motion.aside
-              className="fixed inset-y-0 left-0 w-64 bg-ink text-white z-50 flex flex-col"
+              className="fixed inset-y-0 left-0 w-64 bg-linear-to-b from-nav via-nav to-violet-950 text-white z-50 flex flex-col"
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}

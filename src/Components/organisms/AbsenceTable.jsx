@@ -196,7 +196,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
                     ${
                       item.justified
                         ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-gray-100 text-gray-600'
+                        : 'bg-surface-alt text-ink-muted'
                     }
                   `}
                     >

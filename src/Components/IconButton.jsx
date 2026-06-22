@@ -12,7 +12,7 @@ const IconButton = ({
   ...props
 }) => {
   const variants = {
-    default: 'text-ink-secondary hover:bg-[#f0f0f0] active:bg-[#e0e0e0]',
+    default: 'text-ink-secondary hover:bg-surface-alt active:bg-stroke-soft',
     primary: 'text-brand hover:bg-brand-tint active:bg-brand-100',
     danger: 'text-red-600 hover:bg-red-50 active:bg-red-100',
   };

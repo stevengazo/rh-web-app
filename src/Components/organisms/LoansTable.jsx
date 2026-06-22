@@ -98,7 +98,7 @@ const LoansTable = ({ loans = [] }) => {
                       className={`
                     inline-flex items-center
                     px-3 py-1 rounded-full text-xs font-medium
-                    ${STATUS_STYLES[loan.state] ?? 'bg-gray-100 text-gray-600'}
+                    ${STATUS_STYLES[loan.state] ?? 'bg-surface-alt text-ink-muted'}
                   `}
                     >
                       {loan.state}

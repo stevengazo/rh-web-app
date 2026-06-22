@@ -17,10 +17,14 @@ const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
         className={`fixed top-0 right-0 h-full w-2/4 z-50
         bg-surface text-ink
         rounded-l-xl
+        overflow-hidden
         shadow-xl
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
+        {/* Franja de acento */}
+        <div className="h-1.5 bg-linear-to-r from-brand to-accent" />
+
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-stroke-soft">
           <h3 className="text-lg font-semibold">{title}</h3>
@@ -28,7 +32,7 @@ const OffCanvasLarge = ({ isOpen, onClose, title, children }) => {
         </div>
 
         {/* Content */}
-        <div className="p-4 overflow-y-auto h-[calc(100%-64px)]">
+        <div className="p-4 overflow-y-auto h-[calc(100%-70px)]">
           {children}
         </div>
       </aside>

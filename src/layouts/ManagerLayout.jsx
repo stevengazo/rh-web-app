@@ -4,6 +4,7 @@ import ManagerSideBar from './ManagerSideBar';
 import { LayoutDashboard } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import TopbarSearch from '../Components/organisms/TopbarSearch';
+import ThemeToggle from '../Components/ThemeToggle';
 
 const ManagerLayout = () => {
   const { hasRole, isAuthenticated } = useAppContext();
@@ -54,6 +55,8 @@ const ManagerLayout = () => {
           <div className="flex flex-1 justify-center md:justify-end">
             <TopbarSearch />
           </div>
+
+          <ThemeToggle variant="light" />
 
           <div className="hidden shrink-0 text-xs text-ink-muted lg:block">
             RH System

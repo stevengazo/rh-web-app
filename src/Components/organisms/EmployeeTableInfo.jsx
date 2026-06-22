@@ -62,7 +62,7 @@ const EmployeeTableInfo = ({ employee }) => {
       className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm"
     >
       {/* Banner */}
-      <div className="h-24 bg-linear-to-r from-brand to-brand-pressed" />
+      <div className="h-24 bg-linear-to-r from-brand to-accent" />
 
       {/* Cabecera */}
       <div className="px-6 pb-5">

@@ -133,7 +133,7 @@ const PayrollView = () => {
       {/* Totales */}
       {totals && (
         <>
-          <div className="bg-gradient-to-r from-brand to-brand-pressed text-white rounded-xl p-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center sm:text-left">
+          <div className="bg-linear-to-r from-brand to-accent text-white rounded-xl p-6 grid grid-cols-1 sm:grid-cols-4 gap-6 text-center sm:text-left">
             <TotalItem label="Total Bruto" value={formatCurrency(totals.gross)} />
             <TotalItem label="Horas Extras / Feriados" value={formatCurrency(totals.totalExtras)} />
             <TotalItem label="Total Deducciones" value={formatCurrency(totals.deductions)} />
