@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import ManagerSideBar from './ManagerSideBar';
 import { LayoutDashboard } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import TopbarSearch from '../Components/organisms/TopbarSearch';
 
 const ManagerLayout = () => {
   const { hasRole, isAuthenticated } = useAppContext();
@@ -40,16 +41,23 @@ const ManagerLayout = () => {
         {/* Header */}
         <header
           className="h-16 bg-surface border-b border-stroke-soft
-                     flex items-center justify-between px-4 md:px-6 shrink-0"
+                     flex items-center gap-3 md:gap-6 px-4 md:px-6 shrink-0"
         >
-          <div className="flex items-center gap-2 text-ink">
+          <div className="flex shrink-0 items-center gap-2 text-ink">
             <LayoutDashboard size={18} className="text-brand" />
-            <h1 className="text-base md:text-lg font-semibold">
+            <h1 className="hidden text-base font-semibold sm:block md:text-lg">
               Panel de Gestión
             </h1>
           </div>
 
-          <div className="text-xs md:text-sm text-ink-muted">RH System</div>
+          {/* Buscador global */}
+          <div className="flex flex-1 justify-center md:justify-end">
+            <TopbarSearch />
+          </div>
+
+          <div className="hidden shrink-0 text-xs text-ink-muted lg:block">
+            RH System
+          </div>
         </header>
 
         {/* Content */}
