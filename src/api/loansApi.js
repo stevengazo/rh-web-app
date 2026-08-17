@@ -62,6 +62,47 @@ const loansApi = {
    * @param {number|string} id - Identificador del préstamo.
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
+  /* ----------------------------------------------------------------
+     Aprobación: Pendiente → Aprobado → Pagado (o Rechazado)
+     ---------------------------------------------------------------- */
+
+  /**
+   * Aprueba el préstamo.
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  approveLoan: (id, userName) => {
+    return apiClient.post(`/loans/${id}/approve`, { userName });
+  },
+
+  /**
+   * Rechaza el préstamo dejando constancia del motivo.
+   * @param {number|string} id
+   * @param {string} reason - Obligatorio.
+   * @param {string} userName
+   */
+  rejectLoan: (id, reason, userName) => {
+    return apiClient.post(`/loans/${id}/reject`, { reason, userName });
+  },
+
+  /**
+   * Da el préstamo por pagado. El backend exige que los abonos cubran el monto.
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  settleLoan: (id, userName) => {
+    return apiClient.post(`/loans/${id}/settle`, { userName });
+  },
+
+  /**
+   * Devuelve el préstamo al estado pendiente.
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  reopenLoan: (id, userName) => {
+    return apiClient.post(`/loans/${id}/reopen`, { userName });
+  },
+
   deleteLoan: (id) => {
     return apiClient.delete(`/Loans/${id}`);
   },

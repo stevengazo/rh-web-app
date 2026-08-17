@@ -1,9 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import ManagerLayout from '../layouts/ManagerLayout';
+import PublicLayout from '../layouts/PublicLayout';
+
+// Sitio público (marketing)
+import LandingPage from '../pages/public/LandingPage';
+import FeaturesPage from '../pages/public/FeaturesPage';
+import HowItWorksPage from '../pages/public/HowItWorksPage';
+import PricingPage from '../pages/public/PricingPage';
+import ContactPage from '../pages/public/ContactPage';
 
 // Pages
-import HomePage from '../pages/HomePage';
 import MyProfilePage from '../pages/MyProfilePage';
 import LoginPage from '../pages/LoginPage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -28,15 +35,24 @@ import ViewLoanPage from '../pages/ViewLoanPage';
 import AbsencesPage from '../pages/AbsencesPage';
 import RolesPage from '../pages/RolesPage';
 import MyLoansPage from '../pages/MyLoansPage';
+import OrgChartPage from '../pages/OrgChartPage';
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rutas públicas */}
+        {/* Sitio público (marketing) */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/caracteristicas" element={<FeaturesPage />} />
+          <Route path="/como-funciona" element={<HowItWorksPage />} />
+          <Route path="/precios" element={<PricingPage />} />
+          <Route path="/contacto" element={<ContactPage />} />
+        </Route>
+
+        {/* Autenticación */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<HomePage />} />
         {/* Rutas privadas con layout - Empleados */}
         <Route element={<MainLayout />}>
           <Route path="/my-profile" element={<MyProfilePage />} />
@@ -60,6 +76,7 @@ const AppRouter = () => {
           <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
           <Route path="/manager/roles" element={<RolesPage />} />
+          <Route path="/manager/organigrama" element={<OrgChartPage />} />
           <Route
             path="/manager/perfornance/:id"
             element={<ViewPerformancePage />}

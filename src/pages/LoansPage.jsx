@@ -1,21 +1,91 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Wallet, CheckCircle2, Clock } from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  Banknote,
+  Check,
+  CheckCircle2,
+  Clock,
+  Eye,
+  Plus,
+  RefreshCw,
+  Search,
+  Wallet,
+  X,
+  XCircle,
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import loansApi from '../api/loansApi';
+import { useAppContext } from '../context/AppContext';
+import { formatMoney } from '../utils/formatMoney';
 
 import LoansAdd from '../Components/organisms/LoansAdd';
-import LoansTable from '../Components/organisms/LoansTable';
 import OffCanvas from '../Components/OffCanvas';
-
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
+import SecondaryButton from '../Components/SecondaryButton';
+import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
+import { fieldClasses } from '../Components/atoms/fieldClasses';
+import HelpButton from '../Components/molecules/HelpButton';
+
+/** Estados de un préstamo, tal como los guarda el backend en `state`. */
+export const LOAN_STATUS = {
+  PENDING: 'Pendiente',
+  APPROVED: 'Aprobado',
+  REJECTED: 'Rechazado',
+  PAID: 'Pagado',
+};
+
+/** Estado efectivo, tolerando préstamos viejos con `state` vacío o libre. */
+const estadoDePrestamo = (l) => {
+  if (Object.values(LOAN_STATUS).includes(l?.state)) return l.state;
+  return l?.approvedBy ? LOAN_STATUS.APPROVED : LOAN_STATUS.PENDING;
+};
+
+const nombreDe = (user) =>
+  [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
+  user?.userName ||
+  user?.email ||
+  'Sin nombre';
+
+const mensajeError = (error, porDefecto) => {
+  const data = error?.response?.data;
+  return typeof data === 'string' && data ? data : porDefecto;
+};
+
+const Indicador = ({ icon: Icon, label, valor, sublabel, accent, activo, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`flex items-center gap-3 rounded-xl border bg-surface p-4 text-left shadow-sm transition-all
+      hover:-translate-y-0.5 hover:shadow-md
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand
+      ${activo ? 'border-brand ring-1 ring-brand' : 'border-stroke-soft'}`}
+  >
+    <span className={`grid h-11 w-11 place-items-center rounded-lg ${accent}`}>
+      <Icon size={20} />
+    </span>
+    <div className="min-w-0">
+      <p className="text-xl font-semibold leading-none text-ink">{valor}</p>
+      <p className="mt-1 truncate text-sm text-ink-muted">{label}</p>
+      {sublabel && (
+        <p className="truncate text-xs text-ink-muted">{sublabel}</p>
+      )}
+    </div>
+  </button>
+);
 
 const LoansPage = () => {
+  const navigate = useNavigate();
+  const { user } = useAppContext();
+  const quien = user?.userName ?? user?.email ?? '';
+
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [filtro, setFiltro] = useState('Todos');
 
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -32,50 +102,130 @@ const LoansPage = () => {
     setCanvasContent(null);
   };
 
-  const fetchLoans = async () => {
+  const fetchLoans = useCallback(async () => {
+    setLoading(true);
     try {
-      closeCanvas()
-      setLoading(true);
       const response = await loansApi.getAllsLoans();
-      setLoans(response.data ?? []);
+      setLoans(Array.isArray(response?.data) ? response.data : []);
     } catch (error) {
-      console.error('Error loading loans', error);
+      console.error('Error cargando préstamos', error);
+      toast.error('No se pudieron cargar los préstamos');
+      setLoans([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchLoans();
-  }, []);
+  }, [fetchLoans]);
 
-  /* filtro */
   const filteredLoans = useMemo(() => {
-    if (!search.trim()) return loans;
+    const q = search.trim().toLowerCase();
 
-    const q = search.toLowerCase();
+    const base =
+      filtro === 'Todos'
+        ? loans
+        : loans.filter((l) => estadoDePrestamo(l) === filtro);
 
-    return loans.filter((loan) =>
-      [loan.user?.firstName, loan.user?.lastName, loan.reason, loan.createdBy]
+    if (!q) return base;
+
+    return base.filter((loan) =>
+      [
+        String(loan.loanId ?? ''),
+        loan.title,
+        loan.description,
+        loan.createdBy,
+        nombreDe(loan.user),
+        estadoDePrestamo(loan),
+      ]
         .filter(Boolean)
-        .some((field) => field.toLowerCase().includes(q))
+        .some((campo) => String(campo).toLowerCase().includes(q))
     );
-  }, [loans, search]);
+  }, [loans, search, filtro]);
 
-  /* métricas */
+  /* Los contadores usaban `l.status === 'approved'`: el campo es `state` y sus
+     valores están en español, así que siempre mostraban cero. */
   const stats = useMemo(() => {
-    const total = loans.length;
+    const contar = (estado) =>
+      loans.filter((l) => estadoDePrestamo(l) === estado).length;
 
-    const approved = loans.filter((l) => l.status === 'approved').length;
+    const vigentes = loans.filter(
+      (l) => estadoDePrestamo(l) === LOAN_STATUS.APPROVED
+    );
 
-    const pending = loans.filter((l) => l.status === 'pending').length;
-
-    return { total, approved, pending };
+    return {
+      total: loans.length,
+      pendientes: contar(LOAN_STATUS.PENDING),
+      aprobados: contar(LOAN_STATUS.APPROVED),
+      rechazados: contar(LOAN_STATUS.REJECTED),
+      pagados: contar(LOAN_STATUS.PAID),
+      saldoVigente: vigentes.reduce(
+        (acc, l) => acc + (l.balance ?? l.amount ?? 0),
+        0
+      ),
+      montoPendienteAprobar: loans
+        .filter((l) => estadoDePrestamo(l) === LOAN_STATUS.PENDING)
+        .reduce((acc, l) => acc + (l.amount ?? 0), 0),
+    };
   }, [loans]);
+
+  const ejecutar = async (fn, exito, errorPorDefecto) => {
+    try {
+      await fn();
+      toast.success(exito);
+      await fetchLoans();
+    } catch (error) {
+      console.error(error);
+      toast.error(mensajeError(error, errorPorDefecto));
+    }
+  };
+
+  const aprobar = (l) =>
+    ejecutar(
+      () => loansApi.approveLoan(l.loanId, quien),
+      `Préstamo #${l.loanId} aprobado`,
+      'No se pudo aprobar el préstamo'
+    );
+
+  const rechazar = (l) => {
+    const motivo = window.prompt(
+      `Motivo por el que se rechaza el préstamo #${l.loanId}:`
+    );
+    if (motivo === null) return;
+
+    if (!motivo.trim()) {
+      toast.error('El motivo es obligatorio para rechazar.');
+      return;
+    }
+
+    ejecutar(
+      () => loansApi.rejectLoan(l.loanId, motivo.trim(), quien),
+      `Préstamo #${l.loanId} rechazado`,
+      'No se pudo rechazar el préstamo'
+    );
+  };
+
+  const saldar = (l) => {
+    if (
+      !window.confirm(
+        `¿Marcar el préstamo #${l.loanId} como pagado? Solo se permite si los abonos cubren ${formatMoney(l.amount)}.`
+      )
+    )
+      return;
+
+    ejecutar(
+      () => loansApi.settleLoan(l.loanId, quien),
+      `Préstamo #${l.loanId} marcado como pagado`,
+      'No se pudo marcar como pagado'
+    );
+  };
+
+  const alternarFiltro = (estado) =>
+    setFiltro((actual) => (actual === estado ? 'Todos' : estado));
 
   return (
     <>
-      {/* OffCanvas */}
       <AnimatePresence>
         {isCanvasOpen && (
           <OffCanvas
@@ -95,72 +245,251 @@ const LoansPage = () => {
         )}
       </AnimatePresence>
 
-      {/* HEADER */}
-      <div className="flex items-center justify-between gap-4">
-        <PageTitle>Préstamos</PageTitle>
+      {/* Encabezado */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <PageTitle className="mb-0">Préstamos</PageTitle>
+            <HelpButton area="prestamos" />
+          </div>
+          <p className="text-sm text-ink-muted">
+            Solicitudes, aprobación y saldo pendiente por colaborador.
+          </p>
+        </div>
 
-        <PrimaryButton
-          onClick={() =>
-            openCanvas('Agregar Préstamo', <LoansAdd onCreated={fetchLoans} />)
-          }
-        >
-          Agregar Préstamo
-        </PrimaryButton>
+        <div className="flex flex-wrap gap-2">
+          <SecondaryButton onClick={fetchLoans} disabled={loading}>
+            <RefreshCw
+              size={15}
+              className={loading ? 'animate-spin' : undefined}
+            />
+            Actualizar
+          </SecondaryButton>
+
+          <PrimaryButton
+            onClick={() =>
+              openCanvas(
+                'Agregar Préstamo',
+                <LoansAdd
+                  onCreated={() => {
+                    closeCanvas();
+                    fetchLoans();
+                  }}
+                />
+              )
+            }
+          >
+            <Plus size={16} />
+            Agregar Préstamo
+          </PrimaryButton>
+        </div>
       </div>
 
       <Divider />
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
-          <Wallet className="text-brand" />
-          <div>
-            <p className="text-sm text-ink-muted">Total préstamos</p>
-            <p className="text-xl font-semibold">{stats.total}</p>
-          </div>
-        </div>
-
-        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
-          <CheckCircle2 className="text-green-500" />
-          <div>
-            <p className="text-sm text-ink-muted">Aprobados</p>
-            <p className="text-xl font-semibold">{stats.approved}</p>
-          </div>
-        </div>
-
-        <div className="bg-surface border border-stroke rounded-lg p-4 flex items-center gap-3 shadow-sm">
-          <Clock className="text-orange-500" />
-          <div>
-            <p className="text-sm text-ink-muted">Pendientes</p>
-            <p className="text-xl font-semibold">{stats.pending}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* SEARCH */}
-      <div className="mt-6 flex justify-between items-center gap-4">
-        <input
-          type="text"
-          placeholder="Buscar por empleado, motivo..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="
-            w-full md:max-w-md
-            border border-stroke rounded-lg
-            px-4 py-2 text-sm
-            focus:outline-none focus:ring-2 focus:ring-brand
-          "
+      {/* Indicadores · también filtran */}
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Indicador
+          icon={Clock}
+          label="Pendientes"
+          valor={stats.pendientes}
+          sublabel={`${formatMoney(stats.montoPendienteAprobar)} por aprobar`}
+          accent="bg-amber-50 text-amber-700"
+          activo={filtro === LOAN_STATUS.PENDING}
+          onClick={() => alternarFiltro(LOAN_STATUS.PENDING)}
+        />
+        <Indicador
+          icon={CheckCircle2}
+          label="Aprobados"
+          valor={stats.aprobados}
+          sublabel={`${formatMoney(stats.saldoVigente)} por cobrar`}
+          accent="bg-green-50 text-green-700"
+          activo={filtro === LOAN_STATUS.APPROVED}
+          onClick={() => alternarFiltro(LOAN_STATUS.APPROVED)}
+        />
+        <Indicador
+          icon={Wallet}
+          label="Pagados"
+          valor={stats.pagados}
+          accent="bg-brand-tint text-brand"
+          activo={filtro === LOAN_STATUS.PAID}
+          onClick={() => alternarFiltro(LOAN_STATUS.PAID)}
+        />
+        <Indicador
+          icon={XCircle}
+          label="Rechazados"
+          valor={stats.rechazados}
+          accent="bg-red-50 text-red-600"
+          activo={filtro === LOAN_STATUS.REJECTED}
+          onClick={() => alternarFiltro(LOAN_STATUS.REJECTED)}
         />
       </div>
 
-      {/* TABLE */}
-      <div className="bg-surface border border-stroke rounded-xl mt-6">
+      {/* Buscador */}
+      <div className="relative mt-6 w-full md:max-w-md">
+        <Search
+          size={16}
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted"
+        />
+        <input
+          type="search"
+          placeholder="Buscar por código, empleado, título o estado…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={fieldClasses({ className: 'h-10 pl-9' })}
+        />
+      </div>
+
+      {/* Tabla */}
+      <div className="mt-6 overflow-x-auto rounded-xl border border-stroke-soft shadow-sm">
         {loading ? (
-          <div className="p-8 text-center text-ink-muted">
-            Cargando préstamos...
+          <div className="space-y-2 p-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-12 animate-pulse rounded-lg bg-surface-alt"
+              />
+            ))}
+          </div>
+        ) : filteredLoans.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 bg-surface py-16 text-ink-muted">
+            <Banknote size={30} />
+            <p className="text-sm font-medium">No hay préstamos que mostrar</p>
+            {(search || filtro !== 'Todos') && (
+              <p className="text-xs">Prueba quitando los filtros.</p>
+            )}
           </div>
         ) : (
-          <LoansTable loans={filteredLoans} />
+          <table className="min-w-full">
+            <thead className="bg-surface-alt text-ink-secondary">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold">#</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">
+                  Colaborador
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">
+                  Título
+                </th>
+                <th className="px-4 py-3 text-right text-sm font-semibold">
+                  Monto
+                </th>
+                <th className="px-4 py-3 text-right text-sm font-semibold">
+                  Abonado
+                </th>
+                <th className="px-4 py-3 text-right text-sm font-semibold">
+                  Saldo
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">
+                  Estado
+                </th>
+                <th className="px-4 py-3 text-center text-sm font-semibold">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-stroke-soft bg-surface">
+              {filteredLoans.map((loan) => {
+                const estado = estadoDePrestamo(loan);
+                const abonado = loan.paidAmount ?? 0;
+                const saldo = loan.balance ?? (loan.amount ?? 0) - abonado;
+
+                return (
+                  <tr key={loan.loanId} className="transition hover:bg-canvas">
+                    <td className="px-4 py-3 text-sm font-medium text-ink">
+                      {loan.loanId}
+                    </td>
+
+                    <td className="px-4 py-3 text-sm text-ink-secondary">
+                      {nombreDe(loan.user)}
+                    </td>
+
+                    <td className="px-4 py-3 text-sm text-ink-secondary">
+                      {loan.title || '—'}
+                      {loan.paymentMonths > 0 && (
+                        <span className="block text-xs text-ink-muted">
+                          {loan.paymentMonths} cuotas ·{' '}
+                          {formatMoney(loan.monthlyFee ?? 0)}
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="px-4 py-3 text-right text-sm text-ink">
+                      {formatMoney(loan.amount)}
+                    </td>
+
+                    <td className="px-4 py-3 text-right text-sm text-green-700">
+                      {formatMoney(abonado)}
+                    </td>
+
+                    <td className="px-4 py-3 text-right text-sm font-semibold text-ink">
+                      {formatMoney(saldo)}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <ReviewStatusBadge status={estado} />
+                      {estado === LOAN_STATUS.REJECTED &&
+                        loan.rejectionReason && (
+                          <span className="mt-1 block max-w-40 truncate text-xs text-ink-muted">
+                            {loan.rejectionReason}
+                          </span>
+                        )}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/manager/loan/${loan.loanId}`)}
+                          aria-label="Ver detalle"
+                          title="Ver detalle y abonos"
+                          className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors hover:bg-canvas hover:text-brand"
+                        >
+                          <Eye size={16} />
+                        </button>
+
+                        {estado === LOAN_STATUS.PENDING && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => aprobar(loan)}
+                              aria-label="Aprobar préstamo"
+                              title="Aprobar"
+                              className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors hover:bg-green-50 hover:text-green-700"
+                            >
+                              <Check size={16} />
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => rechazar(loan)}
+                              aria-label="Rechazar préstamo"
+                              title="Rechazar"
+                              className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors hover:bg-red-50 hover:text-red-600"
+                            >
+                              <X size={16} />
+                            </button>
+                          </>
+                        )}
+
+                        {estado === LOAN_STATUS.APPROVED && (
+                          <button
+                            type="button"
+                            onClick={() => saldar(loan)}
+                            aria-label="Marcar como pagado"
+                            title="Marcar como pagado"
+                            className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                          >
+                            <Wallet size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
     </>

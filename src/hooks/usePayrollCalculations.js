@@ -10,18 +10,46 @@ export const usePayrollCalculations = ({
   onChanged,
   typePayroll,
 }) => {
-  // --- Estados de campos editables ---
-  const [extras, setExtras] = useState(0);
-  const [feriados, setFeriados] = useState(0);
-  const [extrasFeriado, setExtrasFeriado] = useState(0);
-  const [retroactivo, setRetroactivo] = useState(0);
-  const [bonos, setBonos] = useState(0);
-  const [comisiones, setComisiones] = useState(0);
-  const [incCCSS, setIncCCSS] = useState(0);
-  const [incINS, setIncINS] = useState(0);
-  const [ausencias, setAusencias] = useState(0);
-  const [pension, setPension] = useState(0);
-  const [garnishment, setGarnishment] = useState(0);
+  /* Los campos editables se siembran con lo que ya viene en `payrollData`.
+     Antes arrancaban siempre en 0 y el efecto de sincronización devolvía esos
+     ceros al padre, así que al reabrir una planilla guardada se borraban las
+     horas extra, bonos y deducciones que se habían capturado. */
+  const num = (valor) => Number(valor) || 0;
+
+  const [extras, setExtras] = useState(() => num(payrollData?.overTimeHours));
+  const [feriados, setFeriados] = useState(() =>
+    num(payrollData?.holidayDaysWorked)
+  );
+  const [extrasFeriado, setExtrasFeriado] = useState(() =>
+    num(payrollData?.holidayOvertimeHours)
+  );
+  const [retroactivo, setRetroactivo] = useState(() =>
+    num(payrollData?.retroactivePay)
+  );
+  const [bonos, setBonos] = useState(() => num(payrollData?.bonus));
+  const [comisiones, setComisiones] = useState(() =>
+    num(payrollData?.comissions)
+  );
+  const [incCCSS, setIncCCSS] = useState(() => num(payrollData?.ccssDays));
+  const [incINS, setIncINS] = useState(() => num(payrollData?.insDays));
+  const [ausencias, setAusencias] = useState(() =>
+    num(payrollData?.absenseTime)
+  );
+  const [pension, setPension] = useState(() => num(payrollData?.pension));
+  const [garnishment, setGarnishment] = useState(() =>
+    num(payrollData?.garnishment)
+  );
+
+  /* Aporte a la asociación: editable, porque no todos los colaboradores
+     aportan. Si la fila no trae valor guardado se propone el 3% del salario
+     de referencia. `PayrollRow` ya usaba este setter, que el hook no exponía:
+     editar esa celda lanzaba "setter is not a function". */
+  const [associationContribution, setAssociationContribution] = useState(() => {
+    if (payrollData?.associationContribution !== undefined) {
+      return num(payrollData.associationContribution);
+    }
+    return num(payrollData?.grossSalary ?? payrollData?.monthlySalary) * 0.03;
+  });
 
   // --- Salario base del empleado ---
   const salarioMensual = payrollData?.monthlySalary || 0;
@@ -79,7 +107,6 @@ export const usePayrollCalculations = ({
 
   // --- Deducciones calculadas automáticamente ---
   const cCSSDeductionAmount = useMemo(() => salarioBruto * 0.1067, [salarioBruto]); // 10.67%
-  const associationContributionAmount = useMemo(() => salarioBruto * 0.03, [salarioBruto]); // 3%
 
   // --- Total deducciones ---
   const deducciones = useMemo(
@@ -88,7 +115,7 @@ export const usePayrollCalculations = ({
       cCSSDeductionAmount +
       pension +
       garnishment +
-      associationContributionAmount,
+      associationContribution,
     [
       incCCSS,
       incINS,
@@ -97,7 +124,7 @@ export const usePayrollCalculations = ({
       cCSSDeductionAmount,
       pension,
       garnishment,
-      associationContributionAmount,
+      associationContribution,
     ]
   );
 
@@ -131,7 +158,7 @@ export const usePayrollCalculations = ({
       cCSSDeductionAmount,
       pension,
       garnishment,
-      associationContribution: associationContributionAmount,
+      associationContribution,
       netAmount: netoPagar,
     }),
     [
@@ -158,7 +185,7 @@ export const usePayrollCalculations = ({
       cCSSDeductionAmount,
       pension,
       garnishment,
-      associationContributionAmount,
+      associationContribution,
     ]
   );
 
@@ -231,7 +258,8 @@ export const usePayrollCalculations = ({
     garnishment,
     setGarnishment,
     cCSSDeductionAmount,
-    associationContributionAmount,
+    associationContribution,
+    setAssociationContribution,
     montoExtras,
     montoFeriados,
     montoExtrasFeriado,

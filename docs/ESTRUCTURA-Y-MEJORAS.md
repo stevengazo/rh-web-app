@@ -73,7 +73,11 @@ Human-Resources-Web-App/
 
 | Ruta | Página | Acceso |
 |------|--------|--------|
-| `/` | HomePage (landing) | Público |
+| `/` | LandingPage (sitio público) | Público (`PublicLayout`) |
+| `/caracteristicas` | Módulos del sistema | Público |
+| `/como-funciona` | Implementación y arquitectura | Público |
+| `/precios` | Planes y comparativo | Público |
+| `/contacto` | Solicitud de demo | Público |
 | `/login`, `/register` | Login / Registro | Público |
 | `/ui` | UILibraryPage (showcase de UI) | Público |
 | `/my-profile` | Mi perfil | Empleado (`MainLayout`) |

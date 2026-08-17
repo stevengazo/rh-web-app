@@ -1,7 +1,24 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { Check, X } from 'lucide-react';
+import ReviewStatusBadge from '../molecules/ReviewStatusBadge';
+import { ABSENCE_STATUS, estadoDeAusencia } from '../../hooks/useAbsences';
 
-const AbsenceTable = ({ items = [], OnSelectedView }) => {
+/**
+ * @param {Array} items
+ * @param {(a: object) => void} [onSelect]      Abre el detalle.
+ * @param {(a: object) => void} [OnSelectedView] Alias heredado de `onSelect`.
+ * @param {(a: object) => void} [onApprove]
+ * @param {(a: object) => void} [onReject]
+ */
+const AbsenceTable = ({
+  items = [],
+  OnSelectedView,
+  onSelect,
+  onApprove,
+  onReject,
+}) => {
+  const abrirDetalle = onSelect ?? OnSelectedView;
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: 'asc',
@@ -139,6 +156,16 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
                   Justificada {sortIcon('justified')}
                 </div>
               </th>
+
+              <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
+                Estado
+              </th>
+
+              {(onApprove || onReject) && (
+                <th className="px-4 py-3 text-center text-sm font-semibold text-ink-secondary">
+                  Acciones
+                </th>
+              )}
             </tr>
           </thead>
 
@@ -149,7 +176,7 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
             {sortedItems.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   className="px-4 py-6 text-center text-sm text-ink-muted"
                 >
                   No hay ausencias registradas
@@ -159,12 +186,16 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
               sortedItems.map((item) => (
                 <tr
                   key={item.absenceId}
-                  onClick={() => OnSelectedView?.(item)}
+                  onClick={() => abrirDetalle?.(item)}
                   className="cursor-pointer transition hover:bg-canvas"
                 >
                   {/* EMPLEADO */}
                   <td className="px-4 py-3 text-sm text-ink-secondary">
-                    {item.user?.firstName} {item.user?.lastName}
+                    {[item.user?.firstName, item.user?.lastName]
+                      .filter(Boolean)
+                      .join(' ') ||
+                      item.user?.userName ||
+                      'Sin nombre'}
                   </td>
 
                   {/* TITULO */}
@@ -203,6 +234,53 @@ const AbsenceTable = ({ items = [], OnSelectedView }) => {
                       {item.justified ? 'Sí' : 'No'}
                     </span>
                   </td>
+
+                  {/* ESTADO */}
+                  <td className="px-4 py-3 text-sm">
+                    <ReviewStatusBadge status={estadoDeAusencia(item)} />
+                  </td>
+
+                  {/* ACCIONES */}
+                  {(onApprove || onReject) && (
+                    <td
+                      className="px-4 py-3"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {estadoDeAusencia(item) === ABSENCE_STATUS.PENDING ? (
+                        <div className="flex items-center justify-center gap-1">
+                          {onApprove && (
+                            <button
+                              type="button"
+                              onClick={() => onApprove(item)}
+                              aria-label="Aprobar ausencia"
+                              title="Aprobar"
+                              className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors
+                                         hover:bg-green-50 hover:text-green-700
+                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-600"
+                            >
+                              <Check size={16} />
+                            </button>
+                          )}
+
+                          {onReject && (
+                            <button
+                              type="button"
+                              onClick={() => onReject(item)}
+                              aria-label="Rechazar ausencia"
+                              title="Rechazar"
+                              className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors
+                                         hover:bg-red-50 hover:text-red-600
+                                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                            >
+                              <X size={16} />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-center text-xs text-ink-muted">—</p>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))
             )}

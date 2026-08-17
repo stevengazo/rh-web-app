@@ -17,9 +17,42 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('es-CR');
 };
 
-const getInitials = (employee) =>
-  `${employee.firstName?.[0] ?? ''}${employee.lastName?.[0] ?? ''}`.toUpperCase() ||
-  '—';
+/**
+ * Iniciales del colaborador. Las cuentas creadas desde el registro público no
+ * tienen nombre, así que se cae al usuario o al correo antes de rendirse.
+ */
+const getInitials = (employee) => {
+  const desdeNombre =
+    `${employee.firstName?.[0] ?? ''}${employee.lastName?.[0] ?? ''}`.toUpperCase();
+  if (desdeNombre) return desdeNombre;
+
+  const alterno = employee.userName || employee.email || '';
+  return alterno.slice(0, 2).toUpperCase() || '—';
+};
+
+/** Skeleton mientras se carga el perfil. */
+const InfoSkeleton = () => (
+  <div className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm">
+    <div className="h-24 bg-surface-alt" />
+    <div className="px-6 pb-5">
+      <div className="-mt-10 flex items-end gap-4">
+        <div className="h-20 w-20 animate-pulse rounded-full border-4 border-surface bg-stroke-soft" />
+        <div className="space-y-2 pb-1">
+          <div className="h-4 w-48 animate-pulse rounded bg-stroke-soft" />
+          <div className="h-3 w-32 animate-pulse rounded bg-stroke-soft" />
+        </div>
+      </div>
+      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-16 animate-pulse rounded-lg border border-stroke-soft bg-surface-alt"
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const InfoItem = ({ icon: Icon, label, value }) => (
   <div className="flex items-start gap-3 rounded-lg border border-stroke-soft bg-surface-alt p-3">
@@ -33,8 +66,28 @@ const InfoItem = ({ icon: Icon, label, value }) => (
   </div>
 );
 
-const EmployeeTableInfo = ({ employee }) => {
-  if (!employee || !employee.firstName) {
+/**
+ * Cabecera con la ficha del colaborador.
+ *
+ * @param {object} employee
+ * @param {boolean} [loading]      Muestra el skeleton.
+ * @param {string} [emptyTitle]    Título del estado vacío.
+ * @param {string} [emptyHint]     Texto de apoyo del estado vacío.
+ */
+const EmployeeTableInfo = ({
+  employee,
+  loading = false,
+  emptyTitle = 'No hay información del empleado',
+  emptyHint = 'Selecciona un empleado para ver sus datos',
+}) => {
+  if (loading) return <InfoSkeleton />;
+
+  /* Ojo: sólo se considera vacío cuando no llegó el registro. Un colaborador
+     sin `firstName` (creado desde el registro público) sí tiene datos que
+     mostrar: correo, departamento, estado… */
+  const sinDatos = !employee || Object.keys(employee).length === 0;
+
+  if (sinDatos) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
@@ -44,8 +97,8 @@ const EmployeeTableInfo = ({ employee }) => {
                    rounded-xl p-8 text-ink-muted bg-surface"
       >
         <UserX size={40} className="mb-3 text-ink-muted" />
-        <p className="font-medium">No hay información del empleado</p>
-        <p className="text-sm">Selecciona un empleado para ver sus datos</p>
+        <p className="font-medium">{emptyTitle}</p>
+        <p className="text-sm">{emptyHint}</p>
       </motion.div>
     );
   }
@@ -72,7 +125,13 @@ const EmployeeTableInfo = ({ employee }) => {
               {getInitials(employee)}
             </div>
             <div className="pb-1">
-              <h3 className="text-lg font-semibold text-ink">{fullName}</h3>
+              <h3
+                className={`text-lg font-semibold ${
+                  fullName ? 'text-ink' : 'text-ink-muted'
+                }`}
+              >
+                {fullName || 'Sin nombre registrado'}
+              </h3>
               <p className="text-sm text-ink-muted">
                 @{employee.userName ?? '—'}
                 {employee.departament?.name && (

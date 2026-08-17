@@ -7,37 +7,46 @@ import PrimaryButton from '../PrimaryButton';
 const PAYROLL_TYPES = {
   WEEKLY: 'Semanal',
   BIWEEKLY: 'Quincenal',
+  MONTHLY: 'Mensual',
+};
+
+/** Días que suma cada tipo a partir de la fecha inicial. */
+const DIAS_POR_TIPO = {
+  [PAYROLL_TYPES.WEEKLY]: 6,
+  [PAYROLL_TYPES.BIWEEKLY]: 14,
+  [PAYROLL_TYPES.MONTHLY]: 29,
+};
+
+/* `payrolls: []` es obligatorio: el modelo del backend declara la colección
+   como no nulable, así que sin ese campo el POST responde 400. */
+const FORM_VACIO = {
+  payrollType: '',
+  payrollDescription: '',
+  initialDate: '',
+  finalDate: '',
+  payrolls: [],
 };
 
 const PayrollGenerate = ({ onGenerated }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    payrollType: '',
-    payrollDescription: '',
-    initialDate: '',
-    finalDate: '',
-    Payrolls: [],
-  });
+  const [formData, setFormData] = useState(FORM_VACIO);
+  const [enviando, setEnviando] = useState(false);
 
   // Calcula automáticamente la fecha final según el tipo
   useEffect(() => {
     if (!formData.initialDate || !formData.payrollType) return;
 
-    const start = new Date(formData.initialDate);
-    const end = new Date(start);
+    const dias = DIAS_POR_TIPO[formData.payrollType];
+    if (dias === undefined) return;
 
-    if (formData.payrollType === PAYROLL_TYPES.WEEKLY) {
-      end.setDate(start.getDate() + 6);
-    }
+    /* Se opera sobre la fecha en local (no con `new Date(iso)`, que la
+       interpreta en UTC y adelanta o atrasa un día según la zona). */
+    const [anio, mes, dia] = formData.initialDate.split('-').map(Number);
+    const end = new Date(anio, mes - 1, dia + dias);
 
-    if (formData.payrollType === PAYROLL_TYPES.BIWEEKLY) {
-      end.setDate(start.getDate() + 14);
-    }
+    const iso = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
 
-    setFormData((prev) => ({
-      ...prev,
-      finalDate: end.toISOString().split('T')[0],
-    }));
+    setFormData((prev) => ({ ...prev, finalDate: iso }));
   }, [formData.initialDate, formData.payrollType]);
 
   // Días seleccionados (dinámico)
@@ -81,25 +90,24 @@ const PayrollGenerate = ({ onGenerated }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
+    setEnviando(true);
+
     try {
       const response = await payrollApi.createPayroll({
         ...formData,
+        payrolls: [],
         deleted: false,
       });
 
-      toast.success('Planilla generada correctamente');
+      toast.success('Planilla creada. Ahora agrega a los empleados.');
+      setFormData(FORM_VACIO);
       onGenerated?.();
       navigate(`/payroll/new/${response.data.payrollId}`);
-
-      setFormData({
-        payrollType: '',
-        payrollDescription: '',
-        initialDate: '',
-        finalDate: '',
-      });
     } catch (error) {
       console.error(error);
       toast.error('Error al generar la planilla');
+    } finally {
+      setEnviando(false);
     }
   };
 
@@ -125,6 +133,7 @@ const PayrollGenerate = ({ onGenerated }) => {
           <option value="">Seleccione...</option>
           <option value={PAYROLL_TYPES.WEEKLY}>Semanal</option>
           <option value={PAYROLL_TYPES.BIWEEKLY}>Quincenal</option>
+          <option value={PAYROLL_TYPES.MONTHLY}>Mensual</option>
         </select>
       </div>
 
@@ -181,8 +190,8 @@ const PayrollGenerate = ({ onGenerated }) => {
       </div>
 
       {/* Botón */}
-      <PrimaryButton type="submit" className="w-full">
-        Generar planilla
+      <PrimaryButton type="submit" className="w-full" disabled={enviando}>
+        {enviando ? 'Creando…' : 'Crear planilla y agregar empleados'}
       </PrimaryButton>
     </form>
   );

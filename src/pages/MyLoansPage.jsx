@@ -1,121 +1,255 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Banknote, CalendarDays, Wallet } from 'lucide-react';
+
 import { useAppContext } from '../context/AppContext';
 import loansApi from '../api/loansApi';
-import { useEffect, useState } from 'react';
+import { formatMoney } from '../utils/formatMoney';
+
+import PageTitle from '../Components/PageTitle';
+import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
+import PaymentTable from '../Components/organisms/PaymentTable';
+
+const LOAN_STATUS = {
+  PENDING: 'Pendiente',
+  APPROVED: 'Aprobado',
+  REJECTED: 'Rechazado',
+  PAID: 'Pagado',
+};
+
+const estadoDePrestamo = (l) => {
+  if (Object.values(LOAN_STATUS).includes(l?.state)) return l.state;
+  return l?.approvedBy ? LOAN_STATUS.APPROVED : LOAN_STATUS.PENDING;
+};
+
+const formatDate = (fecha) =>
+  fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';
 
 const MyLoansPage = () => {
   const { user } = useAppContext();
+
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandido, setExpandido] = useState(null);
 
-  const getLoansAsync = async () => {
+  const userId = user?.id;
+
+  const cargar = useCallback(async () => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      if (!user?.id) return;
-
-      const resp = await loansApi.getLoansByUser(user.id);
-      setLoans(resp.data);
+      const resp = await loansApi.getLoansByUser(userId);
+      setLoans(Array.isArray(resp?.data) ? resp.data : []);
     } catch (error) {
       console.error(error);
+      setLoans([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
-    getLoansAsync();
-  }, [user]);
+    cargar();
+  }, [cargar]);
+
+  /** Lo que el colaborador todavía debe, sumando solo préstamos vigentes. */
+  const totales = useMemo(() => {
+    const vigentes = loans.filter(
+      (l) => estadoDePrestamo(l) === LOAN_STATUS.APPROVED
+    );
+
+    return {
+      saldo: vigentes.reduce((acc, l) => acc + (l.balance ?? 0), 0),
+      cuotaMensual: vigentes.reduce((acc, l) => acc + (l.monthlyFee ?? 0), 0),
+      vigentes: vigentes.length,
+    };
+  }, [loans]);
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-8 w-48 animate-pulse rounded bg-stroke-soft" />
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div key={i} className="h-40 animate-pulse rounded-xl bg-surface-alt" />
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-6">Préstamos</h1>
+    <div className="space-y-6">
+      <PageTitle className="mb-0">Mis préstamos</PageTitle>
 
-      {loading ? (
-        <p>Cargando...</p>
-      ) : loans.length === 0 ? (
-        <p>No tienes préstamos registrados</p>
+      {loans.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-16 text-ink-muted">
+          <Banknote size={30} />
+          <p className="text-sm font-medium">No tienes préstamos registrados</p>
+          <p className="text-xs">
+            Si necesitas uno, solicítalo a Recursos Humanos.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-6">
-          {loans.map((loan) => {
-            const totalPaid =
-              loan.payments?.reduce((acc, p) => acc + p.amount, 0) || 0;
-
-            const pending = loan.amount - totalPaid;
-
-            const monthlyFee =
-              loan.paymentMonths > 0
-                ? loan.amount / loan.paymentMonths
-                : 0;
-
-            return (
-              <div
-                key={loan.loanId}
-                className="bg-surface border border-stroke rounded-xl p-6 shadow-md hover:shadow-lg hover:border-brand transition-all duration-300"
-              >
-                {/* HEADER */}
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg font-semibold text-ink">
-                    {loan.title}
-                  </h2>
-                  <span className="text-sm px-3 py-1 rounded-full bg-canvas">
-                    {loan.state}
-                  </span>
-                </div>
-
-                {/* INFO PRINCIPAL */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <p className="text-ink-muted">Monto</p>
-                    <p className="font-semibold text-ink">
-                      ₡{loan.amount.toLocaleString()}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-ink-muted">Pagado</p>
-                    <p className="font-semibold text-green-600">
-                      ₡{totalPaid.toLocaleString()}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-ink-muted">Pendiente</p>
-                    <p className="font-semibold text-red-500">
-                      ₡{pending.toLocaleString()}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-ink-muted">Cuota mensual</p>
-                    <p className="font-semibold text-brand">
-                      ₡{monthlyFee.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                {/* PROGRESS BAR */}
-                <div className="mt-4">
-                  <div className="w-full bg-canvas rounded-full h-3">
-                    <div
-                      className="bg-brand h-3 rounded-full"
-                      style={{
-                        width: `${
-                          loan.amount > 0
-                            ? (totalPaid / loan.amount) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                {/* FECHA */}
-                <p className="text-xs text-ink-muted mt-3">
-                  Solicitud:{' '}
-                  {new Date(loan.requestAt).toLocaleDateString('es-CR')}
+        <>
+          {/* Resumen */}
+          {totales.vigentes > 0 && (
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+                <p className="text-xs uppercase tracking-wide text-ink-muted">
+                  Saldo total
+                </p>
+                <p className="mt-1 text-2xl font-bold text-ink">
+                  {formatMoney(totales.saldo)}
                 </p>
               </div>
-            );
-          })}
-        </div>
+
+              <div className="rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+                <p className="text-xs uppercase tracking-wide text-ink-muted">
+                  Rebajo mensual
+                </p>
+                <p className="mt-1 text-2xl font-bold text-ink">
+                  {formatMoney(totales.cuotaMensual)}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+                <p className="text-xs uppercase tracking-wide text-ink-muted">
+                  Préstamos vigentes
+                </p>
+                <p className="mt-1 text-2xl font-bold text-ink">
+                  {totales.vigentes}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Listado */}
+          <div className="space-y-4">
+            {loans.map((loan) => {
+              const estado = estadoDePrestamo(loan);
+              const abonado = loan.paidAmount ?? 0;
+              const saldo = loan.balance ?? loan.amount - abonado;
+              const progreso =
+                loan.amount > 0
+                  ? Math.min(100, (abonado / loan.amount) * 100)
+                  : 0;
+              const abierto = expandido === loan.loanId;
+
+              return (
+                <article
+                  key={loan.loanId}
+                  className="rounded-xl border border-stroke-soft bg-surface p-5 shadow-sm"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h2 className="truncate font-semibold text-ink">
+                        {loan.title || `Préstamo #${loan.loanId}`}
+                      </h2>
+                      <p className="flex items-center gap-1.5 text-xs text-ink-muted">
+                        <CalendarDays size={12} />
+                        Solicitado el {formatDate(loan.requestAt)}
+                      </p>
+                    </div>
+
+                    <ReviewStatusBadge status={estado} />
+                  </div>
+
+                  {loan.description && (
+                    <p className="mt-2 text-sm text-ink-secondary">
+                      {loan.description}
+                    </p>
+                  )}
+
+                  {estado === LOAN_STATUS.REJECTED && loan.rejectionReason && (
+                    <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">
+                      <span className="font-semibold">Motivo:</span>{' '}
+                      {loan.rejectionReason}
+                    </p>
+                  )}
+
+                  {/* Cifras */}
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div>
+                      <p className="text-xs text-ink-muted">Monto</p>
+                      <p className="text-sm font-semibold text-ink">
+                        {formatMoney(loan.amount)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-ink-muted">Abonado</p>
+                      <p className="text-sm font-semibold text-green-700">
+                        {formatMoney(abonado)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-ink-muted">Saldo</p>
+                      <p className="text-sm font-semibold text-ink">
+                        {formatMoney(saldo)}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-ink-muted">Cuota</p>
+                      <p className="text-sm font-semibold text-ink">
+                        {formatMoney(loan.monthlyFee ?? 0)}
+                      </p>
+                      <p className="text-xs text-ink-muted">
+                        {loan.paymentMonths || 0} meses
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Avance */}
+                  {estado !== LOAN_STATUS.REJECTED && (
+                    <div className="mt-4">
+                      <div className="mb-1.5 flex items-center justify-between text-xs text-ink-muted">
+                        <span>Avance de pago</span>
+                        <span className="font-semibold text-ink">
+                          {progreso.toFixed(0)}%
+                        </span>
+                      </div>
+
+                      <div className="h-2.5 overflow-hidden rounded-full bg-canvas">
+                        <div
+                          className="h-full rounded-full bg-linear-to-r from-brand to-accent transition-all"
+                          style={{ width: `${progreso}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Abonos */}
+                  {loan.payments?.length > 0 && (
+                    <div className="mt-4 border-t border-stroke-soft pt-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandido(abierto ? null : loan.loanId)
+                        }
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:underline"
+                      >
+                        <Wallet size={14} />
+                        {abierto ? 'Ocultar' : 'Ver'} mis {loan.payments.length}{' '}
+                        abono{loan.payments.length === 1 ? '' : 's'}
+                      </button>
+
+                      {abierto && (
+                        <div className="mt-3">
+                          <PaymentTable payments={loan.payments} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );

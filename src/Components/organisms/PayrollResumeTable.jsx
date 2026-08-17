@@ -9,6 +9,28 @@ const PayrollResumeTable = ({ resume }) => {
     <div className="overflow-hidden   bg-surface ">
       <table className="w-full border-collapse text-sm">
         <tbody>
+          {resume?.empleados !== undefined && (
+            <tr className="border-b border-stroke-soft">
+              <th className="px-4 py-3 text-left font-medium text-ink-muted">
+                Empleados
+              </th>
+              <td className="px-4 py-3 text-right font-semibold text-ink">
+                {resume.empleados}
+              </td>
+            </tr>
+          )}
+
+          {resume?.totalBruto !== undefined && (
+            <tr className="border-b border-stroke-soft">
+              <th className="px-4 py-3 text-left font-medium text-ink-muted">
+                Total Bruto
+              </th>
+              <td className="px-4 py-3 text-right font-semibold text-ink">
+                {formatCurrency(resume.totalBruto)}
+              </td>
+            </tr>
+          )}
+
           <tr className="border-b border-stroke-soft">
             <th className="px-4 py-3 text-left font-medium text-ink-muted">
               Total Extras

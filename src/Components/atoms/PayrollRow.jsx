@@ -1,5 +1,13 @@
+import { UserMinus } from 'lucide-react';
 import { formatMoney } from '../../utils/formatMoney';
 import { usePayrollCalculations } from '../../hooks/usePayrollCalculations';
+
+/** Nombre presentable aunque el expediente esté incompleto. */
+const nombreDe = (e) =>
+  [e?.firstName, e?.lastName].filter(Boolean).join(' ').trim() ||
+  e?.userName ||
+  e?.email ||
+  'Sin nombre';
 
 /** Celda editable para montos numéricos */
 const EditableCell = ({ value, setter, isStatic, title }) => {
@@ -18,7 +26,7 @@ const EditableCell = ({ value, setter, isStatic, title }) => {
   );
 };
 
-const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, StartDate, EndDate }) => {
+const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, StartDate, EndDate, onRemove }) => {
   const payroll = usePayrollCalculations({
     employee,
     payrollData: PayrollData,
@@ -42,9 +50,26 @@ const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, S
   return (
     <tr className="hover:bg-canvas transition">
       {/* Nombre del empleado */}
-      <td className="p-2 border border-stroke-soft text-left font-medium" title="Nombre del empleado">
-        {employee.firstName} {employee.lastName}
+      <td className="p-2 border border-stroke-soft text-left font-medium whitespace-nowrap" title="Nombre del empleado">
+        {nombreDe(employee)}
       </td>
+
+      {/* Quitar de la planilla */}
+      {onRemove && (
+        <td className="p-2 border border-stroke-soft text-center">
+          <button
+            type="button"
+            onClick={() => onRemove(employee.id)}
+            title={`Quitar a ${nombreDe(employee)} de la planilla`}
+            aria-label={`Quitar a ${nombreDe(employee)} de la planilla`}
+            className="grid h-7 w-7 place-items-center rounded-md text-ink-muted transition-colors
+                       hover:bg-red-50 hover:text-red-600
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+          >
+            <UserMinus size={15} />
+          </button>
+        </td>
+      )}
 
       {/* Salarios */}
       <td className="p-2 border border-stroke-soft text-right" title="Salario mensual">

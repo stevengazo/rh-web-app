@@ -50,6 +50,45 @@ oscuro se propaguen solos.
 - **Páginas modernizadas**: `ActionsPage`, `EmployeesPage`, `MyProfilePage`/`EmployeeTableInfo`, dashboard `ManagerPage`.
 - **Bug corregido**: `MyComissionsPage` no cargaba por contrato inconsistente de `comissionsApi.getComissionsByUser` (ahora siempre devuelve array).
 - **Docs**: `README.md` reescrito + `docs/ESTRUCTURA-Y-MEJORAS.md`.
+- **Sitio público (marketing)**: nuevo `PublicLayout` (navbar + footer) con las rutas
+  `/`, `/caracteristicas`, `/como-funciona`, `/precios` y `/contacto`. Todo el copy,
+  los módulos, los planes y las FAQ viven en `src/data/marketing.js` (un solo lugar
+  para editarlos). Componentes en `Components/molecules/marketing/` y
+  `Components/organisms/marketing/`. Sustituye a la antigua `pages/HomePage.jsx`.
+  ⚠️ Los **precios son de referencia** y el formulario de contacto **no está
+  conectado a la API** (falta endpoint de prospectos; ver `ContactForm.jsx`).
+
+## 4.b Flujos de aprobación y organigrama (agosto 2026)
+
+Se trabajó **en los dos repos**. En `Human-Resources-API` hay tres migraciones EF
+nuevas: `PayrollLifecycle`, `ActionApprovalAndOrgChart` y `AbsenceAndLoanApproval`.
+
+- **Planilla**: `Payroll` ganó `Status/CreatedBy/CreatedAt/ApprovedBy/ApprovedAt/PaidBy/PaidAt/VoidReason`.
+  Ciclo **Borrador → Aprobada → Pagada** (+ Anulada con motivo), con endpoints
+  `/api/Payrolls/{id}/approve|pay|reopen|void`. Aprobada = congelada: el
+  `Employee_PayrollController` rechaza cambios en sus detalles con 409.
+  El listado devuelve `status`, `employeeCount` y totales ya calculados.
+  En el front, `usePayrollData` ahora **carga las filas guardadas**, permite
+  **agregar y quitar empleados** y guarda por diferencias (crea / actualiza /
+  borra) en vez de hacer siempre POST.
+- **Acciones**: `Status` + `RejectedBy/RejectedAt/RejectionReason`;
+  `ApprovedDate` dejó de tener setter privado. Endpoints `approve|reject|reopen`.
+- **Ausencias**: mismos campos y endpoints que acciones.
+- **Préstamos**: se usa `State` como estado (Pendiente → Aprobado → Pagado /
+  Rechazado) + endpoints `approve|reject|settle|reopen`. El listado calcula
+  `paidAmount`, `balance` y `monthlyFee`; `settle` exige que los abonos cubran el monto.
+- **Organigrama**: `Departament` ganó `ParentDepartamentId` y `DisplayOrder`;
+  endpoint `GET /api/Departaments/orgchart`. En el front, página
+  `/manager/organigrama` con **React Flow** (`@xyflow/react`), layout tipo árbol
+  calculado en `OrgChart.jsx` (tolera ciclos y padres inexistentes) y edición de
+  dependencia y jefaturas.
+- **Ayuda en pantalla**: contenido en `src/data/help.js`, panel `HelpDrawer` y
+  botón `HelpButton` (`<HelpButton area="planilla" />`). El sidebar se reorganizó
+  por áreas (Resumen / Personal / Compensación / Desempeño / Mi cuenta /
+  Configuración) e incluye el Centro de ayuda.
+- **Semilla determinista**: los roles de `AppDbContext` llevaban `ConcurrencyStamp`
+  aleatorio, lo que hacía que EF viera siempre "pending model changes" y
+  `Database.Migrate()` fallara al aplicar cualquier migración nueva. Ya está fijo.
 
 ## 5. Pendiente / a verificar
 

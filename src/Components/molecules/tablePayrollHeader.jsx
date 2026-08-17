@@ -1,10 +1,19 @@
-const TablePayrollHeader = () => {
+/**
+ * @param {boolean} [conAcciones] Reserva la columna para quitar empleados.
+ */
+const TablePayrollHeader = ({ conAcciones = false }) => {
   return (
     <thead className="bg-surface-alt text-ink-secondary sticky top-0 z-10">
       <tr>
         <th className="p-2 text-md" title="Nombre completo del empleado">
           Empleado
         </th>
+
+        {conAcciones && (
+          <th className="p-2 text-md" title="Quitar de la planilla">
+            <span className="sr-only">Acciones</span>
+          </th>
+        )}
         <th
           className="p-2 text-md"
           title="Salario mensual obtenido del sistema"

@@ -1,10 +1,23 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, ClipboardList, Plane, FileText, Plus } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  AlertCircle,
+  ClipboardList,
+  FileText,
+  Pencil,
+  Plane,
+  Plus,
+  RefreshCw,
+  User,
+} from 'lucide-react';
 
 import SectionTitle from '../Components/SectionTitle';
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
 import PrimaryButton from '../Components/PrimaryButton';
+import SecondaryButton from '../Components/SecondaryButton';
+import OffCanvasLarge from '../Components/OffCanvasLarge';
+
 import ActionTable from '../Components/organisms/ActionTable';
 import CertificationTable from '../Components/organisms/CertificationTable';
 import CourseTable from '../Components/organisms/CourseTable';
@@ -12,10 +25,15 @@ import SalaryTable from '../Components/organisms/SalaryTable';
 import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
 import VacationsTable from '../Components/organisms/VacationsTable';
 import VacationsAdd from '../Components/organisms/VacationsAdd';
+import CourseAdd from '../Components/organisms/CourseAdd';
+import CertificationAdd from '../Components/organisms/CertificationAdd';
+import TablePayrollsData from '../Components/organisms/TablePayrollsData';
+import MyProfileEdit from '../Components/organisms/MyProfileEdit';
+import EmergencyContacts from '../Components/organisms/EmergencyContacts';
+import VacationsSummary from '../Components/organisms/VacationsSummary';
+import HelpButton from '../Components/molecules/HelpButton';
 
 import { useAppContext } from '../context/AppContext';
-
-import { useEffect, useState } from 'react';
 
 import EmployeeApi from '../api/employeesApi';
 import actionApi from '../api/actionApi';
@@ -23,44 +41,54 @@ import courseApi from '../api/courseApi';
 import certificationApi from '../api/certificationApi';
 import salaryApi from '../api/salaryApi';
 import VacationsApi from '../api/vacationsApi';
-import OffCanvasLarge from '../Components/OffCanvasLarge';
-import CourseAdd from '../Components/organisms/CourseAdd';
-import CertificationAdd from '../Components/organisms/CertificationAdd';
+import Employee_PayrollApi from '../api/Employee_PayrollApi';
 
 const TABS = {
   INFO: 'Informacion',
   ACTIONS: 'Acciones',
   VACATIONS: 'Vacaciones',
-  SETTINGS: 'settings',
+  PAYROLLS: 'Comprobantes',
+};
+
+/**
+ * Normaliza la respuesta de la capa `api/`.
+ *
+ * Los clientes no son consistentes: unos devuelven la respuesta completa de
+ * Axios y otros ya devuelven `.data` (ver docs/ESTRUCTURA-Y-MEJORAS.md §4.1).
+ * Este helper acepta ambos contratos para que la página no se rompa.
+ */
+const unwrap = (respuesta, fallback = []) => {
+  if (!respuesta) return fallback;
+  const datos = respuesta?.data !== undefined ? respuesta.data : respuesta;
+  if (datos === null || datos === undefined) return fallback;
+  if (Array.isArray(fallback) && !Array.isArray(datos)) return fallback;
+  return datos;
 };
 
 const pageVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
 };
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: 'easeOut' },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
 const MyProfilePage = () => {
-  const [myProfile, setMyProfile] = useState({});
-  const [activeTab, setActiveTab] = useState(TABS.INFO);
+  const { user } = useAppContext();
+
+  const [myProfile, setMyProfile] = useState(null);
   const [certifications, setCertifications] = useState([]);
   const [courses, setCourses] = useState([]);
   const [salaries, setSalaries] = useState([]);
   const [vacations, setVacations] = useState([]);
   const [actions, setActions] = useState([]);
+  const [payrolls, setPayrolls] = useState([]);
 
-  const { user } = useAppContext();
+  const [activeTab, setActiveTab] = useState(TABS.INFO);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   const [open, setOpen] = useState(false);
   const [canvasTitle, setCanvasTitle] = useState('');
@@ -72,71 +100,85 @@ const MyProfilePage = () => {
     setOpen(true);
   };
 
+  const userId = user?.id;
+
+  /** Carga el perfil y todas sus colecciones. */
+  const cargarDatos = useCallback(async () => {
+    if (!userId) {
+      setCargando(false);
+      setError('No hay una sesión activa.');
+      return;
+    }
+
+    setCargando(true);
+    setError(null);
+
+    try {
+      const perfil = await EmployeeApi.getEmployeeById(userId);
+      setMyProfile(unwrap(perfil, null));
+    } catch (e) {
+      console.error('Error perfil:', e);
+      setMyProfile(null);
+      setError('No se pudo cargar tu perfil. Intenta de nuevo.');
+    }
+
+    /* Las colecciones son independientes: si una falla, las demás se
+       muestran igual. Se piden en paralelo para no encadenar esperas. */
+    const colecciones = [
+      [courseApi.getCoursesByUser(userId), setCourses],
+      [certificationApi.getCertificationsByUser(userId), setCertifications],
+      [salaryApi.getSalariesByUser(userId), setSalaries],
+      [actionApi.getActionsByUser(userId), setActions],
+      [VacationsApi.getVacationsByUser(userId), setVacations],
+      [Employee_PayrollApi.Search({ employeeId: userId }), setPayrolls],
+    ];
+
+    await Promise.all(
+      colecciones.map(async ([promesa, asignar]) => {
+        try {
+          asignar(unwrap(await promesa, []));
+        } catch (e) {
+          console.error('Error cargando colección del perfil:', e);
+          asignar([]);
+        }
+      })
+    );
+
+    setCargando(false);
+  }, [userId]);
+
   useEffect(() => {
-    const getProfile = async () => {
-      // PERFIL
-      try {
-        const respData = await EmployeeApi.getEmployeeById(user.id);
-        setMyProfile(respData.data);
-      } catch (error) {
-        console.error('Error perfil:', error);
-      }
+    cargarDatos();
+  }, [cargarDatos]);
 
-      // CURSOS
-      
-      try {
+  /** Cierra el drawer y refresca, para ver de inmediato lo recién agregado. */
+  const cerrarYRefrescar = () => {
+    setOpen(false);
+    setCanvasContent(null);
+    cargarDatos();
+  };
 
-        const resp = await courseApi.getCoursesByUser(user.id);
-        
-        setCourses(resp);
-      } catch (error) {
-        console.error('Error cursos:', error);
-      }
+  const perfilSinNombre = Boolean(myProfile) && !myProfile.firstName;
 
-      // CERTIFICACIONES
-      try {
-        const resp = await certificationApi.getCertificationsByUser(user.id);
-        setCertifications(resp);
-      } catch (error) {
-        console.error('Error certificaciones:', error);
-      }
-
-      // SALARIOS
-      try {
-        const resp = await salaryApi.getSalariesByUser(user.id);
-        setSalaries(resp.data);
-      } catch (error) {
-        console.error('Error salarios:', error);
-      }
-
-      // ACCIONES
-      try {
-        const resp = await actionApi.getActionsByUser(user.id);
-        setActions(resp.data);
-      } catch (error) {
-        console.error('Error acciones:', error);
-      }
-
-      // VACACIONES
-      try {
-        const resp = await VacationsApi.getVacationsByUser(user.id);
-        setVacations(resp.data);
-      } catch (error) {
-        console.error('Error vacaciones:', error);
-      }
-    };
-
-    getProfile();
-  }, []);
+  /** Abre el drawer de autoedición del perfil. */
+  const editarPerfil = () =>
+    openCanvas(
+      'Editar mis datos',
+      <MyProfileEdit
+        profile={myProfile ?? {}}
+        onSaved={cerrarYRefrescar}
+        onCancel={() => setOpen(false)}
+      />
+    );
 
   return (
     <>
-      {/* OffCanvas */}
+      {/* Drawer de formularios */}
       <AnimatePresence>
         {open && (
           <OffCanvasLarge
             isOpen={open}
-            onClose={() => setOpen(false)}
+            onClose={cerrarYRefrescar}
             title={canvasTitle}
           >
             <motion.div
@@ -149,32 +191,107 @@ const MyProfilePage = () => {
           </OffCanvasLarge>
         )}
       </AnimatePresence>
+
       <motion.div
         className="space-y-6"
         variants={pageVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Page Title */}
+        {/* Encabezado */}
         <motion.div variants={sectionVariants}>
-          <PageTitle>Mi Perfil</PageTitle>
-          <EmployeeTableInfo employee={myProfile} />
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <PageTitle className="mb-0">Mi Perfil</PageTitle>
+              <HelpButton area="perfil" />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <SecondaryButton onClick={cargarDatos} disabled={cargando}>
+                <RefreshCw
+                  size={15}
+                  className={cargando ? 'animate-spin' : undefined}
+                />
+                Actualizar
+              </SecondaryButton>
+
+              <PrimaryButton
+                onClick={editarPerfil}
+                disabled={cargando || !myProfile}
+              >
+                <Pencil size={15} />
+                Editar mis datos
+              </PrimaryButton>
+            </div>
+          </div>
+
+          {/* Error de carga */}
+          {error && (
+            <div className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
+              <AlertCircle size={18} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-red-700">{error}</p>
+                <button
+                  type="button"
+                  onClick={cargarDatos}
+                  className="mt-1 text-sm font-semibold text-red-700 underline hover:no-underline"
+                >
+                  Reintentar
+                </button>
+              </div>
+            </div>
+          )}
+
+          <EmployeeTableInfo
+            employee={myProfile}
+            loading={cargando && !myProfile}
+            emptyTitle="Todavía no podemos mostrar tu perfil"
+            emptyHint="No encontramos tu expediente. Contacta a Recursos Humanos."
+          />
+
+          {/* Aviso cuando el expediente está incompleto */}
+          {perfilSinNombre && !cargando && (
+            <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <AlertCircle
+                size={18}
+                className="mt-0.5 shrink-0 text-amber-700"
+              />
+              <div className="flex-1">
+                <p className="text-sm text-amber-800">
+                  Tu expediente está incompleto: aún no tiene nombre ni datos
+                  personales registrados. Complétalos para que aparezcan en tus
+                  comprobantes de pago.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={editarPerfil}
+                  className="mt-1.5 text-sm font-semibold text-amber-900 underline hover:no-underline"
+                >
+                  Completar mis datos
+                </button>
+              </div>
+            </div>
+          )}
         </motion.div>
 
-        {/* Tabs */}
+        {/* Pestañas */}
         <div className="border-b border-stroke-soft">
           <nav className="flex gap-6 overflow-x-auto">
             <TabButton
               icon={User}
               active={activeTab === TABS.INFO}
               onClick={() => setActiveTab(TABS.INFO)}
+              count={courses.length + certifications.length}
             >
               Perfil
             </TabButton>
+
             <TabButton
               icon={ClipboardList}
               active={activeTab === TABS.ACTIONS}
               onClick={() => setActiveTab(TABS.ACTIONS)}
+              count={actions.length}
             >
               Acciones
             </TabButton>
@@ -183,122 +300,160 @@ const MyProfilePage = () => {
               icon={Plane}
               active={activeTab === TABS.VACATIONS}
               onClick={() => setActiveTab(TABS.VACATIONS)}
+              count={vacations.length}
             >
               Vacaciones
             </TabButton>
 
             <TabButton
               icon={FileText}
-              active={activeTab === TABS.SETTINGS}
-              onClick={() => setActiveTab(TABS.SETTINGS)}
+              active={activeTab === TABS.PAYROLLS}
+              onClick={() => setActiveTab(TABS.PAYROLLS)}
+              count={payrolls.length}
             >
               Comprobantes
             </TabButton>
           </nav>
         </div>
 
-        {/* Content */}
+        {/* Contenido */}
         <div className="rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm">
-          {/* TAB 1 */}
-          {activeTab === TABS.INFO && (
-            <div className="space-y-6">
-              {/* Cursos */}
+          {cargando ? (
+            <TablaSkeleton />
+          ) : (
+            <>
+              {activeTab === TABS.INFO && (
+                <div className="space-y-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <SectionTitle className="mb-0">Cursos</SectionTitle>
+                    <PrimaryButton
+                      onClick={() =>
+                        openCanvas(
+                          'Agregar Curso',
+                          <CourseAdd
+                            userId={userId}
+                            author={userId}
+                            onAdded={cerrarYRefrescar}
+                          />
+                        )
+                      }
+                    >
+                      <Plus size={16} />
+                      Agregar
+                    </PrimaryButton>
+                  </div>
+                  <CourseTable courses={courses} />
 
-              <div className="flex flex-row justify-between">
-                <SectionTitle>Cursos</SectionTitle>
-                <PrimaryButton
-                  onClick={() => {
-                    openCanvas(
-                      'Agregar Curso',
-                      <CourseAdd userId={user.id} author={user.id} />
-                    );
-                  }}
-                >
-                  <Plus size={16} />
-                  Agregar
-                </PrimaryButton>
-              </div>
-              <CourseTable courses={ courses} />
-              <Divider />
-              <div className="flex flex-row justify-between">
-                <SectionTitle>Certificaciones</SectionTitle>
-                <PrimaryButton
-                  onClick={() => {
-                    openCanvas(
-                      'Agregar Certificación',
-                      <CertificationAdd userId={user.id} />
-                    );
-                  }}
-                >
-                  <Plus size={16} />
-                  Agregar
-                </PrimaryButton>
-              </div>
-              <CertificationTable certifications={certifications} />
-              <Divider />
-              <SectionTitle>Histórico de Salarios</SectionTitle>
-              <SalaryTable salaries={salaries} />
-            </div>
-          )}
+                  <Divider />
 
-          {/* TAB 2 */}
-          {activeTab === TABS.ACTIONS && (
-            <div className="space-y-4">
-              {/* Acciones de Personal */}
-              <SectionTitle>Acciones de Personal</SectionTitle>
-              <ActionTable actions={actions} />{' '}
-            </div>
-          )}
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <SectionTitle className="mb-0">Certificaciones</SectionTitle>
+                    <PrimaryButton
+                      onClick={() =>
+                        openCanvas(
+                          'Agregar Certificación',
+                          <CertificationAdd
+                            userId={userId}
+                            author={userId}
+                            onAdded={cerrarYRefrescar}
+                          />
+                        )
+                      }
+                    >
+                      <Plus size={16} />
+                      Agregar
+                    </PrimaryButton>
+                  </div>
+                  <CertificationTable certifications={certifications} />
 
-          {/* TAB 3 */}
-          {activeTab === TABS.VACATIONS && (
-            <div className="space-y-4">
-              {/* Vacaciones */}
+                  <Divider />
 
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-row justify-between items-center">
-                  <SectionTitle>Vacaciones</SectionTitle>
-                  <PrimaryButton
-                    onClick={() => {
-                      openCanvas(
-                        'Solicitar Vacaciones',
-                        <VacationsAdd id={user.id} />
-                      );
-                    }}
-                  >
-                    Solicitar Vacaciones
-                  </PrimaryButton>
+                  <SectionTitle>Histórico de Salarios</SectionTitle>
+                  <SalaryTable salaries={salaries} />
+
+                  <Divider />
+
+                  <EmergencyContacts userId={userId} />
                 </div>
+              )}
 
-                <VacationsTable vacationsList={vacations} showUser={false} />
-              </div>
-            </div>
-          )}
+              {activeTab === TABS.ACTIONS && (
+                <div className="space-y-4">
+                  <SectionTitle>Acciones de Personal</SectionTitle>
+                  <ActionTable actions={actions} />
+                </div>
+              )}
 
-          {/* TAB 4 */}
-          {activeTab === TABS.SETTINGS && (
-            <div className="space-y-4">
-              <SectionTitle>Comprobantes de Pago</SectionTitle>
-              <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-16 text-ink-muted">
-                <FileText size={32} />
-                <p className="text-sm">
-                  Tus comprobantes de pago aparecerán aquí.
-                </p>
-              </div>
-            </div>
+              {activeTab === TABS.VACATIONS && (
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <SectionTitle className="mb-0">Vacaciones</SectionTitle>
+                    <PrimaryButton
+                      onClick={() =>
+                        openCanvas(
+                          'Solicitar Vacaciones',
+                          <VacationsAdd id={userId} />
+                        )
+                      }
+                    >
+                      <Plus size={16} />
+                      Solicitar Vacaciones
+                    </PrimaryButton>
+                  </div>
+
+                  <VacationsSummary vacations={vacations} />
+
+                  <VacationsTable vacationsList={vacations} showUser={false} />
+                </div>
+              )}
+
+              {activeTab === TABS.PAYROLLS && (
+                <div className="space-y-4">
+                  <SectionTitle>Comprobantes de Pago</SectionTitle>
+
+                  {payrolls.length > 0 ? (
+                    <TablePayrollsData
+                      items={payrolls}
+                      HandleShowEdit={openCanvas}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-16 text-ink-muted">
+                      <FileText size={32} />
+                      <p className="text-sm">
+                        Todavía no tienes comprobantes de pago.
+                      </p>
+                      <p className="text-xs">
+                        Aparecerán aquí en cuanto se procese tu primera
+                        planilla.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
-
-        {/* Comprobantes de Pago */}
       </motion.div>
     </>
   );
 };
 
-const TabButton = ({ active, children, onClick, icon: Icon }) => {
+/** Placeholder mientras cargan las tablas de la pestaña activa. */
+const TablaSkeleton = () => (
+  <div className="space-y-3">
+    <div className="h-5 w-40 animate-pulse rounded bg-stroke-soft" />
+    {Array.from({ length: 4 }).map((_, i) => (
+      <div key={i} className="h-10 animate-pulse rounded-lg bg-surface-alt" />
+    ))}
+  </div>
+);
+
+const TabButton = ({ active, children, onClick, icon: Icon, count }) => {
   return (
     <button
+      type="button"
       onClick={onClick}
+      aria-current={active ? 'page' : undefined}
       className={`flex items-center gap-2 whitespace-nowrap pb-3 text-sm font-semibold transition-colors border-b-2
         ${
           active
@@ -309,6 +464,15 @@ const TabButton = ({ active, children, onClick, icon: Icon }) => {
     >
       {Icon && <Icon size={16} />}
       {children}
+
+      {count > 0 && (
+        <span
+          className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold
+            ${active ? 'bg-brand-tint text-brand-700' : 'bg-surface-alt text-ink-muted'}`}
+        >
+          {count}
+        </span>
+      )}
     </button>
   );
 };

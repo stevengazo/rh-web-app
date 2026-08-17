@@ -65,6 +65,53 @@ const payrollApi = {
   deletePayroll: (id) => {
     return apiClient.delete(`/Payrolls/${id}`);
   },
+
+  /* ----------------------------------------------------------------
+     Ciclo de vida: Borrador → Aprobada → Pagada (o Anulada)
+     El backend valida las transiciones y responde 409 si no aplican.
+     ---------------------------------------------------------------- */
+
+  /**
+   * Aprueba la planilla y la congela: sus detalles dejan de ser editables.
+   *
+   * @param {number|string} id
+   * @param {string} userName - Queda registrado como aprobador.
+   */
+  approvePayroll: (id, userName) => {
+    return apiClient.post(`/Payrolls/${id}/approve`, { userName });
+  },
+
+  /**
+   * Marca como pagada una planilla aprobada.
+   *
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  markPayrollPaid: (id, userName) => {
+    return apiClient.post(`/Payrolls/${id}/pay`, { userName });
+  },
+
+  /**
+   * Devuelve una planilla aprobada a borrador para corregirla.
+   * No aplica sobre planillas ya pagadas.
+   *
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  reopenPayroll: (id, userName) => {
+    return apiClient.post(`/Payrolls/${id}/reopen`, { userName });
+  },
+
+  /**
+   * Anula la planilla dejando constancia del motivo.
+   *
+   * @param {number|string} id
+   * @param {string} reason - Obligatorio.
+   * @param {string} userName
+   */
+  voidPayroll: (id, reason, userName) => {
+    return apiClient.post(`/Payrolls/${id}/void`, { reason, userName });
+  },
 };
 
 export default payrollApi;

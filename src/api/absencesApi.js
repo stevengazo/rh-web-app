@@ -53,6 +53,38 @@ const absencesApi = {
    * @returns {Promise<import("axios").AxiosResponse<any>>}
    * Promesa con la respuesta del servidor tras eliminar la ausencia.
    */
+  /* ----------------------------------------------------------------
+     Aprobación: Pendiente → Aprobada / Rechazada
+     ---------------------------------------------------------------- */
+
+  /**
+   * Aprueba una solicitud de ausencia.
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  approveAbsence: (id, userName) => {
+    return apiClient.post(`/absences/${id}/approve`, { userName });
+  },
+
+  /**
+   * Rechaza una ausencia dejando constancia del motivo.
+   * @param {number|string} id
+   * @param {string} reason - Obligatorio.
+   * @param {string} userName
+   */
+  rejectAbsence: (id, reason, userName) => {
+    return apiClient.post(`/absences/${id}/reject`, { reason, userName });
+  },
+
+  /**
+   * Devuelve una ausencia revisada al estado pendiente.
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  reopenAbsence: (id, userName) => {
+    return apiClient.post(`/absences/${id}/reopen`, { userName });
+  },
+
   deleteAbsence: (id) => {
     return apiClient.get(`/Absences/${id}`);
   },

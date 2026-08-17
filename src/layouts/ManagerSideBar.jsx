@@ -2,17 +2,73 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import {
-  LayoutDashboard,
-  Users,
-  Cog,
-  FileText,
+  Banknote,
   Briefcase,
-  Settings,
-  User,
+  CalendarDays,
+  CircleHelp,
+  FileText,
+  LayoutDashboard,
+  ListChecks,
   LogOut,
   Menu,
+  Network,
+  Settings,
+  Shield,
+  Target,
+  User,
+  Users,
   X,
 } from 'lucide-react';
+
+import HelpDrawer from '../Components/organisms/HelpDrawer';
+import { useAppContext } from '../context/AppContext';
+
+/**
+ * Navegación del área de administración, agrupada por el trabajo que resuelve
+ * cada bloque en lugar de por el módulo técnico al que pertenece.
+ */
+const SECCIONES = [
+  {
+    titulo: 'Resumen',
+    items: [
+      { to: '/manager', label: 'Dashboard', icon: LayoutDashboard, end: true },
+    ],
+  },
+  {
+    titulo: 'Personal',
+    items: [
+      { to: '/manager/employees', label: 'Empleados', icon: Users },
+      { to: '/manager/actions', label: 'Acciones', icon: Briefcase },
+      { to: '/manager/absences', label: 'Ausencias', icon: CalendarDays },
+      { to: '/manager/organigrama', label: 'Organigrama', icon: Network },
+    ],
+  },
+  {
+    titulo: 'Compensación',
+    items: [
+      { to: '/manager/payroll', label: 'Planilla', icon: FileText },
+      { to: '/manager/loans', label: 'Préstamos', icon: Banknote },
+    ],
+  },
+  {
+    titulo: 'Desempeño',
+    items: [
+      { to: '/manager/kpis', label: 'KPIs y objetivos', icon: Target },
+      { to: '/manager/questions', label: 'Preguntas', icon: ListChecks },
+    ],
+  },
+  {
+    titulo: 'Mi cuenta',
+    items: [{ to: '/my-profile', label: 'Mi Perfil', icon: User }],
+  },
+  {
+    titulo: 'Configuración',
+    items: [
+      { to: '/manager/roles', label: 'Roles y permisos', icon: Shield },
+      { to: '/settings', label: 'Ajustes', icon: Settings },
+    ],
+  },
+];
 
 const navItemClass = ({ isActive }) =>
   `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150
@@ -24,97 +80,81 @@ const navItemClass = ({ isActive }) =>
 
 const ManagerSideBar = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const { logout } = useAppContext();
 
+  const [open, setOpen] = useState(false);
+  const [ayudaAbierta, setAyudaAbierta] = useState(false);
+
+  /* Antes solo navegaba a "/" dejando el token en localStorage: la sesión
+     seguía viva y bastaba volver a /manager para entrar de nuevo. */
   const handleLogout = () => {
-    navigate('/');
+    logout?.();
+    navigate('/login');
   };
 
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="h-16 flex items-center justify-between px-4 text-lg font-semibold border-b border-white/10">
+      <div className="flex h-16 items-center justify-between border-b border-white/10 px-4 text-lg font-semibold">
         RH Manager
         <button
-          className="md:hidden text-gray-400"
+          className="text-gray-400 md:hidden"
           onClick={() => setOpen(false)}
+          aria-label="Cerrar menú"
         >
           <X size={22} />
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-4 text-sm overflow-y-auto scrollbar-slim-dark">
-        <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
-            Gestión
-          </p>
-          <NavLink to="/manager" end className={navItemClass}>
-            <LayoutDashboard size={18} /> Dashboard
-          </NavLink>
-          <NavLink to="/manager/employees" className={navItemClass}>
-            <Users size={18} /> Empleados
-          </NavLink>
-          <NavLink to="/manager/payroll" className={navItemClass}>
-            <FileText size={18} /> Planilla
-          </NavLink>
-          <NavLink to="/manager/actions" className={navItemClass}>
-            <Briefcase size={18} /> Acciones
-          </NavLink>
-          <NavLink to="/manager/absences" className={navItemClass}>
-            <Briefcase size={18} /> Ausencias
-          </NavLink>
-        </div>
+      {/* Navegación */}
+      <nav className="scrollbar-slim-dark flex-1 space-y-4 overflow-y-auto p-4 text-sm">
+        {SECCIONES.map((seccion) => (
+          <div key={seccion.titulo}>
+            <p className="mb-2 px-3 text-xs uppercase tracking-wide text-gray-400">
+              {seccion.titulo}
+            </p>
 
-        <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
-            Retenciones
-          </p>
-          <NavLink to="/manager/loans" className={navItemClass}>
-            <User size={18} /> Préstamos
-          </NavLink>
-        </div>
+            {seccion.items.map((item) => {
+              const Icon = item.icon;
 
-        <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
-            Indicadores
-          </p>
-          <NavLink to="/manager/kpis" className={navItemClass}>
-            <Cog size={18} /> KPIs
-          </NavLink>
-          <NavLink to="/manager/questions" className={navItemClass}>
-            <Cog size={18} /> Preguntas
-          </NavLink>
-        </div>
-
-        <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
-            Usuario
-          </p>
-          <NavLink to="/my-profile" className={navItemClass}>
-            <User size={18} /> Mi Perfil
-          </NavLink>
-        </div>
-
-        <div>
-          <p className="px-3 mb-2 text-xs uppercase tracking-wide text-gray-400">
-            Configuración
-          </p>
-          <NavLink to="/manager/roles" className={navItemClass}>
-            <Settings size={18} /> Roles
-          </NavLink>
-        </div>
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={navItemClass}
+                  onClick={() => setOpen(false)}
+                >
+                  <Icon size={18} />
+                  {item.label}
+                </NavLink>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
-      {/* Logout */}
-      <button
-        onClick={handleLogout}
-        className="m-4 flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
-                   bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
-      >
-        <LogOut size={18} />
-        Cerrar Sesión
-      </button>
+      {/* Pie: ayuda y salida */}
+      <div className="space-y-2 border-t border-white/10 p-4">
+        <button
+          type="button"
+          onClick={() => setAyudaAbierta(true)}
+          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium
+                     text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+        >
+          <CircleHelp size={18} />
+          Centro de ayuda
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-md bg-red-500/10 px-3 py-2
+                     text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
+        >
+          <LogOut size={18} />
+          Cerrar Sesión
+        </button>
+      </div>
     </>
   );
 
@@ -123,13 +163,14 @@ const ManagerSideBar = () => {
       {/* Botón hamburguesa (móvil) */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 bg-nav text-white p-2 rounded-md shadow"
+        aria-label="Abrir menú"
+        className="fixed left-4 top-4 z-40 rounded-md bg-nav p-2 text-white shadow md:hidden"
       >
         <Menu size={22} />
       </button>
 
-      {/* Sidebar desktop */}
-      <aside className="hidden md:flex w-64 bg-linear-to-b from-nav via-nav to-violet-950 text-white flex-col">
+      {/* Sidebar escritorio */}
+      <aside className="hidden w-64 flex-col bg-linear-to-b from-nav via-nav to-violet-950 text-white md:flex">
         <SidebarContent />
       </aside>
 
@@ -137,18 +178,16 @@ const ManagerSideBar = () => {
       <AnimatePresence>
         {open && (
           <>
-            {/* Overlay */}
             <motion.div
-              className="fixed inset-0 bg-black/50 z-40"
+              className="fixed inset-0 z-40 bg-black/50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
             />
 
-            {/* Drawer */}
             <motion.aside
-              className="fixed inset-y-0 left-0 w-64 bg-linear-to-b from-nav via-nav to-violet-950 text-white z-50 flex flex-col"
+              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-linear-to-b from-nav via-nav to-violet-950 text-white"
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}
@@ -159,6 +198,12 @@ const ManagerSideBar = () => {
           </>
         )}
       </AnimatePresence>
+
+      {/* Centro de ayuda global */}
+      <HelpDrawer
+        isOpen={ayudaAbierta}
+        onClose={() => setAyudaAbierta(false)}
+      />
     </>
   );
 };

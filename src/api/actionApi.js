@@ -106,7 +106,14 @@ const actionApi = {
     return apiClient.delete(`/actions/${id}`);
   },
 
-  searchActions: (filters) => {
+  /**
+   * searchActions
+   * Busca acciones por empleado, rango de fechas, tipo o estado.
+   *
+   * @param {Object} filters
+   * @param {string} [filters.status] 'Pendiente' | 'Aprobada' | 'Rechazada'
+   */
+  searchActions: (filters = {}) => {
     return apiClient.get('/actions/search', {
       params: {
         employeeId: filters.employeeId,
@@ -115,8 +122,45 @@ const actionApi = {
         Type: filters.type,
         isActive: filters.isActive,
         Approved: filters.Approved,
+        status: filters.status,
       },
     });
+  },
+
+  /* ----------------------------------------------------------------
+     Aprobación: Pendiente → Aprobada / Rechazada
+     El backend valida las transiciones y responde 409 si no aplican.
+     ---------------------------------------------------------------- */
+
+  /**
+   * Aprueba una acción de personal.
+   *
+   * @param {number|string} id
+   * @param {string} userName - Queda registrado como aprobador.
+   */
+  approveAction: (id, userName) => {
+    return apiClient.post(`/actions/${id}/approve`, { userName });
+  },
+
+  /**
+   * Rechaza una acción dejando constancia del motivo.
+   *
+   * @param {number|string} id
+   * @param {string} reason - Obligatorio.
+   * @param {string} userName
+   */
+  rejectAction: (id, reason, userName) => {
+    return apiClient.post(`/actions/${id}/reject`, { reason, userName });
+  },
+
+  /**
+   * Devuelve una acción ya revisada al estado pendiente.
+   *
+   * @param {number|string} id
+   * @param {string} userName
+   */
+  reopenAction: (id, userName) => {
+    return apiClient.post(`/actions/${id}/reopen`, { userName });
   },
 };
 

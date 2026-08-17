@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { useAppContext } from '../../context/AppContext';
 import PrimaryButton from '../PrimaryButton';
 
-const AbsenceAdd = ({ userId }) => {
+const AbsenceAdd = ({ userId, onAdded }) => {
   const [employees, setEmployees] = useState([]);
   const { user } = useAppContext();
 
@@ -72,7 +72,8 @@ const AbsenceAdd = ({ userId }) => {
     try {
       const resp = await absencesApi.createAbsence(absenceForm);
 
-      toast.success('Ausencia agregada');
+      toast.success('Ausencia registrada. Queda pendiente de aprobación.');
+      onAdded?.();
 
       setAbsenceForm({
         startDate: getTodayAtSevenAM(),

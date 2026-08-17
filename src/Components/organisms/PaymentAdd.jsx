@@ -1,44 +1,51 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+
 import paymentApi from '../../api/paymentsApi';
 import { useAppContext } from '../../context/AppContext';
+import { formatMoney } from '../../utils/formatMoney';
+import Label from '../Label';
+import TextInput from '../TextInput';
+import DateInput from '../DateInput';
 import PrimaryButton from '../PrimaryButton';
+import SecondaryButton from '../SecondaryButton';
 
-const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
+/**
+ * Registro de un abono a un préstamo.
+ *
+ * @param {number} loanId
+ * @param {number} [saldo]  Saldo pendiente; limita el monto y permite el atajo "abonar todo".
+ * @param {number} [cuota]  Cuota mensual sugerida.
+ * @param {() => void} [onAdded]
+ * @param {() => void} [onCancel]
+ */
+const PaymentAdd = ({ loanId = 0, saldo, cuota, onAdded, onCancel }) => {
   const today = new Date().toISOString().split('T')[0];
   const { user } = useAppContext();
+  const quien = user?.userName ?? user?.email ?? 'Sistema';
 
+  const [fecha, setFecha] = useState(today);
+  const [monto, setMonto] = useState(() =>
+    cuota && saldo ? String(Math.min(cuota, saldo).toFixed(2)) : ''
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [newPayment, setNewPayment] = useState({
-    paymentId: 0,
-    createdDate: today,
-    amount: '',
-    createdBy: user.userName,
-    createdAt: today,
-    editedBy: user.userName,
-    editedAt: today,
-    deleted: false,
-    loanId: loanId,
-    loan: null,
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setNewPayment((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const montoNumero = Number(monto) || 0;
+  const excede = saldo !== undefined && montoNumero > saldo + 0.01;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!newPayment.amount) {
-      setError('El monto es obligatorio');
+    if (montoNumero <= 0) {
+      setError('El monto debe ser mayor a cero.');
+      return;
+    }
+
+    if (excede) {
+      setError(`El abono no puede superar el saldo pendiente (${formatMoney(saldo)}).`);
       return;
     }
 
@@ -46,80 +53,152 @@ const PaymentAdd = ({ loanId = 0 ,onAdded}) => {
       setLoading(true);
 
       await paymentApi.createPayment({
-        ...newPayment,
-        amount: Number(newPayment.amount),
+        paymentId: 0,
+        amount: montoNumero,
+        createdDate: fecha,
+        createdBy: quien,
+        createdAt: new Date().toISOString(),
+        editedBy: quien,
+        editedAt: new Date().toISOString(),
+        deleted: false,
+        loanId: Number(loanId),
+        loan: null,
       });
 
-      toast.success('Pago registrado correctamente');
-      onAdded?.()
-
-      setNewPayment((prev) => ({
-        ...prev,
-        amount: '',
-        createdDate: today,
-      }));
+      toast.success('Abono registrado');
+      setMonto('');
+      onAdded?.();
     } catch (err) {
       console.error(err);
-      setError('Error al registrar el pago');
+      const data = err?.response?.data;
+      const mensaje =
+        typeof data === 'string' && data
+          ? data
+          : 'No se pudo registrar el abono.';
+      setError(mensaje);
+      toast.error(mensaje);
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyle =
-    'w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition';
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5 text-ink">
-      {/* Header */}
+    <form onSubmit={handleSubmit} className="space-y-5 text-ink">
       <div>
-        <h2 className="text-lg font-semibold">Registrar pago</h2>
-        <p className="text-xs text-ink-secondary mt-1">
-          Registro de abono a préstamo
+        <h2 className="text-lg font-semibold">Registrar abono</h2>
+        <p className="mt-1 text-xs text-ink-muted">
+          El abono se descuenta del saldo del préstamo.
         </p>
       </div>
 
+      {/* Contexto económico */}
+      {saldo !== undefined && (
+        <div className="rounded-xl border border-stroke-soft bg-surface-alt p-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-ink-muted">Saldo pendiente</span>
+            <span className="font-bold text-ink">{formatMoney(saldo)}</span>
+          </div>
+
+          {cuota > 0 && (
+            <div className="mt-1 flex items-center justify-between text-xs">
+              <span className="text-ink-muted">Cuota mensual</span>
+              <span className="font-medium text-ink-secondary">
+                {formatMoney(cuota)}
+              </span>
+            </div>
+          )}
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {cuota > 0 && cuota <= saldo && (
+              <button
+                type="button"
+                onClick={() => setMonto(String(cuota.toFixed(2)))}
+                className="rounded-md border border-stroke bg-surface px-2.5 py-1 text-xs font-semibold
+                           text-ink-secondary transition-colors hover:border-brand hover:text-brand"
+              >
+                Una cuota
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setMonto(String(saldo.toFixed(2)))}
+              className="rounded-md border border-stroke bg-surface px-2.5 py-1 text-xs font-semibold
+                         text-ink-secondary transition-colors hover:border-brand hover:text-brand"
+            >
+              Cancelar el saldo
+            </button>
+          </div>
+        </div>
+      )}
+
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      {/* Fecha */}
       <div>
-        <label className="text-sm text-ink-secondary">Fecha de pago</label>
-        <input
-          type="date"
-          name="createdDate"
-          value={newPayment.createdDate}
-          onChange={handleChange}
-          className={inputStyle}
+        <Label htmlFor="pago-fecha">Fecha del abono</Label>
+        <DateInput
+          id="pago-fecha"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
           required
         />
       </div>
 
-      {/* Monto */}
       <div>
-        <label className="text-sm text-ink-secondary">Monto</label>
-        <input
+        <Label htmlFor="pago-monto">Monto *</Label>
+        <TextInput
+          id="pago-monto"
           type="number"
-          name="amount"
-          value={newPayment.amount}
-          onChange={handleChange}
-          className={inputStyle}
           min="0"
           step="0.01"
+          value={monto}
+          onChange={(e) => setMonto(e.target.value)}
+          error={excede}
+          placeholder="0.00"
           required
         />
+
+        {excede && (
+          <p className="mt-1 text-xs font-medium text-red-600">
+            Supera el saldo pendiente de {formatMoney(saldo)}.
+          </p>
+        )}
+
+        {!excede && montoNumero > 0 && saldo !== undefined && (
+          <p className="mt-1 text-xs text-ink-muted">
+            Quedaría un saldo de {formatMoney(saldo - montoNumero)}
+            {saldo - montoNumero <= 0.01
+              ? ' — el préstamo quedará saldado.'
+              : '.'}
+          </p>
+        )}
       </div>
 
-      <PrimaryButton
-        type="submit"
-        disabled={loading || !loanId}
-        className="w-full"
-      >
-        {loading ? 'Guardando...' : 'Guardar pago'}
-      </PrimaryButton>
+      <div className="flex justify-end gap-3 border-t border-stroke-soft pt-4">
+        {onCancel && (
+          <SecondaryButton onClick={onCancel} disabled={loading}>
+            Cancelar
+          </SecondaryButton>
+        )}
+
+        <PrimaryButton
+          type="submit"
+          disabled={loading || !loanId || excede || montoNumero <= 0}
+        >
+          {loading ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              Guardando…
+            </>
+          ) : (
+            'Guardar abono'
+          )}
+        </PrimaryButton>
+      </div>
     </form>
   );
 };

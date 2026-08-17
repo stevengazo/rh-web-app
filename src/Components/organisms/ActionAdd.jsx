@@ -42,7 +42,10 @@ const ActionAdd = ({ userId, author, onAdded }) => {
     const fetchEmployees = async () => {
       try {
         const res = await EmployeeApi.getAllEmployees();
-        setEmployees(res.data);
+        // Solo personal activo: no tiene sentido registrar acciones de bajas.
+        setEmployees(
+          (res.data ?? []).filter((e) => e.isActive && !e.deleted)
+        );
       } catch (err) {
         console.error(err);
         toast.error('Error cargando empleados');
@@ -86,26 +89,28 @@ const ActionAdd = ({ userId, author, onAdded }) => {
       return;
     }
 
+    /* `userId` es el Id de Identity (GUID en texto), no un número: la versión
+       anterior lo declaraba dos veces, primero como Number(...) —que daba NaN—
+       y luego como string, dependiendo de que la segunda clave ganara. */
     const payload = {
       actionDate: newAction.actionDate,
       description: newAction.description,
-      userId: Number(newAction.userId),
-      actionTypeId: Number(newAction.actionTypeId),
-      createdBy: author?.userName ?? 'Sistema',
-      createdDate: new Date().toISOString(),
-      lastUpdatedBy: author?.userName ?? 'Sistema',
-      lastUpdatedDate: new Date().toISOString(),
       userId: newAction.userId,
+      actionTypeId: Number(newAction.actionTypeId),
+      createdBy: author?.userName ?? author?.email ?? 'Sistema',
+      createdDate: new Date().toISOString(),
+      lastUpdatedBy: author?.userName ?? author?.email ?? 'Sistema',
+      lastUpdatedDate: new Date().toISOString(),
     };
 
     try {
       await actionApi.createAction(payload);
-      toast.success('Acción creada con éxito');
+      toast.success('Acción creada. Queda pendiente de aprobación.');
 
       // Reset formulario
       setNewAction(initialState);
 
-      onAdded();
+      onAdded?.();
     } catch (error) {
       console.error(error);
       toast.error('Error al crear la acción');
@@ -149,9 +154,15 @@ const ActionAdd = ({ userId, author, onAdded }) => {
             className={inputStyle}
           >
             <option value="">Seleccione un empleado</option>
+            {/* El identificador es `id`. Antes se usaba `emp.userId`, que no
+                existe en el empleado: todas las opciones valían undefined y
+                era imposible elegir a nadie. */}
             {employees.map((emp) => (
-              <option key={emp.userId} value={emp.userId}>
-                {emp.firstName} {emp.lastName}
+              <option key={emp.id} value={emp.id}>
+                {[emp.firstName, emp.lastName].filter(Boolean).join(' ') ||
+                  emp.userName ||
+                  emp.email}
+                {emp.departament?.name ? ` — ${emp.departament.name}` : ''}
               </option>
             ))}
           </select>
