@@ -7,7 +7,7 @@ const AddObjetiveCategory = () => {
   const [newCategory, setNewCategory] = useState({
     objetiveCategoryId: 0,
     name: '',
-    isActived: true,
+    isActive: true,
     objetives: null,
   });
 
@@ -31,7 +31,7 @@ const AddObjetiveCategory = () => {
       setNewCategory({
         objetiveCategoryId: 0,
         name: '',
-        isActived: true,
+        isActive: true,
         objetives: null,
       });
 
@@ -71,8 +71,8 @@ const AddObjetiveCategory = () => {
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
-            name="isActived"
-            checked={newCategory.isActived}
+            name="isActive"
+            checked={newCategory.isActive}
             onChange={handleChange}
             className="h-4 w-4 rounded border-stroke bg-surface text-brand
               focus:ring-brand focus:ring-2"

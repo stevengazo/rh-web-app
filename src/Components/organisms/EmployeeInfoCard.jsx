@@ -90,7 +90,7 @@ const EmployeeInfoCard = ({ employee }) => {
         <Field label="Dirección" value={employee.address} />
 
         <Field label="Departamento" value={employee.departament?.name} />
-        <Field label="Jornada" value={employee.jorney} />
+        <Field label="Jornada" value={employee.journey} />
 
         <Field
           label="Fecha de nacimiento"

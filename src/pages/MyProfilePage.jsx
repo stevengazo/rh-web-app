@@ -158,8 +158,6 @@ const MyProfilePage = () => {
     cargarDatos();
   };
 
-  const perfilSinNombre = Boolean(myProfile) && !myProfile.firstName;
-
   /** Abre el drawer de autoedición del perfil. */
   const editarPerfil = () =>
     openCanvas(
@@ -245,34 +243,12 @@ const MyProfilePage = () => {
           <EmployeeTableInfo
             employee={myProfile}
             loading={cargando && !myProfile}
+            onEdit={editarPerfil}
+            puedeEditarFoto
             emptyTitle="Todavía no podemos mostrar tu perfil"
             emptyHint="No encontramos tu expediente. Contacta a Recursos Humanos."
           />
 
-          {/* Aviso cuando el expediente está incompleto */}
-          {perfilSinNombre && !cargando && (
-            <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <AlertCircle
-                size={18}
-                className="mt-0.5 shrink-0 text-amber-700"
-              />
-              <div className="flex-1">
-                <p className="text-sm text-amber-800">
-                  Tu expediente está incompleto: aún no tiene nombre ni datos
-                  personales registrados. Complétalos para que aparezcan en tus
-                  comprobantes de pago.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={editarPerfil}
-                  className="mt-1.5 text-sm font-semibold text-amber-900 underline hover:no-underline"
-                >
-                  Completar mis datos
-                </button>
-              </div>
-            </div>
-          )}
         </motion.div>
 
         {/* Pestañas */}
@@ -403,7 +379,7 @@ const MyProfilePage = () => {
 
                   <VacationsSummary vacations={vacations} />
 
-                  <VacationsTable vacationsList={vacations} showUser={false} />
+                  <VacationsTable vacations={vacations} />
                 </div>
               )}
 

@@ -33,7 +33,7 @@ const filaNueva = (empleado, salarioEntry, payrollId, tipoPlanilla) => {
     // Sin `employee_PayrollId`: es una fila que todavía no existe en la base.
     userId: empleado.id,
     payrollId: Number(payrollId),
-    workShift: empleado.jorney ?? '',
+    workShift: empleado.journey ?? '',
     daysWorked: diasDelPeriodo(tipoPlanilla),
     effectiveness: 100,
 
@@ -62,7 +62,7 @@ const filaNueva = (empleado, salarioEntry, payrollId, tipoPlanilla) => {
     unPaidLeaveAmount: 0,
     medicalLeaveHours: 0,
     medicalLeaveAmount: 0,
-    absenseTime: 0,
+    absenceTime: 0,
     absenceAmount: 0,
 
     /* Deducciones: arrancan en cero salvo la CCSS obrera, que es de ley.

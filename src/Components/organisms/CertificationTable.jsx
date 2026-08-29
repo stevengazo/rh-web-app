@@ -1,7 +1,21 @@
 import { motion } from 'framer-motion';
-import { Award, Calendar, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import {
+  AlertTriangle,
+  Award,
+  Calendar,
+  Clock,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import { format } from 'date-fns';
 import IconButton from '../IconButton';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
+import {
+  colorVigencia,
+  textoVigencia,
+  vigenciaCertificacion,
+} from '../../utils/certificaciones';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -17,7 +31,7 @@ const tableVariants = {
   },
 };
 
-const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
+const CertificationTable = ({ certifications = [], OnEdit, onDelete, onView }) => {
   return (
     <div className="overflow-x-auto">
       <motion.table
@@ -39,6 +53,9 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
                 <Calendar size={16} /> Expira
               </div>
             </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold text-ink-secondary">
+              Vigencia
+            </th>
             <th className="px-4 py-3 text-center text-sm font-semibold text-ink-secondary">
               Acciones
             </th>
@@ -49,7 +66,7 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
           {certifications.length === 0 && (
             <tr>
               <td
-                colSpan={4}
+                colSpan={5}
                 className="px-4 py-6 text-center text-sm text-ink-muted"
               >
                 No hay certificaciones registradas
@@ -67,7 +84,34 @@ const CertificationTable = ({ certifications = [], OnEdit, onDelete }) => {
                 {formatDate(item.expirationDate)}
               </td>
               <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
+                {(() => {
+                  const vigencia = vigenciaCertificacion(item);
+
+                  return (
+                    <span
+                      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full
+                                  border px-2.5 py-0.5 text-xs font-semibold
+                                  ${colorVigencia(vigencia.estado)}`}
+                    >
+                      {vigencia.estado === 'vencida' ? (
+                        <AlertTriangle size={12} />
+                      ) : vigencia.estado === 'por-vencer' ? (
+                        <Clock size={12} />
+                      ) : null}
+                      {textoVigencia(vigencia)}
+                    </span>
+                  );
+                })()}
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex justify-center gap-1">
+                  <RowActionButton
+                    icon={Eye}
+                    label="Ver detalle"
+                    tono="brand"
+                    onClick={() => onView?.(item)}
+                  />
+
                   <IconButton
                     icon={Pencil}
                     onClick={() => OnEdit?.(item)}

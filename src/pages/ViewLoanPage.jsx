@@ -30,17 +30,7 @@ import loansApi from '../api/loansApi';
 import { useAppContext } from '../context/AppContext';
 import { formatMoney } from '../utils/formatMoney';
 
-const LOAN_STATUS = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado',
-  PAID: 'Pagado',
-};
-
-const estadoDePrestamo = (l) => {
-  if (Object.values(LOAN_STATUS).includes(l?.state)) return l.state;
-  return l?.approvedBy ? LOAN_STATUS.APPROVED : LOAN_STATUS.PENDING;
-};
+import { LOAN_STATUS, estadoDePrestamo } from '../utils/loanStatus';
 
 const formatDate = (fecha) =>
   fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';

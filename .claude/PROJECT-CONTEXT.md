@@ -90,6 +90,108 @@ nuevas: `PayrollLifecycle`, `ActionApprovalAndOrgChart` y `AbsenceAndLoanApprova
   aleatorio, lo que hacía que EF viera siempre "pending model changes" y
   `Database.Migrate()` fallara al aplicar cualquier migración nueva. Ya está fijo.
 
+## 4.c Saneamiento del esquema (agosto 2026)
+
+Migración `SchemaIntegrityFixes` en `Human-Resources-API`. Se corrigió lo siguiente:
+
+- **Columnas de usuario duplicadas.** `Certification`, `Reminder` y `User_Objetive`
+  tenían `UserId` (la que usa el código, *sin* FK) y `AppUserId` (FK en sombra que
+  nadie escribía). La causa: la navegación se llamaba `AppUser` y EF no la
+  emparejaba con `UserId`. Se renombró a `User`, se borró `AppUserId` y ahora
+  `UserId` sí tiene integridad referencial.
+  ⚠️ Al agregar una navegación a `AppUser`, **nómbrala `User`** o pon
+  `[ForeignKey(nameof(UserId))]`, o se repetirá el problema.
+- **Relación fantasma** `User_Objetive.QuestionId → Question`, creada por una
+  colección `User_Objetive` sobrante en `Question`. Eliminada.
+- **`chief_By_Departament` sin FKs.** Ahora tiene FK a `Departament` (cascada) y a
+  `AspNetUsers`, más índice único `(DepartamentId, UserId)`.
+- **Índices únicos** (el esquema no tenía ninguno): `Employee_Payroll(PayrollId,UserId)`,
+  `chief_By_Departament(DepartamentId,UserId)`, `User_Question(UserId,QuestionId)`,
+  `User_Objetive(UserId,ObjetiveId)`, y los nombres de `Departament`, `ActionType`
+  y `ExtraType`. Van **filtrados**: SQL Server trata los NULL como iguales en un
+  índice único, y donde hay borrado lógico la regla solo aplica a lo vigente.
+- **Errores de restricción legibles.** `Middleware/DbConstraintExceptionMiddleware.cs`
+  traduce las SqlException 2601/2627 (único) y 547 (FK) a **409 con un mensaje en
+  español** listo para mostrar. Antes salía un 500 con el volcado. En el front,
+  `src/utils/apiError.js` (`mensajeDeError`) recupera ese texto.
+
+### Migración `MoneyDecimalAndNullableDates`
+
+- **Dinero de `float` a `decimal(18,2)`.** Ya no queda ninguna columna `float`
+  en el esquema de negocio (52 en `decimal(18,2)`). `Employee_Payroll` pasó
+  entero a `decimal` —incluidas horas y días— para no tener que castear al
+  multiplicar cantidad por tarifa. La precisión se fija por convención en
+  `OnModelCreating`, así que **una propiedad `decimal` nueva ya nace en 18,2**;
+  las que declaran su propio `[Column(TypeName=…)]` (como `Result.Evalution`,
+  que sigue en 5,2) se respetan.
+  Al ser exacto, se quitaron las tolerancias de `0.01` que compensaban el float
+  en `PaymentsController` y `LoansController`.
+- **14 fechas opcionales ahora nulables** (`ApprovedAt`, `UpdatedAt`, `EditedAt`,
+  `AppUser.BirthDate/HiredDate/LastEditedDate`…). La migración además **convierte
+  a NULL** los `0001-01-01` que ya estaban guardados. El front dejó de enviar ese
+  centinela (`MyProfileEdit`); los formateadores que lo filtran al leer se dejaron
+  por si quedara dato viejo.
+
+### Migración `DeleteRulesAndOptionalFields`
+
+- **Reglas de borrado con un solo criterio.** Antes estaban repartidas sin
+  patrón, con una cadena rota: borrar una `QuestionCategory` cascadeaba hasta
+  `User_Question` pero `Answer` no, y la operación fallaba a medio camino.
+  Ahora:
+  - **Composición → cascada**: `Payment→Loan`, `Answer→User_Question`,
+    `Result→User_Objetive`, `Employee_Payroll→Payroll`, `chief_By_Departament→Departament`.
+  - **Catálogo → restringir**: `Extra→ExtraType`, `Question→QuestionCategory`,
+    `User_Question→Question`, `Action→ActionType`, `Objetive→ObjetiveCategory`,
+    `User_Objetive→Objetive`, y el padre de `Departament`.
+  - Las referencias a `AspNetUsers` siguen sin acción: a las personas se las
+    desactiva, no se las borra.
+  Gracias a la cascada, `DeleteLoan` dejó de borrar los abonos a mano.
+- **Campos que ya no son obligatorios**: `Absence.Title`, `Absence.CreatedBy` y
+  `Employee_Payroll.WorkShift` eran `NOT NULL` y hacían fallar el POST con 400 si
+  faltaban. Ahora son nulables, como sus equivalentes en el resto de entidades.
+- **`Files`**: sigue asociando por `(TableName, ReferenceId)` en texto —no admite
+  FK— pero ese par ya está indexado, que es como se consulta siempre.
+- **Columnas derivadas de `Employee_Payroll`** (quincenal, diario, por hora,
+  tarifas de extra y feriado): **se conservan a propósito**. Son la foto de las
+  tarifas con las que se calculó el periodo; si el salario cambia después, la
+  planilla emitida no debe recalcularse sola. Es válido porque la fila es
+  inmutable una vez aprobada. Está documentado en el propio modelo.
+
+⚠️ **Los índices únicos son filtrados**, y SQL Server exige `SET QUOTED_IDENTIFIER ON`
+para insertar o actualizar en esas tablas. EF lo hace solo; si corres un script
+con `sqlcmd`, ponlo al inicio o el INSERT falla con el error 1934.
+
+### Migración `NamingCleanup`
+
+- **Banderas unificadas**: ya no existen `IsDeleted`, `IsActived`, `IsAproved` ni
+  `Draft`. Ahora es siempre `Deleted`, `IsActive`, `IsApproved` e `IsDraft`.
+- **`AppUser.State` eliminada**: se escribía una sola vez al crear el empleado y
+  no la leía nadie. El estado queda en `IsActive` + `Deleted`.
+- **Ortografía**: tabla `Absense` → `Absence`, `AppUser.Jorney` → `Journey`,
+  `Result.Evalution` → `Evaluation`, `Employee_Payroll.AbsenseRate/AbsenseTime`
+  → `AbsenceRate/AbsenceTime`. También el DTO `CreateEmployeeDto.Jorney`.
+  En el front se renombraron los mismos campos JSON en 15 archivos.
+
+⚠️ **Al generar esta migración, EF emparejó columnas por posición y produjo dos
+mapeos peligrosos que hubo que corregir a mano**: cruzaba las banderas de `Extra`
+(`IsDeleted → IsApproved` y `IsAproved → Deleted`, intercambiando los valores) y
+proponía borrar `Jorney` renombrando la columna muerta `State` como `Journey`,
+perdiendo la jornada. Si vuelves a renombrar varias columnas de una misma tabla
+en un solo paso, **revisa el `RenameColumn` generado antes de aplicarlo**.
+
+**Renames deliberadamente NO hechos**: `Departament` → `Department`,
+`Comission` → `Commission` y `Objetive` → `Objective`. Cada uno toca entre 30 y
+40 archivos entre los dos repos y cambia las rutas públicas de la API
+(`/api/Departaments`, `/api/Comissions`). El beneficio es ortográfico y el riesgo
+alto; conviene hacerlos en un cambio dedicado y con la app parada.
+
+**Tampoco se añadió borrado lógico** a las tablas que no lo tienen (`Action`,
+`Award`, `ContactEmergency`, `Salary`, `Employee_Payroll`): agregar la columna sin
+filtrar en todas las consultas sería peor que no tenerla.
+
+**Pendiente del saneamiento**: las 99 columnas `nvarchar(max)` sin longitud
+declarada, y los tres renames profundos listados arriba.
+
 ## 5. Pendiente / a verificar
 
 - ⚠️ **Build sin re-verificar tras los últimos cambios** (dark mode, `@custom-variant`,

@@ -185,7 +185,7 @@ const Employee_PayrollDetails = ({ data }) => {
         <Section title="Deducciones">
           <Info label="Días incapacidad CCSS" value={data.ccssDays} />
           <Info label="Días incapacidad INS" value={data.insDays} />
-          <Info label="Ausencias" value={data.absenseTime} />
+          <Info label="Ausencias" value={data.absenceTime} />
         </Section>
 
         {/* TOTALES */}

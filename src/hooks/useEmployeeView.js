@@ -11,21 +11,37 @@ import awardApi from '../api/awardsApi';
 import extrasApi from '../api/extrasApi';
 import comissionsApi from '../api/comissionsApi';
 import ContactEmergencies from '../api/contactEmergenciesApi';
+import VacationsApi from '../api/vacationsApi';
+import absencesApi from '../api/absencesApi';
+import loansApi from '../api/loansApi';
+import Employee_PayrollApi from '../api/Employee_PayrollApi';
+import { TABLA_DOCUMENTOS } from '../data/documentos';
 import toast from 'react-hot-toast';
 
 export const TABS = {
-  TRAINING: 'Certificaciones',
+  TIMELINE: 'Historial',
+  TRAINING: 'Formación',
   SALARY: 'Salarios',
   ACTIONS: 'Acciones',
+  VACATIONS: 'Vacaciones',
+  ABSENCES: 'Ausencias',
   EXTRAS: 'Extras',
   COMISSIONS: 'Comisiones',
+  LOANS: 'Préstamos',
+  PAYROLLS: 'Planillas',
   AWARDS: 'Reconocimientos',
   CONTACTS: 'Contactos',
-  FILES: 'Archivos',
+  FILES: 'Documentos',
+};
+
+/** Acepta la respuesta de Axios o el `.data` ya desenvuelto. */
+const lista = (respuesta) => {
+  const datos = respuesta?.data !== undefined ? respuesta.data : respuesta;
+  return Array.isArray(datos) ? datos : [];
 };
 
 const useEmployeeView = (id, open) => {
-  const [activeTab, setActiveTab] = useState(TABS.TRAINING);
+  const [activeTab, setActiveTab] = useState(TABS.TIMELINE);
 
   const [employee, setEmployee] = useState({});
   const [courses, setCourses] = useState([]);
@@ -40,6 +56,12 @@ const useEmployeeView = (id, open) => {
   const [employeePhoto, setEmployeePhoto] = useState(null);
   const [otherFiles, setOtherFiles] = useState([]);
 
+  // Añadidos para completar el expediente
+  const [vacations, setVacations] = useState([]);
+  const [absences, setAbsences] = useState([]);
+  const [loans, setLoans] = useState([]);
+  const [payrolls, setPayrolls] = useState([]);
+
   /* =========================
      DELETE FILE
   ========================= */
@@ -51,14 +73,13 @@ const useEmployeeView = (id, open) => {
       await FileApi.delete(id);
 
       // Si es la foto principal
-      if (employeePhoto && id === employeePhoto.id) {
+      if (employeePhoto && id === employeePhoto.fileModelId) {
         setEmployeePhoto(null);
       }
 
-      FileApi.delete(id);
-
-      // Remover de otros archivos
-      setOtherFiles((prev) => prev.filter((f) => f.id !== id));
+      /* La API devuelve `fileModelId`, no `id`: filtrar por `id` dejaba el
+         archivo en pantalla hasta recargar la página. */
+      setOtherFiles((prev) => prev.filter((f) => f.fileModelId !== id));
 
       toast.success('Archivo eliminado correctamente');
     } catch (err) {
@@ -89,7 +110,7 @@ const useEmployeeView = (id, open) => {
     }
 
     try {
-      const files = await FileApi.getByReference('User_Data', id);
+      const files = await FileApi.getByReference(TABLA_DOCUMENTOS, id);
 
       if (Array.isArray(files)) {
         setOtherFiles(files);
@@ -224,11 +245,39 @@ const useEmployeeView = (id, open) => {
   };
 
 
+  /* =========================
+     FETCH EXPEDIENTE AMPLIADO
+     Cada fuente es independiente: si una falla, las demás se muestran igual.
+  ========================= */
+  const fetchExpediente = async () => {
+    const fuentes = [
+      [VacationsApi.getVacationsByUser(id), setVacations],
+      [absencesApi.getAbsencesByUser(id), setAbsences],
+      [loansApi.getLoansByUser(id), setLoans],
+      [Employee_PayrollApi.Search({ employeeId: id }), setPayrolls],
+    ];
+
+    await Promise.all(
+      fuentes.map(async ([promesa, asignar]) => {
+        try {
+          asignar(lista(await promesa));
+        } catch (err) {
+          // Un 404 sólo significa "sin registros"; no es un error que mostrar.
+          if (err?.response?.status !== 404) {
+            console.error('Error cargando sección del expediente', err);
+          }
+          asignar([]);
+        }
+      })
+    );
+  };
+
   useEffect(() => {
     if (!id) return;
 
     fetchFiles();
     fetchData();
+    fetchExpediente();
   }, [id, open]);
 
 
@@ -255,12 +304,21 @@ const useEmployeeView = (id, open) => {
     extras,
     employeePhoto,
     otherFiles,
+    vacations,
+    absences,
+    loans,
+    payrolls,
     setActiveTab,
     setEmployee,
+
+    /* Recarga sólo las secciones del expediente. Se usa tras aprobar o
+       rechazar, donde volver a pedir todo el perfil sería un desperdicio. */
+    refetchExpediente: fetchExpediente,
 
     refetch: () => {
       fetchFiles();
       fetchData();
+      fetchExpediente();
     },
   };
 };

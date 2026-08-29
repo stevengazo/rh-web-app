@@ -33,7 +33,7 @@ export const usePayrollCalculations = ({
   const [incCCSS, setIncCCSS] = useState(() => num(payrollData?.ccssDays));
   const [incINS, setIncINS] = useState(() => num(payrollData?.insDays));
   const [ausencias, setAusencias] = useState(() =>
-    num(payrollData?.absenseTime)
+    num(payrollData?.absenceTime)
   );
   const [pension, setPension] = useState(() => num(payrollData?.pension));
   const [garnishment, setGarnishment] = useState(() =>
@@ -152,7 +152,7 @@ export const usePayrollCalculations = ({
       comissions: comisiones,
       ccssDays: incCCSS,
       insDays: incINS,
-      absenseTime: ausencias,
+      absenceTime: ausencias,
       grossSalary: salarioBruto,
       totalDeductions: deducciones,
       cCSSDeductionAmount,
@@ -207,7 +207,7 @@ export const usePayrollCalculations = ({
         'comissions',
         'ccssDays',
         'insDays',
-        'absenseTime',
+        'absenceTime',
         'pension',
         'garnishment',
         'associationContribution',

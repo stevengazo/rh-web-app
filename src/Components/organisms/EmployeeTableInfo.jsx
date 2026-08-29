@@ -1,21 +1,57 @@
 import { motion } from 'framer-motion';
+import AvatarUpload from './AvatarUpload';
 import {
-  UserX,
-  Mail,
-  Phone,
-  Building2,
-  Fingerprint,
-  MapPin,
-  Clock,
   Cake,
   CalendarDays,
+  Fingerprint,
   History,
+  Mail,
+  MapPin,
+  Pencil,
+  Phone,
+  UserX,
 } from 'lucide-react';
 
-const formatDate = (date) => {
-  if (!date || date.startsWith('0001-01-01')) return '—';
-  return new Date(date).toLocaleDateString('es-CR');
+/* ------------------------------------------------------------------
+   Utilidades
+   ------------------------------------------------------------------ */
+
+/** Fecha utilizable, tolerando el viejo centinela 0001-01-01. */
+const fechaValida = (valor) => {
+  if (!valor) return null;
+  const fecha = new Date(valor);
+  return Number.isNaN(fecha.getTime()) || fecha.getFullYear() < 1900
+    ? null
+    : fecha;
 };
+
+/** Fecha formateada, o `null` si no hay dato (no un guion). */
+const formatDate = (valor) => {
+  const fecha = fechaValida(valor);
+  return fecha
+    ? fecha.toLocaleDateString('es-CR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+    : null;
+};
+
+/** Años completos transcurridos desde una fecha. */
+const aniosDesde = (valor) => {
+  const fecha = fechaValida(valor);
+  if (!fecha) return null;
+
+  const hoy = new Date();
+  let anios = hoy.getFullYear() - fecha.getFullYear();
+  const mes = hoy.getMonth() - fecha.getMonth();
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) anios--;
+
+  return anios >= 0 ? anios : null;
+};
+
+const textoAnios = (anios) =>
+  anios === null ? null : `${anios} ${anios === 1 ? 'año' : 'años'}`;
 
 /**
  * Iniciales del colaborador. Las cuentas creadas desde el registro público no
@@ -30,61 +66,87 @@ const getInitials = (employee) => {
   return alterno.slice(0, 2).toUpperCase() || '—';
 };
 
+const nombreCompleto = (e) =>
+  [e.firstName, e.middleName, e.lastName, e.secondLastName]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+
+/* ------------------------------------------------------------------
+   Piezas
+   ------------------------------------------------------------------ */
+
 /** Skeleton mientras se carga el perfil. */
 const InfoSkeleton = () => (
-  <div className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm">
-    <div className="h-24 bg-surface-alt" />
-    <div className="px-6 pb-5">
-      <div className="-mt-10 flex items-end gap-4">
-        <div className="h-20 w-20 animate-pulse rounded-full border-4 border-surface bg-stroke-soft" />
-        <div className="space-y-2 pb-1">
-          <div className="h-4 w-48 animate-pulse rounded bg-stroke-soft" />
-          <div className="h-3 w-32 animate-pulse rounded bg-stroke-soft" />
-        </div>
+  <div className="rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm">
+    <div className="flex items-center gap-4">
+      <div className="h-14 w-14 animate-pulse rounded-full bg-stroke-soft" />
+      <div className="space-y-2">
+        <div className="h-4 w-52 animate-pulse rounded bg-stroke-soft" />
+        <div className="h-3 w-36 animate-pulse rounded bg-stroke-soft" />
+        <div className="h-3 w-44 animate-pulse rounded bg-stroke-soft" />
       </div>
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-16 animate-pulse rounded-lg border border-stroke-soft bg-surface-alt"
-          />
-        ))}
-      </div>
+    </div>
+
+    <div className="mt-5 space-y-2 border-t border-stroke-soft pt-5">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div
+          key={i}
+          className="h-4 w-full animate-pulse rounded bg-surface-alt"
+        />
+      ))}
     </div>
   </div>
 );
 
-const InfoItem = ({ icon: Icon, label, value }) => (
-  <div className="flex items-start gap-3 rounded-lg border border-stroke-soft bg-surface-alt p-3">
-    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-tint text-brand">
-      <Icon size={16} />
-    </div>
-    <div className="min-w-0">
-      <p className="text-xs text-ink-muted">{label}</p>
-      <p className="truncate text-sm font-medium text-ink">{value || '—'}</p>
-    </div>
+/** Fila de datos: etiqueta a la izquierda, valor a la derecha. */
+const Dato = ({ icon: Icon, label, value, extra }) => (
+  <div className="flex items-baseline gap-3 py-2.5">
+    <span className="flex w-44 shrink-0 items-center gap-2 text-sm text-ink-muted">
+      <Icon size={14} className="shrink-0" />
+      {label}
+    </span>
+
+    <span className="min-w-0 text-sm font-medium text-ink">
+      {value}
+      {extra && (
+        <span className="ml-2 text-xs font-normal text-ink-muted">{extra}</span>
+      )}
+    </span>
   </div>
 );
+
+/* ------------------------------------------------------------------
+   Componente
+   ------------------------------------------------------------------ */
 
 /**
- * Cabecera con la ficha del colaborador.
+ * Ficha del colaborador.
+ *
+ * Cabecera compacta (sin banner de color) y lista con **solo los campos que
+ * tienen dato**; lo que falta se resume en una línea al pie, para que la ficha
+ * no se vea como una pared de guiones.
  *
  * @param {object} employee
- * @param {boolean} [loading]      Muestra el skeleton.
- * @param {string} [emptyTitle]    Título del estado vacío.
- * @param {string} [emptyHint]     Texto de apoyo del estado vacío.
+ * @param {boolean} [loading]    Muestra el skeleton.
+ * @param {() => void} [onEdit]  Si se pasa, el aviso de campos faltantes
+ *                               ofrece un enlace para completarlos.
+ * @param {boolean} [puedeEditarFoto] Permite cambiar la foto de perfil.
+ * @param {string} [emptyTitle]
+ * @param {string} [emptyHint]
  */
 const EmployeeTableInfo = ({
   employee,
   loading = false,
+  onEdit,
+  puedeEditarFoto = false,
   emptyTitle = 'No hay información del empleado',
   emptyHint = 'Selecciona un empleado para ver sus datos',
 }) => {
   if (loading) return <InfoSkeleton />;
 
-  /* Ojo: sólo se considera vacío cuando no llegó el registro. Un colaborador
-     sin `firstName` (creado desde el registro público) sí tiene datos que
-     mostrar: correo, departamento, estado… */
+  /* Sólo se considera vacío cuando no llegó el registro. Un colaborador sin
+     `firstName` (creado desde el registro público) sí tiene qué mostrar. */
   const sinDatos = !employee || Object.keys(employee).length === 0;
 
   if (sinDatos) {
@@ -92,9 +154,8 @@ const EmployeeTableInfo = ({
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center
-                   border border-dashed border-stroke
-                   rounded-xl p-8 text-ink-muted bg-surface"
+        className="flex flex-col items-center justify-center rounded-xl
+                   border border-dashed border-stroke bg-surface p-8 text-ink-muted"
       >
         <UserX size={40} className="mb-3 text-ink-muted" />
         <p className="font-medium">{emptyTitle}</p>
@@ -103,101 +164,157 @@ const EmployeeTableInfo = ({
     );
   }
 
-  const fullName = `${employee.firstName ?? ''} ${employee.middleName ?? ''} ${employee.lastName ?? ''} ${employee.secondLastName ?? ''}`
-    .replace(/\s+/g, ' ')
-    .trim();
+  const nombre = nombreCompleto(employee);
+  const activo = Boolean(employee.isActive);
+
+  const ingreso = formatDate(employee.hiredDate);
+  const nacimiento = formatDate(employee.birthDate);
+  const ultimaEdicion = formatDate(employee.lastEditedDate);
+
+  /* Solo se listan los campos con dato. */
+  const datos = [
+    employee.dni && {
+      icon: Fingerprint,
+      label: 'Cédula',
+      value: employee.dni,
+    },
+    employee.address && {
+      icon: MapPin,
+      label: 'Dirección',
+      value: employee.address,
+    },
+    ingreso && {
+      icon: CalendarDays,
+      label: 'Fecha de ingreso',
+      value: ingreso,
+      extra: textoAnios(aniosDesde(employee.hiredDate)),
+    },
+    nacimiento && {
+      icon: Cake,
+      label: 'Fecha de nacimiento',
+      value: nacimiento,
+      extra: textoAnios(aniosDesde(employee.birthDate)),
+    },
+    ultimaEdicion && {
+      icon: History,
+      label: 'Última edición',
+      value: ultimaEdicion,
+    },
+  ].filter(Boolean);
+
+  /* …y lo que falta se resume al pie, en una sola línea. */
+  const faltantes = [
+    !nombre && 'nombre',
+    !employee.dni && 'cédula',
+    !employee.phoneNumber && 'teléfono',
+    !employee.address && 'dirección',
+    !nacimiento && 'fecha de nacimiento',
+    !employee.departament?.name && 'departamento',
+    !employee.journey && 'jornada',
+    !ingreso && 'fecha de ingreso',
+  ].filter(Boolean);
+
+  /* Subtítulo: departamento y jornada, sin repetir el correo. */
+  const contexto = [employee.departament?.name, employee.journey]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm"
+      transition={{ duration: 0.3 }}
+      className="rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm"
     >
-      {/* Banner */}
-      <div className="h-24 bg-linear-to-r from-brand to-accent" />
+      {/* ---------------------------- Identidad ---------------------------- */}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <AvatarUpload
+            userId={employee.id}
+            iniciales={getInitials(employee)}
+            editable={puedeEditarFoto}
+            size="md"
+          />
 
-      {/* Cabecera */}
-      <div className="px-6 pb-5">
-        <div className="-mt-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex items-end gap-4">
-            <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full border-4 border-surface bg-brand-tint text-2xl font-semibold text-brand shadow-sm">
-              {getInitials(employee)}
-            </div>
-            <div className="pb-1">
-              <h3
-                className={`text-lg font-semibold ${
-                  fullName ? 'text-ink' : 'text-ink-muted'
-                }`}
-              >
-                {fullName || 'Sin nombre registrado'}
-              </h3>
-              <p className="text-sm text-ink-muted">
-                @{employee.userName ?? '—'}
-                {employee.departament?.name && (
-                  <> · {employee.departament.name}</>
-                )}
-              </p>
+          <div className="min-w-0">
+            <h3
+              className={`truncate text-lg font-semibold ${
+                nombre ? 'text-ink' : 'text-ink-muted'
+              }`}
+            >
+              {nombre || 'Sin nombre registrado'}
+            </h3>
+
+            {contexto && (
+              <p className="truncate text-sm text-ink-secondary">{contexto}</p>
+            )}
+
+            {/* Contacto enlazado; no se repite en la lista de abajo */}
+            <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-muted">
+              {employee.email && (
+                <a
+                  href={`mailto:${employee.email}`}
+                  className="inline-flex min-w-0 items-center gap-1.5 transition-colors hover:text-brand"
+                >
+                  <Mail size={13} className="shrink-0" />
+                  <span className="truncate">{employee.email}</span>
+                </a>
+              )}
+
+              {employee.phoneNumber && (
+                <a
+                  href={`tel:${employee.phoneNumber}`}
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-brand"
+                >
+                  <Phone size={13} className="shrink-0" />
+                  {employee.phoneNumber}
+                </a>
+              )}
             </div>
           </div>
+        </div>
 
-          <span
-            className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-              employee.isActive
-                ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-600'
+        <span
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1
+            text-xs font-semibold ${
+              activo ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
             }`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                employee.isActive ? 'bg-green-500' : 'bg-red-500'
-              }`}
-            />
-            {employee.isActive ? 'Activo' : 'Inactivo'}
-          </span>
-        </div>
-
-        {/* Chips de contacto */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {employee.email && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3 py-1 text-xs text-ink-secondary">
-              <Mail size={13} /> {employee.email}
-            </span>
-          )}
-          {employee.phoneNumber && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-alt px-3 py-1 text-xs text-ink-secondary">
-              <Phone size={13} /> {employee.phoneNumber}
-            </span>
-          )}
-        </div>
-
-        {/* Grilla de datos */}
-        <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <InfoItem
-            icon={Building2}
-            label="Departamento"
-            value={employee.departament?.name}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              activo ? 'bg-green-500' : 'bg-red-500'
+            }`}
           />
-          <InfoItem icon={Clock} label="Jornada" value={employee.jorney} />
-          <InfoItem icon={Fingerprint} label="Cédula" value={employee.dni} />
-          <InfoItem icon={MapPin} label="Dirección" value={employee.address} />
-          <InfoItem
-            icon={Cake}
-            label="Fecha de nacimiento"
-            value={formatDate(employee.birthDate)}
-          />
-          <InfoItem
-            icon={CalendarDays}
-            label="Fecha de contratación"
-            value={formatDate(employee.hiredDate)}
-          />
-          <InfoItem
-            icon={History}
-            label="Última edición"
-            value={formatDate(employee.lastEditedDate)}
-          />
-        </div>
+          {activo ? 'Activo' : 'Inactivo'}
+        </span>
       </div>
+
+      {/* ------------------------------ Datos ------------------------------ */}
+      {datos.length > 0 && (
+        <div className="mt-5 divide-y divide-stroke-soft border-t border-stroke-soft pt-1">
+          {datos.map((d) => (
+            <Dato key={d.label} {...d} />
+          ))}
+        </div>
+      )}
+
+      {/* --------------------------- Qué falta ----------------------------- */}
+      {faltantes.length > 0 && (
+        <p className="mt-4 border-t border-stroke-soft pt-4 text-sm text-ink-muted">
+          Faltan por completar:{' '}
+          <span className="text-ink-secondary">{faltantes.join(', ')}</span>.
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="ml-2 inline-flex items-center gap-1 font-semibold text-brand hover:underline"
+            >
+              <Pencil size={13} />
+              Completar
+            </button>
+          )}
+        </p>
+      )}
     </motion.div>
   );
 };

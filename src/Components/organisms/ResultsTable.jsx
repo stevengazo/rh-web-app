@@ -22,7 +22,7 @@ const ResultsTable = ({ results = [] }) => {
     );
   }
 
-  const values = results.map((r) => r.evalution);
+  const values = results.map((r) => r.evaluation);
   const avg = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -57,10 +57,10 @@ const ResultsTable = ({ results = [] }) => {
                 <td className="px-4 py-3 text-center">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${getBadge(
-                      item.evalution
+                      item.evaluation
                     )}`}
                   >
-                    {item.evalution}
+                    {item.evaluation}
                   </span>
                 </td>
               </tr>

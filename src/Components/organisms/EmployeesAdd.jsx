@@ -27,7 +27,7 @@ const EmployeesAdd = ({ OnClose }) => {
     dni: '',
     address: '',
     hiredDate: today,
-    jorney: '',
+    journey: '',
     departamentId: '',
   });
 
@@ -59,7 +59,7 @@ const EmployeesAdd = ({ OnClose }) => {
         dni: '',
         address: '',
         hiredDate: '',
-        jorney: '',
+        journey: '',
         departamentId: 0,
       });
       notify();
@@ -254,7 +254,7 @@ const EmployeesAdd = ({ OnClose }) => {
             <Label className="text-ink-secondary text-sm">Jornada</Label>
             <select
               name="journey"
-              value={newUser.jorney}
+              value={newUser.journey}
               onChange={handleChange}
               className="w-full mt-1 bg-surface border border-stroke rounded-md px-3 py-2 text-sm text-ink focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none transition"
             >

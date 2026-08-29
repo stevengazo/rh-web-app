@@ -1,8 +1,10 @@
 import { Phone, User, Users, Pencil, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import IconButton from '../IconButton';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
 
-const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
+const ContactsEmergencyTable = ({ items = [], onEdit, onDelete, onView }) => {
   return (
     <div className="mx-auto w-full max-w-6xl border-collapse rounded-xl overflow-hidden shadow">
       <table className="w-full border border-stroke-soft rounded-md">
@@ -57,7 +59,14 @@ const ContactsEmergencyTable = ({ items = [], onEdit, onDelete }) => {
               </td>
 
               <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-1">
+                  <RowActionButton
+                    icon={Eye}
+                    label="Ver detalle"
+                    tono="brand"
+                    onClick={() => onView?.(item)}
+                  />
+
                   <IconButton
                     icon={Pencil}
                     onClick={() => onEdit?.(item)}

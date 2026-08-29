@@ -1,6 +1,8 @@
 import { DollarSign, Calendar, Coins, Pencil, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import IconButton from '../IconButton';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -19,7 +21,7 @@ const formatAmount = (amount, currency) => {
   }).format(value);
 };
 
-const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
+const SalaryTable = ({ salaries = [], onEdit, onDelete, onView }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full border border-stroke-soft rounded-xl overflow-hidden shadow-sm bg-surface">
@@ -70,7 +72,14 @@ const SalaryTable = ({ salaries = [], onEdit, onDelete }) => {
                 {item.currency || '—'}
               </td>
               <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-1">
+                  <RowActionButton
+                    icon={Eye}
+                    label="Ver detalle"
+                    tono="brand"
+                    onClick={() => onView?.(item)}
+                  />
+
                   <IconButton
                     icon={Pencil}
                     onClick={() => onEdit?.(item)}

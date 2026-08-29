@@ -1,181 +1,334 @@
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, LogOut, PanelsTopLeft, Menu, X } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
-import { useState } from 'react';
+import {
+  Banknote,
+  ChevronDown,
+  FileText,
+  LogOut,
+  Menu,
+  PanelsTopLeft,
+  Percent,
+  Target,
+  User,
+  Users,
+  X,
+} from 'lucide-react';
+
 import ThemeToggle from '../Components/ThemeToggle';
+import EmployeeAvatar from '../Components/molecules/EmployeeAvatar';
+import { obtenerFoto } from '../Components/organisms/AvatarUpload';
+import { urlDeArchivo } from '../utils/fileUrl';
+import { useAppContext } from '../context/AppContext';
+import { PRODUCTO } from '../data/marketing';
+
+/**
+ * Secciones del portal del colaborador.
+ *
+ * Cada una lleva su propio icono: antes las cinco usaban el mismo `User`, lo
+ * que hacía imposible distinguirlas de un vistazo.
+ */
+const SECCIONES = [
+  { to: '/my-profile', label: 'Mi perfil', icon: User },
+  { to: '/my-kpis', label: 'KPIs', icon: Target },
+  { to: '/my-comissions', label: 'Comisiones', icon: Percent },
+  { to: '/my-loans', label: 'Préstamos', icon: Banknote },
+  { to: '/my-payrolls', label: 'Comprobantes', icon: FileText },
+];
+
+const linkClass = ({ isActive }) =>
+  `flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium
+   transition-colors duration-150
+   ${
+     isActive
+       ? 'bg-white/15 text-white shadow-sm'
+       : 'text-gray-300 hover:bg-white/10 hover:text-white'
+   }`;
+
+/** Iniciales del usuario en sesión. */
+const iniciales = (user) => {
+  const nombre = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
+  if (nombre) {
+    return nombre
+      .split(' ')
+      .slice(0, 2)
+      .map((p) => p[0])
+      .join('')
+      .toUpperCase();
+  }
+  return (user?.userName || user?.email || '?').slice(0, 2).toUpperCase();
+};
+
+const nombreVisible = (user) =>
+  [user?.firstName, user?.lastName].filter(Boolean).join(' ') ||
+  user?.userName ||
+  user?.email ||
+  'Mi cuenta';
 
 const NavBar = () => {
   const navigate = useNavigate();
-  const { hasRole } = useAppContext();
-  const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
+  const { user, hasRole, logout } = useAppContext();
 
-  const handleLogout = () => {
-    setIsOpen(false);
-    navigate('/');
+  const [menuMovil, setMenuMovil] = useState(false);
+  const [menuUsuario, setMenuUsuario] = useState(false);
+  const [foto, setFoto] = useState(null);
+  const refUsuario = useRef(null);
+
+  // Foto de perfil del usuario en sesión
+  useEffect(() => {
+    let vigente = true;
+    if (!user?.id) return setFoto(null);
+
+    obtenerFoto(user.id).then((archivo) => {
+      if (vigente) setFoto(urlDeArchivo(archivo?.filePath));
+    });
+
+    return () => {
+      vigente = false;
+    };
+  }, [user?.id]);
+
+  // Cierra el menú de usuario al hacer clic fuera o pulsar Escape
+  useEffect(() => {
+    if (!menuUsuario) return;
+
+    const alClicar = (e) => {
+      if (!refUsuario.current?.contains(e.target)) setMenuUsuario(false);
+    };
+    const alTeclear = (e) => {
+      if (e.key === 'Escape') setMenuUsuario(false);
+    };
+
+    document.addEventListener('mousedown', alClicar);
+    document.addEventListener('keydown', alTeclear);
+    return () => {
+      document.removeEventListener('mousedown', alClicar);
+      document.removeEventListener('keydown', alTeclear);
+    };
+  }, [menuUsuario]);
+
+  // Al navegar se cierra todo
+  useEffect(() => {
+    setMenuMovil(false);
+    setMenuUsuario(false);
+  }, [pathname]);
+
+  /* Antes solo navegaba a "/" y dejaba el token en localStorage: la sesión
+     seguía viva y bastaba volver atrás para entrar de nuevo. */
+  const cerrarSesion = () => {
+    logout?.();
+    navigate('/login');
   };
-
-  const linkClass = ({ isActive }) =>
-    `flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-150
-     ${
-       isActive
-         ? 'bg-linear-to-r from-brand to-accent text-white shadow-sm'
-         : 'text-gray-300 hover:bg-white/10 hover:text-white'
-     }`;
-
-  const closeMenu = () => setIsOpen(false);
 
   return (
     <>
       <motion.nav
-        initial={{ y: -20, opacity: 0 }}
+        initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-linear-to-r from-nav to-violet-950 px-4 sm:px-6 py-2 flex items-center justify-between shadow-lg"
+        className="flex h-16 items-center justify-between gap-4 border-b border-white/10
+                   bg-linear-to-r from-nav to-violet-950 px-4 shadow-lg sm:px-6"
       >
-        {/* Logo */}
-        <h2 className="text-lg font-semibold text-white tracking-wide">
-          R.Humanos
-        </h2>
+        {/* Marca — la misma que usa el resto del sistema */}
+        <NavLink
+          to="/my-profile"
+          className="flex shrink-0 items-center gap-2.5 rounded-md focus-visible:outline-none
+                     focus-visible:ring-2 focus-visible:ring-white/50"
+        >
+          <span
+            className="grid h-9 w-9 place-items-center rounded-lg
+                       bg-linear-to-br from-brand to-accent text-white shadow-sm"
+          >
+            <Users size={19} strokeWidth={2} />
+          </span>
+          <span className="hidden text-base font-semibold tracking-tight text-white sm:block">
+            {PRODUCTO.nombre}
+          </span>
+        </NavLink>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-2">
+        {/* Navegación de escritorio */}
+        <div className="hidden flex-1 items-center justify-center gap-1 lg:flex">
           {hasRole('Admin') && (
             <NavLink to="/manager" className={linkClass}>
-              <PanelsTopLeft size={18} />
-              Recursos Humanos
+              <PanelsTopLeft size={17} />
+              Administración
             </NavLink>
           )}
 
-          <NavLink to="/my-profile" className={linkClass}>
-            <User size={18} />
-            Mi Perfil
-          </NavLink>
-
-          <NavLink to="/my-kpis" className={linkClass}>
-            <User size={18} />
-            KPI
-          </NavLink>
-
-          <NavLink to="/my-comissions" className={linkClass}>
-            <User size={18} />
-            Comisiones
-          </NavLink>
-          <NavLink to="/my-loans" className={linkClass}>
-            <User size={18} />
-            Prestamos
-          </NavLink>
-
-          <NavLink to="/my-payrolls" className={linkClass}>
-            <User size={18} />
-            Comprobantes
-          </NavLink>
-
-          <ThemeToggle variant="dark" />
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
-          >
-            <LogOut size={18} />
-            Salir
-          </button>
+          {SECCIONES.map(({ to, label, icon: Icon }) => (
+            <NavLink key={to} to={to} className={linkClass}>
+              <Icon size={17} />
+              {label}
+            </NavLink>
+          ))}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(true)}
-          className="md:hidden text-gray-300 hover:text-white"
-        >
-          <Menu size={24} />
-        </button>
+        {/* Acciones */}
+        <div className="flex shrink-0 items-center gap-1">
+          <ThemeToggle variant="dark" />
+
+          {/* Menú de usuario (escritorio) */}
+          <div className="relative hidden lg:block" ref={refUsuario}>
+            <button
+              type="button"
+              onClick={() => setMenuUsuario((v) => !v)}
+              aria-expanded={menuUsuario}
+              aria-haspopup="menu"
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-200
+                         transition-colors hover:bg-white/10 hover:text-white
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+            >
+              <EmployeeAvatar
+                src={foto}
+                iniciales={iniciales(user)}
+                size="xs"
+                className="bg-white/15 text-white ring-0"
+              />
+              <span className="max-w-36 truncate font-medium">
+                {nombreVisible(user)}
+              </span>
+              <ChevronDown
+                size={15}
+                className={`transition-transform ${menuUsuario ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            <AnimatePresence>
+              {menuUsuario && (
+                <motion.div
+                  role="menu"
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl
+                             border border-stroke-soft bg-surface shadow-xl"
+                >
+                  <div className="border-b border-stroke-soft px-4 py-3">
+                    <p className="truncate text-sm font-semibold text-ink">
+                      {nombreVisible(user)}
+                    </p>
+                    {user?.email && (
+                      <p className="truncate text-xs text-ink-muted">
+                        {user.email}
+                      </p>
+                    )}
+                  </div>
+
+                  <NavLink
+                    to="/my-profile"
+                    role="menuitem"
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink-secondary
+                               transition-colors hover:bg-canvas hover:text-ink"
+                  >
+                    <User size={16} />
+                    Ver mi perfil
+                  </NavLink>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={cerrarSesion}
+                    className="flex w-full items-center gap-2.5 border-t border-stroke-soft px-4 py-2.5
+                               text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+                  >
+                    <LogOut size={16} />
+                    Cerrar sesión
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Menú móvil */}
+          <button
+            type="button"
+            onClick={() => setMenuMovil(true)}
+            aria-label="Abrir menú"
+            className="grid h-9 w-9 place-items-center rounded-md text-gray-300
+                       transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+          >
+            <Menu size={22} />
+          </button>
+        </div>
       </motion.nav>
 
-      {/* Mobile Drawer */}
+      {/* Cajón móvil */}
       <AnimatePresence>
-        {isOpen && (
+        {menuMovil && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={closeMenu}
-              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setMenuMovil(false)}
+              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
             />
 
-            {/* Drawer */}
             <motion.aside
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-72 bg-linear-to-b from-nav via-nav to-violet-950 z-50 shadow-xl p-6 flex flex-col gap-3"
+              transition={{ type: 'tween', duration: 0.25 }}
+              className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col
+                         bg-linear-to-b from-nav via-nav to-violet-950 p-5 shadow-xl lg:hidden"
             >
-              {/* Header */}
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-white font-semibold text-lg">Menú</h3>
+              {/* Identidad */}
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <EmployeeAvatar
+                    src={foto}
+                    iniciales={iniciales(user)}
+                    size="sm"
+                    className="bg-white/15 text-white ring-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-white">
+                      {nombreVisible(user)}
+                    </p>
+                    {user?.email && (
+                      <p className="truncate text-xs text-gray-400">
+                        {user.email}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 <button
-                  onClick={closeMenu}
-                  className="text-gray-300 hover:text-white"
+                  type="button"
+                  onClick={() => setMenuMovil(false)}
+                  aria-label="Cerrar menú"
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-gray-300
+                             transition-colors hover:bg-white/10 hover:text-white"
                 >
                   <X size={22} />
                 </button>
               </div>
 
-              {hasRole('Admin') && (
-                <NavLink
-                  to="/manager"
-                  className={linkClass}
-                  onClick={closeMenu}
-                >
-                  <PanelsTopLeft size={18} />
-                  Recursos Humanos
-                </NavLink>
-              )}
+              <nav className="flex flex-col gap-1">
+                {hasRole('Admin') && (
+                  <NavLink to="/manager" className={linkClass}>
+                    <PanelsTopLeft size={17} />
+                    Administración
+                  </NavLink>
+                )}
 
-              <NavLink
-                to="/my-profile"
-                className={linkClass}
-                onClick={closeMenu}
-              >
-                <User size={18} />
-                Mi Perfil
-              </NavLink>
-
-              <NavLink to="/my-kpis" className={linkClass} onClick={closeMenu}>
-                <User size={18} />
-                KPI
-              </NavLink>
-
-              <NavLink
-                to="/my-comissions"
-                className={linkClass}
-                onClick={closeMenu}
-              >
-                <User size={18} />
-                Comisiones
-              </NavLink>
-
-              <NavLink
-                to="/my-payrolls"
-                className={linkClass}
-                onClick={closeMenu}
-              >
-                <User size={18} />
-                Comprobantes
-              </NavLink>
-
-              <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
-                <ThemeToggle variant="dark" />
-                <span className="text-sm text-gray-300">Tema</span>
-              </div>
+                {SECCIONES.map(({ to, label, icon: Icon }) => (
+                  <NavLink key={to} to={to} className={linkClass}>
+                    <Icon size={17} />
+                    {label}
+                  </NavLink>
+                ))}
+              </nav>
 
               <button
-                onClick={handleLogout}
-                className="mt-1 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition"
+                type="button"
+                onClick={cerrarSesion}
+                className="mt-auto flex items-center gap-2.5 rounded-md bg-red-500/10 px-3 py-2
+                           text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
               >
-                <LogOut size={18} />
-                Salir
+                <LogOut size={17} />
+                Cerrar sesión
               </button>
             </motion.aside>
           </>

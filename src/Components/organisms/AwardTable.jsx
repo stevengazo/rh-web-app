@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
 
 const formatDate = (dateString) => {
   if (!dateString) return '—';
@@ -27,7 +29,7 @@ const rowVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-const AwardTable = ({ awards = [] }) => {
+const AwardTable = ({ awards = [], onView }) => {
   if (!awards.length) {
     return (
       <p className="text-center text-ink-muted py-6">
@@ -49,6 +51,7 @@ const AwardTable = ({ awards = [] }) => {
           <th className="p-3 text-left">Descripción</th>
           <th className="p-3 text-left">Fecha</th>
           <th className="p-3 text-left">Creado por</th>
+          <th className="p-3 text-center">Acciones</th>
         </tr>
       </thead>
 
@@ -57,8 +60,7 @@ const AwardTable = ({ awards = [] }) => {
           <motion.tr
             key={award.awardId}
             variants={rowVariants}
-            whileHover={{ backgroundColor: '#f8fafc' }}
-            className="border-b"
+            className="border-b border-stroke-soft transition-colors hover:bg-canvas"
           >
             <td className="p-3 font-medium text-ink">{award.title}</td>
 
@@ -70,6 +72,17 @@ const AwardTable = ({ awards = [] }) => {
             </td>
 
             <td className="p-3 text-ink-muted">{award.createdBy || '—'}</td>
+
+            <td className="p-3">
+              <div className="flex justify-center">
+                <RowActionButton
+                  icon={Eye}
+                  label="Ver detalle"
+                  tono="brand"
+                  onClick={() => onView?.(award)}
+                />
+              </div>
+            </td>
           </motion.tr>
         ))}
       </motion.tbody>

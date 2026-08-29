@@ -31,11 +31,17 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
 
     let newValue = value;
 
-    // 🔧 Convertir fechas a ISO antes de guardar
+    /* Las fechas se envían sin zona (`YYYY-MM-DDT00:00:00`).
+       Con `toISOString()` el valor se convertía a UTC y, al leerlo de vuelta en
+       una zona negativa como la de Costa Rica, la fecha retrocedía un día. */
     if (name === 'birthDate' || name === 'hiredDate') {
-      newValue = value ? new Date(value).toISOString() : null;
+      newValue = value ? `${value}T00:00:00` : null;
     }
-    console
+
+    // El <select> entrega texto; la API espera un entero.
+    if (name === 'departamentId') {
+      newValue = value ? Number(value) : null;
+    }
 
     setLocalEmployee((prev) => ({
       ...prev,
@@ -158,7 +164,7 @@ const EmployeeEdit = ({ employee, setEmployee, onClose }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <Label>Jornada</Label>
-          <select name="jorney" value={localEmployee.jorney || ''} onChange={handleChange}>
+          <select name="journey" value={localEmployee.journey || ''} onChange={handleChange}>
             <option className='text-gray-600' value="">Seleccione una jornada</option>
             <option className='text-gray-600' value="Diurna">Diurna</option>
             <option className='text-gray-600' value="Mixta">Mixta</option>

@@ -1,10 +1,11 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Banknote,
   Briefcase,
   CalendarDays,
+  ChevronLeft,
   CircleHelp,
   FileText,
   LayoutDashboard,
@@ -22,6 +23,9 @@ import {
 
 import HelpDrawer from '../Components/organisms/HelpDrawer';
 import { useAppContext } from '../context/AppContext';
+
+/** Dónde se recuerda si el menú quedó plegado. */
+const CLAVE_COLAPSADO = 'sidebar-colapsado';
 
 /**
  * Navegación del área de administración, agrupada por el trabajo que resuelve
@@ -70,20 +74,30 @@ const SECCIONES = [
   },
 ];
 
-const navItemClass = ({ isActive }) =>
-  `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150
-   ${
-     isActive
-       ? 'bg-linear-to-r from-brand to-accent text-white shadow-sm'
-       : 'text-gray-300 hover:bg-white/10 hover:text-white'
-   }`;
-
 const ManagerSideBar = () => {
   const navigate = useNavigate();
   const { logout } = useAppContext();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // cajón móvil
   const [ayudaAbierta, setAyudaAbierta] = useState(false);
+
+  /* El pliegue se recuerda entre visitas: quien trabaja con el menú
+     colapsado no quiere volver a plegarlo en cada pantalla. */
+  const [colapsado, setColapsado] = useState(() => {
+    try {
+      return localStorage.getItem(CLAVE_COLAPSADO) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CLAVE_COLAPSADO, colapsado ? '1' : '0');
+    } catch {
+      /* modo privado: se ignora */
+    }
+  }, [colapsado]);
 
   /* Antes solo navegaba a "/" dejando el token en localStorage: la sesión
      seguía viva y bastaba volver a /manager para entrar de nuevo. */
@@ -92,71 +106,131 @@ const ManagerSideBar = () => {
     navigate('/login');
   };
 
-  const SidebarContent = () => (
-    <>
-      {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-white/10 px-4 text-lg font-semibold">
-        RH Manager
-        <button
-          className="text-gray-400 md:hidden"
-          onClick={() => setOpen(false)}
-          aria-label="Cerrar menú"
+  /**
+   * @param {boolean} plegado  En el cajón móvil nunca se pliega.
+   */
+  const Contenido = ({ plegado }) => {
+    const itemClass = ({ isActive }) =>
+      `group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium
+       transition-colors duration-150
+       ${plegado ? 'justify-center px-2' : 'px-3'}
+       ${
+         isActive
+           ? 'bg-linear-to-r from-brand to-accent text-white shadow-sm'
+           : 'text-gray-300 hover:bg-white/10 hover:text-white'
+       }`;
+
+    return (
+      <>
+        {/* Cabecera */}
+        <div
+          className={`flex h-16 items-center border-b border-white/10 ${
+            plegado ? 'justify-center px-2' : 'justify-between px-4'
+          }`}
         >
-          <X size={22} />
-        </button>
-      </div>
+          {!plegado && (
+            <span className="text-lg font-semibold">RH Manager</span>
+          )}
 
-      {/* Navegación */}
-      <nav className="scrollbar-slim-dark flex-1 space-y-4 overflow-y-auto p-4 text-sm">
-        {SECCIONES.map((seccion) => (
-          <div key={seccion.titulo}>
-            <p className="mb-2 px-3 text-xs uppercase tracking-wide text-gray-400">
-              {seccion.titulo}
-            </p>
+          {/* Plegar (escritorio) */}
+          <button
+            type="button"
+            onClick={() => setColapsado((v) => !v)}
+            aria-label={plegado ? 'Expandir menú' : 'Plegar menú'}
+            title={plegado ? 'Expandir menú' : 'Plegar menú'}
+            className="hidden h-8 w-8 place-items-center rounded-md text-gray-400
+                       transition-colors hover:bg-white/10 hover:text-white md:grid"
+          >
+            <ChevronLeft
+              size={18}
+              className={`transition-transform duration-200 ${
+                plegado ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
 
-            {seccion.items.map((item) => {
-              const Icon = item.icon;
+          {/* Cerrar (móvil) */}
+          <button
+            className="text-gray-400 md:hidden"
+            onClick={() => setOpen(false)}
+            aria-label="Cerrar menú"
+          >
+            <X size={22} />
+          </button>
+        </div>
 
-              return (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.end}
-                  className={navItemClass}
-                  onClick={() => setOpen(false)}
-                >
-                  <Icon size={18} />
-                  {item.label}
-                </NavLink>
-              );
-            })}
-          </div>
-        ))}
-      </nav>
+        {/* Navegación */}
+        <nav className="scrollbar-slim-dark flex-1 space-y-4 overflow-y-auto p-3 text-sm">
+          {SECCIONES.map((seccion) => (
+            <div key={seccion.titulo}>
+              {plegado ? (
+                <div className="mx-2 mb-2 border-t border-white/10" />
+              ) : (
+                <p className="mb-2 px-3 text-xs uppercase tracking-wide text-gray-400">
+                  {seccion.titulo}
+                </p>
+              )}
 
-      {/* Pie: ayuda y salida */}
-      <div className="space-y-2 border-t border-white/10 p-4">
-        <button
-          type="button"
-          onClick={() => setAyudaAbierta(true)}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium
-                     text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          <CircleHelp size={18} />
-          Centro de ayuda
-        </button>
+              {seccion.items.map((item) => {
+                const Icon = item.icon;
 
-        <button
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-md bg-red-500/10 px-3 py-2
-                     text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20"
-        >
-          <LogOut size={18} />
-          Cerrar Sesión
-        </button>
-      </div>
-    </>
-  );
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    className={itemClass}
+                    onClick={() => setOpen(false)}
+                    title={plegado ? item.label : undefined}
+                  >
+                    <Icon size={18} className="shrink-0" />
+                    {!plegado && <span className="truncate">{item.label}</span>}
+
+                    {/* Etiqueta flotante cuando está plegado */}
+                    {plegado && (
+                      <span
+                        className="pointer-events-none absolute left-full z-50 ml-2 hidden
+                                   whitespace-nowrap rounded-md bg-nav px-2 py-1 text-xs
+                                   text-white shadow-lg group-hover:block"
+                      >
+                        {item.label}
+                      </span>
+                    )}
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Pie */}
+        <div className="space-y-2 border-t border-white/10 p-3">
+          <button
+            type="button"
+            onClick={() => setAyudaAbierta(true)}
+            title={plegado ? 'Centro de ayuda' : undefined}
+            className={`flex w-full items-center gap-3 rounded-md py-2 text-sm font-medium
+                        text-gray-300 transition-colors hover:bg-white/10 hover:text-white
+                        ${plegado ? 'justify-center px-2' : 'px-3'}`}
+          >
+            <CircleHelp size={18} className="shrink-0" />
+            {!plegado && 'Centro de ayuda'}
+          </button>
+
+          <button
+            onClick={handleLogout}
+            title={plegado ? 'Cerrar sesión' : undefined}
+            className={`flex w-full items-center gap-3 rounded-md bg-red-500/10 py-2
+                        text-sm font-medium text-red-400 transition-colors hover:bg-red-500/20
+                        ${plegado ? 'justify-center px-2' : 'px-3'}`}
+          >
+            <LogOut size={18} className="shrink-0" />
+            {!plegado && 'Cerrar Sesión'}
+          </button>
+        </div>
+      </>
+    );
+  };
 
   return (
     <>
@@ -170,9 +244,14 @@ const ManagerSideBar = () => {
       </button>
 
       {/* Sidebar escritorio */}
-      <aside className="hidden w-64 flex-col bg-linear-to-b from-nav via-nav to-violet-950 text-white md:flex">
-        <SidebarContent />
-      </aside>
+      <motion.aside
+        animate={{ width: colapsado ? 72 : 256 }}
+        transition={{ type: 'tween', duration: 0.2 }}
+        className="hidden shrink-0 flex-col overflow-hidden bg-linear-to-b
+                   from-nav via-nav to-violet-950 text-white md:flex"
+      >
+        <Contenido plegado={colapsado} />
+      </motion.aside>
 
       {/* Sidebar móvil */}
       <AnimatePresence>
@@ -187,13 +266,14 @@ const ManagerSideBar = () => {
             />
 
             <motion.aside
-              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-linear-to-b from-nav via-nav to-violet-950 text-white"
+              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col
+                         bg-linear-to-b from-nav via-nav to-violet-950 text-white"
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}
               transition={{ type: 'tween', duration: 0.25 }}
             >
-              <SidebarContent />
+              <Contenido plegado={false} />
             </motion.aside>
           </>
         )}

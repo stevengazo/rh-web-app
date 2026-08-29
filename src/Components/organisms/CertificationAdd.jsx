@@ -21,7 +21,7 @@ const CertificationAdd = ({ userId, author, onAdded }) => {
     createdAt: today,
     updatedBy: author?.userName ?? '',
     updatedAt: today,
-    isDeleted: false,
+    deleted: false,
     userId: userId,
     appUser: null,
   });

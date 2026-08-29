@@ -15,7 +15,7 @@ const KPISChart = ({ objetive, results }) => {
     if (!results || !Array.isArray(results)) return [];
 
     return results
-      .filter((r) => r && r.resultDate && r.evalution !== null)
+      .filter((r) => r && r.resultDate && r.evaluation !== null)
       .map((r) => {
         const date = new Date(r.resultDate);
 
@@ -23,7 +23,7 @@ const KPISChart = ({ objetive, results }) => {
 
         return {
           date: date.toLocaleDateString(),
-          value: r.evalution,
+          value: r.evaluation,
         };
       })
       .filter(Boolean)

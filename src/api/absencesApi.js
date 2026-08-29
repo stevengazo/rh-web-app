@@ -25,6 +25,16 @@ const absencesApi = {
     return apiClient.get(`/Absences/${id}`);
   },
   /**
+   * Ausencias de un colaborador.
+   *
+   * @param {string} id - Identificador del colaborador.
+   * @returns {Promise<import("axios").AxiosResponse>}
+   */
+  getAbsencesByUser: (id) => {
+    return apiClient.get(`/absences/user/${id}`);
+  },
+
+  /**
    * Crea una nueva ausencia.
    *
    * @param {Object} absence - Objeto con la información de la ausencia a registrar.

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
+import { PRODUCTO } from '../data/marketing';
 
 const HEADER_HEIGHT = '64px'; // ajusta si tu NavBar cambia
 
@@ -50,7 +51,7 @@ const MainLayout = () => {
         animate="visible"
         variants={footerVariants}
       >
-        © {new Date().toLocaleDateString('es-CR', { year: 'numeric' })} — RH Sistema
+        © {new Date().getFullYear()} — {PRODUCTO.nombre}
       </motion.footer>
     </div>
   );

@@ -1,22 +1,42 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Award,
+  Banknote,
+  Briefcase,
+  CalendarDays,
+  Clock,
+  FolderOpen,
+  GraduationCap,
+  HandCoins,
+  History,
+  Percent,
+  Plane,
+  ReceiptText,
+  Users,
+} from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAppContext } from '../context/AppContext';
+
+import VacationsApi from '../api/vacationsApi';
+import absencesApi from '../api/absencesApi';
+import actionApi from '../api/actionApi';
+import { mensajeDeError } from '../utils/apiError';
 
 /* HOOKS */
 import useEmployeeView, { TABS } from '../hooks/useEmployeeView';
 import useOffCanvas from '../hooks/useOffCanvas.js';
 
 /* COMPONENTS */
-import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
 import PrimaryButton from '../Components/PrimaryButton';
 import OffCanvas from '../Components/OffCanvas';
-import ViewEmployeePhoto from '../Components/organisms/ViewEmployeePhoto';
-import UploadImage from '../Components/organisms/UploadImage';
+import EmployeeProfileHeader from '../Components/organisms/EmployeeProfileHeader';
+import Tabs from '../Components/molecules/Tabs';
+import RecordView from '../Components/organisms/RecordView';
+import RecordAttachments from '../Components/organisms/RecordAttachments';
 
 import EmployeeEdit from '../Components/organisms/EmployeeEdit';
-import EmployeeTableInfo from '../Components/organisms/EmployeeTableInfo';
-import DesactivateUser from '../Components/DesactivateUser.jsx';
 
 import CourseAdd from '../Components/organisms/CourseAdd';
 import CourseTable from '../Components/organisms/CourseTable';
@@ -36,8 +56,6 @@ import ActionEdit from '../Components/organisms/ActionEdit';
 import ContactsEmergenciesAdd from '../Components/organisms/ContactsEmergenciesAdd';
 import ContactsEmergencyTable from '../Components/organisms/ContactsEmergencyTable';
 
-import ExtrasTable from '../Components/organisms/ExtrasTable';
-
 import AddAward from '../Components/organisms/AddAward';
 import AwardTable from '../Components/organisms/AwardTable';
 
@@ -49,10 +67,124 @@ import ExtraTable from '../Components/organisms/ExtraTable';
 import ExtraView from '../Components/organisms/ExtraView';
 
 import CertificationEdit from '../Components/organisms/CertificationEdit';
-import EmployeeInfoCard from '../Components/organisms/EmployeeInfoCard';
-import ListFiles from '../Components/organisms/ListFiles';
-import { KeyIcon, UserX } from 'lucide-react';
-import UploadFile from '../Components/organisms/UploadFile';
+import CertificationExpiryAlert from '../Components/organisms/CertificationExpiryAlert';
+
+import EmployeeTimeline from '../Components/organisms/EmployeeTimeline';
+import EmployeeDocuments from '../Components/organisms/EmployeeDocuments';
+import EmployeeLoansPanel from '../Components/organisms/EmployeeLoansPanel';
+import EmployeePayrollHistory from '../Components/organisms/EmployeePayrollHistory';
+
+import VacationsAdd from '../Components/organisms/VacationsAdd';
+import VacationsTable from '../Components/organisms/VacationsTable';
+
+import AbsenceAdd from '../Components/organisms/AbsenceAdd';
+import AbsenceTable from '../Components/organisms/AbsenceTable';
+import AbsenceView from '../Components/organisms/AbsenceView';
+
+
+/* Campos que muestra el visor de detalle según el tipo de registro. */
+const FICHAS = {
+  curso: (c) => ({
+    titulo: c.name,
+    subtitulo: c.institution,
+    campos: [
+      { label: 'Institución', valor: c.institution },
+      { label: 'Modalidad', valor: c.modality },
+      { label: 'Estado', valor: c.state },
+      { label: 'Inicio', valor: c.start, tipo: 'fecha' },
+      { label: 'Fin', valor: c.end, tipo: 'fecha' },
+      { label: 'Duración', valor: c.durationInHours ? `${c.durationInHours} horas` : null },
+      { label: 'Registrado por', valor: c.author },
+      { label: 'Descripción', valor: c.description, ancho: 'completo' },
+    ],
+    extra: (
+      <RecordAttachments
+        tabla="Course"
+        referenciaId={c.courseId}
+        titulo="Certificado del curso"
+      />
+    ),
+  }),
+
+  certificacion: (c) => ({
+    titulo: c.name,
+    subtitulo: c.institution,
+    campos: [
+      { label: 'Institución', valor: c.institution },
+      { label: 'Credencial', valor: c.credentialId },
+      { label: 'Estado', valor: c.status },
+      { label: 'Emisión', valor: c.emissionDate, tipo: 'fecha' },
+      { label: 'Vence', valor: c.expirationDate, tipo: 'fecha' },
+      { label: 'Registrado por', valor: c.createdBy },
+      { label: 'Descripción', valor: c.description, ancho: 'completo' },
+    ],
+    extra: (
+      <RecordAttachments
+        tabla="Certification"
+        referenciaId={c.certificationId}
+        titulo="Documento de la certificación"
+      />
+    ),
+  }),
+
+  salario: (s) => ({
+    titulo: 'Salario registrado',
+    campos: [
+      { label: 'Monto', valor: s.salaryAmount, tipo: 'dinero' },
+      { label: 'Tipo', valor: s.type },
+      { label: 'Moneda', valor: s.currency },
+      { label: 'Vigente desde', valor: s.effectiveDate, tipo: 'fecha' },
+      { label: 'Registrado por', valor: s.createdBy },
+      { label: 'Registrado el', valor: s.createdAt, tipo: 'fecha' },
+    ],
+  }),
+
+  comision: (c) => ({
+    titulo: 'Comisión',
+    campos: [
+      { label: 'Monto', valor: c.amount, tipo: 'dinero' },
+      { label: 'Fecha', valor: c.date, tipo: 'fecha' },
+      { label: 'Borrador', valor: c.isDraft, tipo: 'booleano' },
+      { label: 'Aprobada por', valor: c.approvedBy },
+      { label: 'Registrada por', valor: c.createdBy },
+      { label: 'Última edición', valor: c.lastEditedAt, tipo: 'fecha' },
+      { label: 'Descripción', valor: c.description, ancho: 'completo' },
+    ],
+  }),
+
+  reconocimiento: (a) => ({
+    titulo: a.title,
+    campos: [
+      { label: 'Fecha', valor: a.createdAt, tipo: 'fecha' },
+      { label: 'Otorgado por', valor: a.createdBy },
+      { label: 'Descripción', valor: a.description, ancho: 'completo' },
+    ],
+  }),
+
+  vacacion: (v) => ({
+    titulo: 'Solicitud de vacaciones',
+    subtitulo: v.status || (v.approvedBy ? 'Aprobada' : 'Pendiente'),
+    campos: [
+      { label: 'Desde', valor: v.startDate, tipo: 'fecha' },
+      { label: 'Hasta', valor: v.endDate, tipo: 'fecha' },
+      { label: 'Solicitada el', valor: v.createdAt, tipo: 'fecha' },
+      { label: 'Aprobada por', valor: v.approvedBy },
+      { label: 'Aprobada el', valor: v.approvedAt, tipo: 'fecha' },
+      { label: 'Rechazada por', valor: v.rejectedBy },
+      { label: 'Motivo del rechazo', valor: v.rejectionReason, ancho: 'completo' },
+      { label: 'Motivo', valor: v.reason, ancho: 'completo' },
+    ],
+  }),
+
+  contacto: (c) => ({
+    titulo: c.name,
+    subtitulo: c.relationship,
+    campos: [
+      { label: 'Teléfono', valor: c.phone },
+      { label: 'Parentesco', valor: c.relationship },
+    ],
+  }),
+};
 
 const ViewEmployeePage = () => {
   const { id } = useParams();
@@ -75,16 +207,118 @@ const ViewEmployeePage = () => {
     contacts,
     extras,
     handleDeleteFile,
-    employeePhoto,
     DeleteUser,
     otherFiles,
+    vacations,
+    absences,
+    loans,
+    payrolls,
     refetch,
+    refetchExpediente,
   } = useEmployeeView(id, open);
 
   const handleAdded = () => {
     refetch();
     closeCanvas();
   };
+
+  /**
+   * Ejecuta una revisión (aprobar/rechazar/reabrir) y refresca el expediente.
+   * Vacaciones y ausencias comparten exactamente el mismo flujo, así que
+   * comparten también el manejo de errores y avisos.
+   */
+  const revisar = async (operacion, exito, recargar = refetchExpediente) => {
+    try {
+      await operacion();
+      toast.success(exito);
+      await recargar();
+      closeCanvas();
+    } catch (error) {
+      console.error(error);
+      toast.error(mensajeDeError(error, 'No se pudo completar la operación.'));
+    }
+  };
+
+  /** Pide el motivo del rechazo, que el backend exige. */
+  const pedirMotivo = () => {
+    const motivo = window.prompt('Motivo del rechazo:');
+    if (motivo === null) return null; // canceló
+    if (!motivo.trim()) {
+      toast.error('Debe indicar el motivo del rechazo.');
+      return null;
+    }
+    return motivo.trim();
+  };
+
+  const vacacion = {
+    aprobar: (v) =>
+      revisar(
+        () => VacationsApi.approveVacation(v.vacationId, user?.userName),
+        'Vacaciones aprobadas'
+      ),
+    rechazar: (v) => {
+      const motivo = pedirMotivo();
+      if (!motivo) return;
+      revisar(
+        () => VacationsApi.rejectVacation(v.vacationId, motivo, user?.userName),
+        'Solicitud rechazada'
+      );
+    },
+    reabrir: (v) =>
+      revisar(
+        () => VacationsApi.reopenVacation(v.vacationId, user?.userName),
+        'Solicitud devuelta a pendiente'
+      ),
+  };
+
+  const accion = {
+    aprobar: (a) =>
+      revisar(
+        () => actionApi.approveAction(a.actionId, user?.userName),
+        'Acción aprobada',
+        refetch
+      ),
+    rechazar: (a) => {
+      const motivo = pedirMotivo();
+      if (!motivo) return;
+      revisar(
+        () => actionApi.rejectAction(a.actionId, motivo, user?.userName),
+        'Acción rechazada',
+        refetch
+      );
+    },
+    reabrir: (a) =>
+      revisar(
+        () => actionApi.reopenAction(a.actionId, user?.userName),
+        'Acción devuelta a pendiente',
+        refetch
+      ),
+  };
+
+  const ausencia = {
+    aprobar: (a) =>
+      revisar(
+        () => absencesApi.approveAbsence(a.absenceId, user?.userName),
+        'Ausencia aprobada'
+      ),
+    rechazar: (a) => {
+      const motivo = pedirMotivo();
+      if (!motivo) return;
+      revisar(
+        () => absencesApi.rejectAbsence(a.absenceId, motivo, user?.userName),
+        'Ausencia rechazada'
+      );
+    },
+    reabrir: (a) =>
+      revisar(
+        () => absencesApi.reopenAbsence(a.absenceId, user?.userName),
+        'Ausencia devuelta a pendiente'
+      ),
+  };
+
+  /** Abre el panel de detalle con la ficha del tipo indicado. */
+  const verDetalle = (tipo, registro) =>
+    openCanvas('Detalle', <RecordView {...FICHAS[tipo](registro)} />);
 
   return (
     <>
@@ -104,85 +338,68 @@ const ViewEmployeePage = () => {
       </AnimatePresence>
 
       <div className="space-y-6">
-        <PageTitle>Información del Empleado</PageTitle>
+        <EmployeeProfileHeader
+          employee={employee}
+          salaries={salaries}
+          conteos={{
+            cursos: courses.length,
+            certificaciones: certifications.length,
+            acciones: actions.length,
+          }}
+          onEstadoCambiado={refetch}
+          onEdit={() =>
+            openCanvas(
+              'Editar Información',
+              <EmployeeEdit
+                employee={employee}
+                setEmployee={setEmployee}
+                onClose={closeCanvas}
+              />
+            )
+          }
+        />
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Header title="Detalles del Empleado" />
-          </div>
-
-          <PrimaryButton
-            className="self-start sm:self-auto"
-            onClick={() =>
-              openCanvas(
-                'Editar Información',
-                <EmployeeEdit
-                  employee={employee}
-                  setEmployee={setEmployee}
-                  onClose={closeCanvas}
-                />
-              )
-            }
-          >
-            Editar
-          </PrimaryButton>
-        </div>
-
-        <div className="d-flex flex-row">
-          <ViewEmployeePhoto
-            img={employeePhoto?.filePath}
-            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full object-cover border border-stroke-soft"
-          />
-          <EmployeeInfoCard employee={employee} />
-        </div>
-
-        <div className="bg-surface rounded-xl border border-stroke-soft p-5 sm:p-6 shadow-sm space-y-4">
-          <SectionTitle>Acciones</SectionTitle>
-
-          <div className="mt-4 flex flex-col sm:flex-row gap-3">
-            <PrimaryButton
-              className="w-full sm:w-auto"
-              onClick={() =>
-                openCanvas(
-                  'Agregar Imagen de Perfil',
-                  <UploadImage userId={employee.id} />
-                )
-              }
-            >
-              Agregar Imagen
-            </PrimaryButton>
-          </div>
-        </div>
-
-        <div className="border-b border-stroke-soft">
-          <div className="sm:hidden mt-2">
-            <select
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-md border border-stroke bg-surface text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-brand"
-            >
-              {Object.entries(TABS).map(([key, value]) => (
-                <option key={key} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <nav className="hidden sm:flex gap-6 min-w-max px-1 mt-2">
-            {Object.entries(TABS).map(([key, value]) => (
-              <TabButton
-                key={key}
-                active={activeTab === value}
-                onClick={() => setActiveTab(value)}
-              >
-                {value}
-              </TabButton>
-            ))}
-          </nav>
-        </div>
+        <Tabs
+          idGrupo="expediente"
+          value={activeTab}
+          onChange={setActiveTab}
+          items={[
+            { id: TABS.TIMELINE, label: 'Historial', icon: History },
+            { id: TABS.TRAINING, label: 'Formación', icon: GraduationCap, count: courses.length + certifications.length },
+            { id: TABS.SALARY, label: 'Salarios', icon: Banknote, count: salaries.length },
+            { id: TABS.ACTIONS, label: 'Acciones', icon: Briefcase, count: actions.length },
+            { id: TABS.VACATIONS, label: 'Vacaciones', icon: Plane, count: vacations.length },
+            { id: TABS.ABSENCES, label: 'Ausencias', icon: CalendarDays, count: absences.length },
+            { id: TABS.EXTRAS, label: 'Extras', icon: Clock, count: extras.length },
+            { id: TABS.COMISSIONS, label: 'Comisiones', icon: Percent, count: comission.length },
+            { id: TABS.LOANS, label: 'Préstamos', icon: HandCoins, count: loans.length },
+            { id: TABS.PAYROLLS, label: 'Planillas', icon: ReceiptText, count: payrolls.length },
+            { id: TABS.AWARDS, label: 'Reconocimientos', icon: Award, count: awards.length },
+            { id: TABS.CONTACTS, label: 'Contactos', icon: Users, count: contacts.length },
+            { id: TABS.FILES, label: 'Documentos', icon: FolderOpen, count: otherFiles.length },
+          ]}
+        />
 
         <div className="bg-surface rounded-xl border border-stroke-soft p-6 shadow-sm">
+          {activeTab === TABS.TIMELINE && (
+            <>
+              <Header title="Historial del colaborador" />
+
+              <EmployeeTimeline
+                employee={employee}
+                actions={actions}
+                salaries={salaries}
+                vacations={vacations}
+                absences={absences}
+                extras={extras}
+                comissions={comission}
+                courses={courses}
+                certifications={certifications}
+                awards={awards}
+              />
+            </>
+          )}
+
           {activeTab === TABS.TRAINING && (
             <>
               <Header
@@ -200,6 +417,7 @@ const ViewEmployeePage = () => {
               />
               <CourseTable
                 courses={courses}
+                onView={(e) => verDetalle('curso', e)}
                 OnEdit={(e) =>
                   openCanvas(
                     'Editar',
@@ -223,15 +441,23 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <CertificationTable
+              <CertificationExpiryAlert
                 certifications={certifications}
-                OnEdit={(e) =>
-                  openCanvas(
-                    'Editar Certificación',
-                    <CertificationEdit item={e} OnUpdate={closeCanvas} />
-                  )
-                }
+                onVer={(c) => verDetalle('certificacion', c)}
               />
+
+              <div className="mt-4">
+                <CertificationTable
+                  certifications={certifications}
+                  onView={(e) => verDetalle('certificacion', e)}
+                  OnEdit={(e) =>
+                    openCanvas(
+                      'Editar Certificación',
+                      <CertificationEdit item={e} OnUpdate={closeCanvas} />
+                    )
+                  }
+                />
+              </div>
             </>
           )}
 
@@ -250,7 +476,10 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <SalaryTable salaries={salaries} />
+              <SalaryTable
+                salaries={salaries}
+                onView={(e) => verDetalle('salario', e)}
+              />
             </>
           )}
 
@@ -278,8 +507,67 @@ const ViewEmployeePage = () => {
                   )
                 }
                 OnSelect={(e) =>
-                  openCanvas('Acción de Personal', <ActionView action={e} />)
+                  openCanvas(
+                    'Acción de Personal',
+                    <ActionView
+                      action={e}
+                      onApprove={accion.aprobar}
+                      onReject={accion.rechazar}
+                      onReopen={accion.reabrir}
+                    />
+                  )
                 }
+              />
+            </>
+          )}
+
+          {activeTab === TABS.VACATIONS && (
+            <>
+              <Header
+                title="Vacaciones"
+                action={() =>
+                  openCanvas(
+                    'Solicitar Vacaciones',
+                    <VacationsAdd userId={id} onAdded={handleAdded} />
+                  )
+                }
+              />
+              <VacationsTable
+                vacations={vacations}
+                onView={(v) => verDetalle('vacacion', v)}
+                onApprove={vacacion.aprobar}
+                onReject={vacacion.rechazar}
+                onReopen={vacacion.reabrir}
+              />
+            </>
+          )}
+
+          {activeTab === TABS.ABSENCES && (
+            <>
+              <Header
+                title="Ausencias"
+                action={() =>
+                  openCanvas(
+                    'Registrar Ausencia',
+                    <AbsenceAdd userId={id} onAdded={handleAdded} />
+                  )
+                }
+              />
+              <AbsenceTable
+                items={absences}
+                onSelect={(a) =>
+                  openCanvas(
+                    'Ausencia',
+                    <AbsenceView
+                      absence={a}
+                      onApprove={ausencia.aprobar}
+                      onReject={ausencia.rechazar}
+                      onReopen={ausencia.reabrir}
+                    />
+                  )
+                }
+                onApprove={ausencia.aprobar}
+                onReject={ausencia.rechazar}
               />
             </>
           )}
@@ -317,7 +605,24 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <ComissionTable comissions={comission} />
+              <ComissionTable
+                comissions={comission}
+                onView={(e) => verDetalle('comision', e)}
+              />
+            </>
+          )}
+
+          {activeTab === TABS.LOANS && (
+            <>
+              <Header title="Préstamos" />
+              <EmployeeLoansPanel loans={loans} />
+            </>
+          )}
+
+          {activeTab === TABS.PAYROLLS && (
+            <>
+              <Header title="Historial de planillas" />
+              <EmployeePayrollHistory payrolls={payrolls} />
             </>
           )}
 
@@ -332,7 +637,10 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <AwardTable awards={awards} />
+              <AwardTable
+                awards={awards}
+                onView={(e) => verDetalle('reconocimiento', e)}
+              />
             </>
           )}
 
@@ -347,22 +655,23 @@ const ViewEmployeePage = () => {
                   )
                 }
               />
-              <ContactsEmergencyTable items={contacts} />
+              <ContactsEmergencyTable
+                items={contacts}
+                onView={(e) => verDetalle('contacto', e)}
+              />
             </>
           )}
 
           {activeTab === TABS.FILES && (
             <>
-              <Header
-                title="Archivos"
-                action={() =>
-                  openCanvas(
-                    'Agregar',
-                    <UploadFile userId={id} onAdded={handleAdded} />
-                  )
-                }
+              <Header title="Documentos del expediente" />
+
+              <EmployeeDocuments
+                userId={id}
+                files={otherFiles}
+                onChanged={refetch}
+                onDelete={handleDeleteFile}
               />
-              <ListFiles files={otherFiles} onDelete={handleDeleteFile} />
             </>
           )}
         </div>

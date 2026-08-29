@@ -9,17 +9,7 @@ import PageTitle from '../Components/PageTitle';
 import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
 import PaymentTable from '../Components/organisms/PaymentTable';
 
-const LOAN_STATUS = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado',
-  PAID: 'Pagado',
-};
-
-const estadoDePrestamo = (l) => {
-  if (Object.values(LOAN_STATUS).includes(l?.state)) return l.state;
-  return l?.approvedBy ? LOAN_STATUS.APPROVED : LOAN_STATUS.PENDING;
-};
+import { LOAN_STATUS, estadoDePrestamo } from '../utils/loanStatus';
 
 const formatDate = (fecha) =>
   fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';

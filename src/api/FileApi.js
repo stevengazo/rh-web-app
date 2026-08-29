@@ -13,13 +13,23 @@ const FileApi = {
     return res.data;
   },
 
-  // subir archivo con referencia
-  upload: async (file, tableName, referenceId) => {
+  /**
+   * Sube un archivo asociado a un registro.
+   *
+   * @param {File} file
+   * @param {string} tableName    Tabla a la que pertenece (ej. 'EmployeeDocs').
+   * @param {string|number} referenceId
+   * @param {string} [category]   Clasificación del documento; ver `data/documentos.js`.
+   */
+  upload: async (file, tableName, referenceId, category) => {
     const formData = new FormData();
 
     formData.append('File', file);
     formData.append('TableName', tableName);
     formData.append('ReferenceId', referenceId);
+
+    // Si va vacío, el backend lo guarda como NULL: "sin clasificar".
+    if (category) formData.append('Category', category);
 
     const res = await apiClient.post('/FileModels/upload', formData, {
       headers: {

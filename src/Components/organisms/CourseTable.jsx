@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { BookOpen, Clock, School, Pencil, Trash2 } from 'lucide-react';
 import IconButton from '../IconButton';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
 
 const formatDate = (date) => {
   if (!date) return '';
@@ -17,7 +19,7 @@ const tableVariants = {
   },
 };
 
-const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
+const CourseTable = ({ courses = [], OnEdit, onDelete, onView }) => {
 
  // console.log(courses)
   return (
@@ -85,7 +87,14 @@ const CourseTable = ({ courses = [], OnEdit, onDelete }) => {
               </td>
 
               <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-1">
+                  <RowActionButton
+                    icon={Eye}
+                    label="Ver detalle"
+                    tono="brand"
+                    onClick={() => onView?.(item)}
+                  />
+
                   <IconButton
                     icon={Pencil}
                     onClick={() => OnEdit?.(item)}

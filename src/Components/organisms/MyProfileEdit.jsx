@@ -9,7 +9,7 @@ import PrimaryButton from '../PrimaryButton';
 import SecondaryButton from '../SecondaryButton';
 import EmployeeApi from '../../api/employeesApi';
 
-/** Fecha ISO → `yyyy-MM-dd` para el input, ignorando el valor por defecto. */
+/** Fecha ISO → `yyyy-MM-dd` para el input. Tolera el viejo centinela 0001-01-01. */
 const paraInput = (fecha) => {
   if (!fecha || String(fecha).startsWith('0001-01-01')) return '';
   return String(fecha).substring(0, 10);
@@ -68,9 +68,11 @@ const MyProfileEdit = ({ profile = {}, onSaved, onCancel }) => {
         email: profile.email,
         departamentId: profile.departamentId ?? null,
 
+        // La columna ya es nulable: sin fecha se manda null, no el 0001-01-01
+        // que antes había que enviar para satisfacer un DateTime obligatorio.
         birthDate: form.birthDate
           ? new Date(`${form.birthDate}T00:00:00`).toISOString()
-          : (profile.birthDate ?? '0001-01-01T00:00:00'),
+          : null,
       });
 
       toast.success('Tus datos se actualizaron correctamente.');

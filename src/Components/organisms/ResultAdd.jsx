@@ -6,7 +6,7 @@ import PrimaryButton from '../PrimaryButton';
 
 const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
   const [formData, setFormData] = useState({
-    evalution: '',
+    evaluation: '',
     resultDate: null, // ahora es Date
   });
 
@@ -33,7 +33,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
     e.preventDefault();
     setError('');
 
-    if (!formData.evalution || !formData.resultDate) {
+    if (!formData.evaluation || !formData.resultDate) {
       setError('Todos los campos son obligatorios');
       return;
     }
@@ -42,7 +42,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
       setLoading(true);
 
       const payload = {
-        evalution: Number(formData.evalution),
+        evaluation: Number(formData.evaluation),
         resultDate: formData.resultDate.toISOString(), // 🔑 importante
         user_ObjetiveId,
       };
@@ -50,7 +50,7 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
       await resultsApi.createResult(payload);
 
       setFormData({
-        evalution: '',
+        evaluation: '',
         resultDate: null,
       });
 
@@ -86,8 +86,8 @@ const ResultAdd = ({ user_ObjetiveId, onSuccess }) => {
 
         <input
           type="number"
-          name="evalution"
-          value={formData.evalution}
+          name="evaluation"
+          value={formData.evaluation}
           onChange={handleChange}
           placeholder="Ej: 85"
           className="

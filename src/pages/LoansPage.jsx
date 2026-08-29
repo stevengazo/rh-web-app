@@ -30,19 +30,7 @@ import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
 import { fieldClasses } from '../Components/atoms/fieldClasses';
 import HelpButton from '../Components/molecules/HelpButton';
 
-/** Estados de un préstamo, tal como los guarda el backend en `state`. */
-export const LOAN_STATUS = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  REJECTED: 'Rechazado',
-  PAID: 'Pagado',
-};
-
-/** Estado efectivo, tolerando préstamos viejos con `state` vacío o libre. */
-const estadoDePrestamo = (l) => {
-  if (Object.values(LOAN_STATUS).includes(l?.state)) return l.state;
-  return l?.approvedBy ? LOAN_STATUS.APPROVED : LOAN_STATUS.PENDING;
-};
+import { LOAN_STATUS, estadoDePrestamo } from '../utils/loanStatus';
 
 const nombreDe = (user) =>
   [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||

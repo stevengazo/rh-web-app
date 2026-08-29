@@ -70,6 +70,23 @@ const VacationsApi = {
   deleteVacation: (id) => {
     return apiClient.delete(`/vacations/${id}`);
   },
+
+  /* ----------------------------------------------------------------
+     Aprobación: Pendiente → Aprobada / Rechazada
+     ---------------------------------------------------------------- */
+
+  /** Aprueba la solicitud de vacaciones. */
+  approveVacation: (id, userName) =>
+    apiClient.post(`/vacations/${id}/approve`, { userName }),
+
+  /** Rechaza la solicitud dejando constancia del motivo (obligatorio). */
+  rejectVacation: (id, reason, userName) =>
+    apiClient.post(`/vacations/${id}/reject`, { reason, userName }),
+
+  /** Devuelve la solicitud al estado pendiente. */
+  reopenVacation: (id, userName) =>
+    apiClient.post(`/vacations/${id}/reopen`, { userName }),
+
 };
 
 export default VacationsApi;

@@ -14,6 +14,7 @@ import DepartamentEdit from '../Components/organisms/DepartamentEdit';
 import HelpButton from '../Components/molecules/HelpButton';
 
 import DepartamentApi from '../api/departamentApi';
+import { mensajeDeError } from '../utils/apiError';
 
 /** Alta rápida de un departamento. */
 const DepartamentAdd = ({ onCreated, onClose }) => {
@@ -45,7 +46,7 @@ const DepartamentAdd = ({ onCreated, onClose }) => {
       onClose?.();
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo crear el departamento');
+      toast.error(mensajeDeError(error, 'No se pudo crear el departamento'));
     } finally {
       setGuardando(false);
     }

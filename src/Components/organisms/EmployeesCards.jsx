@@ -1,7 +1,12 @@
 import { Mail, Phone, Building2, ChevronRight, Users } from 'lucide-react';
 import EmployeeView from './EmployeeView';
+import EmployeeAvatar from '../molecules/EmployeeAvatar';
+import { useEmployeePhotos } from '../../hooks/useEmployeePhotos';
 
 const EmployeesCards = ({ employees = [], HandleShowEdit }) => {
+  // Una sola petición para las fotos de toda la lista
+  const { fotos } = useEmployeePhotos();
+
   if (!employees.length) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-16 text-ink-muted">
@@ -14,7 +19,7 @@ const EmployeesCards = ({ employees = [], HandleShowEdit }) => {
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {employees.map((emp) => {
-        const initials = `${emp.firstName?.[0] ?? ''}${emp.lastName?.[0] ?? ''}`.toUpperCase();
+        const foto = fotos[emp.id];
 
         return (
           <div
@@ -22,12 +27,12 @@ const EmployeesCards = ({ employees = [], HandleShowEdit }) => {
             role="button"
             tabIndex={0}
             onClick={() =>
-              HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} />)
+              HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} fotoUrl={foto} />)
             }
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} />);
+                HandleShowEdit('Ver Empleado', <EmployeeView employee={emp} fotoUrl={foto} />);
               }
             }}
             className="group cursor-pointer overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm
@@ -37,9 +42,7 @@ const EmployeesCards = ({ employees = [], HandleShowEdit }) => {
             {/* Header con avatar */}
             <div className="flex items-start justify-between gap-3 p-5 pb-4">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-tint text-base font-semibold text-brand ring-1 ring-brand/10">
-                  {initials || '—'}
-                </div>
+                <EmployeeAvatar employee={emp} src={foto} size="md" />
                 <div className="min-w-0">
                   <h3 className="truncate text-sm font-semibold text-ink">
                     {emp.firstName} {emp.lastName}

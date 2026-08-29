@@ -10,6 +10,7 @@ import SecondaryButton from '../SecondaryButton';
 import IconButton from '../IconButton';
 
 import DepartamentApi from '../../api/departamentApi';
+import { mensajeDeError } from '../../utils/apiError';
 import EmployeeApi from '../../api/employeesApi';
 
 const nombreDe = (e) =>
@@ -117,7 +118,7 @@ const DepartamentEdit = ({
       onSaved?.();
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo guardar el departamento');
+      toast.error(mensajeDeError(error, 'No se pudo guardar el departamento'));
     } finally {
       setGuardando(false);
     }
@@ -143,7 +144,7 @@ const DepartamentEdit = ({
       onSaved?.();
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo asignar la jefatura');
+      toast.error(mensajeDeError(error, 'No se pudo asignar la jefatura'));
     } finally {
       setTrabajandoJefe(false);
     }
@@ -160,7 +161,7 @@ const DepartamentEdit = ({
       onSaved?.();
     } catch (error) {
       console.error(error);
-      toast.error('No se pudo quitar la jefatura');
+      toast.error(mensajeDeError(error, 'No se pudo quitar la jefatura'));
     } finally {
       setTrabajandoJefe(false);
     }

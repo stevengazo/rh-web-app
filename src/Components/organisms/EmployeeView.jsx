@@ -10,9 +10,9 @@ import {
   Mail,
   MapPin,
   Phone,
-  User,
 } from 'lucide-react';
 import PrimaryButton from '../PrimaryButton';
+import EmployeeAvatar from '../molecules/EmployeeAvatar';
 
 /* ------------------------------------------------------------------
    Utilidades de presentación
@@ -147,7 +147,7 @@ const Seccion = ({ titulo, children }) => (
    Componente
    ------------------------------------------------------------------ */
 
-const EmployeeView = ({ employee }) => {
+const EmployeeView = ({ employee, fotoUrl }) => {
   const navigate = useNavigate();
 
   if (!employee) {
@@ -174,13 +174,13 @@ const EmployeeView = ({ employee }) => {
 
         <div className="px-5 pb-5">
           {/* Avatar montado sobre la banda */}
-          <div
-            className="-mt-10 grid h-20 w-20 place-items-center rounded-full
-                       border-4 border-surface bg-brand-tint text-xl font-bold
-                       text-brand shadow-md"
-          >
-            {iniciales(employee) || <User size={28} />}
-          </div>
+          <EmployeeAvatar
+            employee={employee}
+            src={fotoUrl}
+            size="xl"
+            iniciales={iniciales(employee) || undefined}
+            className="-mt-10 border-4 border-surface shadow-md ring-0"
+          />
 
           <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
@@ -261,7 +261,7 @@ const EmployeeView = ({ employee }) => {
 
         <Seccion titulo="Información laboral">
           <Dato icon={Building2} label="Departamento" valor={departamento} />
-          <Dato icon={BadgeCheck} label="Jornada" valor={employee.jorney} />
+          <Dato icon={BadgeCheck} label="Jornada" valor={employee.journey} />
           <Dato
             icon={CalendarDays}
             label="Fecha de ingreso"

@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, CheckCircle, XCircle } from 'lucide-react';
+import RowActionButton from '../molecules/RowActionButton';
+import { Eye } from 'lucide-react';
 
 const formatDate = (date) => {
   if (!date) return '—';
@@ -23,7 +25,7 @@ const rowVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-const ComissionTable = ({ comissions = [] }) => {
+const ComissionTable = ({ comissions = [], onView }) => {
   if (!comissions.length) {
     return (
       <p className="text-ink-muted text-sm text-center">
@@ -48,6 +50,7 @@ const ComissionTable = ({ comissions = [] }) => {
           <th className="p-3 text-center">Estado</th>
           <th className="p-3 text-left">Creado por</th>
           <th className="p-3 text-left">Última edición</th>
+          <th className="p-3 text-center">Acciones</th>
         </tr>
       </thead>
 
@@ -56,8 +59,7 @@ const ComissionTable = ({ comissions = [] }) => {
           <tr
             key={c.comissionId}
             variants={rowVariants}
-            whileHover={{ backgroundColor: '#f8fafc' }}
-            className="border-b"
+            className="border-b border-stroke-soft transition-colors hover:bg-canvas"
           >
             <td className="p-3">{c.comissionId}</td>
 
@@ -83,6 +85,17 @@ const ComissionTable = ({ comissions = [] }) => {
             <td className="p-3">{c.createdBy || '—'}</td>
 
             <td className="p-3">{formatDate(c.lastEditedAt)}</td>
+
+            <td className="p-3">
+              <div className="flex justify-center">
+                <RowActionButton
+                  icon={Eye}
+                  label="Ver detalle"
+                  tono="brand"
+                  onClick={() => onView?.(c)}
+                />
+              </div>
+            </td>
           </tr>
         ))}
       </motion.tbody>

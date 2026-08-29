@@ -110,6 +110,22 @@ const EmployeeApi = {
       params: { q: query },
     });
   },
+
+  /**
+   * Desactiva al colaborador: sale de planillas y selectores, conserva su
+   * historial. Va aparte del PUT para que un guardado normal no pueda
+   * desactivar a alguien sin querer.
+   *
+   * @param {string} id
+   * @param {string} [userName] Queda en la auditoría.
+   */
+  deactivateEmployee: (id, userName) =>
+    apiClient.post(`/employee/${id}/deactivate`, { userName }),
+
+  /** Reactiva a un colaborador dado de baja. */
+  activateEmployee: (id, userName) =>
+    apiClient.post(`/employee/${id}/activate`, { userName }),
+
 };
 
 export default EmployeeApi;
