@@ -77,6 +77,43 @@ const payrollApi = {
    * @param {number|string} id
    * @param {string} userName - Queda registrado como aprobador.
    */
+  /**
+   * Horas extra y ausencias que esta planilla puede liquidar.
+   *
+   * El rango de fechas lo resuelve el backend a partir del periodo de la
+   * planilla; aquí solo hace falta su id.
+   *
+   * @param {number|string} id
+   * @returns {Promise<import('axios').AxiosResponse>} `{ extras, absences }`
+   */
+  getPayableItems: (id) => {
+    return apiClient.get(`/Payrolls/${id}/payable`);
+  },
+
+  /**
+   * Horas extra y ausencias aprobadas de **fuera** del periodo que nadie ha
+   * liquidado todavía. Sirven para arrastrar a esta planilla lo que se aprobó
+   * tarde y de otro modo se quedaría sin cobrar.
+   *
+   * @param {number|string} id
+   * @param {string} [userId] Limita al colaborador indicado.
+   */
+  getPendingOutside: (id, userId) => {
+    return apiClient.get(`/Payrolls/${id}/pending-outside`, {
+      params: { userId },
+    });
+  },
+
+  /** Arrastra registros sueltos a la planilla. */
+  attachItems: (id, { extraIds = [], absenceIds = [] }) => {
+    return apiClient.post(`/Payrolls/${id}/attach`, { extraIds, absenceIds });
+  },
+
+  /** Los suelta: vuelven a quedar pendientes para otra planilla. */
+  detachItems: (id, { extraIds = [], absenceIds = [] }) => {
+    return apiClient.post(`/Payrolls/${id}/detach`, { extraIds, absenceIds });
+  },
+
   approvePayroll: (id, userName) => {
     return apiClient.post(`/Payrolls/${id}/approve`, { userName });
   },

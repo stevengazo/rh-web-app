@@ -13,10 +13,7 @@ import PrimaryButton from '../PrimaryButton';
 import SecondaryButton from '../SecondaryButton';
 import { fieldClasses } from '../atoms/fieldClasses';
 import { formatMoney } from '../../utils/formatMoney';
-
-/** Jornada ordinaria usada para derivar la tarifa por hora. */
-const DIAS_MES = 30;
-const HORAS_DIA = 8;
+import { salarioVigente, tarifaPorHora } from '../../utils/tarifas';
 
 /**
  * Registro de horas extra.
@@ -60,15 +57,9 @@ const ExtraAdd = ({ userId, author, onAdded, onCancel }) => {
 
       try {
         const resp = await salaryApi.getSalariesByUser(userId);
-        const lista = Array.isArray(resp?.data) ? resp.data : [];
-
-        const vigente = [...lista]
-          .filter((s) => s?.salaryAmount)
-          .sort(
-            (a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate)
-          )[0];
-
-        setSalarioMensual(vigente?.salaryAmount ?? null);
+        setSalarioMensual(
+          salarioVigente(Array.isArray(resp?.data) ? resp.data : [])
+        );
       } catch (err) {
         console.error('No se pudo obtener el salario vigente:', err);
         setSalarioMensual(null);
@@ -95,9 +86,7 @@ const ExtraAdd = ({ userId, author, onAdded, onCancel }) => {
     (t) => String(t.extraTypeId) === String(form.extraTypeId)
   );
 
-  const tarifaHora = salarioMensual
-    ? salarioMensual / DIAS_MES / HORAS_DIA
-    : null;
+  const tarifaHora = tarifaPorHora(salarioMensual);
 
   const factor = tipoSeleccionado?.factor ?? null;
 

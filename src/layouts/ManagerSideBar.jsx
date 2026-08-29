@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import {
   Banknote,
+  BarChart3,
   Briefcase,
   CalendarDays,
   ChevronLeft,
@@ -13,16 +14,18 @@ import {
   LogOut,
   Menu,
   Network,
+  ScrollText,
   Settings,
-  Shield,
   Target,
   User,
   Users,
+  Workflow,
   X,
 } from 'lucide-react';
 
 import HelpDrawer from '../Components/organisms/HelpDrawer';
 import { useAppContext } from '../context/AppContext';
+import Logo from '../Components/Logo';
 
 /** Dónde se recuerda si el menú quedó plegado. */
 const CLAVE_COLAPSADO = 'sidebar-colapsado';
@@ -62,13 +65,20 @@ const SECCIONES = [
     ],
   },
   {
+    titulo: 'Operación',
+    items: [
+      { to: '/manager/reportes', label: 'Reportería', icon: BarChart3 },
+      { to: '/manager/automatizaciones', label: 'Automatizaciones', icon: Workflow },
+    ],
+  },
+  {
     titulo: 'Mi cuenta',
     items: [{ to: '/my-profile', label: 'Mi Perfil', icon: User }],
   },
   {
     titulo: 'Configuración',
     items: [
-      { to: '/manager/roles', label: 'Roles y permisos', icon: Shield },
+      { to: '/manager/auditoria', label: 'Auditoría', icon: ScrollText },
       { to: '/settings', label: 'Ajustes', icon: Settings },
     ],
   },
@@ -128,8 +138,10 @@ const ManagerSideBar = () => {
             plegado ? 'justify-center px-2' : 'justify-between px-4'
           }`}
         >
-          {!plegado && (
-            <span className="text-lg font-semibold">RH Manager</span>
+          {plegado ? (
+            <Logo variante="iso" size={30} />
+          ) : (
+            <Logo size={30} sobre="oscuro" />
           )}
 
           {/* Plegar (escritorio) */}

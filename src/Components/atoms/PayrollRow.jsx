@@ -1,4 +1,4 @@
-import { UserMinus } from 'lucide-react';
+import { Calculator, UserMinus } from 'lucide-react';
 import { formatMoney } from '../../utils/formatMoney';
 import { usePayrollCalculations } from '../../hooks/usePayrollCalculations';
 
@@ -26,7 +26,19 @@ const EditableCell = ({ value, setter, isStatic, title }) => {
   );
 };
 
-const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, StartDate, EndDate, onRemove }) => {
+const PayrollRow = ({
+  employee,
+  PayrollData,
+  onChanged,
+  isStatic,
+  typePayroll,
+  StartDate,
+  EndDate,
+  onRemove,
+  liquidables,
+  desdeRegistros = true,
+  onVerLiquidables,
+}) => {
   const payroll = usePayrollCalculations({
     employee,
     payrollData: PayrollData,
@@ -35,6 +47,8 @@ const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, S
     typePayroll,
     StartDate,
     EndDate,
+    liquidables,
+    desdeRegistros,
   });
 
   if (payroll.error) {
@@ -52,6 +66,30 @@ const PayrollRow = ({ employee, PayrollData, onChanged, isStatic, typePayroll, S
       {/* Nombre del empleado */}
       <td className="p-2 border border-stroke-soft text-left font-medium whitespace-nowrap" title="Nombre del empleado">
         {nombreDe(employee)}
+
+        {/* Hay horas extra o ausencias que liquidar: se ofrece el detalle y
+            el cálculo, en vez de dejar que alguien los teclee a ojo. */}
+        {payroll.hayRegistros && (
+          <button
+            type="button"
+            onClick={() => onVerLiquidables?.(employee.id)}
+            title={
+              payroll.desdeRegistros
+                ? 'Ver el detalle de las horas extra y ausencias que se están liquidando'
+                : 'Hay horas extra o ausencias sin aplicar. Ver el detalle y calcular.'
+            }
+            className={`ml-2 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold
+              transition-colors hover:brightness-95
+              ${
+                payroll.desdeRegistros
+                  ? 'border-brand-200 bg-brand-tint text-brand-700'
+                  : 'border-amber-200 bg-amber-50 text-amber-800'
+              }`}
+          >
+            <Calculator size={10} />
+            {payroll.desdeRegistros ? 'calculado' : 'sin aplicar'}
+          </button>
+        )}
       </td>
 
       {/* Quitar de la planilla */}

@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Building2, Crown, Plus, RefreshCw, Users } from 'lucide-react';
+import {
+  AlertTriangle,
+  Building2,
+  Crown,
+  Plus,
+  RefreshCw,
+  Users,
+} from 'lucide-react';
 
 import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
@@ -92,16 +99,19 @@ const DepartamentAdd = ({ onCreated, onClose }) => {
   );
 };
 
-const Indicador = ({ icon: Icon, valor, label, accent }) => (
-  <div className="flex items-center gap-3 rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
-    <span className={`grid h-11 w-11 place-items-center rounded-lg ${accent}`}>
-      <Icon size={20} />
-    </span>
-    <div>
-      <p className="text-2xl font-semibold leading-none text-ink">{valor}</p>
-      <p className="mt-1 text-sm text-ink-muted">{label}</p>
-    </div>
-  </div>
+/**
+ * Cifra del resumen, en línea.
+ *
+ * Eran cuatro tarjetas que ocupaban una franja entera por encima del árbol y
+ * empujaban el organigrama —lo que de verdad se viene a ver— fuera de la
+ * pantalla. Ahora los mismos números caben en un renglón.
+ */
+const Cifra = ({ icon: Icon, valor, label }) => (
+  <span className="flex items-center gap-2 text-sm">
+    <Icon size={15} className="shrink-0 text-ink-muted" />
+    <span className="font-semibold text-ink">{valor}</span>
+    <span className="text-ink-muted">{label}</span>
+  </span>
 );
 
 const OrgChartPage = () => {
@@ -214,36 +224,38 @@ const OrgChartPage = () => {
 
       <Divider />
 
-      {/* Indicadores */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Indicador
-          icon={Building2}
-          valor={totales.departamentos}
-          label="Departamentos"
-          accent="bg-brand-tint text-brand"
-        />
-        <Indicador
-          icon={Users}
-          valor={totales.colaboradores}
-          label="Colaboradores activos"
-          accent="bg-green-50 text-green-700"
-        />
-        <Indicador
-          icon={Crown}
-          valor={totales.jefaturas}
-          label="Jefaturas asignadas"
-          accent="bg-accent-tint text-accent-strong"
-        />
-        <Indicador
-          icon={Building2}
-          valor={totales.sinJefe}
-          label="Sin jefatura"
-          accent="bg-amber-50 text-amber-700"
-        />
-      </div>
+      {/* Árbol · el resumen va en su cabecera, no en una franja aparte */}
+      <div className="rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <Cifra
+            icon={Building2}
+            valor={totales.departamentos}
+            label="departamentos"
+          />
+          <Cifra
+            icon={Users}
+            valor={totales.colaboradores}
+            label="colaboradores"
+          />
+          <Cifra icon={Crown} valor={totales.jefaturas} label="jefaturas" />
 
-      {/* Árbol */}
-      <div className="mt-6 rounded-xl border border-stroke-soft bg-surface p-4 shadow-sm">
+          {/* Solo se muestra cuando hay algo que hacer al respecto. */}
+          {totales.sinJefe > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+              <AlertTriangle size={13} />
+              {totales.sinJefe}{' '}
+              {totales.sinJefe === 1
+                ? 'departamento sin jefatura'
+                : 'departamentos sin jefatura'}
+            </span>
+          )}
+
+          <p className="ml-auto text-xs text-ink-muted">
+            Haz clic en un departamento para editarlo, cambiar de quién depende
+            o asignarle jefatura.
+          </p>
+        </div>
+
         {cargando ? (
           <div className="flex flex-col items-center gap-6 py-10">
             <div className="h-28 w-60 animate-pulse rounded-xl bg-surface-alt" />
@@ -257,18 +269,11 @@ const OrgChartPage = () => {
             </div>
           </div>
         ) : (
-          <>
-            <p className="mb-2 text-xs text-ink-muted">
-              Haz clic en un departamento para editarlo, cambiar de quién
-              depende o asignarle jefatura.
-            </p>
-
-            <OrgChart
-              departamentos={departamentos}
-              onSelect={abrirDetalle}
-              seleccionadoId={seleccionado?.departamentId}
-            />
-          </>
+          <OrgChart
+            departamentos={departamentos}
+            onSelect={abrirDetalle}
+            seleccionadoId={seleccionado?.departamentId}
+          />
         )}
       </div>
     </>

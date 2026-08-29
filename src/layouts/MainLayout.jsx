@@ -26,27 +26,25 @@ const MainLayout = () => {
         <NavBar />
       </header>
 
-      {/* Contenido */}
+      {/* Contenido · lienzo plano: cada página trae su propio relieve, así
+          que encerrarlo además en una tarjeta producía marcos dentro de
+          marcos. */}
       <motion.main
-        className="flex-1 bg-canvas pt-16 my-3 overflow-y-auto p-6"
+        className="flex-1 overflow-y-auto bg-canvas px-4 pb-8 pt-20 sm:px-6"
         initial="hidden"
         animate="visible"
         exit="exit"
         variants={contentVariants}
       >
-        <motion.div
-          className="bg-surface max-w-7xl mx-auto rounded-xl border border-stroke-soft shadow-sm p-6"
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1, transition: { duration: 0.4 } }}
-          exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.3 } }}
-        >
+        <div className="mx-auto w-full max-w-6xl">
           <Outlet />
-        </motion.div>
+        </div>
       </motion.main>
 
-      {/* Footer */}
+      {/* Footer · una línea discreta, no una franja de color a todo lo ancho */}
       <motion.footer
-        className="border-t border-white/10 px-6 py-3 bg-linear-to-r from-nav to-violet-950 text-center text-sm text-white shrink-0"
+        className="shrink-0 border-t border-stroke-soft bg-surface px-6 py-3
+                   text-center text-xs text-ink-muted"
         initial="hidden"
         animate="visible"
         variants={footerVariants}

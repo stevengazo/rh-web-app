@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -6,6 +6,9 @@ import {
   AlertTriangle,
   ArrowLeft,
   CheckCircle2,
+  Cloud,
+  CloudCheck,
+  CloudOff,
   Loader2,
   Lock,
   Save,
@@ -17,10 +20,12 @@ import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
 import PrimaryButton from '../Components/PrimaryButton';
 import SecondaryButton from '../Components/SecondaryButton';
+import OffCanvas from '../Components/OffCanvas';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
 import PayrollRow from '../Components/atoms/PayrollRow';
 import PayrollResumeTable from '../Components/organisms/PayrollResumeTable';
 import PayrollAddEmployees from '../Components/organisms/PayrollAddEmployees';
+import PayrollSettlementDrawer from '../Components/organisms/PayrollSettlementDrawer';
 import TablePayrollHeader from '../Components/molecules/tablePayrollHeader';
 import PayrollStatusBadge from '../Components/molecules/PayrollStatusBadge';
 
@@ -31,6 +36,52 @@ import { formatMoney } from '../utils/formatMoney';
 
 const formatDate = (fecha) =>
   fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';
+
+
+/** Hora corta, para el "guardado a las 14:32". */
+const formatHora = (fecha) =>
+  fecha
+    ? fecha.toLocaleTimeString('es-CR', { hour: '2-digit', minute: '2-digit' })
+    : null;
+
+/**
+ * Estado del guardado automático.
+ *
+ * Ocupa el sitio donde antes solo había un botón: al guardarse solo, lo que
+ * el usuario necesita ver es si su último cambio quedó a salvo.
+ */
+const EstadoGuardado = ({ saving, dirty, savedAt, autoSave, onToggle }) => {
+  const [texto, Icono, color] = saving
+    ? ['Guardando…', Loader2, 'text-ink-muted']
+    : dirty
+      ? [
+          autoSave ? 'Guardando en un momento…' : 'Cambios sin guardar',
+          CloudOff,
+          'text-amber-700',
+        ]
+      : savedAt
+        ? [`Guardado a las ${formatHora(savedAt)}`, CloudCheck, 'text-green-700']
+        : ['Sin cambios', Cloud, 'text-ink-muted'];
+
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`flex items-center gap-1.5 text-xs font-medium ${color}`}>
+        <Icono size={14} className={saving ? 'animate-spin' : undefined} />
+        {texto}
+      </span>
+
+      <label className="flex cursor-pointer items-center gap-1.5 text-xs text-ink-muted">
+        <input
+          type="checkbox"
+          checked={autoSave}
+          onChange={(e) => onToggle(e.target.checked)}
+          className="h-3.5 w-3.5 accent-brand"
+        />
+        Guardado automático
+      </label>
+    </div>
+  );
+};
 
 const NewPayrollPage = () => {
   const { id } = useParams();
@@ -48,6 +99,12 @@ const NewPayrollPage = () => {
     saving,
     dirty,
     readOnly,
+    savedAt,
+    autoSave,
+    setAutoSave,
+    liquidables,
+    capturaManual,
+    setOrigenDeCalculo,
     handleRowChange,
     handleSave,
     addEmployees,
@@ -57,23 +114,15 @@ const NewPayrollPage = () => {
   } = usePayrollData(id);
 
   const [pickerAbierto, setPickerAbierto] = useState(false);
+  /** Colaborador cuyo detalle de liquidación está abierto. */
+  const [detalleUsuario, setDetalleUsuario] = useState(null);
   const [aprobando, setAprobando] = useState(false);
 
   const filas = Object.values(payrollByEmployee);
   const tipoPlanilla = payroll?.payrollType ?? '';
 
-  // Avisa si se intenta cerrar la pestaña con cambios sin guardar
-  useEffect(() => {
-    if (!dirty) return;
-
-    const avisar = (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-    };
-
-    window.addEventListener('beforeunload', avisar);
-    return () => window.removeEventListener('beforeunload', avisar);
-  }, [dirty]);
+/* El aviso al cerrar con cambios sin guardar lo pone `usePayrollData`,
+     que es quien sabe si la planilla admite edición. */
 
   const salir = () => {
     if (dirty && !window.confirm('Hay cambios sin guardar. ¿Salir de todos modos?'))
@@ -157,6 +206,34 @@ const NewPayrollPage = () => {
           onClose={() => setPickerAbierto(false)}
         />
       </OffCanvasLarge>
+
+      {/* Detalle de horas extra y ausencias a liquidar */}
+      <OffCanvas
+        isOpen={detalleUsuario !== null}
+        onClose={() => setDetalleUsuario(null)}
+        title="Cálculo de extras y ausencias"
+      >
+        <PayrollSettlementDrawer
+          empleado={employees.find((e) => e.id === detalleUsuario)}
+          liquidables={liquidables[detalleUsuario]}
+          desdeRegistros={!capturaManual.has(detalleUsuario)}
+          onCambiarOrigen={(auto) => {
+            setOrigenDeCalculo(detalleUsuario, auto);
+            toast.success(
+              auto
+                ? 'Cálculo aplicado desde los registros'
+                : 'Ahora se capturan a mano'
+            );
+            setDetalleUsuario(null);
+          }}
+          onClose={() => setDetalleUsuario(null)}
+          payrollId={Number(id)}
+          periodo={payroll}
+          autor={user?.userName ?? user?.email}
+          readOnly={readOnly}
+          onCambios={reload}
+        />
+      </OffCanvas>
 
       <motion.div
         className="space-y-6 pb-28"
@@ -323,6 +400,9 @@ const NewPayrollPage = () => {
                         StartDate={payroll?.initialDate}
                         EndDate={payroll?.finalDate}
                         onRemove={readOnly ? undefined : removeEmployee}
+                        liquidables={liquidables[fila.userId]}
+                        desdeRegistros={!capturaManual.has(fila.userId)}
+                        onVerLiquidables={setDetalleUsuario}
                       />
                     );
                   })}
@@ -384,11 +464,23 @@ const NewPayrollPage = () => {
       {/* Barra de acciones fija */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-stroke-soft bg-surface/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-full flex-wrap items-center justify-between gap-3 px-6 py-3">
-          <div className="text-sm">
-            <span className="text-ink-muted">Total a pagar: </span>
-            <span className="text-lg font-bold text-ink">
-              {formatMoney(payrollResume.totalToPay)}
-            </span>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            <div className="text-sm">
+              <span className="text-ink-muted">Total a pagar: </span>
+              <span className="text-lg font-bold text-ink">
+                {formatMoney(payrollResume.totalToPay)}
+              </span>
+            </div>
+
+            {!readOnly && (
+              <EstadoGuardado
+                saving={saving}
+                dirty={dirty}
+                savedAt={savedAt}
+                autoSave={autoSave}
+                onToggle={setAutoSave}
+              />
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -396,7 +488,10 @@ const NewPayrollPage = () => {
 
             {!readOnly && (
               <>
-                <PrimaryButton onClick={handleSave} disabled={saving || !dirty}>
+                <PrimaryButton
+                  onClick={() => handleSave()}
+                  disabled={saving || !dirty}
+                >
                   {saving ? (
                     <>
                       <Loader2 size={16} className="animate-spin" />

@@ -33,6 +33,10 @@
   --color-brand-pressed: #0f548c;
   --color-brand-selected: #0c3b5e;
   --color-brand-tint: #ebf3fc;
+  /* Fondo de una fila resaltada (no leída, seleccionada). Es un token propio
+     y no `brand-tint` con opacidad porque en modo oscuro hay que aclarar
+     sobre el fondo, no lavarlo con un azul claro. */
+  --color-brand-subtle: #f2f7fd;
 
   /* Acento violeta — para degradados azul→morado y toques decorativos */
   --color-accent: #7c3aed;
@@ -122,6 +126,8 @@
   --color-ink-disabled: #5c5c5c; /* deshabilitado */
 
   --color-nav: #181818; /* nav un poco más oscura que el canvas */
+
+  --color-brand-subtle: #1f2b38; /* fila resaltada: azul apenas insinuado */
 }
 
 /* ---- Scrollbar fino (estilo Fluent) ---- */

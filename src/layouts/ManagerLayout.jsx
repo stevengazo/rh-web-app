@@ -1,10 +1,11 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ManagerSideBar from './ManagerSideBar';
-import { LayoutDashboard } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import TopbarSearch from '../Components/organisms/TopbarSearch';
 import ThemeToggle from '../Components/ThemeToggle';
+import Logo from '../Components/Logo';
+import NotificationsPanel from '../Components/organisms/NotificationsPanel';
 
 const ManagerLayout = () => {
   const { hasRole, isAuthenticated } = useAppContext();
@@ -44,23 +45,20 @@ const ManagerLayout = () => {
           className="h-16 bg-surface border-b border-stroke-soft
                      flex items-center gap-3 md:gap-6 px-4 md:px-6 shrink-0"
         >
-          <div className="flex shrink-0 items-center gap-2 text-ink">
-            <LayoutDashboard size={18} className="text-brand" />
-            <h1 className="hidden text-base font-semibold sm:block md:text-lg">
-              Panel de Gestión
-            </h1>
-          </div>
+          <h1 className="hidden shrink-0 text-base font-semibold text-ink sm:block">
+            Panel de Gestión
+          </h1>
 
           {/* Buscador global */}
           <div className="flex flex-1 justify-center md:justify-end">
             <TopbarSearch />
           </div>
 
+          <NotificationsPanel />
+
           <ThemeToggle variant="light" />
 
-          <div className="hidden shrink-0 text-xs text-ink-muted lg:block">
-            RH System
-          </div>
+          <Logo variante="iso" size={26} className="hidden shrink-0 lg:block" />
         </header>
 
         {/* Content */}
@@ -71,18 +69,11 @@ const ManagerLayout = () => {
           exit="exit"
           variants={mainVariants}
         >
+          {/* Lienzo plano: el contenido de cada página trae su propio
+              relieve donde hace falta. Encerrarlo además en una tarjeta con
+              borde y sombra producía marcos dentro de marcos. */}
           <motion.div
-            className="
-              bg-surface
-              mx-auto
-              rounded-xl
-              border border-stroke-soft
-              shadow-sm
-              p-4 md:p-6
-              max-w-full
-              md:max-w-5xl
-              lg:max-w-6xl
-            "
+            className="mx-auto w-full max-w-full md:max-w-6xl lg:max-w-7xl"
             initial="hidden"
             animate="visible"
             exit="exit"

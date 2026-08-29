@@ -1,44 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 
-const getInitialTheme = () => {
-  try {
-    const stored = localStorage.getItem('theme');
-    if (stored === 'dark' || stored === 'light') return stored;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-  } catch {
-    return 'light';
-  }
-};
-
-const applyTheme = (theme) => {
-  const root = document.documentElement;
-  root.classList.toggle('dark', theme === 'dark');
-  root.style.colorScheme = theme;
-};
+import useTheme from '../hooks/useTheme';
 
 /**
- * Alterna el tema claro/oscuro de todo el sistema.
- * Persiste la preferencia en localStorage y aplica la clase `dark` a <html>.
+ * Alterna entre modo claro y oscuro.
  *
- * @param {('light'|'dark')} [variant] Estilo del botón según el fondo donde vive
- *        ('dark' = barras oscuras, 'light' = superficies claras).
+ * El estado ya no vive aquí: lo lleva `useTheme`, que también gobierna la
+ * paleta. Antes este componente era el único dueño del modo, así que el
+ * selector de temas de Ajustes no se enteraba de sus cambios (ni al revés).
+ *
+ * @param {('light'|'dark')} [variant] Estilo del botón según el fondo donde
+ *        vive ('dark' = barras oscuras, 'light' = superficies claras).
  */
 const ThemeToggle = ({ variant = 'light', className = '' }) => {
-  const [theme, setTheme] = useState(getInitialTheme);
+  const { modo, alternarModo } = useTheme();
 
-  useEffect(() => {
-    applyTheme(theme);
-    try {
-      localStorage.setItem('theme', theme);
-    } catch {
-      /* ignore */
-    }
-  }, [theme]);
-
-  const isDark = theme === 'dark';
+  const isDark = modo === 'dark';
 
   const styles =
     variant === 'dark'
@@ -48,12 +25,12 @@ const ThemeToggle = ({ variant = 'light', className = '' }) => {
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-      aria-label="Cambiar tema"
+      onClick={alternarModo}
+      aria-label={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+      title={isDark ? 'Modo claro' : 'Modo oscuro'}
       className={`grid h-9 w-9 shrink-0 place-items-center rounded-md transition-colors
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1
-        ${styles} ${className}`}
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand
+                  ${styles} ${className}`}
     >
       {isDark ? <Sun size={18} /> : <Moon size={18} />}
     </button>

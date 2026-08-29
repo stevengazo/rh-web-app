@@ -1,7 +1,21 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
 /**
- * Hook para cálculos de nómina de un empleado
+ * Cálculos de nómina de un empleado.
+ *
+ * Las horas extra, las extras de feriado y el tiempo ausente pueden venir de
+ * dos sitios:
+ *
+ * - **De los registros** (`liquidables`): las horas extra aprobadas y las
+ *   ausencias del periodo que ninguna otra planilla pagó. Es el modo por
+ *   defecto cuando hay registros, y los montos se toman tal cual quedaron
+ *   aprobados, sin recalcular.
+ * - **A mano**: quien edita puede desvincularse y teclear la cantidad, para
+ *   casos excepcionales. Al volver al modo automático se recupera lo de los
+ *   registros.
+ *
+ * Antes solo existía el modo a mano y no había forma de saber si unas horas
+ * extra ya se habían pagado en otra planilla.
  */
 export const usePayrollCalculations = ({
   employee,
@@ -9,6 +23,8 @@ export const usePayrollCalculations = ({
   isStatic = false,
   onChanged,
   typePayroll,
+  liquidables,
+  desdeRegistros = true,
 }) => {
   /* Los campos editables se siembran con lo que ya viene en `payrollData`.
      Antes arrancaban siempre en 0 y el efecto de sincronización devolvía esos
@@ -16,11 +32,23 @@ export const usePayrollCalculations = ({
      horas extra, bonos y deducciones que se habían capturado. */
   const num = (valor) => Number(valor) || 0;
 
-  const [extras, setExtras] = useState(() => num(payrollData?.overTimeHours));
+  const hayRegistros = Boolean(
+    liquidables &&
+      (liquidables.extras.length ||
+        liquidables.extrasFeriado.length ||
+        liquidables.ausencias.length)
+  );
+
+  /* En modo automático estas tres no son estado: **son** los registros. Se
+     derivan en cada render y el estado guarda solo lo tecleado a mano, que
+     es lo que hay que recordar al alternar entre un modo y otro. */
+  const [extrasManual, setExtras] = useState(() =>
+    num(payrollData?.overTimeHours)
+  );
   const [feriados, setFeriados] = useState(() =>
     num(payrollData?.holidayDaysWorked)
   );
-  const [extrasFeriado, setExtrasFeriado] = useState(() =>
+  const [extrasFeriadoManual, setExtrasFeriado] = useState(() =>
     num(payrollData?.holidayOvertimeHours)
   );
   const [retroactivo, setRetroactivo] = useState(() =>
@@ -32,7 +60,7 @@ export const usePayrollCalculations = ({
   );
   const [incCCSS, setIncCCSS] = useState(() => num(payrollData?.ccssDays));
   const [incINS, setIncINS] = useState(() => num(payrollData?.insDays));
-  const [ausencias, setAusencias] = useState(() =>
+  const [ausenciasManual, setAusencias] = useState(() =>
     num(payrollData?.absenceTime)
   );
   const [pension, setPension] = useState(() => num(payrollData?.pension));
@@ -50,6 +78,14 @@ export const usePayrollCalculations = ({
     }
     return num(payrollData?.grossSalary ?? payrollData?.monthlySalary) * 0.03;
   });
+
+  const vinculado = desdeRegistros && hayRegistros;
+
+  const extras = vinculado ? liquidables.horasExtra : extrasManual;
+  const extrasFeriado = vinculado
+    ? liquidables.horasExtraFeriado
+    : extrasFeriadoManual;
+  const ausencias = vinculado ? liquidables.diasAusencia : ausenciasManual;
 
   // --- Salario base del empleado ---
   const salarioMensual = payrollData?.monthlySalary || 0;
@@ -79,10 +115,29 @@ export const usePayrollCalculations = ({
   const salarioDia = salarioBase / diasPeriodo;
   const salarioHora = salarioDia / 8;
 
-  // --- Cálculos de montos adicionales ---
-  const montoExtras = extras * salarioHora * 1.5;
+  /* --- Montos adicionales ---
+
+     Con registros vinculados se paga **el monto con el que se aprobó cada
+     hora extra**, no una tarifa recalculada: si el salario subió después, la
+     hora extra de hace tres semanas se paga como se aprobó. Es el mismo
+     criterio con el que `Employee_Payroll` congela sus tarifas.
+
+     Sin registros se cae al cálculo de siempre: horas × tarifa × recargo. */
+  const montoExtras = vinculado
+    ? liquidables.montoExtra
+    : extras * salarioHora * 1.5;
+
   const montoFeriados = feriados * salarioHora * 8 * 2;
-  const montoExtrasFeriado = extrasFeriado * salarioHora * 2.5;
+
+  const montoExtrasFeriado = vinculado
+    ? liquidables.montoExtraFeriado
+    : extrasFeriado * salarioHora * 2.5;
+
+  /* La rebaja por ausencia también sale del registro cuando lo hay: allí se
+     calculó con el salario vigente al momento de la ausencia. */
+  const montoAusencias = vinculado
+    ? liquidables.montoAusencia
+    : ausencias * salarioDia;
 
   // --- Salario bruto ---
   const salarioBruto = useMemo(
@@ -111,7 +166,8 @@ export const usePayrollCalculations = ({
   // --- Total deducciones ---
   const deducciones = useMemo(
     () =>
-      (incCCSS + incINS + ausencias) * salarioDia +
+      (incCCSS + incINS) * salarioDia +
+      montoAusencias +
       cCSSDeductionAmount +
       pension +
       garnishment +
@@ -119,7 +175,7 @@ export const usePayrollCalculations = ({
     [
       incCCSS,
       incINS,
-      ausencias,
+      montoAusencias,
       salarioDia,
       cCSSDeductionAmount,
       pension,
@@ -153,6 +209,9 @@ export const usePayrollCalculations = ({
       ccssDays: incCCSS,
       insDays: incINS,
       absenceTime: ausencias,
+      absenceAmount: montoAusencias,
+      absenceRate: salarioDia,
+      overTimeHourRate: salarioHora * 1.5,
       grossSalary: salarioBruto,
       totalDeductions: deducciones,
       cCSSDeductionAmount,
@@ -179,6 +238,7 @@ export const usePayrollCalculations = ({
       incCCSS,
       incINS,
       ausencias,
+      montoAusencias,
       salarioBruto,
       deducciones,
       netoPagar,
@@ -208,6 +268,7 @@ export const usePayrollCalculations = ({
         'ccssDays',
         'insDays',
         'absenceTime',
+        'absenceAmount',
         'pension',
         'garnishment',
         'associationContribution',
@@ -263,7 +324,22 @@ export const usePayrollCalculations = ({
     montoExtras,
     montoFeriados,
     montoExtrasFeriado,
+    montoAusencias,
     deducciones,
+
+    /* Vínculo con los registros: la fila lo usa para indicar de dónde salen
+       las cifras y ofrecer el cambio a captura manual. */
+    desdeRegistros: vinculado,
+    hayRegistros,
+    liquidables,
+
+    /* Los setters de captura manual, para sembrarlos al desvincular. */
+    aplicarManual: () => {
+      if (!liquidables) return;
+      setExtras(liquidables.horasExtra);
+      setExtrasFeriado(liquidables.horasExtraFeriado);
+      setAusencias(liquidables.diasAusencia);
+    },
     salarioBruto,
     netoPagar,
     buildRowData,

@@ -11,16 +11,15 @@ import {
   Percent,
   Target,
   User,
-  Users,
   X,
 } from 'lucide-react';
 
 import ThemeToggle from '../Components/ThemeToggle';
+import Logo from '../Components/Logo';
 import EmployeeAvatar from '../Components/molecules/EmployeeAvatar';
 import { obtenerFoto } from '../Components/organisms/AvatarUpload';
 import { urlDeArchivo } from '../utils/fileUrl';
 import { useAppContext } from '../context/AppContext';
-import { PRODUCTO } from '../data/marketing';
 
 /**
  * Secciones del portal del colaborador.
@@ -36,12 +35,24 @@ const SECCIONES = [
   { to: '/my-payrolls', label: 'Comprobantes', icon: FileText },
 ];
 
+/* La barra vive sobre `surface`, no sobre el degradado oscuro de antes, así
+   que los enlaces usan los tokens de texto en vez de blancos fijos. */
 const linkClass = ({ isActive }) =>
   `flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium
    transition-colors duration-150
    ${
      isActive
-       ? 'bg-white/15 text-white shadow-sm'
+       ? 'bg-brand-tint text-brand-700'
+       : 'text-ink-secondary hover:bg-canvas hover:text-ink'
+   }`;
+
+/* El cajón móvil sí conserva el fondo oscuro, y ahí el contraste se invierte. */
+const linkClassOscuro = ({ isActive }) =>
+  `flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium
+   transition-colors duration-150
+   ${
+     isActive
+       ? 'bg-white/15 text-white'
        : 'text-gray-300 hover:bg-white/10 hover:text-white'
    }`;
 
@@ -126,24 +137,17 @@ const NavBar = () => {
       <motion.nav
         initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex h-16 items-center justify-between gap-4 border-b border-white/10
-                   bg-linear-to-r from-nav to-violet-950 px-4 shadow-lg sm:px-6"
+        className="flex h-16 items-center justify-between gap-4 border-b border-stroke-soft
+                   bg-surface px-4 sm:px-6"
       >
         {/* Marca — la misma que usa el resto del sistema */}
         <NavLink
           to="/my-profile"
-          className="flex shrink-0 items-center gap-2.5 rounded-md focus-visible:outline-none
-                     focus-visible:ring-2 focus-visible:ring-white/50"
+          className="shrink-0 rounded-md focus-visible:outline-none
+                     focus-visible:ring-2 focus-visible:ring-brand"
         >
-          <span
-            className="grid h-9 w-9 place-items-center rounded-lg
-                       bg-linear-to-br from-brand to-accent text-white shadow-sm"
-          >
-            <Users size={19} strokeWidth={2} />
-          </span>
-          <span className="hidden text-base font-semibold tracking-tight text-white sm:block">
-            {PRODUCTO.nombre}
-          </span>
+          <Logo size={30} sobre="claro" className="hidden sm:flex" />
+          <Logo variante="iso" size={30} className="sm:hidden" />
         </NavLink>
 
         {/* Navegación de escritorio */}
@@ -165,7 +169,7 @@ const NavBar = () => {
 
         {/* Acciones */}
         <div className="flex shrink-0 items-center gap-1">
-          <ThemeToggle variant="dark" />
+          <ThemeToggle variant="light" />
 
           {/* Menú de usuario (escritorio) */}
           <div className="relative hidden lg:block" ref={refUsuario}>
@@ -174,15 +178,15 @@ const NavBar = () => {
               onClick={() => setMenuUsuario((v) => !v)}
               aria-expanded={menuUsuario}
               aria-haspopup="menu"
-              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-200
-                         transition-colors hover:bg-white/10 hover:text-white
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-ink-secondary
+                         transition-colors hover:bg-canvas hover:text-ink
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               <EmployeeAvatar
                 src={foto}
                 iniciales={iniciales(user)}
                 size="xs"
-                className="bg-white/15 text-white ring-0"
+                className="bg-brand-tint text-brand ring-0"
               />
               <span className="max-w-36 truncate font-medium">
                 {nombreVisible(user)}
@@ -245,8 +249,8 @@ const NavBar = () => {
             type="button"
             onClick={() => setMenuMovil(true)}
             aria-label="Abrir menú"
-            className="grid h-9 w-9 place-items-center rounded-md text-gray-300
-                       transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+            className="grid h-9 w-9 place-items-center rounded-md text-ink-muted
+                       transition-colors hover:bg-canvas hover:text-ink lg:hidden"
           >
             <Menu size={22} />
           </button>
@@ -307,14 +311,14 @@ const NavBar = () => {
 
               <nav className="flex flex-col gap-1">
                 {hasRole('Admin') && (
-                  <NavLink to="/manager" className={linkClass}>
+                  <NavLink to="/manager" className={linkClassOscuro}>
                     <PanelsTopLeft size={17} />
                     Administración
                   </NavLink>
                 )}
 
                 {SECCIONES.map(({ to, label, icon: Icon }) => (
-                  <NavLink key={to} to={to} className={linkClass}>
+                  <NavLink key={to} to={to} className={linkClassOscuro}>
                     <Icon size={17} />
                     {label}
                   </NavLink>

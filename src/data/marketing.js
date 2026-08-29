@@ -17,26 +17,36 @@ import {
   LayoutDashboard,
   LineChart,
   Percent,
+  Plug,
   Rocket,
+  ScrollText,
   Server,
   Settings2,
   ShieldCheck,
+  Sparkles,
   Target,
   Upload,
   UserRound,
   Users,
+  Webhook,
   Workflow,
 } from 'lucide-react';
 
-/** Identidad del producto. */
+/**
+ * Identidad del producto.
+ *
+ * «Planitica» es planilla + tica: dice qué hace y de dónde es. Es el único
+ * lugar donde vive el nombre; el navbar, el pie, el logotipo y el sitio
+ * público lo leen de aquí.
+ */
 export const PRODUCTO = {
-  nombre: 'RH Manager',
-  claim: 'Recursos Humanos sin hojas de cálculo',
+  nombre: 'Planitica',
+  claim: 'La planilla tica, sin hojas de cálculo',
   /** El claim partido en dos para poder resaltar la segunda mitad en el hero. */
-  claimInicio: 'Recursos Humanos',
+  claimInicio: 'La planilla tica,',
   claimResaltado: 'sin hojas de cálculo',
   descripcion:
-    'Expediente digital, planilla, ausencias, préstamos y desempeño en un solo sistema, pensado para empresas de Costa Rica.',
+    'Expediente digital, planilla, ausencias, préstamos y desempeño en un solo sistema, hecho para la legislación y la forma de trabajar de Costa Rica.',
 };
 
 /** Datos de contacto que se muestran en el footer y en la página de contacto. */
@@ -58,9 +68,9 @@ export const NAV_PUBLICA = [
 /** Cifras verificables del propio sistema (nada inventado sobre clientes). */
 export const CIFRAS = [
   { valor: '30+', label: 'módulos conectados entre sí' },
-  { valor: '3', label: 'periodos de planilla: semanal, quincenal y mensual' },
+  { valor: '28', label: 'herramientas disponibles para asistentes de IA' },
+  { valor: '11', label: 'eventos que avisan a tus otros sistemas' },
   { valor: '100%', label: 'en la nube o en tus propios servidores' },
-  { valor: '24/7', label: 'autoservicio para cada colaborador' },
 ];
 
 /**
@@ -201,9 +211,21 @@ export const MODULOS = [
     descripcion:
       'Autenticación con JWT y roles por módulo: cada quien ve únicamente lo que le corresponde.',
     detalles: [
-      'Roles de administrador, RR.HH. y colaborador',
+      'Roles de administrador, jefatura, RR.HH. y colaborador',
       'Sesión con expiración configurable',
-      'Registro de creación y edición por usuario',
+      'Asignación de roles desde la propia configuración',
+    ],
+  },
+  {
+    icon: ScrollText,
+    grupo: 'portal',
+    titulo: 'Auditoría completa',
+    descripcion:
+      'Cada cambio queda registrado con quién lo hizo, cuándo y desde dónde. Se captura al guardar, así que no depende de que nadie se acuerde.',
+    detalles: [
+      'Antes y después de cada campo modificado',
+      'Filtros por persona, módulo, acción y fecha',
+      'Los datos sensibles nunca se copian al registro',
     ],
   },
   {
@@ -213,6 +235,60 @@ export const MODULOS = [
     descripcion:
       'Avisos de lo que vence: certificaciones, contratos y fechas clave del expediente.',
     detalles: ['Recordatorios por colaborador', 'Notificación por correo'],
+  },
+
+  /* --- Automatización e integraciones --- */
+
+  {
+    icon: Sparkles,
+    grupo: 'automatizacion',
+    destacado: true,
+    titulo: 'Asistencia con IA',
+    descripcion:
+      'Resume un expediente, interpreta las cifras de ausentismo o revisa una planilla antes de aprobarla. Tú eliges el proveedor y el modelo.',
+    detalles: [
+      'Anthropic, OpenAI o Azure OpenAI',
+      'Un modelo distinto por tarea, para no gastar de más',
+      'Nada se aplica solo: siempre revisas antes',
+    ],
+  },
+  {
+    icon: Plug,
+    grupo: 'automatizacion',
+    destacado: true,
+    titulo: 'Servidor MCP',
+    descripcion:
+      'Conecta Claude u otro asistente directamente al sistema. Pregúntale por una planilla o pídele que registre una solicitud, en lenguaje natural.',
+    detalles: [
+      '28 herramientas: 20 de consulta y 8 de registro',
+      'Eliges cuáles quedan disponibles',
+      'Lo que registra nace pendiente de aprobación humana',
+    ],
+  },
+  {
+    icon: Webhook,
+    grupo: 'automatizacion',
+    destacado: true,
+    titulo: 'Webhooks salientes',
+    descripcion:
+      'Avisa a tus otros sistemas en el momento: contabilidad cuando se aprueba una planilla, control de acceso cuando alguien se da de baja.',
+    detalles: [
+      '11 eventos disponibles, con los campos que elijas',
+      'Firma HMAC-SHA256 para que el receptor verifique el origen',
+      'Reintentos y bitácora de cada envío',
+    ],
+  },
+  {
+    icon: BarChart3,
+    grupo: 'automatizacion',
+    titulo: 'Reportería y exportación',
+    descripcion:
+      'Ocho reportes listos —planilla, ausentismo, plantilla, vigencias— con totales y descarga directa a Excel.',
+    detalles: [
+      'Filtro en pantalla antes de exportar',
+      'CSV que Excel abre sin romper los acentos',
+      'Análisis del reporte con IA, si la tienes activa',
+    ],
   },
 ];
 
@@ -244,6 +320,12 @@ export const GRUPOS_MODULOS = [
     titulo: 'Acceso y seguridad',
     descripcion:
       'Quién entra, qué ve y qué puede hacer cada persona dentro del sistema.',
+  },
+  {
+    id: 'automatizacion',
+    titulo: 'Automatización e integraciones',
+    descripcion:
+      'Lo que el sistema hace solo y lo que deja hacer desde fuera: asistentes de IA, avisos a otros sistemas y reportes.',
   },
 ];
 
@@ -305,6 +387,18 @@ export const ARQUITECTURA = [
     descripcion:
       'Todo el sistema se levanta con un solo comando, así que actualizar o migrar de servidor toma minutos.',
   },
+  {
+    icon: Webhook,
+    titulo: 'Integraciones salientes',
+    descripcion:
+      'Webhooks firmados que avisan a contabilidad, al control de acceso o a tu chat cuando pasa algo aquí. Con reintentos y bitácora de cada envío.',
+  },
+  {
+    icon: Plug,
+    titulo: 'Servidor MCP',
+    descripcion:
+      'Un endpoint estándar para que Claude u otro asistente consulte el sistema y registre solicitudes, sin integraciones a la medida.',
+  },
 ];
 
 /**
@@ -348,6 +442,8 @@ export const PLANES = [
       'Préstamos, embargos y comisiones',
       'Acciones de personal',
       'Dashboard de gestión',
+      'Reportería con exportación a Excel',
+      'Registro de auditoría',
       'Soporte prioritario',
     ],
   },
@@ -362,6 +458,8 @@ export const PLANES = [
     incluye: [
       'Todo lo del plan Profesional',
       'KPIs, objetivos y evaluaciones de desempeño',
+      'Asistencia con IA y servidor MCP',
+      'Webhooks hacia tus otros sistemas',
       'Instalación en tus servidores (on-premise)',
       'Integraciones con tus sistemas',
       'Migración de datos asistida',
@@ -396,6 +494,16 @@ export const COMPARATIVO = [
       { label: 'KPIs y objetivos', esencial: false, profesional: false, corporativo: true },
       { label: 'Evaluaciones y cuestionarios', esencial: false, profesional: false, corporativo: true },
       { label: 'Dashboard de gestión', esencial: false, profesional: true, corporativo: true },
+    ],
+  },
+  {
+    grupo: 'Automatización',
+    filas: [
+      { label: 'Reportería y exportación', esencial: false, profesional: true, corporativo: true },
+      { label: 'Registro de auditoría', esencial: false, profesional: true, corporativo: true },
+      { label: 'Asistencia con IA', esencial: false, profesional: false, corporativo: true },
+      { label: 'Servidor MCP para asistentes', esencial: false, profesional: false, corporativo: true },
+      { label: 'Webhooks salientes', esencial: false, profesional: false, corporativo: true },
     ],
   },
   {
@@ -435,6 +543,21 @@ export const FAQS = [
     pregunta: '¿Cuánto tarda la implementación?',
     respuesta:
       'Para una empresa de hasta 100 colaboradores, una semana es un plazo realista: configuración, carga de datos y una sesión de capacitación con el equipo de RR.HH.',
+  },
+  {
+    pregunta: '¿Qué es eso de conectar el sistema con inteligencia artificial?',
+    respuesta:
+      'Dos cosas distintas. Una: el sistema puede pedirle a un modelo que resuma un expediente, interprete las cifras de ausentismo o revise una planilla antes de aprobarla; tú eliges el proveedor y qué modelo usa cada tarea. Otra: puedes conectar Claude directamente al sistema y preguntarle en lenguaje natural, con las herramientas que decidas habilitar. En ambos casos nada se aplica solo — lo que un asistente registra queda pendiente de que una persona lo apruebe.',
+  },
+  {
+    pregunta: '¿Se puede integrar con los sistemas que ya usamos?',
+    respuesta:
+      'Sí, por dos vías. Los webhooks avisan a otro sistema en el momento en que pasa algo aquí —una planilla aprobada, alguien dado de baja— con el cuerpo y los campos que definas, firmados para que el receptor verifique el origen. Y toda la funcionalidad está en una API REST documentada, por si necesitas ir en la otra dirección.',
+  },
+  {
+    pregunta: '¿Cómo sé quién cambió un dato?',
+    respuesta:
+      'Cada cambio guardado deja una entrada de auditoría con quién lo hizo, cuándo, desde qué dirección y el antes y el después de cada campo. Se captura al momento de guardar, así que cubre todo: la pantalla, la API y los asistentes conectados. El registro no se puede editar ni borrar, y los datos sensibles nunca se copian a él.',
   },
   {
     pregunta: '¿Hay contrato de permanencia?',

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertCircle,
+  BarChart3,
   CalendarDays,
   CheckCircle2,
   List,
@@ -23,25 +24,39 @@ import AbsenceCalendar from '../Components/organisms/AbsenceCalendar';
 import AbsenceTable from '../Components/organisms/AbsenceTable';
 import AbsenceAdd from '../Components/organisms/AbsenceAdd';
 import AbsenceView from '../Components/organisms/AbsenceView';
+import AbsenceStats from '../Components/organisms/AbsenceStats';
 import { fieldClasses } from '../Components/atoms/fieldClasses';
 import HelpButton from '../Components/molecules/HelpButton';
+import Tabs from '../Components/molecules/Tabs';
 
-const Indicador = ({ icon: Icon, label, valor, accent, activo, onClick }) => (
+/**
+ * Filtro por estado.
+ *
+ * Las cuatro tarjetas de indicadores ocupaban una franja entera para repetir
+ * números que ahora viven, con contexto, en la pestaña de estadísticas. El
+ * conteo se conserva dentro del propio filtro.
+ */
+const FiltroEstado = ({ icon: Icon, label, cuenta, activo, onClick }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`flex items-center gap-3 rounded-xl border bg-surface p-4 text-left shadow-sm transition-all
-      hover:-translate-y-0.5 hover:shadow-md
-      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand
-      ${activo ? 'border-brand ring-1 ring-brand' : 'border-stroke-soft'}`}
+    aria-pressed={activo}
+    className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium
+      transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand
+      ${
+        activo
+          ? 'border-brand bg-brand-tint text-brand-700'
+          : 'border-stroke-soft bg-surface text-ink-secondary hover:border-brand hover:text-brand'
+      }`}
   >
-    <span className={`grid h-11 w-11 place-items-center rounded-lg ${accent}`}>
-      <Icon size={20} />
+    <Icon size={15} />
+    {label}
+    <span
+      className={`rounded-full px-1.5 text-xs font-semibold
+        ${activo ? 'bg-brand text-white' : 'bg-surface-alt text-ink-muted'}`}
+    >
+      {cuenta}
     </span>
-    <div>
-      <p className="text-xl font-semibold leading-none text-ink">{valor}</p>
-      <p className="mt-1 text-sm text-ink-muted">{label}</p>
-    </div>
   </button>
 );
 
@@ -49,6 +64,7 @@ const AbsencesPage = () => {
   const { user } = useAppContext();
 
   const {
+    absences,
     cargando,
     search,
     setSearch,
@@ -150,88 +166,69 @@ const AbsencesPage = () => {
 
       <Divider />
 
-      {/* Indicadores · también filtran */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Indicador
-          icon={AlertCircle}
-          label="Pendientes"
-          valor={stats.pending}
-          accent="bg-amber-50 text-amber-700"
-          activo={filtroEstado === ABSENCE_STATUS.PENDING}
-          onClick={() => alternarFiltro(ABSENCE_STATUS.PENDING)}
-        />
-        <Indicador
-          icon={CheckCircle2}
-          label={`Aprobadas · ${stats.diasAprobados} días`}
-          valor={stats.approved}
-          accent="bg-green-50 text-green-700"
-          activo={filtroEstado === ABSENCE_STATUS.APPROVED}
-          onClick={() => alternarFiltro(ABSENCE_STATUS.APPROVED)}
-        />
-        <Indicador
-          icon={XCircle}
-          label="Rechazadas"
-          valor={stats.rejected}
-          accent="bg-red-50 text-red-600"
-          activo={filtroEstado === ABSENCE_STATUS.REJECTED}
-          onClick={() => alternarFiltro(ABSENCE_STATUS.REJECTED)}
-        />
-        <Indicador
-          icon={Users}
-          label="Total"
-          valor={stats.total}
-          accent="bg-brand-tint text-brand"
-          activo={filtroEstado === 'Todas'}
-          onClick={() => setFiltroEstado('Todas')}
+      {/* Vistas */}
+      <div className="mt-6">
+        <Tabs
+          idGrupo="ausencias"
+          value={view}
+          onChange={setView}
+          items={[
+            { id: 'table', label: 'Tabla', icon: List, count: filteredAbsences.length },
+            { id: 'calendar', label: 'Calendario', icon: CalendarDays },
+            { id: 'stats', label: 'Estadísticas', icon: BarChart3 },
+          ]}
         />
       </div>
 
-      {/* Buscador y vista */}
-      <div className="mt-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-        <div className="relative w-full md:max-w-md">
-          <Search
-            size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted"
-          />
-          <input
-            type="search"
-            placeholder="Buscar por título, motivo o empleado…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={fieldClasses({ className: 'h-10 pl-9' })}
-          />
-        </div>
+      {/* Filtros y buscador · no aplican a las estadísticas, que miran el total */}
+      {view !== 'stats' && (
+        <div className="mt-5 flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
+          <div className="flex flex-wrap gap-2">
+            <FiltroEstado
+              icon={Users}
+              label="Todas"
+              cuenta={stats.total}
+              activo={filtroEstado === 'Todas'}
+              onClick={() => setFiltroEstado('Todas')}
+            />
+            <FiltroEstado
+              icon={AlertCircle}
+              label="Pendientes"
+              cuenta={stats.pending}
+              activo={filtroEstado === ABSENCE_STATUS.PENDING}
+              onClick={() => alternarFiltro(ABSENCE_STATUS.PENDING)}
+            />
+            <FiltroEstado
+              icon={CheckCircle2}
+              label="Aprobadas"
+              cuenta={stats.approved}
+              activo={filtroEstado === ABSENCE_STATUS.APPROVED}
+              onClick={() => alternarFiltro(ABSENCE_STATUS.APPROVED)}
+            />
+            <FiltroEstado
+              icon={XCircle}
+              label="Rechazadas"
+              cuenta={stats.rejected}
+              activo={filtroEstado === ABSENCE_STATUS.REJECTED}
+              onClick={() => alternarFiltro(ABSENCE_STATUS.REJECTED)}
+            />
+          </div>
 
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => setView('table')}
-            className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition-colors
-              ${
-                view === 'table'
-                  ? 'border-brand bg-brand-tint text-brand-700'
-                  : 'border-stroke-soft bg-surface text-ink-muted hover:text-ink'
-              }`}
-          >
-            <List size={16} />
-            Tabla
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setView('calendar')}
-            className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold transition-colors
-              ${
-                view === 'calendar'
-                  ? 'border-brand bg-brand-tint text-brand-700'
-                  : 'border-stroke-soft bg-surface text-ink-muted hover:text-ink'
-              }`}
-          >
-            <CalendarDays size={16} />
-            Calendario
-          </button>
+          <div className="relative w-full lg:max-w-xs">
+            <Search
+              size={16}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted"
+            />
+            <input
+              type="search"
+              placeholder="Buscar por título, motivo o empleado…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={fieldClasses({ className: 'h-10 pl-9' })}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Contenido */}
       <div className="mt-6">
@@ -244,6 +241,8 @@ const AbsencesPage = () => {
               />
             ))}
           </div>
+        ) : view === 'stats' ? (
+          <AbsenceStats absences={absences} />
         ) : view === 'table' ? (
           <AbsenceTable
             items={filteredAbsences}

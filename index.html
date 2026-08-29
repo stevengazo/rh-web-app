@@ -4,19 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistema Recursos Humanos</title>
+    <title>Planitica · Recursos Humanos</title>
     <script>
-      // Aplica el tema guardado antes del primer pintado para evitar parpadeo
+      // Aplica modo y paleta antes del primer pintado, para evitar el parpadeo.
+      //
+      // Este script no puede importar `src/data/temas.js` (corre antes que el
+      // bundle), así que no duplica la paleta: `useTheme` deja en
+      // `rh:tema-vars` las variables ya resueltas y aquí solo se repiten. Así
+      // agregar un tema nuevo no obliga a tocar este archivo.
       (function () {
         try {
-          var t = localStorage.getItem('theme');
-          if (t !== 'dark' && t !== 'light') {
-            t = window.matchMedia('(prefers-color-scheme: dark)').matches
+          var modo = localStorage.getItem('theme');
+          if (modo !== 'dark' && modo !== 'light') {
+            modo = window.matchMedia('(prefers-color-scheme: dark)').matches
               ? 'dark'
               : 'light';
           }
-          document.documentElement.classList.toggle('dark', t === 'dark');
-          document.documentElement.style.colorScheme = t;
+
+          var root = document.documentElement;
+          root.classList.toggle('dark', modo === 'dark');
+          root.style.colorScheme = modo;
+
+          var guardadas = localStorage.getItem('rh:tema-vars');
+          if (guardadas) {
+            var vars = JSON.parse(guardadas);
+            for (var v in vars) root.style.setProperty(v, vars[v]);
+          }
         } catch (e) {}
       })();
     </script>

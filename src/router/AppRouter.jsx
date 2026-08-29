@@ -22,6 +22,9 @@ import PayrollPage from '../pages/PayrollPage';
 import ActionsPage from '../pages/ActionsPage';
 import ViewEmployeePage from '../pages/ViewEmployeePage';
 import SettingsPage from '../pages/SettingsPage';
+import AuditPage from '../pages/AuditPage';
+import ReportsPage from '../pages/ReportsPage';
+import AutomationsPage from '../pages/AutomationsPage';
 import NewPayrollPage from '../pages/NewPayrollPage';
 import KPIPage from '../pages/KPIPage';
 import PayrollView from '../pages/PayrollView';
@@ -33,7 +36,6 @@ import ViewPerformancePage from '../pages/ViewPerformancePage';
 import LoansPage from '../pages/LoansPage';
 import ViewLoanPage from '../pages/ViewLoanPage';
 import AbsencesPage from '../pages/AbsencesPage';
-import RolesPage from '../pages/RolesPage';
 import MyLoansPage from '../pages/MyLoansPage';
 import OrgChartPage from '../pages/OrgChartPage';
 
@@ -75,7 +77,12 @@ const AppRouter = () => {
           <Route path="/manager/loans" element={<LoansPage />} />
           <Route path="/manager/questions" element={<QuestionPage />} />
           <Route path="/manager/employees/:id" element={<ViewEmployeePage />} />
-          <Route path="/manager/roles" element={<RolesPage />} />
+          {/* La gestión de roles vive ahora en Configuración; se redirige
+              para no romper los enlaces que alguien tuviera guardados. */}
+          <Route
+            path="/manager/roles"
+            element={<Navigate to="/settings" replace />}
+          />
           <Route path="/manager/organigrama" element={<OrgChartPage />} />
           <Route
             path="/manager/perfornance/:id"
@@ -83,6 +90,12 @@ const AppRouter = () => {
           />
 
           <Route path="/manager/loan/:id" element={<ViewLoanPage />} />
+          <Route path="/manager/auditoria" element={<AuditPage />} />
+          <Route path="/manager/reportes" element={<ReportsPage />} />
+          <Route
+            path="/manager/automatizaciones"
+            element={<AutomationsPage />}
+          />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new/:id" element={<NewPayrollPage />} />
         </Route>

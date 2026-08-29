@@ -27,9 +27,19 @@ const FLUJO = [
       'Al generar la planilla, el sistema toma todo lo del periodo y aplica ingresos y deducciones.',
   },
   {
+    titulo: 'Alguien lo aprueba',
+    descripcion:
+      'Nada se paga sin revisión. La planilla se congela al aprobarse y los movimientos del periodo quedan marcados como liquidados, para que ninguno se cobre dos veces.',
+  },
+  {
     titulo: 'Se emite el comprobante',
     descripcion:
       'Cada persona recibe su comprobante en PDF y lo consulta cuando quiera desde su portal.',
+  },
+  {
+    titulo: 'Queda el rastro y se avisa',
+    descripcion:
+      'El cambio se registra en auditoría con quién lo hizo y qué cambió, y si tienes un webhook escuchando, tus otros sistemas se enteran en el momento.',
   },
 ];
 
@@ -122,7 +132,7 @@ const HowItWorksPage = () => {
             />
           </Reveal>
 
-          <ol className="mt-12 grid gap-4 lg:grid-cols-4">
+          <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FLUJO.map((paso, i) => (
               <Reveal key={paso.titulo} delay={i * 0.08}>
                 <li className="relative h-full rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm">
@@ -166,7 +176,7 @@ const HowItWorksPage = () => {
           />
         </Reveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {ARQUITECTURA.map((bloque, i) => {
             const Icon = bloque.icon;
 

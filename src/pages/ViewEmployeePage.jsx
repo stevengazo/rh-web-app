@@ -22,6 +22,9 @@ import VacationsApi from '../api/vacationsApi';
 import absencesApi from '../api/absencesApi';
 import actionApi from '../api/actionApi';
 import { mensajeDeError } from '../utils/apiError';
+import AiAssistPanel from '../Components/organisms/AiAssistPanel';
+import { USO } from '../data/modelosIa';
+import { SISTEMA, promptResumenExpediente } from '../data/promptsIa';
 
 /* HOOKS */
 import useEmployeeView, { TABS } from '../hooks/useEmployeeView';
@@ -384,6 +387,27 @@ const ViewEmployeePage = () => {
           {activeTab === TABS.TIMELINE && (
             <>
               <Header title="Historial del colaborador" />
+
+              <div className="mb-5">
+                <AiAssistPanel
+                  uso={USO.RESUMEN_EXPEDIENTE}
+                  titulo="Resumen del expediente"
+                  descripcion="Pone al día sobre este colaborador en unas cuantas líneas."
+                  sistema={SISTEMA.resumenExpediente}
+                  construirPrompt={() =>
+                    promptResumenExpediente({
+                      empleado: employee,
+                      acciones: actions,
+                      salarios: salaries,
+                      vacaciones: vacations,
+                      ausencias: absences,
+                      cursos: courses,
+                      certificaciones: certifications,
+                      reconocimientos: awards,
+                    })
+                  }
+                />
+              </div>
 
               <EmployeeTimeline
                 employee={employee}

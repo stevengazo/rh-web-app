@@ -21,7 +21,10 @@ import {
   PRODUCTO,
 } from '../../data/marketing';
 
-const destacados = MODULOS.filter((m) => m.destacado).slice(0, 6);
+/* Nueve, no seis: la cuadrícula es de tres columnas y así cierra en 3×3.
+   Con seis se quedaban fuera las capacidades nuevas —IA, MCP y webhooks—,
+   que son justo las que distinguen al producto. */
+const destacados = MODULOS.filter((m) => m.destacado).slice(0, 9);
 const planMasBarato = Math.min(
   ...PLANES.filter((p) => typeof p.precioMensual === 'number').map(
     (p) => p.precioMensual

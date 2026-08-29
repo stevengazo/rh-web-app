@@ -6,6 +6,8 @@ import {
   Users,
 } from 'lucide-react';
 
+import { PRODUCTO } from '../../../data/marketing';
+
 /**
  * Maqueta estática del sistema para el hero.
  *
@@ -54,7 +56,7 @@ const AppPreview = () => {
         {/* Barra lateral */}
         <aside className="hidden w-40 shrink-0 flex-col gap-1 bg-linear-to-b from-nav to-violet-950 p-3 sm:flex">
           <p className="mb-2 px-2 text-[11px] font-semibold text-white/80">
-            RH Manager
+            {PRODUCTO.nombre}
           </p>
 
           {items.map(({ icon: Icon, label, activo }) => (

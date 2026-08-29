@@ -266,7 +266,9 @@ const OrgChartInner = ({ departamentos = [], onSelect, seleccionadoId }) => {
         </p>
       )}
 
-      <div className="h-[600px] overflow-hidden rounded-xl border border-stroke-soft bg-canvas">
+      {/* Se queda con el alto que dejó libre el resumen, sin pasarse de la
+          pantalla en portátiles: el organigrama es el contenido principal. */}
+      <div className="h-[min(72vh,760px)] min-h-[420px] overflow-hidden rounded-xl border border-stroke-soft bg-canvas">
         <ReactFlow
           nodes={nodes}
           edges={edges}

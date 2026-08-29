@@ -6,6 +6,7 @@ import salaryApi from '../api/salaryApi';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
 import payrollApi from '../api/payrollApi';
 import useLatestSalaryMap from './useLatestSalaryMap';
+import { agruparLiquidables } from '../utils/liquidables';
 
 /** Días que abarca cada tipo de periodo. */
 const DIAS_POR_TIPO = {
@@ -18,6 +19,9 @@ const diasDelPeriodo = (tipo) => DIAS_POR_TIPO[tipo] ?? 15;
 
 /** Estados en los que la planilla ya no admite cambios. */
 const esEditable = (estado) => !estado || estado === 'Borrador';
+
+/** Pausa sin escribir tras la que el autoguardado se dispara. */
+const RETRASO_AUTOGUARDADO_MS = 2000;
 
 /**
  * Construye la fila inicial de un empleado a partir de su salario vigente.
@@ -94,6 +98,14 @@ const usePayrollData = (payrollId) => {
   const [salaries, setSalaries] = useState([]);
   const [payroll, setPayroll] = useState({});
 
+  /** Horas extra y ausencias del periodo, agrupadas por colaborador. */
+  const [liquidables, setLiquidables] = useState({});
+
+  /* Colaboradores cuyas horas se capturan a mano en vez de tomarse de los
+     registros. Vive aquí y no en la fila para que el panel de detalle pueda
+     cambiarlo desde fuera. */
+  const [capturaManual, setCapturaManual] = useState(() => new Set());
+
   /** Filas visibles, indexadas por `userId`. */
   const [payrollByEmployee, setPayrollByEmployee] = useState({});
   /** Ids de `Employee_Payroll` que había en la base y el usuario quitó. */
@@ -102,6 +114,11 @@ const usePayrollData = (payrollId) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+
+  /** Marca de tiempo del ultimo guardado con exito. */
+  const [savedAt, setSavedAt] = useState(null);
+  /** El usuario puede apagar el guardado automatico desde la barra inferior. */
+  const [autoSave, setAutoSave] = useState(true);
 
   /* Cada fila emite una primera sincronización al montarse (los cálculos
      derivados del salario). Esa no cuenta como edición del usuario; si
@@ -121,10 +138,13 @@ const usePayrollData = (payrollId) => {
     setLoading(true);
 
     try {
-      const [empRes, salRes, payrollRes] = await Promise.all([
+      const [empRes, salRes, payrollRes, payableRes] = await Promise.all([
         EmployeeApi.getAllEmployees(),
         salaryApi.getLatests(),
         payrollApi.getPayrollById(payrollId),
+        /* Si la planilla no tiene periodo definido el endpoint responde 400;
+           no es motivo para no poder abrirla, así que se sigue sin ellos. */
+        payrollApi.getPayableItems(payrollId).catch(() => null),
       ]);
 
       const listaEmpleados = empRes?.data ?? [];
@@ -133,6 +153,7 @@ const usePayrollData = (payrollId) => {
       setEmployees(listaEmpleados);
       setSalaries(salRes?.data ?? []);
       setPayroll(planilla);
+      setLiquidables(agruparLiquidables(payableRes?.data));
 
       // Las filas ya guardadas mandan sobre cualquier valor por defecto.
       const guardadas = planilla.payrolls ?? [];
@@ -235,6 +256,23 @@ const usePayrollData = (payrollId) => {
     setDirty(true);
   }, []);
 
+  /**
+   * Alterna de dónde salen las horas extra y las ausencias de un colaborador.
+   *
+   * @param {string} userId
+   * @param {boolean} desdeRegistros
+   */
+  const setOrigenDeCalculo = useCallback((userId, desdeRegistros) => {
+    setCapturaManual((prev) => {
+      const siguiente = new Set(prev);
+      if (desdeRegistros) siguiente.delete(userId);
+      else siguiente.add(userId);
+      return siguiente;
+    });
+
+    setDirty(true);
+  }, []);
+
   /** Precarga a todos los elegibles que aún no estén incluidos. */
   const addAllAvailable = useCallback(() => {
     addEmployees(availableEmployees.map((e) => e.id));
@@ -269,9 +307,18 @@ const usePayrollData = (payrollId) => {
   /* ------------------------------------------------------------------
      Guardado
      ------------------------------------------------------------------ */
-  const handleSave = useCallback(async () => {
+  /**
+   * Sincroniza la planilla contra el servidor.
+   *
+   * @param {{silencioso?: boolean}} [opciones] En modo silencioso no muestra
+   *   el aviso de exito: lo usa el guardado automatico, que ya se reporta
+   *   con su propio indicador en la barra inferior.
+   */
+  const handleSave = useCallback(async ({ silencioso = false } = {}) => {
     if (readOnly) {
-      toast.error('La planilla está aprobada; reábrela para editarla.');
+      if (!silencioso) {
+        toast.error('La planilla está aprobada; reábrela para editarla.');
+      }
       return false;
     }
 
@@ -304,9 +351,11 @@ const usePayrollData = (payrollId) => {
         toast.error(
           `Se guardaron ${resultados.length - fallidos.length} de ${resultados.length} cambios. Revisa los que fallaron.`
         );
-      } else {
+      } else if (!silencioso) {
         toast.success('Planilla guardada');
       }
+
+      if (fallidos.length === 0) setSavedAt(new Date());
 
       // Recargar para recuperar los ids reales de las filas recién creadas.
       await cargar();
@@ -319,6 +368,45 @@ const usePayrollData = (payrollId) => {
       setSaving(false);
     }
   }, [payrollByEmployee, removedRowIds, payrollId, readOnly, cargar]);
+
+  /* ------------------------------------------------------------------
+     Guardado automático
+
+     Se dispara tras dos segundos sin tocar nada, no en cada tecla: una
+     planilla de nueve personas emite decenas de recálculos por edición y
+     guardar en cada uno sería una tormenta de peticiones. El temporizador
+     se reinicia con cada cambio, así que solo se guarda cuando el usuario
+     hace una pausa.
+
+     `guardarRef` evita que el efecto dependa de `handleSave`, que cambia
+     de identidad en cada render y reiniciaría la cuenta sin parar.
+     ------------------------------------------------------------------ */
+  const guardarRef = useRef(handleSave);
+  guardarRef.current = handleSave;
+
+  useEffect(() => {
+    if (!autoSave || !dirty || readOnly || saving || loading) return undefined;
+
+    const id = setTimeout(() => {
+      guardarRef.current({ silencioso: true });
+    }, RETRASO_AUTOGUARDADO_MS);
+
+    return () => clearTimeout(id);
+  }, [autoSave, dirty, readOnly, saving, loading, payrollByEmployee]);
+
+  /* Cerrar con cambios sin guardar debe avisar: el autoguardado espera dos
+     segundos y puede no haber llegado a correr. */
+  useEffect(() => {
+    if (!dirty || readOnly) return undefined;
+
+    const avisar = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', avisar);
+    return () => window.removeEventListener('beforeunload', avisar);
+  }, [dirty, readOnly]);
 
   /* ------------------------------------------------------------------
      Totales
@@ -358,17 +446,23 @@ const usePayrollData = (payrollId) => {
     payrollResume,
     availableEmployees,
     employeesWithoutSalary,
+    liquidables,
+    capturaManual,
 
     // estado
     loading,
     saving,
     dirty,
     readOnly,
+    savedAt,
+    autoSave,
+    setAutoSave,
     pendingRemovals: removedRowIds.length,
 
     // acciones
     handleRowChange,
     handleSave,
+    setOrigenDeCalculo,
     addEmployees,
     addAllAvailable,
     removeEmployee,
