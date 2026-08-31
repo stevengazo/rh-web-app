@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Palette, Plug, Shield, Sparkles, Webhook } from 'lucide-react';
+import { Mail, Palette, Plug, Shield, Sparkles, Webhook } from 'lucide-react';
 
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
 import ThemeSettings from '../Components/organisms/ThemeSettings';
 import AiSettings from '../Components/organisms/AiSettings';
+import EmailSettings from '../Components/organisms/EmailSettings';
 import WebhookSettings from '../Components/organisms/WebhookSettings';
 import McpSettings from '../Components/organisms/McpSettings';
 import RolesSettings from '../Components/organisms/RolesSettings';
@@ -12,6 +13,7 @@ import RolesSettings from '../Components/organisms/RolesSettings';
 const TABS = {
   APARIENCIA: 'apariencia',
   IA: 'ia',
+  CORREO: 'correo',
   WEBHOOKS: 'webhooks',
   MCP: 'mcp',
   ROLES: 'roles',
@@ -20,6 +22,7 @@ const TABS = {
 const SECCIONES = [
   { id: TABS.APARIENCIA, label: 'Apariencia', icon: Palette, Panel: ThemeSettings },
   { id: TABS.IA, label: 'Inteligencia artificial', icon: Sparkles, Panel: AiSettings },
+  { id: TABS.CORREO, label: 'Correo de salida', icon: Mail, Panel: EmailSettings },
   { id: TABS.WEBHOOKS, label: 'Webhooks', icon: Webhook, Panel: WebhookSettings },
   { id: TABS.MCP, label: 'MCP', icon: Plug, Panel: McpSettings },
   { id: TABS.ROLES, label: 'Roles y permisos', icon: Shield, Panel: RolesSettings },

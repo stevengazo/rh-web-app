@@ -350,6 +350,54 @@ Módulo nuevo, en los dos repos. Migración EF `Messaging` (3 tablas, no toca na
   `useUnreadMessages` pasó a store compartido (`useSyncExternalStore`): un solo sondeo
   aunque el hook se monte en varios sitios.
 
+## 4.j Motor de automatizaciones (agosto 2026)
+
+Reglas «cuando… si… entonces…» tipo Bitrix. Migración EF `Automations` (2 tablas).
+
+- **Enganche**: `WebhookPublisher.Publish` escribe además en un `Channel<AutomationJob>`
+  aparte → **un solo cambio** cubre los ~10 puntos donde ya se publican eventos de dominio.
+  Los disparadores son exactamente los ids de `WebhookEvents` (con su lista de campos).
+- **`AutomationDispatcher : BackgroundService`** (calco de `WebhookDispatcher`): por cada
+  evento carga `AutomationRule` activas de ese `TriggerEvent`, evalúa `ConditionsJson`
+  (`AutomationEvaluator`, AND, ops `eq/neq/gt/gte/lt/lte/contains/startsWith/exists/notExists`,
+  comparación numérica o texto), y si matchea ejecuta `ActionsJson` vía
+  **`AutomationActionRunner`**. Nunca lanza. Registra un `AutomationRun`
+  (`OK/Parcial/Error/Omitida`) y actualiza `RunCount/LastRunAt/LastRunStatus`.
+- **Acciones**: `email` (`IEmailService`, registrado ahora en `Program.cs`), `message`
+  (mensaje interno — reutiliza el módulo de mensajería; remitente = primer Admin si no se
+  fija), `reminder` (crea un `Reminder`), `webhook` (POST puntual), `assignPsychometric`.
+  Plantillas `{{campo}}` y selectores `field:clave` / `employee`.
+- **`AutomationsController`**: CRUD + `catalog` (eventos+campos, operadores, tipos, pruebas
+  activas) + `enable/disable` + `runs` + **`simulate`** (dry-run contra un JSON de ejemplo).
+- `AutomationRun` en la denylist de auditoría.
+- **Front**: `AutomationsPage` reescrita (tabla de reglas + tarjetas de resumen; el tablero
+  de "Canales" baja a "Integraciones"), `AutomationEditorPage` (`/manager/automatizaciones/:id`,
+  `nueva` = alta) con constructor visual (`ConditionBuilder`, `ActionBuilder`,
+  `AutomationRunsTable`), `api/automationsApi.js`, `utils/automations.js`. Ayuda `automatizaciones`.
+- **Verificado en vivo**: regla `loan.approved` + `amount>50000` + acción `message` →
+  aprobar un préstamo de ₡90 000 disparó la regla (`AutomationRun` `OK`) y el colaborador
+  recibió el mensaje interno; uno de ₡30 000 → `simulate` responde `matched:false`.
+
+## 4.k Configuración de correo de salida (agosto 2026)
+
+Migración EF `EmailConfiguration` (1 tabla, fila única — patrón de `McpConfiguration`).
+
+- **`EmailConfiguration`**: `Enabled`, `SmtpServer`, `Port`, `SenderName`, `SenderEmail`,
+  `Username`, `Password` (secreto, nunca se devuelve), `UseSsl`, `UpdatedAt/By`.
+- **`EmailService`** ahora resuelve la configuración así: si hay fila en BD la usa; si no,
+  cae a `appsettings`/variables de entorno. Lanza un error legible si está desactivada o
+  incompleta (lo captura el runner de automatizaciones y queda como `Error` en la bitácora).
+- **`EmailSettingsController`** (`api/EmailSettings`): `GET` (saneado, `hasPassword` +
+  `source: appsettings|database`; si no hay fila devuelve los valores del despliegue),
+  `PUT` (DTO; `password: null` deja la actual, `""` la borra; la **primera** vez que se
+  guarda hereda la contraseña del despliegue), `POST /test` (envía un correo de prueba con
+  la config vigente y responde `{ ok, message }`).
+- **Front**: nuevo menú **"Correo de salida"** en Configuración (`SettingsPage` → sección
+  `correo`), `Components/organisms/EmailSettings.jsx` (formulario + botón "Enviar prueba"),
+  `api/emailSettingsApi.js`.
+- ⚠️ El DTO no puede tener a la vez `Username` (SMTP) y `UserName` (quién guarda): colisionan
+  en el binder JSON insensible a mayúsculas. El campo de auditoría se llama `SavedBy`.
+
 ## 5. Pendiente / a verificar
 
 - ⚠️ **Build sin re-verificar tras los últimos cambios** (dark mode, `@custom-variant`,

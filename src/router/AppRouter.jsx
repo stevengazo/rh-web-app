@@ -50,6 +50,7 @@ import PsychometricAssignmentPage from '../pages/PsychometricAssignmentPage';
 import MyPsychometricsPage from '../pages/MyPsychometricsPage';
 import TakePsychometricPage from '../pages/TakePsychometricPage';
 import MessagesPage from '../pages/MessagesPage';
+import AutomationEditorPage from '../pages/AutomationEditorPage';
 
 /** Redirige la ruta antigua `/manager/perfornance/:id` a la corregida. */
 const PerformanceRedirect = () => {
@@ -130,6 +131,10 @@ const AppRouter = () => {
           <Route
             path="/manager/automatizaciones"
             element={<AutomationsPage />}
+          />
+          <Route
+            path="/manager/automatizaciones/:id"
+            element={<AutomationEditorPage />}
           />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/payroll/new/:id" element={<NewPayrollPage />} />

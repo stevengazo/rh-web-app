@@ -281,6 +281,26 @@ export const AYUDA = {
     ],
   },
 
+  automatizaciones: {
+    titulo: 'Automatizaciones',
+    icono: 'Workflow',
+    resumen:
+      'Reglas que reaccionan solas: cuando ocurre un evento del sistema, si se cumplen las condiciones, se ejecutan acciones.',
+    pasos: [
+      'Pulsa "Nueva automatización" y ponle un nombre.',
+      'Elige el disparador: el evento del sistema que la activa (préstamo aprobado, planilla pagada, etc.).',
+      'Opcional: agrega condiciones sobre los campos del evento (monto mayor que…, tipo igual a…). Se ejecuta si se cumplen todas.',
+      'Agrega una o varias acciones: enviar correo, mensaje interno, recordatorio, llamar un webhook o asignar una prueba psicométrica.',
+      'Guarda y actívala. Con "Simular" pruebas las condiciones sin ejecutar nada.',
+    ],
+    tips: [
+      'En los textos de las acciones puedes usar {{campo}} para insertar datos del evento.',
+      'Para el destinatario usa "field:userId" (el colaborador del evento) o pega el id de una persona.',
+      'Cada disparo queda registrado con su resultado (OK, Parcial, Error u Omitida).',
+      'Los disparadores son los mismos eventos que alimentan los webhooks salientes.',
+    ],
+  },
+
   mensajes: {
     titulo: 'Mensajes',
     icono: 'MessagesSquare',
@@ -328,6 +348,7 @@ export const ORDEN_AYUDA = [
   'kpis',
   'preguntas',
   'psicometria',
+  'automatizaciones',
   'mensajes',
   'roles',
   'perfil',

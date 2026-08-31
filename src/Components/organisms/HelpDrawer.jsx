@@ -17,6 +17,7 @@ import {
   Target,
   User,
   Users,
+  Workflow,
 } from 'lucide-react';
 
 import OffCanvas from '../OffCanvas';
@@ -37,6 +38,7 @@ const ICONOS = {
   Brain,
   ListChecks,
   MessagesSquare,
+  Workflow,
 };
 
 /** Ficha de ayuda de un área. */
