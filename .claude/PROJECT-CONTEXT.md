@@ -192,6 +192,159 @@ filtrar en todas las consultas sería peor que no tenerla.
 **Pendiente del saneamiento**: las 99 columnas `nvarchar(max)` sin longitud
 declarada, y los tres renames profundos listados arriba.
 
+## 4.d Endurecimiento del módulo de Préstamos (agosto 2026)
+
+Se trabajó **en los dos repos**. **Sin migración EF**: solo DTOs y lógica.
+
+- **`LoansController`**: `PostLoan` y `PutLoan` ya no aceptan la entidad `Loan`
+  completa (overposting). Reciben `CreateLoanDto` / `UpdateLoanDto`. `PutLoan`
+  solo edita préstamos **pendientes** (`Conflict` si no) y nunca toca estado,
+  colaborador ni aprobación; devuelve el préstamo (`Ok`) en vez de `NoContent`.
+- **`PaymentsController`**: `PutPayment` usa `UpdatePaymentDto` y recalcula el
+  estado del préstamo (Aprobado ↔ Pagado) igual que `PostPayment`.
+  `DeletePayment` pasó a **borrado lógico** (`Payment.Deleted`, columna que ya
+  existía y que todas las consultas filtran) y revierte el préstamo a Aprobado si
+  estaba Pagado y deja de cubrirse. `GetPaymentsByLoan/ByUser` devuelven lista
+  vacía en vez de 404 y filtran `!Deleted`.
+- **Front**:
+  - `useConfirm` + `ConfirmDialog` (organism): diálogo modal Fluent que sustituye
+    `window.confirm`/`window.prompt`; soporta motivo obligatorio y tono
+    destructivo. **Reutilizable** en otros módulos (acciones, ausencias aún usan
+    `window.prompt`).
+  - `LoanEdit` (organism): edición de préstamo pendiente, se abre en `OffCanvas`
+    desde el listado y el detalle.
+  - `PaymentAdd` acepta prop `payment` → modo edición de abono.
+  - `PaymentTable` reescrita al estándar Fluent, usa `formatMoney`, columna de
+    acciones opcional (`onEdit`/`onDelete`).
+  - `loanStatus.js`: helpers `puedeEditarPrestamo`, `progresoDePrestamo`.
+  - `paymentsApi.deletePayment(id, editedBy)` manda `editedBy` como query param.
+  - Corregido `EmployeeLoansPanel` (leía `l.date`, inexistente) y `MyLoansPage`
+    (saldo con `l.balance ?? 0`).
+
+## 4.e Módulo de Evaluaciones Psicométricas (agosto 2026)
+
+Módulo nuevo y autocontenido en **los dos repos**. Migración EF `PsychometricTests`
+(7 tablas nuevas; se aplica sola al arrancar). **No toca tablas existentes.**
+
+- **Modelo** (`RHAPI/Models/Psychometrics/`): `PsychometricTest` → `PsychometricDimension`
+  (rasgos) + `PsychometricQuestion` (Likert5 / MultipleChoice, con `ReverseScored`) +
+  `PsychometricOption`. `PsychometricAssignment` (el intento: Asignada → En progreso →
+  Completada → Revisada) → `PsychometricResponse` (upsert, único por ítem) +
+  `PsychometricScore` (snapshot por dimensión al enviar). `PsychometricStatus` estático
+  al estilo `LoanStatus`.
+- **Borrado**: composición en cascada; catálogo restringido; `UserId`→AspNetUsers sin
+  acción. `PsychometricQuestion → PsychometricDimension` es **NoAction** a propósito: SQL
+  Server no admite dos caminos de borrado hacia `PsychometricQuestion`
+  (Test→Question directo y Test→Dimension→Question). Dimensiones e ítems son **borrado
+  lógico** (`Deleted`); el controlador desvincula los ítems antes de dar de baja una
+  dimensión.
+- **Controladores**: `PsychometricTestsController` (catálogo + sub-recursos
+  dimensions/questions con opciones inline; bloquea cambios estructurales si ya hay
+  respuestas — `locked`), `PsychometricAssignmentsController` (asignar, bulk, `responses`
+  con guardado parcial, `submit` que **calcula el puntaje** —Likert `6-v` si invertido; MC
+  = score de la opción—, `review`, `reopen`, `stats`, `user/{id}` sin puntajes).
+- **Auditoría**: `PsychometricResponse` y `PsychometricScore` van en la denylist de
+  `AuditRecorder` (alto volumen / derivados); la lifecycle de `PsychometricAssignment`
+  sí se audita.
+- **Front**:
+  - Admin `/manager/psicometria` (tabs Aplicaciones / Pruebas + stats),
+    `/manager/psicometria/prueba/:id` (editor de dimensiones e ítems),
+    `/manager/psicometria/aplicacion/:id` (radar con `recharts`, puntajes, respuestas,
+    conclusión del evaluador, reabrir).
+  - Empleado `/my-evaluations` y `/my-evaluations/:id` (cuestionario con `LikertScale`,
+    **autoguardado con debounce**, barra de progreso, envío bloqueante). Enlace
+    "Evaluaciones" en `NavBar`.
+  - `psychometricTestsApi.js` / `psychometricAssignmentsApi.js`, `utils/psychometricStatus.js`,
+    `molecules/PsychometricStatusBadge.jsx` + `LikertScale.jsx`,
+    `organisms/psychometrics/*`.
+  - Pestaña "Psicometría" en el expediente (`useEmployeeView` + `ViewEmployeePage` +
+    `EmployeePsychometricsPanel`). Ayuda `psicometria` en `data/help.js`.
+
+## 4.f Sidebar en acordeón + Configuración en lista vertical (agosto 2026)
+
+- **`layouts/ManagerSideBar.jsx`**: las secciones ahora son un **acordeón** — solo una
+  abierta a la vez, con animación (framer-motion: `height: 0 → auto` del bloque y
+  entrada escalonada de cada ítem; la flecha rota). La sección abierta se recuerda en
+  `localStorage` (`sidebar-seccion`) y se abre sola la que contiene la ruta activa al
+  navegar. Con el menú **plegado** se mantiene el comportamiento anterior (iconos +
+  separadores, sin acordeón).
+- **`pages/SettingsPage.jsx`**: dejó de usar `Tabs`; la navegación es una **lista
+  vertical** a la izquierda (`grid md:grid-cols-[220px_1fr]`), contenido a la derecha.
+
+## 4.g Perfil personalizable (agosto 2026)
+
+Migración EF `UserPreferences` (una tabla nueva, no toca nada existente).
+
+- **`UserPreference`** (`RHAPI/Models/UserPreference.cs`): una fila por colaborador
+  (`UserId` único filtrado). Guarda `ThemeId`, `Mode` (`light|dark|system`),
+  `AccentColor` (hex opcional), `BackgroundOpacity` (0–100) y `SettingsJson`
+  (extensible sin migración). `UserPreferencesController` con
+  `GET/PUT /api/UserPreferences/user/{userId}` (upsert; devuelve `null` si no hay).
+- **Imagen de fondo**: NO vive en esa tabla. Se sube como `FileModel` con
+  `TableName = "ProfileBackground"`, `ReferenceId = userId` (reutiliza `FileApi.upload`
+  y el índice `(TableName, ReferenceId)` que ya existía). Sin cambios de backend.
+- **Front**:
+  - `hooks/useUserPreferences.js`: store mínimo compartido (`useSyncExternalStore`) +
+    caché en `localStorage` (`rh:prefs`, solo anti-parpadeo; la verdad es el servidor).
+    Aplica el tema/modo vía `useTheme` y el acento como override de `--color-accent` /
+    `--color-accent-strong` sobre `<html>` (se re-aplica cuando cambia el tema, porque
+    `useTheme.aplicar` limpia esas variables).
+  - `<PreferencesLoader />` en `App.jsx` (sin UII) carga y aplica al entrar.
+  - `Components/organisms/ProfileCustomization.jsx`: panel (paleta del catálogo
+    `data/temas.js`, modo, color de acento, imagen de fondo con opacidad). Se abre desde
+    el botón "Personalizar" en `MyProfilePage`, que además muestra la imagen como
+    **portada** del perfil.
+  - `api/userPreferencesApi.js`.
+
+## 4.h Módulos de Desempeño (KPIs / Preguntas) + varios (agosto 2026)
+
+**Sin migración.** Backend: `ObjetivesController` y `QuestionsController` ahora incluyen
+la categoría en el listado (proyección con `category`/`questionCategory` + `assignedCount`)
+y usan DTOs en POST/PUT (igual las dos `*CategoriesController`). `User_Objetive/search` y
+`User_Question/search` devuelven **lista vacía en vez de 404**; ambos filtran `!Deleted`,
+el DELETE es lógico y el POST fuerza `Deleted = false`. Se quitó el default `= true` de
+`User_Objetive.Deleted` (nacían "eliminados").
+
+Front: `KPIPage` y `QuestionPage` reescritas al patrón de `PsychometricPage` (`PageTitle`
++ `HelpButton`, `Tabs` Objetivos/Preguntas · Por colaborador · Categorías, tarjetas de
+resumen, tablas con acciones ver/editar/eliminar/asignar, `useConfirm`, `useOffCanvas`,
+skeletons, estados vacíos). Los 6 `Add*` pasan a primitivos + `onSaved` + modo edición.
+Nuevos: `CategoryTable`. `QuestionPage` arrancaba en una pestaña inexistente (bug).
+`kpiApi.updateCertification` → `updateKPI`. `ViewPerformancePage`: fix `obj.user_ObjetiveId`
+(las gráficas nunca cargaban). Ruta `/manager/perfornance/:id` (typo) → nueva
+`/manager/performance/:id` con redirect de la vieja. Ayuda `preguntas` en `data/help.js`.
+
+- **Organigrama en el expediente**: pestaña "Organigrama" en `ViewEmployeePage`
+  (`EmployeeOrgChartPanel` — cadena de dependencia + jefaturas + `OrgChart` con el
+  departamento del colaborador resaltado; solo consulta).
+- **Portada del perfil**: `EmployeeView` (drawer) y `EmployeeProfileHeader` muestran la
+  imagen que el colaborador subió en "Personalizar" como banner, con degradado de marca
+  como respaldo. Hook `useProfileBackground(userId)` (reutiliza `TABLA_FONDO`).
+- **Resultados de psicometría**: `GET /api/PsychometricAssignments/aggregate?testId=&departamentId=`
+  (promedio por dimensión y por departamento, tasa de completitud). Pestaña "Resultados"
+  en `PsychometricPage` (`PsychometricResultsPanel`, gráfico de barras + tablas).
+
+## 4.i Mensajería interna / chat (agosto 2026)
+
+Módulo nuevo, en los dos repos. Migración EF `Messaging` (3 tablas, no toca nada existente).
+
+- **Modelo** (`RHAPI/Models/Messaging/`): `Conversation` (directa o grupo, `LastMessageAt`
+  para ordenar) → `ConversationParticipant` (con `LastReadAt` para no leídos, `LeftAt`
+  para salir de grupos) + `Message` (texto, `EditedAt`, borrado lógico `Deleted`). FKs a
+  AspNetUsers sin acción; el resto en cascada. Índice único `(ConversationId, UserId)`.
+- **`MessagingController`** (`api/Messaging`, sin `[Authorize]` como el resto —el `userId`
+  va explícito): `conversations` (bandeja con último mensaje + no leídos), `unread`
+  (contador global), `conversations/{id}/messages` (paginado `beforeId`/`afterId`),
+  `conversations/direct` (busca-o-crea), `conversations/group`, `POST messages`,
+  `POST read`, `PUT/DELETE messages/{id}` (solo propios), `participants`, `leave`.
+- **Auditoría**: las 3 entidades en la denylist de `AuditRecorder` (conversación privada).
+- **Sin tiempo real**: el cliente **sondea** — bandeja cada 12 s, hilo cada 5 s (con la
+  pestaña visible), contador global cada 20 s (`useUnreadMessages`, montado en `NavBar`).
+- **Front**: `pages/MessagesPage.jsx` (dos paneles en escritorio, uno en móvil),
+  `organisms/messaging/` (`ConversationList`, `MessageThread`, `NewConversationForm`),
+  `api/messagingApi.js`. Ruta `/messages` (bajo `MainLayout`), entrada "Mensajes" con
+  distintivo de no leídos en `NavBar` y en `ManagerSideBar`. Ayuda `mensajes`.
+
 ## 5. Pendiente / a verificar
 
 - ⚠️ **Build sin re-verificar tras los últimos cambios** (dark mode, `@custom-variant`,

@@ -3,7 +3,6 @@ import { Palette, Plug, Shield, Sparkles, Webhook } from 'lucide-react';
 
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
-import Tabs from '../Components/molecules/Tabs';
 import ThemeSettings from '../Components/organisms/ThemeSettings';
 import AiSettings from '../Components/organisms/AiSettings';
 import WebhookSettings from '../Components/organisms/WebhookSettings';
@@ -18,22 +17,24 @@ const TABS = {
   ROLES: 'roles',
 };
 
-const CONTENIDO = {
-  [TABS.APARIENCIA]: ThemeSettings,
-  [TABS.IA]: AiSettings,
-  [TABS.WEBHOOKS]: WebhookSettings,
-  [TABS.MCP]: McpSettings,
-  [TABS.ROLES]: RolesSettings,
-};
+const SECCIONES = [
+  { id: TABS.APARIENCIA, label: 'Apariencia', icon: Palette, Panel: ThemeSettings },
+  { id: TABS.IA, label: 'Inteligencia artificial', icon: Sparkles, Panel: AiSettings },
+  { id: TABS.WEBHOOKS, label: 'Webhooks', icon: Webhook, Panel: WebhookSettings },
+  { id: TABS.MCP, label: 'MCP', icon: Plug, Panel: McpSettings },
+  { id: TABS.ROLES, label: 'Roles y permisos', icon: Shield, Panel: RolesSettings },
+];
 
 /**
  * Configuración del sistema.
  *
- * La página estaba vacía: solo tenía el título. Ahora agrupa por pestañas lo
- * que cada persona puede ajustar por su cuenta.
+ * La navegación es una lista vertical a la izquierda; el contenido a la derecha.
  */
 const SettingsPage = () => {
   const [tab, setTab] = useState(TABS.APARIENCIA);
+
+  const actual = SECCIONES.find((s) => s.id === tab) ?? SECCIONES[0];
+  const Panel = actual.Panel;
 
   return (
     <>
@@ -46,23 +47,37 @@ const SettingsPage = () => {
 
       <Divider />
 
-      <Tabs
-        idGrupo="ajustes"
-        value={tab}
-        onChange={setTab}
-        items={[
-          { id: TABS.APARIENCIA, label: 'Apariencia', icon: Palette },
-          { id: TABS.IA, label: 'Inteligencia artificial', icon: Sparkles },
-          { id: TABS.WEBHOOKS, label: 'Webhooks', icon: Webhook },
-          { id: TABS.MCP, label: 'MCP', icon: Plug },
-          { id: TABS.ROLES, label: 'Roles y permisos', icon: Shield },
-        ]}
-      />
+      <div className="grid gap-6 md:grid-cols-[220px_1fr]">
+        {/* Lista vertical */}
+        <nav className="flex flex-col gap-1 md:sticky md:top-20 md:self-start">
+          {SECCIONES.map(({ id, label, icon: Icon }) => {
+            const activo = id === tab;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setTab(id)}
+                aria-current={activo ? 'page' : undefined}
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-left text-sm font-medium
+                            transition-colors
+                            ${
+                              activo
+                                ? 'bg-brand-tint text-brand-700'
+                                : 'text-ink-secondary hover:bg-canvas hover:text-ink'
+                            }`}
+              >
+                <Icon size={16} className="shrink-0" />
+                <span className="truncate">{label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-      <div className="mt-6">{(() => {
-        const Panel = CONTENIDO[tab] ?? ThemeSettings;
-        return <Panel />;
-      })()}</div>
+        {/* Contenido */}
+        <div className="min-w-0">
+          <Panel />
+        </div>
+      </div>
     </>
   );
 };

@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Clock,
   Eye,
+  Pencil,
   Plus,
   RefreshCw,
   Search,
@@ -19,8 +20,11 @@ import { useNavigate } from 'react-router-dom';
 import loansApi from '../api/loansApi';
 import { useAppContext } from '../context/AppContext';
 import { formatMoney } from '../utils/formatMoney';
+import { mensajeDeError } from '../utils/apiError';
+import { useConfirm } from '../hooks/useConfirm';
 
 import LoansAdd from '../Components/organisms/LoansAdd';
+import LoanEdit from '../Components/organisms/LoanEdit';
 import OffCanvas from '../Components/OffCanvas';
 import PageTitle from '../Components/PageTitle';
 import Divider from '../Components/Divider';
@@ -37,11 +41,6 @@ const nombreDe = (user) =>
   user?.userName ||
   user?.email ||
   'Sin nombre';
-
-const mensajeError = (error, porDefecto) => {
-  const data = error?.response?.data;
-  return typeof data === 'string' && data ? data : porDefecto;
-};
 
 const Indicador = ({ icon: Icon, label, valor, sublabel, accent, activo, onClick }) => (
   <button
@@ -69,6 +68,7 @@ const LoansPage = () => {
   const navigate = useNavigate();
   const { user } = useAppContext();
   const quien = user?.userName ?? user?.email ?? '';
+  const { confirm, dialog } = useConfirm();
 
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -165,42 +165,64 @@ const LoansPage = () => {
       await fetchLoans();
     } catch (error) {
       console.error(error);
-      toast.error(mensajeError(error, errorPorDefecto));
+      toast.error(mensajeDeError(error, errorPorDefecto));
     }
   };
 
-  const aprobar = (l) =>
+  const editar = (l) =>
+    openCanvas(
+      'Editar Préstamo',
+      <LoanEdit
+        loan={l}
+        onSaved={() => {
+          closeCanvas();
+          fetchLoans();
+        }}
+        onCancel={closeCanvas}
+      />
+    );
+
+  const aprobar = async (l) => {
+    const ok = await confirm({
+      title: `¿Aprobar el préstamo #${l.loanId}?`,
+      message: 'Entrará en cobro y su saldo aparecerá en el listado.',
+      confirmLabel: 'Aprobar',
+    });
+    if (ok === false) return;
+
     ejecutar(
       () => loansApi.approveLoan(l.loanId, quien),
       `Préstamo #${l.loanId} aprobado`,
       'No se pudo aprobar el préstamo'
     );
+  };
 
-  const rechazar = (l) => {
-    const motivo = window.prompt(
-      `Motivo por el que se rechaza el préstamo #${l.loanId}:`
-    );
-    if (motivo === null) return;
-
-    if (!motivo.trim()) {
-      toast.error('El motivo es obligatorio para rechazar.');
-      return;
-    }
+  const rechazar = async (l) => {
+    const motivo = await confirm({
+      title: `Rechazar el préstamo #${l.loanId}`,
+      message:
+        'Se dejará constancia del motivo y se limpiará cualquier aprobación previa.',
+      confirmLabel: 'Rechazar',
+      tone: 'danger',
+      requireReason: true,
+      reasonLabel: 'Motivo del rechazo',
+    });
+    if (motivo === false) return;
 
     ejecutar(
-      () => loansApi.rejectLoan(l.loanId, motivo.trim(), quien),
+      () => loansApi.rejectLoan(l.loanId, motivo, quien),
       `Préstamo #${l.loanId} rechazado`,
       'No se pudo rechazar el préstamo'
     );
   };
 
-  const saldar = (l) => {
-    if (
-      !window.confirm(
-        `¿Marcar el préstamo #${l.loanId} como pagado? Solo se permite si los abonos cubren ${formatMoney(l.amount)}.`
-      )
-    )
-      return;
+  const saldar = async (l) => {
+    const ok = await confirm({
+      title: `¿Marcar el préstamo #${l.loanId} como pagado?`,
+      message: `Solo se permite si los abonos cubren ${formatMoney(l.amount)}.`,
+      confirmLabel: 'Marcar como pagado',
+    });
+    if (ok === false) return;
 
     ejecutar(
       () => loansApi.settleLoan(l.loanId, quien),
@@ -214,6 +236,8 @@ const LoansPage = () => {
 
   return (
     <>
+      {dialog}
+
       <AnimatePresence>
         {isCanvasOpen && (
           <OffCanvas
@@ -438,6 +462,16 @@ const LoansPage = () => {
 
                         {estado === LOAN_STATUS.PENDING && (
                           <>
+                            <button
+                              type="button"
+                              onClick={() => editar(loan)}
+                              aria-label="Editar préstamo"
+                              title="Editar"
+                              className="grid h-8 w-8 place-items-center rounded-md text-ink-muted transition-colors hover:bg-canvas hover:text-brand"
+                            >
+                              <Pencil size={16} />
+                            </button>
+
                             <button
                               type="button"
                               onClick={() => aprobar(loan)}

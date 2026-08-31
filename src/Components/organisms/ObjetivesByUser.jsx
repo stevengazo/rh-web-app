@@ -1,69 +1,100 @@
-import SectionTitle from '../SectionTitle';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronRight, Target, Trash2 } from 'lucide-react';
 
-const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [] }) => {
+import RowActionButton from '../molecules/RowActionButton';
+
+const nombreDe = (u, fallbackId) =>
+  [u?.firstName, u?.lastName].filter(Boolean).join(' ').trim() ||
+  u?.userName ||
+  u?.email ||
+  `Colaborador ${String(fallbackId ?? '').slice(0, 6)}`;
+
+/**
+ * Objetivos agrupados por colaborador.
+ *
+ * @param {Array} ObjetivesByUser  `User_Objetive[]` con `user` y `objetive` embebidos.
+ * @param {Array} [Employees]      Respaldo para resolver nombres si falta `user`.
+ * @param {(uo:object)=>void} [onDelete]  Quita la asignación.
+ */
+const ObjetivesByUser = ({ ObjetivesByUser = [], Employees = [], onDelete }) => {
   const navigate = useNavigate();
-  // Agrupar objetivos por usuario
-  const groupedByUser = ObjetivesByUser.reduce((acc, item) => {
-    if (!acc[item.userId]) {
-      acc[item.userId] = [];
+
+  const grupos = useMemo(() => {
+    const mapa = new Map();
+    for (const item of ObjetivesByUser) {
+      const key = String(item.userId);
+      if (!mapa.has(key)) mapa.set(key, []);
+      mapa.get(key).push(item);
     }
-    acc[item.userId].push(item);
-    return acc;
-  }, {});
+    return [...mapa.entries()];
+  }, [ObjetivesByUser]);
 
-  const getEmployeeName = (userId) => {
-    const employee = Employees.find((e) => e.id === userId);
+  const nombrePorId = useMemo(
+    () => new Map(Employees.map((e) => [String(e.id), e])),
+    [Employees]
+  );
 
-    return employee
-      ? `${employee.firstName} ${employee.lastName} `
-      : 'Empleado no encontrado';
-  };
+  if (!grupos.length) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-14 text-ink-muted">
+        <Target size={28} />
+        <p className="text-sm font-medium">Nadie tiene objetivos asignados todavía</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {Object.entries(groupedByUser).map(([userId, objectives]) => (
-        <div
-          key={userId}
-          onClick={() => navigate(`/manager/perfornance/${userId}`)}
-          className="rounded-xl hover:shadow-2xl hover:border-stroke-soft px-2 transition duration-150 border border-stroke-soft  shadow-sm"
-        >
-          {/* Usuario */}
-          <h4 className=" font-semibold text-2xl  p-2 text-ink">
-            {getEmployeeName(userId)}
-          </h4>
+      {grupos.map(([userId, items]) => {
+        const user = items[0]?.user ?? nombrePorId.get(userId);
+        return (
+          <section
+            key={userId}
+            className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm"
+          >
+            <button
+              type="button"
+              onClick={() => navigate(`/manager/performance/${userId}`)}
+              className="flex w-full items-center justify-between gap-3 border-b border-stroke-soft bg-surface-alt px-4 py-3 text-left transition-colors hover:bg-canvas"
+            >
+              <span className="font-semibold text-ink">{nombreDe(user, userId)}</span>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand">
+                Ver desempeño
+                <ChevronRight size={14} />
+              </span>
+            </button>
 
-          <div className="overflow-x-auto my-2">
-            <table className="min-w-full text-sm text-left">
-              <thead className="bg-surface-alt text-ink-secondary uppercase text-xs tracking-wide">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Objetivo</th>
-                  <th className="px-4 py-3 font-medium">Descripción</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-stroke-soft">
-                {objectives.map((o) => (
-                  <tr
-                    key={o.user_ObjetiveId}
-                    className="hover:bg-canvas transition-colors"
-                  >
-                    <td className="px-4 py-3 font-medium text-ink">
+            <ul className="divide-y divide-stroke-soft">
+              {items.map((o) => (
+                <li
+                  key={o.user_ObjetiveId}
+                  className="flex items-start justify-between gap-3 px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-ink">
                       {o.objetive?.title || 'Sin título'}
-                    </td>
-
-                    <td className="px-4 py-3 text-ink-muted max-w-md">
-                      <p className="truncate">
-                        {o.objetive?.description || '-'}
+                    </p>
+                    {o.objetive?.description && (
+                      <p className="max-w-lg truncate text-xs text-ink-muted">
+                        {o.objetive.description}
                       </p>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ))}
+                    )}
+                  </div>
+                  {onDelete && (
+                    <RowActionButton
+                      icon={Trash2}
+                      label="Quitar asignación"
+                      tono="danger"
+                      onClick={() => onDelete(o)}
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 };

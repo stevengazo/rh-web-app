@@ -22,7 +22,7 @@ const ObjetiveCategories = {
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   getObjetiveCategoryById: (id) => {
-    return apiClient.get(`/ObjetiveCategories`);
+    return apiClient.get(`/ObjetiveCategories/${id}`);
   },
 
   /**

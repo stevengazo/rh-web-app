@@ -1,153 +1,182 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+
 import kpiApi from '../../api/kpiApi';
 import ObjetiveCategories from '../../api/ObjetiveCategories';
+import { mensajeDeError } from '../../utils/apiError';
+
+import Label from '../Label';
+import TextInput from '../TextInput';
+import SelectInput from '../SelectInput';
+import CheckBoxInput from '../CheckBoxInput';
 import PrimaryButton from '../PrimaryButton';
+import SecondaryButton from '../SecondaryButton';
 
-const AddObjetive = ({ onAdded }) => {
-  const [newObjetive, setNewObjetive] = useState({
-    objetiveId: 0,
-    title: '',
-    description: '',
-    isActive: true,
-    objetiveCategoryId: 0,
-    category: null,
+const areaClass =
+  'w-full resize-none rounded-md border border-stroke border-b-2 border-b-ink-muted ' +
+  'bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-muted ' +
+  'transition-colors focus:border-b-brand focus:outline-none';
+
+/**
+ * Alta / edición de un objetivo (KPI).
+ *
+ * @param {object} [objetive]  Si viene, edita.
+ * @param {() => void} [onSaved]
+ * @param {() => void} [onCancel]
+ */
+const AddObjetive = ({ objetive, onSaved, onCancel }) => {
+  const esEdicion = Boolean(objetive);
+
+  const [form, setForm] = useState({
+    title: objetive?.title ?? '',
+    description: objetive?.description ?? '',
+    isActive: objetive?.isActive ?? true,
+    objetiveCategoryId: objetive?.objetiveCategoryId
+      ? String(objetive.objetiveCategoryId)
+      : '',
   });
-
-  const notify = () => toast.success('Agregado');
-
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await ObjetiveCategories.getAllObjetiveCategories();
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error loading categories', error);
-      }
-    };
-
-    getData();
+    ObjetiveCategories.getAllObjetiveCategories()
+      .then((r) => setCategories(Array.isArray(r.data) ? r.data : []))
+      .catch((e) => console.error('Error cargando categorías', e));
   }, []);
+
+  const categoriasActivas = useMemo(
+    () => categories.filter((c) => c.isActive || String(c.objetiveCategoryId) === form.objetiveCategoryId),
+    [categories, form.objetiveCategoryId]
+  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setNewObjetive((prev) => ({
-      ...prev,
-      [name]:
-        type === 'checkbox'
-          ? checked
-          : name === 'objetiveCategoryId'
-            ? Number(value)
-            : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (!form.title.trim()) {
+      setError('El título es obligatorio.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await kpiApi.createKPI(newObjetive);
-      notify();
-      onAdded && onAdded();
-    } catch (error) {
-      toast.error('Error al agregar el objetivo');
-      console.error(error);
+      const dto = {
+        title: form.title.trim(),
+        description: form.description.trim() || null,
+        isActive: form.isActive,
+        objetiveCategoryId: form.objetiveCategoryId
+          ? Number(form.objetiveCategoryId)
+          : null,
+      };
+
+      if (esEdicion) {
+        await kpiApi.updateKPI(objetive.objetiveId, dto);
+        toast.success('Objetivo actualizado.');
+      } else {
+        await kpiApi.createKPI(dto);
+        toast.success('Objetivo creado.');
+      }
+      onSaved?.();
+    } catch (err) {
+      console.error(err);
+      setError(mensajeDeError(err, 'No se pudo guardar el objetivo.'));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto rounded-xl p-6 ">
-      <h2 className="text-2xl font-semibold text-ink mb-6">
-        Nuevo Objetivo
-      </h2>
+    <form onSubmit={handleSubmit} className="space-y-5 text-ink">
+      <div>
+        <h2 className="text-lg font-semibold">
+          {esEdicion ? 'Editar objetivo' : 'Nuevo objetivo'}
+        </h2>
+        <p className="mt-1 text-xs text-ink-muted">
+          Un indicador de rendimiento que luego se asigna a colaboradores.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Título */}
-        <div>
-          <label className="block text-sm font-medium text-ink-secondary mb-1">
-            Título
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={newObjetive.title}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
-              placeholder:text-ink-muted
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-            placeholder="Ingrese el título del objetivo"
-          />
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
         </div>
+      )}
 
-        {/* Descripción */}
-        <div>
-          <label className="block text-sm font-medium text-ink-secondary mb-1">
-            Descripción
-          </label>
-          <textarea
-            name="description"
-            value={newObjetive.description}
-            onChange={handleChange}
-            rows={4}
-            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
-              placeholder:text-ink-muted
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-            placeholder="Descripción del objetivo"
-          />
-        </div>
+      <div>
+        <Label htmlFor="obj-title">Título *</Label>
+        <TextInput
+          id="obj-title"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          placeholder="Ej: Cierre mensual de ventas"
+        />
+      </div>
 
-        {/* Categoría */}
-        <div>
-          <label className="block text-sm font-medium text-ink-secondary mb-1">
-            Categoría
-          </label>
-          <select
-            name="objetiveCategoryId"
-            value={newObjetive.objetiveCategoryId}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-stroke bg-surface text-ink px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-          >
-            <option value={0} className="bg-surface">
-              Seleccione una categoría
+      <div>
+        <Label htmlFor="obj-desc">Descripción</Label>
+        <textarea
+          id="obj-desc"
+          name="description"
+          rows={3}
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Qué se espera lograr y cómo se mide"
+          className={areaClass}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="obj-cat">Categoría</Label>
+        <SelectInput
+          id="obj-cat"
+          name="objetiveCategoryId"
+          value={form.objetiveCategoryId}
+          onChange={handleChange}
+        >
+          <option value="">Sin categoría</option>
+          {categoriasActivas.map((c) => (
+            <option key={c.objetiveCategoryId} value={c.objetiveCategoryId}>
+              {c.name}
             </option>
-            {categories.map((cat) => (
-              <option
-                key={cat.objetiveCategoryId}
-                value={cat.objetiveCategoryId}
-                className="bg-surface"
-              >
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          ))}
+        </SelectInput>
+      </div>
 
-        {/* Activo */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            name="isActive"
-            checked={newObjetive.isActive}
-            onChange={handleChange}
-            className="h-4 w-4 rounded border-stroke bg-surface text-brand
-              focus:ring-brand focus:ring-2"
-          />
-          <span className="text-sm text-ink-secondary">Activo</span>
-        </div>
+      <CheckBoxInput
+        label="Activo"
+        name="isActive"
+        checked={form.isActive}
+        onChange={handleChange}
+      />
 
-        {/* Botón */}
-        <div className="flex justify-end">
-          <PrimaryButton type="submit">
-            Guardar Objetivo
-          </PrimaryButton>
-        </div>
-      </form>
-    </div>
+      <div className="flex justify-end gap-3 border-t border-stroke-soft pt-4">
+        {onCancel && (
+          <SecondaryButton onClick={onCancel} disabled={loading}>
+            Cancelar
+          </SecondaryButton>
+        )}
+        <PrimaryButton type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              Guardando…
+            </>
+          ) : esEdicion ? (
+            'Guardar cambios'
+          ) : (
+            'Crear objetivo'
+          )}
+        </PrimaryButton>
+      </div>
+    </form>
   );
 };
 

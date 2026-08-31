@@ -1,124 +1,166 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+
 import questionApi from '../../api/questionsApi';
 import questionCategoryApi from '../../api/QuestionCategories';
+import { mensajeDeError } from '../../utils/apiError';
+
+import Label from '../Label';
+import TextInput from '../TextInput';
+import SelectInput from '../SelectInput';
+import CheckBoxInput from '../CheckBoxInput';
 import PrimaryButton from '../PrimaryButton';
+import SecondaryButton from '../SecondaryButton';
 
-const AddQuestion = () => {
-  const [question, setQuestion] = useState({
-    questionId: 0,
-    text: '',
-    isActive: true,
-    questionCategoryId: '',
-    questionCategory: null,
-    user_Questions: [],
-    user_Objetive: null,
+/**
+ * Alta / edición de una pregunta de desempeño.
+ *
+ * @param {object} [question]  Si viene, edita.
+ * @param {() => void} [onSaved]
+ * @param {() => void} [onCancel]
+ */
+const AddQuestion = ({ question, onSaved, onCancel }) => {
+  const esEdicion = Boolean(question);
+
+  const [form, setForm] = useState({
+    text: question?.text ?? '',
+    isActive: question?.isActive ?? true,
+    questionCategoryId: question?.questionCategoryId
+      ? String(question.questionCategoryId)
+      : '',
   });
-
   const [categories, setCategories] = useState([]);
-
-  const notify = () => toast.success('Agregado');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await questionCategoryApi.getAllQuestionCategories();
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error cargando categorías', error);
-      }
-    };
-    getData();
+    questionCategoryApi
+      .getAllQuestionCategories()
+      .then((r) => setCategories(Array.isArray(r.data) ? r.data : []))
+      .catch((e) => console.error('Error cargando categorías', e));
   }, []);
+
+  const categoriasActivas = useMemo(
+    () =>
+      categories.filter(
+        (c) =>
+          c.isActive || String(c.questionCategoryId) === form.questionCategoryId
+      ),
+    [categories, form.questionCategoryId]
+  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setQuestion((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (!form.text.trim()) {
+      setError('El texto de la pregunta es obligatorio.');
+      return;
+    }
+    if (!form.questionCategoryId) {
+      setError('Selecciona una categoría.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await questionApi.createQuestion(question);
-      notify();
-    } catch (error) {
-      console.error('Error al crear la pregunta', error);
-      toast.error('Error al guardar');
+      const dto = {
+        text: form.text.trim(),
+        isActive: form.isActive,
+        questionCategoryId: Number(form.questionCategoryId),
+      };
+
+      if (esEdicion) {
+        await questionApi.updateQuestion(question.questionId, dto);
+        toast.success('Pregunta actualizada.');
+      } else {
+        await questionApi.createQuestion(dto);
+        toast.success('Pregunta creada.');
+      }
+      onSaved?.();
+    } catch (err) {
+      console.error(err);
+      setError(mensajeDeError(err, 'No se pudo guardar la pregunta.'));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full">
-      <form onSubmit={handleSubmit} className="space-y-4 ">
-        <h3 className="text-sm font-semibold text-ink">Nueva Pregunta</h3>
+    <form onSubmit={handleSubmit} className="space-y-5 text-ink">
+      <div>
+        <h2 className="text-lg font-semibold">
+          {esEdicion ? 'Editar pregunta' : 'Nueva pregunta'}
+        </h2>
+      </div>
 
-        {/* Pregunta */}
-        <div className="space-y-1">
-          <label className="text-xs text-ink-muted">Pregunta</label>
-          <input
-            type="text"
-            name="text"
-            value={question.text}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-stroke bg-surface px-3 py-2 text-sm text-ink
-              placeholder:text-ink-muted
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-            placeholder="Escribe la pregunta..."
-          />
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
         </div>
+      )}
 
-        {/* Categoría */}
-        <div className="space-y-1">
-          <label className="text-xs text-ink-muted">Categoría</label>
-          <select
-            name="questionCategoryId"
-            value={question.questionCategoryId}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-stroke bg-surface px-3 py-2 text-sm text-ink
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-          >
-            <option value="" className="bg-surface">
-              Seleccione una categoría
+      <div>
+        <Label htmlFor="q-text">Pregunta *</Label>
+        <TextInput
+          id="q-text"
+          name="text"
+          value={form.text}
+          onChange={handleChange}
+          placeholder="Ej: ¿Cumple con los plazos acordados?"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="q-cat">Categoría *</Label>
+        <SelectInput
+          id="q-cat"
+          name="questionCategoryId"
+          value={form.questionCategoryId}
+          onChange={handleChange}
+        >
+          <option value="">Selecciona una categoría…</option>
+          {categoriasActivas.map((c) => (
+            <option key={c.questionCategoryId} value={c.questionCategoryId}>
+              {c.name}
             </option>
-            {categories.map((c) => (
-              <option
-                key={c.questionCategoryId}
-                value={c.questionCategoryId}
-                className="bg-surface"
-              >
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          ))}
+        </SelectInput>
+      </div>
 
-        {/* Activo */}
-        <div className="flex items-center gap-2 pt-1">
-          <input
-            type="checkbox"
-            name="isActive"
-            checked={question.isActive}
-            onChange={handleChange}
-            className="h-4 w-4 rounded border-stroke bg-surface text-brand
-              focus:ring-2 focus:ring-brand"
-          />
-          <span className="text-xs text-ink-muted">Activo</span>
-        </div>
+      <CheckBoxInput
+        label="Activa"
+        name="isActive"
+        checked={form.isActive}
+        onChange={handleChange}
+      />
 
-        {/* Botón */}
-        <div className="pt-2 flex justify-end">
-          <PrimaryButton type="submit">
-            Guardar
-          </PrimaryButton>
-        </div>
-      </form>
-    </div>
+      <div className="flex justify-end gap-3 border-t border-stroke-soft pt-4">
+        {onCancel && (
+          <SecondaryButton onClick={onCancel} disabled={loading}>
+            Cancelar
+          </SecondaryButton>
+        )}
+        <PrimaryButton type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              Guardando…
+            </>
+          ) : esEdicion ? (
+            'Guardar cambios'
+          ) : (
+            'Crear pregunta'
+          )}
+        </PrimaryButton>
+      </div>
+    </form>
   );
 };
 

@@ -3,10 +3,12 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Banknote,
+  Brain,
   ChevronDown,
   FileText,
   LogOut,
   Menu,
+  MessagesSquare,
   PanelsTopLeft,
   Percent,
   Target,
@@ -20,6 +22,7 @@ import EmployeeAvatar from '../Components/molecules/EmployeeAvatar';
 import { obtenerFoto } from '../Components/organisms/AvatarUpload';
 import { urlDeArchivo } from '../utils/fileUrl';
 import { useAppContext } from '../context/AppContext';
+import useUnreadMessages from '../hooks/useUnreadMessages';
 
 /**
  * Secciones del portal del colaborador.
@@ -29,7 +32,9 @@ import { useAppContext } from '../context/AppContext';
  */
 const SECCIONES = [
   { to: '/my-profile', label: 'Mi perfil', icon: User },
+  { to: '/messages', label: 'Mensajes', icon: MessagesSquare },
   { to: '/my-kpis', label: 'KPIs', icon: Target },
+  { to: '/my-evaluations', label: 'Evaluaciones', icon: Brain },
   { to: '/my-comissions', label: 'Comisiones', icon: Percent },
   { to: '/my-loans', label: 'Préstamos', icon: Banknote },
   { to: '/my-payrolls', label: 'Comprobantes', icon: FileText },
@@ -85,6 +90,15 @@ const NavBar = () => {
   const [menuUsuario, setMenuUsuario] = useState(false);
   const [foto, setFoto] = useState(null);
   const refUsuario = useRef(null);
+  const { total: mensajesNoLeidos } = useUnreadMessages();
+
+  /** Distintivo de no leídos para el enlace de Mensajes. */
+  const badgeDe = (to) =>
+    to === '/messages' && mensajesNoLeidos > 0 ? (
+      <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] font-bold text-white">
+        {mensajesNoLeidos > 99 ? '99+' : mensajesNoLeidos}
+      </span>
+    ) : null;
 
   // Foto de perfil del usuario en sesión
   useEffect(() => {
@@ -163,6 +177,7 @@ const NavBar = () => {
             <NavLink key={to} to={to} className={linkClass}>
               <Icon size={17} />
               {label}
+              {badgeDe(to)}
             </NavLink>
           ))}
         </div>
@@ -321,6 +336,7 @@ const NavBar = () => {
                   <NavLink key={to} to={to} className={linkClassOscuro}>
                     <Icon size={17} />
                     {label}
+                    {badgeDe(to)}
                   </NavLink>
                 ))}
               </nav>

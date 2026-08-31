@@ -1,11 +1,13 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Banknote,
   BarChart3,
+  Brain,
   Briefcase,
   CalendarDays,
+  ChevronDown,
   ChevronLeft,
   CircleHelp,
   FileText,
@@ -13,6 +15,7 @@ import {
   ListChecks,
   LogOut,
   Menu,
+  MessagesSquare,
   Network,
   ScrollText,
   Settings,
@@ -29,19 +32,25 @@ import Logo from '../Components/Logo';
 
 /** Dónde se recuerda si el menú quedó plegado. */
 const CLAVE_COLAPSADO = 'sidebar-colapsado';
+/** Qué sección del menú quedó abierta (acordeón: solo una a la vez). */
+const CLAVE_SECCION = 'sidebar-seccion';
 
 /**
  * Navegación del área de administración, agrupada por el trabajo que resuelve
  * cada bloque en lugar de por el módulo técnico al que pertenece.
+ *
+ * Cada sección es un acordeón: al abrir una se cierran las demás.
  */
 const SECCIONES = [
   {
+    id: 'resumen',
     titulo: 'Resumen',
     items: [
       { to: '/manager', label: 'Dashboard', icon: LayoutDashboard, end: true },
     ],
   },
   {
+    id: 'personal',
     titulo: 'Personal',
     items: [
       { to: '/manager/employees', label: 'Empleados', icon: Users },
@@ -51,6 +60,7 @@ const SECCIONES = [
     ],
   },
   {
+    id: 'compensacion',
     titulo: 'Compensación',
     items: [
       { to: '/manager/payroll', label: 'Planilla', icon: FileText },
@@ -58,13 +68,16 @@ const SECCIONES = [
     ],
   },
   {
+    id: 'desempeno',
     titulo: 'Desempeño',
     items: [
       { to: '/manager/kpis', label: 'KPIs y objetivos', icon: Target },
       { to: '/manager/questions', label: 'Preguntas', icon: ListChecks },
+      { to: '/manager/psicometria', label: 'Psicometría', icon: Brain },
     ],
   },
   {
+    id: 'operacion',
     titulo: 'Operación',
     items: [
       { to: '/manager/reportes', label: 'Reportería', icon: BarChart3 },
@@ -72,10 +85,15 @@ const SECCIONES = [
     ],
   },
   {
+    id: 'mi-cuenta',
     titulo: 'Mi cuenta',
-    items: [{ to: '/my-profile', label: 'Mi Perfil', icon: User }],
+    items: [
+      { to: '/my-profile', label: 'Mi Perfil', icon: User },
+      { to: '/messages', label: 'Mensajes', icon: MessagesSquare },
+    ],
   },
   {
+    id: 'configuracion',
     titulo: 'Configuración',
     items: [
       { to: '/manager/auditoria', label: 'Auditoría', icon: ScrollText },
@@ -84,12 +102,85 @@ const SECCIONES = [
   },
 ];
 
+/* Variantes del acordeón, al estilo de la barra lateral de VS Code: colapso
+   rápido de la altura con una curva ease-out, misma curva al abrir y al
+   cerrar para que el movimiento sea simétrico. Los ítems solo escalonan su
+   entrada; al cerrar se desvanecen con el panel sin retrasar el colapso. */
+const EASE = [0.25, 0.1, 0.25, 1];
+
+const seccionVariants = {
+  cerrada: {
+    height: 0,
+    opacity: 0,
+    transition: {
+      height: { duration: 0.18, ease: EASE },
+      opacity: { duration: 0.12, ease: EASE },
+    },
+  },
+  abierta: {
+    height: 'auto',
+    opacity: 1,
+    transition: {
+      height: { duration: 0.2, ease: EASE },
+      opacity: { duration: 0.15, ease: EASE },
+      staggerChildren: 0.025,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const itemVariants = {
+  cerrada: { opacity: 0, x: -6 },
+  abierta: { opacity: 1, x: 0, transition: { duration: 0.16, ease: 'easeOut' } },
+};
+
+/** Sección a la que pertenece la ruta activa (para abrirla sola). */
+const seccionDeRuta = (pathname) => {
+  const match = SECCIONES.find((s) =>
+    s.items.some((i) =>
+      i.end ? pathname === i.to : pathname === i.to || pathname.startsWith(`${i.to}/`)
+    )
+  );
+  return match?.id ?? null;
+};
+
 const ManagerSideBar = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { logout } = useAppContext();
 
   const [open, setOpen] = useState(false); // cajón móvil
   const [ayudaAbierta, setAyudaAbierta] = useState(false);
+
+  /* Acordeón: solo una sección abierta a la vez. Se recuerda entre visitas y
+     se abre sola la que contiene la ruta activa al navegar. */
+  const [seccionAbierta, setSeccionAbierta] = useState(() => {
+    try {
+      const guardada = localStorage.getItem(CLAVE_SECCION);
+      if (guardada && SECCIONES.some((s) => s.id === guardada)) return guardada;
+    } catch {
+      /* modo privado */
+    }
+    return seccionDeRuta(window.location.pathname) ?? SECCIONES[0].id;
+  });
+
+  const seccionActiva = useMemo(() => seccionDeRuta(pathname), [pathname]);
+
+  useEffect(() => {
+    if (seccionActiva) setSeccionAbierta(seccionActiva);
+  }, [seccionActiva]);
+
+  useEffect(() => {
+    try {
+      if (seccionAbierta) localStorage.setItem(CLAVE_SECCION, seccionAbierta);
+      else localStorage.removeItem(CLAVE_SECCION);
+    } catch {
+      /* modo privado */
+    }
+  }, [seccionAbierta]);
+
+  const alternarSeccion = (id) =>
+    setSeccionAbierta((actual) => (actual === id ? null : id));
 
   /* El pliegue se recuerda entre visitas: quien trabaja con el menú
      colapsado no quiere volver a plegarlo en cada pantalla. */
@@ -117,9 +208,14 @@ const ManagerSideBar = () => {
   };
 
   /**
+   * Contenido del sidebar. Se invoca como función (no como `<Contenido />`)
+   * desde el render: si fuera un componente declarado aquí dentro, React lo
+   * trataría como un tipo nuevo en cada cambio de estado y remontaría todo el
+   * árbol, con lo que `AnimatePresence` nunca llegaría a animar el acordeón.
+   *
    * @param {boolean} plegado  En el cajón móvil nunca se pliega.
    */
-  const Contenido = ({ plegado }) => {
+  const renderContenido = (plegado) => {
     const itemClass = ({ isActive }) =>
       `group relative flex items-center gap-3 rounded-md py-2 text-sm font-medium
        transition-colors duration-150
@@ -172,47 +268,91 @@ const ManagerSideBar = () => {
         </div>
 
         {/* Navegación */}
-        <nav className="scrollbar-slim-dark flex-1 space-y-4 overflow-y-auto p-3 text-sm">
-          {SECCIONES.map((seccion) => (
-            <div key={seccion.titulo}>
-              {plegado ? (
-                <div className="mx-2 mb-2 border-t border-white/10" />
-              ) : (
-                <p className="mb-2 px-3 text-xs uppercase tracking-wide text-gray-400">
+        <nav className="scrollbar-slim-dark flex-1 overflow-y-auto p-3 text-sm">
+          {SECCIONES.map((seccion) => {
+            const Item = (item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={itemClass}
+                  onClick={() => setOpen(false)}
+                  title={plegado ? item.label : undefined}
+                >
+                  <Icon size={18} className="shrink-0" />
+                  {!plegado && <span className="truncate">{item.label}</span>}
+
+                  {/* Etiqueta flotante cuando está plegado */}
+                  {plegado && (
+                    <span
+                      className="pointer-events-none absolute left-full z-50 ml-2 hidden
+                                 whitespace-nowrap rounded-md bg-nav px-2 py-1 text-xs
+                                 text-white shadow-lg group-hover:block"
+                    >
+                      {item.label}
+                    </span>
+                  )}
+                </NavLink>
+              );
+            };
+
+            // Menú plegado: sin acordeón, solo un separador y los iconos.
+            if (plegado) {
+              return (
+                <div key={seccion.id} className="mb-2">
+                  <div className="mx-2 mb-2 border-t border-white/10" />
+                  {seccion.items.map(Item)}
+                </div>
+              );
+            }
+
+            const abierta = seccionAbierta === seccion.id;
+
+            return (
+              <div key={seccion.id} className="mb-1">
+                <button
+                  type="button"
+                  onClick={() => alternarSeccion(seccion.id)}
+                  aria-expanded={abierta}
+                  className="flex w-full items-center justify-between rounded-md px-3 py-1.5
+                             text-xs font-semibold uppercase tracking-wide text-gray-400
+                             transition-colors hover:text-white"
+                >
                   {seccion.titulo}
-                </p>
-              )}
-
-              {seccion.items.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    className={itemClass}
-                    onClick={() => setOpen(false)}
-                    title={plegado ? item.label : undefined}
+                  <motion.span
+                    animate={{ rotate: abierta ? 0 : -90 }}
+                    transition={{ duration: 0.18, ease: EASE }}
+                    className="grid place-items-center"
                   >
-                    <Icon size={18} className="shrink-0" />
-                    {!plegado && <span className="truncate">{item.label}</span>}
+                    <ChevronDown size={14} />
+                  </motion.span>
+                </button>
 
-                    {/* Etiqueta flotante cuando está plegado */}
-                    {plegado && (
-                      <span
-                        className="pointer-events-none absolute left-full z-50 ml-2 hidden
-                                   whitespace-nowrap rounded-md bg-nav px-2 py-1 text-xs
-                                   text-white shadow-lg group-hover:block"
-                      >
-                        {item.label}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
-            </div>
-          ))}
+                <AnimatePresence initial={false}>
+                  {abierta && (
+                    <motion.div
+                      key="items"
+                      variants={seccionVariants}
+                      initial="cerrada"
+                      animate="abierta"
+                      exit="cerrada"
+                      className="overflow-hidden"
+                    >
+                      <div className="mt-1 space-y-0.5 pb-1">
+                        {seccion.items.map((item) => (
+                          <motion.div key={item.to} variants={itemVariants}>
+                            {Item(item)}
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
         </nav>
 
         {/* Pie */}
@@ -262,7 +402,7 @@ const ManagerSideBar = () => {
         className="hidden shrink-0 flex-col overflow-hidden bg-linear-to-b
                    from-nav via-nav to-violet-950 text-white md:flex"
       >
-        <Contenido plegado={colapsado} />
+        {renderContenido(colapsado)}
       </motion.aside>
 
       {/* Sidebar móvil */}
@@ -285,7 +425,7 @@ const ManagerSideBar = () => {
               exit={{ x: -260 }}
               transition={{ type: 'tween', duration: 0.25 }}
             >
-              <Contenido plegado={false} />
+              {renderContenido(false)}
             </motion.aside>
           </>
         )}

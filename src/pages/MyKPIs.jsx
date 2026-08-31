@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { Target } from 'lucide-react';
+
+import PageTitle from '../Components/PageTitle';
 import SectionTitle from '../Components/SectionTitle';
 import Divider from '../Components/Divider';
 import OffCanvasLarge from '../Components/OffCanvasLarge';
@@ -81,42 +84,56 @@ const MyKPIs = () => {
         )}
       </AnimatePresence>
 
-      <SectionTitle>Mis Indicadores de Rendimiento</SectionTitle>
+      <div>
+        <PageTitle className="mb-0">Mis Indicadores de Rendimiento</PageTitle>
+        <p className="text-sm text-ink-muted">
+          Los objetivos y preguntas de evaluación que Recursos Humanos te asignó.
+        </p>
+      </div>
       <Divider />
 
       {/* OBJETIVOS */}
       <div>
         <div className="flex justify-between items-center mb-6">
-          <SectionTitle>Objetivos Asignados</SectionTitle>
+          <SectionTitle className="mb-0">Objetivos Asignados</SectionTitle>
 
           {/* View toggle */}
-          <div className="flex border border-stroke rounded-md overflow-hidden">
-            <button
-              onClick={() => setViewMode('cards')}
-              className={`px-4 py-1 text-sm ${
-                viewMode === 'cards'
-                  ? 'bg-brand text-white'
-                  : 'bg-surface text-ink-muted'
-              }`}
-            >
-              Cards
-            </button>
+          {userObjetives.length > 0 && (
+            <div className="flex border border-stroke rounded-md overflow-hidden">
+              <button
+                onClick={() => setViewMode('cards')}
+                className={`px-4 py-1 text-sm ${
+                  viewMode === 'cards'
+                    ? 'bg-brand text-white'
+                    : 'bg-surface text-ink-muted'
+                }`}
+              >
+                Cards
+              </button>
 
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-4 py-1 text-sm ${
-                viewMode === 'table'
-                  ? 'bg-brand text-white'
-                  : 'bg-surface text-ink-muted'
-              }`}
-            >
-              Tabla
-            </button>
-          </div>
+              <button
+                onClick={() => setViewMode('table')}
+                className={`px-4 py-1 text-sm ${
+                  viewMode === 'table'
+                    ? 'bg-brand text-white'
+                    : 'bg-surface text-ink-muted'
+                }`}
+              >
+                Tabla
+              </button>
+            </div>
+          )}
         </div>
 
+        {userObjetives.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-12 text-ink-muted">
+            <Target size={26} />
+            <p className="text-sm">No tienes objetivos asignados.</p>
+          </div>
+        )}
+
         {/* CARD VIEW */}
-        {viewMode === 'cards' && (
+        {viewMode === 'cards' && userObjetives.length > 0 && (
           <div className="grid gap-6 md:grid-cols-2">
             {userObjetives.map((obj) => (
               <div
@@ -146,7 +163,7 @@ const MyKPIs = () => {
         )}
 
         {/* TABLE VIEW */}
-        {viewMode === 'table' && (
+        {viewMode === 'table' && userObjetives.length > 0 && (
           <div className="overflow-x-auto border border-stroke-soft rounded-xl">
             <table className="min-w-full text-sm">
               <thead className="bg-surface-alt text-ink-secondary">
@@ -192,34 +209,36 @@ const MyKPIs = () => {
 
       {/* PREGUNTAS */}
       <div>
-        <div className="flex justify-between items-center mb-6">
-          <SectionTitle>Preguntas</SectionTitle>
-        </div>
+        <SectionTitle className="mb-4">Preguntas de evaluación</SectionTitle>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {userQuestions.map((uq) => (
-            <div
-              key={uq.user_QuestionId}
-              onClick={() =>
-                openCanvas(
-                  `Pregunta ${uq.question?.text || 'Sin título'}`,
-                  <QuestionsLayout User_Question={uq} />
-                )
-              }
-              className="bg-surface rounded-xl border border-stroke-soft shadow-sm p-5 hover:shadow-md transition cursor-pointer"
-            >
-              <h3 className="text-sm font-semibold text-ink mb-2">
-                {uq.question?.text}
-              </h3>
+        {userQuestions.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-12 text-ink-muted">
+            <p className="text-sm">No tienes preguntas de evaluación asignadas.</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {userQuestions.map((uq) => (
+              <div
+                key={uq.user_QuestionId}
+                onClick={() =>
+                  openCanvas(
+                    `Pregunta ${uq.question?.text || 'Sin título'}`,
+                    <QuestionsLayout User_Question={uq} />
+                  )
+                }
+                className="bg-surface rounded-xl border border-stroke-soft shadow-sm p-5 hover:shadow-md transition cursor-pointer"
+              >
+                <h3 className="text-sm font-semibold text-ink mb-2">
+                  {uq.question?.text}
+                </h3>
 
-              <div className="flex justify-between text-xs text-ink-muted">
-                <span>{uq.question?.isActive ? 'Activa' : 'Inactiva'}</span>
-
-                <span>ID: {uq.question?.questionId}</span>
+                <p className="text-xs text-ink-muted">
+                  {uq.question?.questionCategory?.name ?? 'Sin categoría'}
+                </p>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   ArrowLeft,
   Banknote,
+  Brain,
   Briefcase,
   CalendarDays,
   ChevronRight,
@@ -9,6 +10,8 @@ import {
   FileText,
   LayoutDashboard,
   Lightbulb,
+  ListChecks,
+  MessagesSquare,
   Network,
   Settings,
   Target,
@@ -31,6 +34,9 @@ const ICONOS = {
   Target,
   Settings,
   User,
+  Brain,
+  ListChecks,
+  MessagesSquare,
 };
 
 /** Ficha de ayuda de un área. */

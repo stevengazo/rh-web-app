@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import EmployeeAvatar from '../molecules/EmployeeAvatar';
 import DropdownMenu from '../molecules/DropdownMenu';
 import { useProfilePhoto } from '../../hooks/useProfilePhoto';
+import { useProfileBackground } from '../../hooks/useProfileBackground';
 import { formatMoney } from '../../utils/formatMoney';
 import { descargarPerfilPdf } from '../../utils/perfilPdf';
 import { mensajeDeError } from '../../utils/apiError';
@@ -145,6 +146,7 @@ const EmployeeProfileHeader = ({
     quitar: quitarFoto,
   } = useProfilePhoto(employee?.id);
 
+  const fondoUrl = useProfileBackground(employee?.id);
   const [trabajando, setTrabajando] = useState(false);
 
   /** Descarga el expediente como PDF. */
@@ -255,18 +257,29 @@ const EmployeeProfileHeader = ({
         Empleados
       </Link>
 
-      <div className="rounded-xl border border-stroke-soft bg-surface p-6 shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-stroke-soft bg-surface shadow-sm">
+        {/* Portada: la imagen que el colaborador subió, o la banda de marca */}
+        {fondoUrl ? (
+          <div
+            className="h-28 bg-cover bg-center sm:h-36"
+            style={{ backgroundImage: `url(${fondoUrl})` }}
+          />
+        ) : (
+          <div className="h-20 bg-linear-to-r from-brand to-accent sm:h-24" />
+        )}
+
+        <div className="p-6 pt-4">
         {/* ------------------------- Identidad ------------------------- */}
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-4">
+          <div className="flex min-w-0 items-end gap-4">
             <button
               type="button"
               onClick={elegirArchivo}
               disabled={subiendo}
               title={tieneFoto ? 'Cambiar foto' : 'Subir foto'}
               aria-label={tieneFoto ? 'Cambiar foto' : 'Subir foto'}
-              className="group relative shrink-0 rounded-full focus-visible:outline-none
-                         focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+              className="group relative -mt-16 shrink-0 rounded-full ring-4 ring-surface focus-visible:outline-none
+                         focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:-mt-20"
             >
               <EmployeeAvatar
                 employee={employee}
@@ -459,6 +472,7 @@ const EmployeeProfileHeader = ({
             </span>
           </p>
         )}
+        </div>
       </div>
     </div>
   );

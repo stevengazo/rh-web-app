@@ -4,6 +4,7 @@ import {
   AlertCircle,
   ClipboardList,
   FileText,
+  Palette,
   Pencil,
   Plane,
   Plus,
@@ -31,9 +32,11 @@ import TablePayrollsData from '../Components/organisms/TablePayrollsData';
 import MyProfileEdit from '../Components/organisms/MyProfileEdit';
 import EmergencyContacts from '../Components/organisms/EmergencyContacts';
 import VacationsSummary from '../Components/organisms/VacationsSummary';
+import ProfileCustomization from '../Components/organisms/ProfileCustomization';
 import HelpButton from '../Components/molecules/HelpButton';
 
 import { useAppContext } from '../context/AppContext';
+import useUserPreferences from '../hooks/useUserPreferences';
 
 import EmployeeApi from '../api/employeesApi';
 import actionApi from '../api/actionApi';
@@ -77,6 +80,8 @@ const sectionVariants = {
 
 const MyProfilePage = () => {
   const { user } = useAppContext();
+  const { fondoUrl, prefs } = useUserPreferences();
+  const fondoOpacidad = (prefs?.backgroundOpacity ?? 100) / 100;
 
   const [myProfile, setMyProfile] = useState(null);
   const [certifications, setCertifications] = useState([]);
@@ -169,6 +174,13 @@ const MyProfilePage = () => {
       />
     );
 
+  /** Abre el panel de personalización (tema, acento, fondo). */
+  const personalizar = () =>
+    openCanvas(
+      'Personalizar',
+      <ProfileCustomization onClose={() => setOpen(false)} />
+    );
+
   return (
     <>
       {/* Drawer de formularios */}
@@ -196,6 +208,20 @@ const MyProfilePage = () => {
         initial="hidden"
         animate="visible"
       >
+        {/* Portada personalizable */}
+        {fondoUrl && (
+          <motion.div
+            variants={sectionVariants}
+            className="relative -mt-2 mb-2 h-40 overflow-hidden rounded-xl border border-stroke-soft sm:h-52"
+          >
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${fondoUrl})`, opacity: fondoOpacidad }}
+            />
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/40 to-transparent" />
+          </motion.div>
+        )}
+
         {/* Encabezado */}
         <motion.div variants={sectionVariants}>
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -211,6 +237,11 @@ const MyProfilePage = () => {
                   className={cargando ? 'animate-spin' : undefined}
                 />
                 Actualizar
+              </SecondaryButton>
+
+              <SecondaryButton onClick={personalizar}>
+                <Palette size={15} />
+                Personalizar
               </SecondaryButton>
 
               <PrimaryButton

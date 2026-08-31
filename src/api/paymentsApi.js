@@ -40,10 +40,13 @@ const paymentApi = {
   },
 
   /**
-   * Actualiza un pago existente.
+   * Actualiza un abono. El backend solo toma `{ amount, createdDate, editedBy }`
+   * y recalcula el estado del préstamo (Aprobado ↔ Pagado). Devuelve el abono
+   * actualizado. Responde 409 si el préstamo no admite abonos o si se excede
+   * el saldo pendiente.
    *
-   * @param {number|string} id - Identificador del pago.
-   * @param {Object} payment - Objeto con los datos actualizados del pago.
+   * @param {number|string} id
+   * @param {Object} payment
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   updatePayment: (id, payment) => {
@@ -51,13 +54,17 @@ const paymentApi = {
   },
 
   /**
-   * Elimina un pago.
+   * Elimina un abono (borrado lógico). Si el préstamo estaba saldado y sin este
+   * abono deja de cubrirse el monto, vuelve al estado Aprobado.
    *
-   * @param {number|string} id - Identificador del pago.
+   * @param {number|string} id
+   * @param {string} [editedBy] - Queda registrado como quien lo eliminó.
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
-  deletePayment: (id) => {
-    return apiClient.delete(`/payments/${id}`);
+  deletePayment: (id, editedBy) => {
+    return apiClient.delete(`/payments/${id}`, {
+      params: editedBy ? { editedBy } : undefined,
+    });
   },
 };
 

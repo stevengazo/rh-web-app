@@ -8,6 +8,7 @@ import {
   Ban,
   Banknote,
   Check,
+  Pencil,
   Plus,
   RefreshCw,
   RotateCcw,
@@ -23,28 +24,35 @@ import SecondaryButton from '../Components/SecondaryButton';
 import OffCanvas from '../Components/OffCanvas';
 import PaymentAdd from '../Components/organisms/PaymentAdd';
 import PaymentTable from '../Components/organisms/PaymentTable';
+import LoanEdit from '../Components/organisms/LoanEdit';
 import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
 import HelpButton from '../Components/molecules/HelpButton';
 
 import loansApi from '../api/loansApi';
+import paymentApi from '../api/paymentsApi';
 import { useAppContext } from '../context/AppContext';
 import { formatMoney } from '../utils/formatMoney';
+import { mensajeDeError } from '../utils/apiError';
+import { useConfirm } from '../hooks/useConfirm';
 
-import { LOAN_STATUS, estadoDePrestamo } from '../utils/loanStatus';
+import {
+  LOAN_STATUS,
+  estadoDePrestamo,
+  saldoDePrestamo,
+  progresoDePrestamo,
+} from '../utils/loanStatus';
 
-const formatDate = (fecha) =>
-  fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';
+const formatDate = (fecha) => {
+  if (!fecha || String(fecha).startsWith('0001-01-01')) return '—';
+  const f = new Date(fecha);
+  return Number.isNaN(f.getTime()) ? '—' : f.toLocaleDateString('es-CR');
+};
 
 const nombreDe = (user) =>
   [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
   user?.userName ||
   user?.email ||
   'Sin nombre';
-
-const mensajeError = (error, porDefecto) => {
-  const data = error?.response?.data;
-  return typeof data === 'string' && data ? data : porDefecto;
-};
 
 const Dato = ({ label, children }) => (
   <div>
@@ -58,13 +66,21 @@ const ViewLoanPage = () => {
   const navigate = useNavigate();
   const { user } = useAppContext();
   const quien = user?.userName ?? user?.email ?? '';
+  const { confirm, dialog } = useConfirm();
 
   const [loan, setLoan] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [trabajando, setTrabajando] = useState(false);
 
-  const [open, setOpen] = useState(false);
+  /* Un solo drawer para: registrar abono, editar abono y editar préstamo. */
+  const [drawer, setDrawer] = useState(null); // 'abono' | 'prestamo' | null
+  const [abonoSel, setAbonoSel] = useState(null);
+
+  const cerrarDrawer = () => {
+    setDrawer(null);
+    setAbonoSel(null);
+  };
 
   /* El detalle ya trae los abonos y el saldo calculados, así que una sola
      petición mantiene todo sincronizado. Antes se pedían por separado y la
@@ -102,7 +118,7 @@ const ViewLoanPage = () => {
       await cargar();
     } catch (e) {
       console.error(e);
-      toast.error(mensajeError(e, errorPorDefecto));
+      toast.error(mensajeDeError(e, errorPorDefecto));
     } finally {
       setTrabajando(false);
     }
@@ -135,56 +151,86 @@ const ViewLoanPage = () => {
 
   const estado = estadoDePrestamo(loan);
   const abonado = loan.paidAmount ?? 0;
-  const saldo = loan.balance ?? loan.amount - abonado;
-  const progreso = loan.amount > 0 ? Math.min(100, (abonado / loan.amount) * 100) : 0;
+  const saldo = saldoDePrestamo(loan);
+  const progreso = progresoDePrestamo(loan);
 
   const puedeAbonar = estado === LOAN_STATUS.APPROVED;
   const pendiente = estado === LOAN_STATUS.PENDING;
+  const puedeEditarAbonos =
+    estado === LOAN_STATUS.APPROVED || estado === LOAN_STATUS.PAID;
 
-  const aprobar = () =>
+  const aprobar = async () => {
+    const ok = await confirm({
+      title: `¿Aprobar el préstamo #${loan.loanId}?`,
+      message: 'Entrará en cobro y admitirá abonos.',
+      confirmLabel: 'Aprobar',
+    });
+    if (ok === false) return;
+
     ejecutar(
       () => loansApi.approveLoan(loan.loanId, quien),
       'Préstamo aprobado',
       'No se pudo aprobar el préstamo'
     );
+  };
 
-  const rechazar = () => {
-    const motivo = window.prompt('Motivo del rechazo:');
-    if (motivo === null) return;
-
-    if (!motivo.trim()) {
-      toast.error('El motivo es obligatorio para rechazar.');
-      return;
-    }
+  const rechazar = async () => {
+    const motivo = await confirm({
+      title: `Rechazar el préstamo #${loan.loanId}`,
+      message:
+        'Se dejará constancia del motivo y se limpiará cualquier aprobación previa.',
+      confirmLabel: 'Rechazar',
+      tone: 'danger',
+      requireReason: true,
+      reasonLabel: 'Motivo del rechazo',
+    });
+    if (motivo === false) return;
 
     ejecutar(
-      () => loansApi.rejectLoan(loan.loanId, motivo.trim(), quien),
+      () => loansApi.rejectLoan(loan.loanId, motivo, quien),
       'Préstamo rechazado',
       'No se pudo rechazar el préstamo'
     );
   };
 
-  const reabrir = () =>
+  const reabrir = async () => {
+    const ok = await confirm({
+      title: '¿Volver el préstamo a pendiente?',
+      message: 'Se limpiarán los datos de aprobación o rechazo.',
+      confirmLabel: 'Volver a pendiente',
+    });
+    if (ok === false) return;
+
     ejecutar(
       () => loansApi.reopenLoan(loan.loanId, quien),
       'Préstamo devuelto a pendiente',
       'No se pudo reabrir el préstamo'
     );
+  };
 
-  const saldar = () =>
+  const saldar = async () => {
+    const ok = await confirm({
+      title: '¿Marcar el préstamo como pagado?',
+      message: `Solo se permite si los abonos cubren ${formatMoney(loan.amount)}.`,
+      confirmLabel: 'Marcar como pagado',
+    });
+    if (ok === false) return;
+
     ejecutar(
       () => loansApi.settleLoan(loan.loanId, quien),
       'Préstamo marcado como pagado',
       'No se pudo marcar como pagado'
     );
+  };
 
-  const eliminar = () => {
-    if (
-      !window.confirm(
-        `¿Eliminar el préstamo #${loan.loanId}? Se perderán también sus abonos registrados.`
-      )
-    )
-      return;
+  const eliminar = async () => {
+    const ok = await confirm({
+      title: `¿Eliminar el préstamo #${loan.loanId}?`,
+      message: 'Se eliminarán también sus abonos registrados.',
+      confirmLabel: 'Eliminar',
+      tone: 'danger',
+    });
+    if (ok === false) return;
 
     ejecutar(
       async () => {
@@ -196,29 +242,68 @@ const ViewLoanPage = () => {
     );
   };
 
+  const eliminarAbono = async (abono) => {
+    const ok = await confirm({
+      title: '¿Eliminar este abono?',
+      message: `Se quitará ${formatMoney(abono.amount)} del ${formatDate(
+        abono.createdDate
+      )}. Si el préstamo estaba saldado, volverá a Aprobado.`,
+      confirmLabel: 'Eliminar',
+      tone: 'danger',
+    });
+    if (ok === false) return;
+
+    ejecutar(
+      () => paymentApi.deletePayment(abono.paymentId, quien),
+      'Abono eliminado',
+      'No se pudo eliminar el abono'
+    );
+  };
+
   return (
     <>
+      {dialog}
+
       <AnimatePresence>
-        {open && (
+        {drawer && (
           <OffCanvas
-            isOpen={open}
-            onClose={() => setOpen(false)}
-            title="Registrar abono"
+            isOpen={Boolean(drawer)}
+            onClose={cerrarDrawer}
+            title={
+              drawer === 'prestamo'
+                ? 'Editar préstamo'
+                : abonoSel
+                  ? 'Editar abono'
+                  : 'Registrar abono'
+            }
           >
             <motion.div
               initial={{ x: 40, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 40, opacity: 0 }}
             >
-              <PaymentAdd
-                loanId={loan.loanId}
-                saldo={saldo}
-                cuota={loan.monthlyFee}
-                onAdded={() => {
-                  setOpen(false);
-                  cargar();
-                }}
-              />
+              {drawer === 'prestamo' ? (
+                <LoanEdit
+                  loan={loan}
+                  onSaved={() => {
+                    cerrarDrawer();
+                    cargar();
+                  }}
+                  onCancel={cerrarDrawer}
+                />
+              ) : (
+                <PaymentAdd
+                  loanId={loan.loanId}
+                  saldo={saldo}
+                  cuota={loan.monthlyFee}
+                  payment={abonoSel ?? undefined}
+                  onAdded={() => {
+                    cerrarDrawer();
+                    cargar();
+                  }}
+                  onCancel={cerrarDrawer}
+                />
+              )}
             </motion.div>
           </OffCanvas>
         )}
@@ -385,6 +470,14 @@ const ViewLoanPage = () => {
                   Aprobar préstamo
                 </button>
 
+                <SecondaryButton
+                  onClick={() => setDrawer('prestamo')}
+                  disabled={trabajando}
+                >
+                  <Pencil size={15} />
+                  Editar préstamo
+                </SecondaryButton>
+
                 <button
                   type="button"
                   onClick={rechazar}
@@ -401,7 +494,13 @@ const ViewLoanPage = () => {
 
             {estado === LOAN_STATUS.APPROVED && (
               <>
-                <PrimaryButton onClick={() => setOpen(true)} disabled={trabajando}>
+                <PrimaryButton
+                  onClick={() => {
+                    setAbonoSel(null);
+                    setDrawer('abono');
+                  }}
+                  disabled={trabajando}
+                >
                   <Plus size={15} />
                   Registrar abono
                 </PrimaryButton>
@@ -452,7 +551,12 @@ const ViewLoanPage = () => {
             <SectionTitle className="mb-0">Abonos</SectionTitle>
 
             {puedeAbonar && (
-              <PrimaryButton onClick={() => setOpen(true)}>
+              <PrimaryButton
+                onClick={() => {
+                  setAbonoSel(null);
+                  setDrawer('abono');
+                }}
+              >
                 <Plus size={15} />
                 Registrar abono
               </PrimaryButton>
@@ -464,7 +568,18 @@ const ViewLoanPage = () => {
           {/* La tabla se muestra según los abonos reales, no según un campo
               que quedaba desactualizado tras registrar el primero. */}
           {loan.payments?.length > 0 ? (
-            <PaymentTable payments={loan.payments} />
+            <PaymentTable
+              payments={loan.payments}
+              onEdit={
+                puedeEditarAbonos
+                  ? (abono) => {
+                      setAbonoSel(abono);
+                      setDrawer('abono');
+                    }
+                  : undefined
+              }
+              onDelete={puedeEditarAbonos ? eliminarAbono : undefined}
+            />
           ) : (
             <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-10 text-ink-muted">
               <Banknote size={26} />

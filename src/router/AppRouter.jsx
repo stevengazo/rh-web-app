@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useParams,
+} from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import ManagerLayout from '../layouts/ManagerLayout';
 import PublicLayout from '../layouts/PublicLayout';
@@ -38,6 +44,18 @@ import ViewLoanPage from '../pages/ViewLoanPage';
 import AbsencesPage from '../pages/AbsencesPage';
 import MyLoansPage from '../pages/MyLoansPage';
 import OrgChartPage from '../pages/OrgChartPage';
+import PsychometricPage from '../pages/PsychometricPage';
+import PsychometricTestEditorPage from '../pages/PsychometricTestEditorPage';
+import PsychometricAssignmentPage from '../pages/PsychometricAssignmentPage';
+import MyPsychometricsPage from '../pages/MyPsychometricsPage';
+import TakePsychometricPage from '../pages/TakePsychometricPage';
+import MessagesPage from '../pages/MessagesPage';
+
+/** Redirige la ruta antigua `/manager/perfornance/:id` a la corregida. */
+const PerformanceRedirect = () => {
+  const { id } = useParams();
+  return <Navigate to={`/manager/performance/${id}`} replace />;
+};
 
 const AppRouter = () => {
   return (
@@ -62,6 +80,9 @@ const AppRouter = () => {
           <Route path="/my-comissions" element={<MyCommissionsPage />} />
           <Route path="/my-payrolls" element={<MyPayrollsPage />} />
           <Route path="/my-loans" element={<MyLoansPage />} />
+          <Route path="/my-evaluations" element={<MyPsychometricsPage />} />
+          <Route path="/my-evaluations/:id" element={<TakePsychometricPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
         </Route>
         {/* Rutas de Administrador y RH */}
 
@@ -85,11 +106,25 @@ const AppRouter = () => {
           />
           <Route path="/manager/organigrama" element={<OrgChartPage />} />
           <Route
-            path="/manager/perfornance/:id"
+            path="/manager/performance/:id"
             element={<ViewPerformancePage />}
+          />
+          {/* Ruta anterior con typo; se conserva para no romper enlaces guardados. */}
+          <Route
+            path="/manager/perfornance/:id"
+            element={<PerformanceRedirect />}
           />
 
           <Route path="/manager/loan/:id" element={<ViewLoanPage />} />
+          <Route path="/manager/psicometria" element={<PsychometricPage />} />
+          <Route
+            path="/manager/psicometria/prueba/:id"
+            element={<PsychometricTestEditorPage />}
+          />
+          <Route
+            path="/manager/psicometria/aplicacion/:id"
+            element={<PsychometricAssignmentPage />}
+          />
           <Route path="/manager/auditoria" element={<AuditPage />} />
           <Route path="/manager/reportes" element={<ReportsPage />} />
           <Route

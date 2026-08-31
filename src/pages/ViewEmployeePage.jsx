@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Award,
   Banknote,
+  Brain,
   Briefcase,
   CalendarDays,
   Clock,
@@ -9,6 +10,7 @@ import {
   GraduationCap,
   HandCoins,
   History,
+  Network,
   Percent,
   Plane,
   ReceiptText,
@@ -76,6 +78,8 @@ import EmployeeTimeline from '../Components/organisms/EmployeeTimeline';
 import EmployeeDocuments from '../Components/organisms/EmployeeDocuments';
 import EmployeeLoansPanel from '../Components/organisms/EmployeeLoansPanel';
 import EmployeePayrollHistory from '../Components/organisms/EmployeePayrollHistory';
+import EmployeePsychometricsPanel from '../Components/organisms/psychometrics/EmployeePsychometricsPanel';
+import EmployeeOrgChartPanel from '../Components/organisms/EmployeeOrgChartPanel';
 
 import VacationsAdd from '../Components/organisms/VacationsAdd';
 import VacationsTable from '../Components/organisms/VacationsTable';
@@ -216,6 +220,7 @@ const ViewEmployeePage = () => {
     absences,
     loans,
     payrolls,
+    psychometrics,
     refetch,
     refetchExpediente,
   } = useEmployeeView(id, open);
@@ -377,6 +382,8 @@ const ViewEmployeePage = () => {
             { id: TABS.COMISSIONS, label: 'Comisiones', icon: Percent, count: comission.length },
             { id: TABS.LOANS, label: 'Préstamos', icon: HandCoins, count: loans.length },
             { id: TABS.PAYROLLS, label: 'Planillas', icon: ReceiptText, count: payrolls.length },
+            { id: TABS.PSYCHOMETRICS, label: 'Psicometría', icon: Brain, count: psychometrics.length },
+            { id: TABS.ORGCHART, label: 'Organigrama', icon: Network },
             { id: TABS.AWARDS, label: 'Reconocimientos', icon: Award, count: awards.length },
             { id: TABS.CONTACTS, label: 'Contactos', icon: Users, count: contacts.length },
             { id: TABS.FILES, label: 'Documentos', icon: FolderOpen, count: otherFiles.length },
@@ -647,6 +654,20 @@ const ViewEmployeePage = () => {
             <>
               <Header title="Historial de planillas" />
               <EmployeePayrollHistory payrolls={payrolls} />
+            </>
+          )}
+
+          {activeTab === TABS.PSYCHOMETRICS && (
+            <>
+              <Header title="Evaluaciones psicométricas" />
+              <EmployeePsychometricsPanel assignments={psychometrics} />
+            </>
+          )}
+
+          {activeTab === TABS.ORGCHART && (
+            <>
+              <Header title="Organigrama" />
+              <EmployeeOrgChartPanel employee={employee} />
             </>
           )}
 

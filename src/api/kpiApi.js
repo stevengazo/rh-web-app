@@ -38,15 +38,15 @@ const kpiApi = {
   },
 
   /**
-   * Actualiza un KPI existente.
+   * Actualiza un objetivo (KPI) existente. El backend toma
+   * `{ title, description, isActive, objetiveCategoryId }`.
    *
-   * @param {number|string} id - Identificador único del KPI.
-   * @param {Object} KPI - Objeto con los datos actualizados del KPI.
+   * @param {number|string} id
+   * @param {Object} kpi
    * @returns {Promise<import("axios").AxiosResponse<any>>}
-   * Promesa con la respuesta del servidor tras actualizar el KPI.
    */
-  updateCertification: (id, KPI) => {
-    return apiClient.put(`/Objetives/${id}`, KPI);
+  updateKPI: (id, kpi) => {
+    return apiClient.put(`/Objetives/${id}`, kpi);
   },
 
   /**

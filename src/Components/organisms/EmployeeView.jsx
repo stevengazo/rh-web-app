@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import PrimaryButton from '../PrimaryButton';
 import EmployeeAvatar from '../molecules/EmployeeAvatar';
+import { useProfileBackground } from '../../hooks/useProfileBackground';
 
 /* ------------------------------------------------------------------
    Utilidades de presentación
@@ -149,6 +150,7 @@ const Seccion = ({ titulo, children }) => (
 
 const EmployeeView = ({ employee, fotoUrl }) => {
   const navigate = useNavigate();
+  const fondoUrl = useProfileBackground(employee?.id);
 
   if (!employee) {
     return (
@@ -169,8 +171,15 @@ const EmployeeView = ({ employee, fotoUrl }) => {
     <div className="-mx-5 -mt-4 flex min-h-full flex-col">
       {/* ---------------------------- Cabecera ---------------------------- */}
       <header className="relative">
-        {/* Banda de marca */}
-        <div className="h-20 bg-linear-to-r from-brand to-accent" />
+        {/* Portada: la imagen que el colaborador subió, o la banda de marca */}
+        {fondoUrl ? (
+          <div
+            className="h-24 bg-cover bg-center"
+            style={{ backgroundImage: `url(${fondoUrl})` }}
+          />
+        ) : (
+          <div className="h-20 bg-linear-to-r from-brand to-accent" />
+        )}
 
         <div className="px-5 pb-5">
           {/* Avatar montado sobre la banda */}

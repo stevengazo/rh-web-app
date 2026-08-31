@@ -120,7 +120,7 @@ const EmployeeLoansPanel = ({ loans = [] }) => {
                   </td>
 
                   <td className="px-4 py-3 whitespace-nowrap text-ink-secondary">
-                    {formatFecha(l.createdAt ?? l.date)}
+                    {formatFecha(l.createdAt ?? l.requestAt)}
                   </td>
 
                   <td className="px-4 py-3 text-right text-ink">

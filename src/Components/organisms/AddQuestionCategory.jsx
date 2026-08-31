@@ -1,103 +1,119 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+
 import questionCategoryApi from '../../api/QuestionCategories';
+import { mensajeDeError } from '../../utils/apiError';
+
+import Label from '../Label';
+import TextInput from '../TextInput';
+import CheckBoxInput from '../CheckBoxInput';
 import PrimaryButton from '../PrimaryButton';
+import SecondaryButton from '../SecondaryButton';
 
-const AddQuestionCategory = () => {
-  const [newQuestion, setNewQuestion] = useState({
-    questionCategoryId: 0,
-    name: '',
-    isActive: true,
-    questions: [],
+/**
+ * Alta / edición de una categoría de preguntas.
+ *
+ * @param {object} [category]
+ * @param {() => void} [onSaved]
+ * @param {() => void} [onCancel]
+ */
+const AddQuestionCategory = ({ category, onSaved, onCancel }) => {
+  const esEdicion = Boolean(category);
+
+  const [form, setForm] = useState({
+    name: category?.name ?? '',
+    isActive: category?.isActive ?? true,
   });
-
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const notify = () => toast.success('Agregado');
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setNewQuestion((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (!form.name.trim()) {
+      setError('El nombre es obligatorio.');
+      return;
+    }
+
     setLoading(true);
-    setError(null);
-
     try {
-      await questionCategoryApi.createQuestionCategory(newQuestion);
-
-      setNewQuestion({
-        questionCategoryId: 0,
-        name: '',
-        isActive: true,
-        questions: [],
-      });
-
-      notify();
+      const dto = { name: form.name.trim(), isActive: form.isActive };
+      if (esEdicion) {
+        await questionCategoryApi.updateQuestionCategory(
+          category.questionCategoryId,
+          dto
+        );
+        toast.success('Categoría actualizada.');
+      } else {
+        await questionCategoryApi.createQuestionCategory(dto);
+        toast.success('Categoría creada.');
+      }
+      onSaved?.();
     } catch (err) {
       console.error(err);
-      setError('Error al crear la categoría');
+      setError(mensajeDeError(err, 'No se pudo guardar la categoría.'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-full">
-      <form onSubmit={handleSubmit} className="space-y-4   ">
-        <h3 className="text-sm font-semibold text-ink">Nueva Categoría</h3>
+    <form onSubmit={handleSubmit} className="space-y-5 text-ink">
+      <div>
+        <h2 className="text-lg font-semibold">
+          {esEdicion ? 'Editar categoría' : 'Nueva categoría de pregunta'}
+        </h2>
+      </div>
 
-        {/* Nombre */}
-        <div className="space-y-1">
-          <label className="text-xs text-ink-muted">Nombre</label>
-          <input
-            type="text"
-            name="name"
-            value={newQuestion.name}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-stroke bg-surface px-3 py-2 text-sm text-ink
-              placeholder:text-ink-muted
-              focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand"
-            placeholder="Nombre de la categoría..."
-          />
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
         </div>
+      )}
 
-        {/* Activo */}
-        <div className="flex items-center gap-2 pt-1">
-          <input
-            type="checkbox"
-            name="isActive"
-            checked={newQuestion.isActive}
-            onChange={handleChange}
-            className="h-4 w-4 rounded border-stroke bg-surface text-brand
-              focus:ring-2 focus:ring-brand"
-          />
-          <span className="text-xs text-ink-muted">Activa</span>
-        </div>
+      <div>
+        <Label htmlFor="qcat-name">Nombre *</Label>
+        <TextInput
+          id="qcat-name"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="Ej: Trabajo en equipo"
+        />
+      </div>
 
-        {/* Error */}
-        {error && (
-          <p className="rounded-md bg-red-50 border border-transparent px-3 py-2 text-xs text-red-700">
-            {error}
-          </p>
+      <CheckBoxInput
+        label="Activa"
+        name="isActive"
+        checked={form.isActive}
+        onChange={handleChange}
+      />
+
+      <div className="flex justify-end gap-3 border-t border-stroke-soft pt-4">
+        {onCancel && (
+          <SecondaryButton onClick={onCancel} disabled={loading}>
+            Cancelar
+          </SecondaryButton>
         )}
-
-        {/* Botón */}
-        <div className="flex justify-end pt-2">
-          <PrimaryButton type="submit" disabled={loading}>
-            {loading ? 'Guardando...' : 'Guardar'}
-          </PrimaryButton>
-        </div>
-      </form>
-    </div>
+        <PrimaryButton type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader2 size={15} className="animate-spin" />
+              Guardando…
+            </>
+          ) : (
+            'Guardar'
+          )}
+        </PrimaryButton>
+      </div>
+    </form>
   );
 };
 

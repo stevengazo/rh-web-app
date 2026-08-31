@@ -9,10 +9,18 @@ import PageTitle from '../Components/PageTitle';
 import ReviewStatusBadge from '../Components/molecules/ReviewStatusBadge';
 import PaymentTable from '../Components/organisms/PaymentTable';
 
-import { LOAN_STATUS, estadoDePrestamo } from '../utils/loanStatus';
+import {
+  LOAN_STATUS,
+  estadoDePrestamo,
+  saldoDePrestamo,
+  progresoDePrestamo,
+} from '../utils/loanStatus';
 
-const formatDate = (fecha) =>
-  fecha ? new Date(fecha).toLocaleDateString('es-CR') : '—';
+const formatDate = (fecha) => {
+  if (!fecha || String(fecha).startsWith('0001-01-01')) return '—';
+  const f = new Date(fecha);
+  return Number.isNaN(f.getTime()) ? '—' : f.toLocaleDateString('es-CR');
+};
 
 const MyLoansPage = () => {
   const { user } = useAppContext();
@@ -53,7 +61,7 @@ const MyLoansPage = () => {
     );
 
     return {
-      saldo: vigentes.reduce((acc, l) => acc + (l.balance ?? 0), 0),
+      saldo: vigentes.reduce((acc, l) => acc + saldoDePrestamo(l), 0),
       cuotaMensual: vigentes.reduce((acc, l) => acc + (l.monthlyFee ?? 0), 0),
       vigentes: vigentes.length,
     };
@@ -121,11 +129,8 @@ const MyLoansPage = () => {
             {loans.map((loan) => {
               const estado = estadoDePrestamo(loan);
               const abonado = loan.paidAmount ?? 0;
-              const saldo = loan.balance ?? loan.amount - abonado;
-              const progreso =
-                loan.amount > 0
-                  ? Math.min(100, (abonado / loan.amount) * 100)
-                  : 0;
+              const saldo = saldoDePrestamo(loan);
+              const progreso = progresoDePrestamo(loan);
               const abierto = expandido === loan.loanId;
 
               return (

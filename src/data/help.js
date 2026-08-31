@@ -140,7 +140,7 @@ export const AYUDA = {
       'Préstamos al personal con su aprobación, plan de pagos y saldo pendiente.',
     pasos: [
       'Pulsa "Agregar Préstamo" e indica colaborador, monto, plazo en meses y motivo.',
-      'El préstamo queda Pendiente hasta que se apruebe.',
+      'El préstamo queda Pendiente hasta que se apruebe. Mientras esté pendiente puedes editar monto, plazo, título y descripción.',
       'Al aprobarlo, entra en cobro y su saldo aparece en el listado.',
       'Registra los abonos desde el detalle del préstamo (icono del ojo).',
       'Cuando los abonos cubran el monto, márcalo como Pagado.',
@@ -150,6 +150,8 @@ export const AYUDA = {
       'Solo se puede abonar a préstamos aprobados, y nunca por encima del saldo pendiente.',
       'Cuando un abono cancela el saldo, el préstamo pasa a Pagado automáticamente.',
       'La cuota mensual mostrada es el monto dividido entre el plazo, sin intereses.',
+      'Cada abono se puede corregir o eliminar desde el detalle; si el préstamo estaba saldado y deja de cubrirse, vuelve a Aprobado.',
+      'Un préstamo ya aprobado o rechazado no se puede editar: primero devuélvelo a pendiente.',
     ],
     faq: [
       {
@@ -163,6 +165,43 @@ export const AYUDA = {
       {
         p: '¿Puedo abonar más de lo que se debe?',
         r: 'No. El formulario y el servidor rechazan cualquier abono que supere el saldo, e indican cuánto queda pendiente.',
+      },
+      {
+        p: '¿Puedo corregir un abono mal registrado?',
+        r: 'Sí. Desde el detalle del préstamo cada abono tiene botones para editarlo o eliminarlo. El eliminado es un borrado lógico y el estado del préstamo se recalcula solo.',
+      },
+    ],
+  },
+
+  psicometria: {
+    titulo: 'Psicometría',
+    icono: 'Brain',
+    resumen:
+      'Cuestionarios psicométricos: se arman con dimensiones e ítems, se asignan al personal y el sistema califica el perfil.',
+    pasos: [
+      'En la pestaña "Pruebas" crea una prueba y ábrela para editarla.',
+      'Agrega las dimensiones (rasgos o escalas) y luego los ítems: Likert 1–5 u opción múltiple, cada uno mapeado a una dimensión.',
+      'Marca como "invertido" el ítem cuyo acuerdo resta en vez de sumar; puntúa 6 − valor.',
+      'Cuando tenga al menos una dimensión y un ítem, actívala.',
+      'En "Aplicaciones" pulsa "Asignar prueba", elige la prueba y uno o varios colaboradores.',
+      'El colaborador la responde desde su portal ("Evaluaciones"); al enviarla se calcula el perfil.',
+      'Abre la aplicación para ver el radar y los puntajes por dimensión, escribe la conclusión y márcala como revisada.',
+    ],
+    tips: [
+      'El colaborador solo ve que completó la prueba; los puntajes son visibles únicamente para Recursos Humanos.',
+      'Mientras la prueba no tenga respuestas puedes cambiar toda su estructura; después solo el texto de los ítems.',
+      'Cada dimensión reporta puntaje bruto, promedio por ítem y porcentaje; el radar usa el porcentaje.',
+      '"Reabrir" borra el resultado y deja que el colaborador vuelva a responder.',
+      'La prueba y sus dimensiones son borrado lógico; una prueba con aplicaciones no se elimina, se desactiva.',
+    ],
+    faq: [
+      {
+        p: '¿Puedo asignar la misma prueba dos veces a la misma persona?',
+        r: 'Sí, cada asignación es un intento independiente con su propio resultado.',
+      },
+      {
+        p: '¿Qué pasa con los ítems sin dimensión?',
+        r: 'Se responden pero no entran en ningún puntaje. Sirven para preguntas de control.',
       },
     ],
   },
@@ -193,17 +232,38 @@ export const AYUDA = {
   },
 
   kpis: {
-    titulo: 'KPIs y desempeño',
+    titulo: 'Indicadores de Rendimiento',
     icono: 'Target',
     resumen:
-      'Objetivos por categoría, cuestionarios de evaluación y resultados por colaborador.',
+      'Objetivos (KPIs) por categoría, a quién están asignados y sus resultados por periodo.',
     pasos: [
-      'Define las categorías y los objetivos que se van a medir.',
-      'Asigna objetivos a cada colaborador.',
-      'Registra los resultados del periodo y consúltalos en los gráficos.',
+      'En la pestaña "Categorías" crea las categorías que agrupan los objetivos.',
+      'En "Objetivos" crea cada objetivo, con su categoría y si está activo.',
+      'Con el icono de diana asignas un objetivo a uno o varios colaboradores.',
+      'En "Por colaborador" ves quién tiene qué; el enlace abre su ficha de desempeño con los gráficos.',
     ],
     tips: [
+      'Solo los objetivos activos aparecen al asignar.',
+      'Quitar una asignación es un borrado lógico: los resultados históricos se conservan.',
       'Las preguntas de evaluación se administran en la pantalla de Preguntas.',
+    ],
+  },
+
+  preguntas: {
+    titulo: 'Preguntas',
+    icono: 'ListChecks',
+    resumen:
+      'Banco de preguntas para la evaluación de desempeño, agrupadas por categoría y asignadas por colaborador.',
+    pasos: [
+      'Crea las categorías en su pestaña.',
+      'En "Preguntas" agrega cada pregunta con su categoría y estado.',
+      'Con el icono de asignar la vinculas a uno o varios colaboradores.',
+      'En "Por colaborador" revisas quién tiene qué preguntas asignadas.',
+    ],
+    tips: [
+      'Solo las preguntas activas se pueden asignar.',
+      'Las respuestas se registran desde la ficha de desempeño del colaborador.',
+      'Quitar una asignación conserva las respuestas ya registradas.',
     ],
   },
 
@@ -218,6 +278,24 @@ export const AYUDA = {
     ],
     tips: [
       'Los cambios de rol se aplican la próxima vez que la persona inicie sesión.',
+    ],
+  },
+
+  mensajes: {
+    titulo: 'Mensajes',
+    icono: 'MessagesSquare',
+    resumen:
+      'Mensajería interna entre colaboradores: conversaciones directas y grupos.',
+    pasos: [
+      'Con el botón + eliges "Directo" para escribirle a una persona, o "Grupo" para varias.',
+      'Escribe en la caja de abajo y pulsa Enter (Shift+Enter para salto de línea).',
+      'Pasa el cursor sobre tus mensajes para editarlos o eliminarlos.',
+      'El distintivo de la barra muestra cuántos mensajes sin leer tienes.',
+    ],
+    tips: [
+      'No es tiempo real: la bandeja y el hilo se actualizan cada pocos segundos.',
+      'Al abrir una conversación se marca como leída.',
+      'De un grupo puedes salir; una conversación directa no se abandona.',
     ],
   },
 
@@ -248,6 +326,9 @@ export const ORDEN_AYUDA = [
   'prestamos',
   'organigrama',
   'kpis',
+  'preguntas',
+  'psicometria',
+  'mensajes',
   'roles',
   'perfil',
 ];

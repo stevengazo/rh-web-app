@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import EmployeeApi from '../api/employeesApi';
-import SectionTitle from '../Components/SectionTitle';
-import { useParams } from 'react-router-dom';
+import PageTitle from '../Components/PageTitle';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import SecondaryButton from '../Components/SecondaryButton';
 import Divider from '../Components/Divider';
 import user_objetiveApi from '../api/user_objetiveApi';
 import answersApi from '../api/answersApi';
@@ -25,6 +27,7 @@ const ViewPerformancePage = () => {
   const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(TABS.CHARTS);
 
   const GetUserAsync = async () => {
@@ -93,7 +96,7 @@ const ViewPerformancePage = () => {
     const loadResults = async () => {
       try {
         const responses = await Promise.all(
-          objectives.map((obj) => GetResultsAsync(obj.id))
+          objectives.map((obj) => GetResultsAsync(obj.user_ObjetiveId))
         );
 
         // flatten
@@ -109,13 +112,36 @@ const ViewPerformancePage = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-5">
-      <SectionTitle>
-        Indicadores de Rendimiento - {employee?.firstName} {employee?.lastName}
-      </SectionTitle>
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-muted transition-colors hover:text-brand"
+      >
+        <ArrowLeft size={15} />
+        Volver
+      </button>
+
+      <PageTitle className="mb-0">
+        Desempeño · {employee?.firstName} {employee?.lastName}
+      </PageTitle>
+      <p className="text-sm text-ink-muted">
+        Objetivos, preguntas y resultados registrados para este colaborador.
+      </p>
 
       <Divider />
 
-      {loading && <p className="text-sm text-ink-muted mb-4">Cargando...</p>}
+      {loading && <p className="text-sm text-ink-muted mb-4">Cargando…</p>}
+
+      {!loading && objectives.length === 0 && questions.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-stroke bg-surface-alt py-14 text-ink-muted">
+          <p className="text-sm font-medium">
+            Este colaborador no tiene objetivos ni preguntas asignadas.
+          </p>
+          <SecondaryButton onClick={() => navigate('/manager/kpis')}>
+            Ir a Indicadores de Rendimiento
+          </SecondaryButton>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="border-b border-stroke-soft mb-5">

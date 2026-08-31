@@ -36,9 +36,11 @@ const loansApi = {
   },
 
   /**
-   * Crea un nuevo préstamo.
+   * Crea un nuevo préstamo. El backend solo toma
+   * `{ userId, title, amount, paymentMonths, requestAt, description, createdBy }`;
+   * el estado y las marcas de tiempo las fija el servidor.
    *
-   * @param {Object} loan - Objeto que contiene los datos del préstamo.
+   * @param {Object} loan
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   createLoan: (loan) => {
@@ -46,10 +48,13 @@ const loansApi = {
   },
 
   /**
-   * Actualiza un préstamo existente.
+   * Actualiza un préstamo **pendiente**. Solo se pueden cambiar
+   * `{ title, amount, paymentMonths, requestAt, description, userName }`;
+   * el backend responde 409 si el préstamo ya fue aprobado o rechazado.
+   * Devuelve el préstamo actualizado en el cuerpo.
    *
-   * @param {number|string} id - Identificador del préstamo.
-   * @param {Object} loan - Objeto con los datos actualizados del préstamo.
+   * @param {number|string} id
+   * @param {Object} loan
    * @returns {Promise} Promesa con la respuesta del servidor.
    */
   updateLoan: (id, loan) => {
@@ -72,7 +77,7 @@ const loansApi = {
    * @param {string} userName
    */
   approveLoan: (id, userName) => {
-    return apiClient.post(`/loans/${id}/approve`, { userName });
+    return apiClient.post(`/Loans/${id}/approve`, { userName });
   },
 
   /**
@@ -82,7 +87,7 @@ const loansApi = {
    * @param {string} userName
    */
   rejectLoan: (id, reason, userName) => {
-    return apiClient.post(`/loans/${id}/reject`, { reason, userName });
+    return apiClient.post(`/Loans/${id}/reject`, { reason, userName });
   },
 
   /**
@@ -91,7 +96,7 @@ const loansApi = {
    * @param {string} userName
    */
   settleLoan: (id, userName) => {
-    return apiClient.post(`/loans/${id}/settle`, { userName });
+    return apiClient.post(`/Loans/${id}/settle`, { userName });
   },
 
   /**
@@ -100,7 +105,7 @@ const loansApi = {
    * @param {string} userName
    */
   reopenLoan: (id, userName) => {
-    return apiClient.post(`/loans/${id}/reopen`, { userName });
+    return apiClient.post(`/Loans/${id}/reopen`, { userName });
   },
 
   deleteLoan: (id) => {

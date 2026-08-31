@@ -14,6 +14,7 @@ import ContactEmergencies from '../api/contactEmergenciesApi';
 import VacationsApi from '../api/vacationsApi';
 import absencesApi from '../api/absencesApi';
 import loansApi from '../api/loansApi';
+import psychometricAssignmentsApi from '../api/psychometricAssignmentsApi';
 import Employee_PayrollApi from '../api/Employee_PayrollApi';
 import { TABLA_DOCUMENTOS } from '../data/documentos';
 import toast from 'react-hot-toast';
@@ -29,6 +30,8 @@ export const TABS = {
   COMISSIONS: 'Comisiones',
   LOANS: 'Préstamos',
   PAYROLLS: 'Planillas',
+  PSYCHOMETRICS: 'Psicometría',
+  ORGCHART: 'Organigrama',
   AWARDS: 'Reconocimientos',
   CONTACTS: 'Contactos',
   FILES: 'Documentos',
@@ -61,6 +64,7 @@ const useEmployeeView = (id, open) => {
   const [absences, setAbsences] = useState([]);
   const [loans, setLoans] = useState([]);
   const [payrolls, setPayrolls] = useState([]);
+  const [psychometrics, setPsychometrics] = useState([]);
 
   /* =========================
      DELETE FILE
@@ -255,6 +259,7 @@ const useEmployeeView = (id, open) => {
       [absencesApi.getAbsencesByUser(id), setAbsences],
       [loansApi.getLoansByUser(id), setLoans],
       [Employee_PayrollApi.Search({ employeeId: id }), setPayrolls],
+      [psychometricAssignmentsApi.getByUser(id), setPsychometrics],
     ];
 
     await Promise.all(
@@ -308,6 +313,7 @@ const useEmployeeView = (id, open) => {
     absences,
     loans,
     payrolls,
+    psychometrics,
     setActiveTab,
     setEmployee,
 

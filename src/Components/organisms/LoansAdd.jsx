@@ -6,6 +6,7 @@ import loansApi from '../../api/loansApi';
 import EmployeeApi from '../../api/employeesApi';
 import { useAppContext } from '../../context/AppContext';
 import { formatMoney } from '../../utils/formatMoney';
+import { mensajeDeError } from '../../utils/apiError';
 
 import Label from '../Label';
 import TextInput from '../TextInput';
@@ -106,22 +107,16 @@ const LoansAdd = ({ userId, onCreated, onCancel }) => {
     setLoading(true);
 
     try {
+      // El backend fija el estado y las marcas de tiempo; aquí solo van los
+      // datos que el usuario elige.
       await loansApi.createLoan({
-        loanId: 0,
-        amount: Number(form.amount),
-        requestAt: form.requestAt,
-        paymentMonths: Number(form.paymentMonths),
-        state: 'Pendiente',
-        description: form.description.trim() || null,
-        title: form.title.trim(),
-        createdBy: quien,
-        createdAt: new Date().toISOString(),
-        lastUpdatedAt: new Date().toISOString(),
-        lastUpdatedBy: quien,
-        deleted: false,
         userId: form.userId,
-        user: null,
-        payments: [],
+        title: form.title.trim(),
+        amount: Number(form.amount),
+        paymentMonths: Number(form.paymentMonths),
+        requestAt: form.requestAt,
+        description: form.description.trim() || null,
+        createdBy: quien,
       });
 
       toast.success('Préstamo registrado. Queda pendiente de aprobación.');
@@ -138,12 +133,7 @@ const LoansAdd = ({ userId, onCreated, onCancel }) => {
       onCreated?.();
     } catch (err) {
       console.error(err);
-      const data = err?.response?.data;
-      setError(
-        typeof data === 'string' && data
-          ? data
-          : 'No se pudo registrar el préstamo.'
-      );
+      setError(mensajeDeError(err, 'No se pudo registrar el préstamo.'));
     } finally {
       setLoading(false);
     }
