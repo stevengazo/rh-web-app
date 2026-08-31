@@ -341,9 +341,14 @@ Módulo nuevo, en los dos repos. Migración EF `Messaging` (3 tablas, no toca na
 - **Sin tiempo real**: el cliente **sondea** — bandeja cada 12 s, hilo cada 5 s (con la
   pestaña visible), contador global cada 20 s (`useUnreadMessages`, montado en `NavBar`).
 - **Front**: `pages/MessagesPage.jsx` (dos paneles en escritorio, uno en móvil),
-  `organisms/messaging/` (`ConversationList`, `MessageThread`, `NewConversationForm`),
-  `api/messagingApi.js`. Ruta `/messages` (bajo `MainLayout`), entrada "Mensajes" con
-  distintivo de no leídos en `NavBar` y en `ManagerSideBar`. Ayuda `mensajes`.
+  `organisms/messaging/` (`ConversationList`, `MessageThread`, `NewConversationForm`,
+  `ChatWidget`), `api/messagingApi.js`. Ruta `/messages` (bajo `MainLayout`), entrada
+  "Mensajes" con distintivo de no leídos en `NavBar` y en `ManagerSideBar`. Ayuda `mensajes`.
+- **Botón flotante** (`ChatWidget`): montado en `MainLayout` y `ManagerLayout`, abajo a la
+  derecha, con el contador de no leídos; despliega un panel compacto que reutiliza
+  `ConversationList` / `MessageThread` / `NewConversationForm`. Se oculta en `/messages`.
+  `useUnreadMessages` pasó a store compartido (`useSyncExternalStore`): un solo sondeo
+  aunque el hook se monte en varios sitios.
 
 ## 5. Pendiente / a verificar
 

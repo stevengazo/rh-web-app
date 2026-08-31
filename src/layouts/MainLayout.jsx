@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
+import ChatWidget from '../Components/organisms/messaging/ChatWidget';
 import { PRODUCTO } from '../data/marketing';
 
 const HEADER_HEIGHT = '64px'; // ajusta si tu NavBar cambia
@@ -51,6 +52,8 @@ const MainLayout = () => {
       >
         © {new Date().getFullYear()} — {PRODUCTO.nombre}
       </motion.footer>
+
+      <ChatWidget />
     </div>
   );
 };

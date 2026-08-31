@@ -6,6 +6,7 @@ import TopbarSearch from '../Components/organisms/TopbarSearch';
 import ThemeToggle from '../Components/ThemeToggle';
 import Logo from '../Components/Logo';
 import NotificationsPanel from '../Components/organisms/NotificationsPanel';
+import ChatWidget from '../Components/organisms/messaging/ChatWidget';
 
 const ManagerLayout = () => {
   const { hasRole, isAuthenticated } = useAppContext();
@@ -83,6 +84,8 @@ const ManagerLayout = () => {
           </motion.div>
         </motion.main>
       </div>
+
+      <ChatWidget />
     </div>
   );
 };
