@@ -9,7 +9,14 @@ import NotificationsPanel from '../Components/organisms/NotificationsPanel';
 import ChatWidget from '../Components/organisms/messaging/ChatWidget';
 
 const ManagerLayout = () => {
-  const { hasRole, isAuthenticated } = useAppContext();
+  const { hasRole, isAuthenticated, authLoading } = useAppContext();
+
+  /* La sesión ya no se puede leer de entrada (el token vive en una cookie
+     httpOnly): hay que esperar la respuesta de `AppContext` antes de decidir
+     si redirige, o cualquier refresco de página mandaría a /login de más. */
+  if (authLoading) {
+    return null;
+  }
 
   // 🔐 Si no está autenticado → login
   if (!isAuthenticated) {

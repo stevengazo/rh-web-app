@@ -8,7 +8,7 @@ import { loginRequest } from '../api/authApi';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, setUser } = useAppContext();
+  const { login, beginCompanySelection } = useAppContext();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,25 +21,18 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      // Llamada real al API
-      const response = await loginRequest({
-        username,
-        password,
-      });
+      const { data } = await loginRequest({ username, password });
 
-      /**
-       * Asumiendo respuesta tipo:
-       * {
-       *   token: "jwt",
-       *   user: { id, name, email, role }
-       * }
-       */
-      const { token, user } = response.data;
+      if (data.requiresCompanySelection) {
+        // La cuenta pertenece a más de una empresa: falta elegir con cuál
+        // entrar, en su propia pantalla (como el selector de portal de
+        // Bitrix24). La cookie "de solo identidad" ya la dejó el servidor.
+        beginCompanySelection(data.companies);
+        navigate('/select-company');
+        return;
+      }
 
-      // Guardar sesión global
-      await login(token);
-      setUser(user);
-
+      await login(data);
       navigate('/my-profile');
     } catch (err) {
       console.error(err);

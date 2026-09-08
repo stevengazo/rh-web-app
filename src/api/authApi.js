@@ -33,4 +33,45 @@ const registerRequest = (registerUser) => {
   return apiClient.post('/Authentication/register', registerUser);
 };
 
-export { loginRequest, registerRequest };
+/**
+ * Segundo paso del login cuando la cuenta pertenece a más de una empresa:
+ * confirma con cuál se quiere entrar. La cuenta ya quedó identificada por la
+ * cookie que dejó `loginRequest` — no hace falta mandar nada más.
+ *
+ * @param {number} companyId
+ */
+const selectCompanyRequest = (companyId) => {
+  return apiClient.post('/Authentication/select-company', { companyId });
+};
+
+/**
+ * Empresas a las que pertenece la sesión activa, para el selector de
+ * empresa sin tener que cerrar sesión del todo.
+ */
+const myCompaniesRequest = () => {
+  return apiClient.get('/Authentication/my-companies');
+};
+
+/**
+ * Renueva la sesión a partir de la cookie de refresco, sin pedir contraseña.
+ * También sirve como el "¿sigo logueado?" al arrancar la app: el token de
+ * acceso vive en una cookie httpOnly que JavaScript no puede leer, así que
+ * esta es la única forma de saber si hay una sesión vigente.
+ */
+const refreshRequest = () => {
+  return apiClient.post('/Authentication/refresh');
+};
+
+/** Cierra la sesión: revoca el refresh token en el servidor y limpia las cookies. */
+const logoutRequest = () => {
+  return apiClient.post('/Authentication/logout');
+};
+
+export {
+  loginRequest,
+  registerRequest,
+  selectCompanyRequest,
+  myCompaniesRequest,
+  refreshRequest,
+  logoutRequest,
+};

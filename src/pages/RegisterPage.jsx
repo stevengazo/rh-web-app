@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mail, Lock, UserPlus } from 'lucide-react';
+import { Mail, Lock, UserPlus, Building2 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { registerRequest } from '../api/authApi';
 import { useState } from 'react';
@@ -12,6 +12,7 @@ const RegisterPage = () => {
     username: '',
     email: '',
     password: '',
+    companyName: '',
   });
 
   const handleChange = (e) => {
@@ -54,14 +55,36 @@ const RegisterPage = () => {
           <div className="flex justify-center mb-3">
             <UserPlus size={40} className="text-brand" />
           </div>
-          <h3 className="text-2xl font-semibold">Crear cuenta</h3>
+          <h3 className="text-2xl font-semibold">Crear tu empresa</h3>
           <p className="text-slate-400 text-sm">
-            Regístrate para acceder al sistema
+            Esta cuenta queda como administradora de la empresa
           </p>
         </div>
 
         {/* Form */}
         <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Empresa */}
+          <div>
+            <label className="block text-sm text-slate-300 mb-1">
+              Nombre de la empresa
+            </label>
+            <div className="relative">
+              <Building2
+                className="absolute left-3 top-2.5 text-slate-400"
+                size={18}
+              />
+              <input
+                name="companyName"
+                type="text"
+                value={newUser.companyName}
+                onChange={handleChange}
+                placeholder="Mi Empresa S.A."
+                required
+                className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-700 border border-slate-600 focus:outline-none focus:ring-2 focus:ring-brand"
+              />
+            </div>
+          </div>
+
           {/* Email */}
           <div>
             <label className="block text-sm text-slate-300 mb-1">

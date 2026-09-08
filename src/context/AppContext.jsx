@@ -1,105 +1,108 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import apiClient from '../api/apiClient';
+import {
+  refreshRequest,
+  logoutRequest,
+  selectCompanyRequest,
+} from '../api/authApi';
 
 /**
  * =====================================================
  * AppContext
  * =====================================================
+ *
+ * La sesión ya no vive en `localStorage` — el JWT va en una cookie httpOnly
+ * que JavaScript no puede leer (ver `apiClient.js` y
+ * `AuthenticationController`). Por eso no hay un `token` que decodificar
+ * aquí: los roles y la empresa activa llegan siempre en el cuerpo de la
+ * respuesta del propio servidor (login, select-company o refresh), nunca
+ * inferidos del lado del cliente.
+ *
+ * Como el token no se puede leer de entrada, tampoco se puede saber
+ * "¿sigo logueado?" de forma síncrona al cargar la página: hay que
+ * preguntarle al servidor (`refreshRequest`). Mientras esa respuesta no
+ * llega, `authLoading` queda en `true` — las rutas protegidas deben esperar
+ * a que baje antes de decidir si redirigen a `/login` (ver `ManagerLayout`).
  */
 const AppContext = createContext();
 
-/**
- * =====================================================
- * Helper: Extraer roles del JWT (si fuera necesario)
- * =====================================================
- */
-const getRolesFromToken = (token) => {
-  try {
-    if (!token) return [];
-
-    const payload = JSON.parse(atob(token.split('.')[1]));
-
-    // Puede venir como:
-    // - roles
-    // - role
-    // - http://schemas.microsoft.com/ws/2008/06/identity/claims/role
-    const roleClaim =
-      payload.roles ||
-      payload.role ||
-      payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-
-    if (!roleClaim) return [];
-
-    return Array.isArray(roleClaim) ? roleClaim : [roleClaim];
-  } catch {
-    return [];
-  }
-};
-
-/**
- * =====================================================
- * AppProvider
- * =====================================================
- */
 export const AppProvider = ({ children }) => {
-  /**
-   * Inicialización segura desde localStorage
-   */
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
-
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-
-  const [roles, setRoles] = useState(() => {
-    if (user?.roles) return user.roles;
-    return getRolesFromToken(token);
-  });
-
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => !!localStorage.getItem('token')
-  );
+  const [user, setUser] = useState(null);
+  const [roles, setRoles] = useState([]);
+  const [company, setCompany] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   /**
-   * =====================================================
-   * Sincroniza cambios con localStorage
-   * =====================================================
+   * Cuando el login detecta que la cuenta tiene más de una empresa, queda
+   * "a medias" aquí (la lista para elegir) en vez de completarse: todavía no
+   * hay rol ni empresa activa, así que `isAuthenticated` sigue en falso.
+   */
+  const [pendingCompanies, setPendingCompanies] = useState(null);
+
+  /** Aplica lo que devuelve el servidor tras login / select-company / refresh. */
+  const aplicarSesion = (data) => {
+    setUser(data.user ?? null);
+    setRoles(data.user?.roles ?? []);
+    setCompany(data.company ?? null);
+    setPendingCompanies(null);
+    setIsAuthenticated(true);
+  };
+
+  const limpiarSesion = () => {
+    setUser(null);
+    setRoles([]);
+    setCompany(null);
+    setPendingCompanies(null);
+    setIsAuthenticated(false);
+  };
+
+  /**
+   * Al arrancar la app, la única forma de saber si hay una sesión vigente es
+   * preguntarle al servidor: intenta renovarla con la cookie de refresco (si
+   * no hay ninguna, o ya venció, el 401 deja todo como "no autenticado").
    */
   useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-      setRoles(getRolesFromToken(token));
-    } else {
-      localStorage.removeItem('token');
-      setRoles([]);
-    }
-  }, [token]);
+    refreshRequest()
+      .then(({ data }) => aplicarSesion(data))
+      .catch(() => limpiarSesion())
+      .finally(() => setAuthLoading(false));
+  }, []);
 
+  /** Si el refresco automático de una petición fallida no puede renovar la sesión, se cierra del todo. */
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      if (user.roles) {
-        setRoles(user.roles);
-      }
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
+    apiClient.onSessionExpired = () => limpiarSesion();
+    return () => {
+      apiClient.onSessionExpired = null;
+    };
+  }, []);
 
   /**
    * =====================================================
    * login
    * =====================================================
+   * `data` es la respuesta completa de `/Authentication/login` (o de
+   * `select-company`): el token ya quedó puesto en la cookie por el
+   * servidor, esto solo refleja lo demás en el estado de React.
    */
-  const login = async (token, user) => {
-    try {
-      setToken(token);
-      setUser(user);
-      setRoles(user?.roles || getRolesFromToken(token));
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Error durante el login:', error);
-    }
+  const login = async (data) => {
+    aplicarSesion(data);
+  };
+
+  /**
+   * Primer paso del login cuando la cuenta tiene más de una empresa: no hay
+   * sesión completa todavía (la cookie que dejó el servidor es "de solo
+   * identidad"), solo la lista para que `selectCompany` confirme cuál usar.
+   */
+  const beginCompanySelection = (companies) => {
+    setPendingCompanies(companies);
+  };
+
+  /** Confirma la empresa elegida y completa el login. */
+  const selectCompany = async (companyId) => {
+    const { data } = await selectCompanyRequest(companyId);
+    aplicarSesion(data);
+    return data;
   };
 
   /**
@@ -108,12 +111,10 @@ export const AppProvider = ({ children }) => {
    * =====================================================
    */
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    setRoles([]);
-    setIsAuthenticated(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    limpiarSesion();
+    // No se espera la respuesta: la sesión local se cierra igual aunque la
+    // petición falle (por ejemplo, sin conexión).
+    logoutRequest().catch(() => {});
   };
 
   /**
@@ -131,14 +132,18 @@ export const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         user,
-        token,
         roles,
         isAuthenticated,
+        authLoading,
+        company,
+        pendingCompanies,
         login,
         logout,
         setUser,
         hasRole,
         hasAnyRole,
+        beginCompanySelection,
+        selectCompany,
       }}
     >
       {children}

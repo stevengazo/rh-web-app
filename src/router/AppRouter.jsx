@@ -19,6 +19,7 @@ import ContactPage from '../pages/public/ContactPage';
 // Pages
 import MyProfilePage from '../pages/MyProfilePage';
 import LoginPage from '../pages/LoginPage';
+import SelectCompanyPage from '../pages/SelectCompanyPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import RegisterPage from '../pages/RegisterPage';
 import UILibraryPage from '../pages/UILibraryPage';
@@ -73,6 +74,7 @@ const AppRouter = () => {
 
         {/* Autenticación */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/select-company" element={<SelectCompanyPage />} />
         <Route path="/register" element={<RegisterPage />} />
         {/* Rutas privadas con layout - Empleados */}
         <Route element={<MainLayout />}>
